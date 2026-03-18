@@ -1,15 +1,25 @@
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { useState } from "react";
-import { Eye } from "lucide-react";
+import { Eye, Plus, Copy, Link2, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { sales, services, vendors, commissions, formatCOP, CURRENT_COMPANY_ID } from "@/data/mockData";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { sales, services, vendors, commissions, formatCOP, CURRENT_COMPANY_ID, companies } from "@/data/mockData";
+import { useDemo } from "@/contexts/DemoContext";
+import { toast } from "sonner";
 
 export default function CompanyVendors() {
+  const { currentCompanyPlan } = useDemo();
   const [selectedVendor, setSelectedVendor] = useState<any>(null);
+  const [showInvite, setShowInvite] = useState(false);
+
+  const company = companies.find(c => c.id === CURRENT_COMPANY_ID);
   const companySales = sales.filter(s => s.companyId === CURRENT_COMPANY_ID);
   const vendorIds = new Set(companySales.map(s => s.vendorId));
   const companyVendors = vendors.filter(v => vendorIds.has(v.id));
+
+  const inviteLink = `https://app.mensualista.com/join/${company?.id || 'demo'}`;
 
   const monthAgo = new Date(); monthAgo.setMonth(monthAgo.getMonth() - 1);
 
@@ -21,10 +31,41 @@ export default function CompanyVendors() {
     return { salesMonth: monthSales.length, gmv, commission: vc.reduce((sum, c) => sum + c.amountCOP, 0) };
   };
 
+  const copyInviteLink = () => {
+    navigator.clipboard.writeText(inviteLink);
+    toast.success("Enlace copiado al portapapeles");
+  };
+
   return (
-    <DashboardLayout role="company" userName="Poliza.ai">
+    <DashboardLayout role="company" userName={company?.name}>
       <div className="space-y-4">
-        <h1 className="text-xl font-bold">Vendedores</h1>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-xl font-bold">Mi Red de Vendedores</h1>
+            <p className="text-xs text-muted-foreground">{companyVendors.length} vendedores activos</p>
+          </div>
+          <Button size="sm" className="h-8 text-xs" onClick={() => setShowInvite(true)}>
+            <Plus className="w-3.5 h-3.5 mr-1" />
+            Invitar vendedor
+          </Button>
+        </div>
+
+        {/* Invite banner */}
+        <div className="rounded-xl border border-primary/20 bg-primary/5 p-4">
+          <div className="flex items-center gap-3">
+            <Users className="w-8 h-8 text-primary flex-shrink-0" />
+            <div className="flex-1">
+              <p className="text-sm font-semibold">Crece tu red de vendedores</p>
+              <p className="text-xs text-muted-foreground">
+                Comparte el enlace de invitación para que nuevos vendedores se unan a tu red privada.
+              </p>
+            </div>
+            <Button size="sm" variant="outline" className="text-xs gap-1" onClick={copyInviteLink}>
+              <Copy className="w-3 h-3" />
+              Copiar enlace
+            </Button>
+          </div>
+        </div>
 
         <div className="rounded-xl border border-border bg-card divide-y divide-border/50">
           {companyVendors.map(vendor => {
@@ -49,9 +90,15 @@ export default function CompanyVendors() {
               </div>
             );
           })}
-          {companyVendors.length === 0 && <p className="text-xs text-muted-foreground text-center py-8">Sin vendedores</p>}
+          {companyVendors.length === 0 && (
+            <div className="text-center py-8">
+              <Users className="w-8 h-8 text-muted-foreground/30 mx-auto mb-2" />
+              <p className="text-xs text-muted-foreground">Sin vendedores. Invita al primero.</p>
+            </div>
+          )}
         </div>
 
+        {/* Vendor detail modal */}
         <Dialog open={!!selectedVendor} onOpenChange={() => setSelectedVendor(null)}>
           <DialogContent className="max-w-sm">
             <DialogHeader><DialogTitle className="text-base">Vendedor</DialogTitle></DialogHeader>
@@ -82,6 +129,34 @@ export default function CompanyVendors() {
                 </div>
               </div>
             )}
+          </DialogContent>
+        </Dialog>
+
+        {/* Invite modal */}
+        <Dialog open={showInvite} onOpenChange={setShowInvite}>
+          <DialogContent className="max-w-sm">
+            <DialogHeader><DialogTitle className="text-base">Invitar vendedor</DialogTitle></DialogHeader>
+            <div className="space-y-4">
+              <div>
+                <Label className="text-xs">Enlace de invitación</Label>
+                <div className="flex gap-2 mt-1">
+                  <Input value={inviteLink} readOnly className="h-8 text-xs font-mono" />
+                  <Button size="sm" variant="outline" className="h-8" onClick={copyInviteLink}>
+                    <Copy className="w-3.5 h-3.5" />
+                  </Button>
+                </div>
+                <p className="text-[10px] text-muted-foreground mt-1">Comparte este enlace con tus vendedores para que se registren en tu red.</p>
+              </div>
+              <div>
+                <Label className="text-xs">O invita por email</Label>
+                <Input placeholder="vendedor@email.com" className="h-8 text-sm mt-1" />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button size="sm" className="text-xs" onClick={() => { setShowInvite(false); toast.success("Invitación enviada"); }}>
+                Enviar invitación
+              </Button>
+            </DialogFooter>
           </DialogContent>
         </Dialog>
       </div>

@@ -1,51 +1,66 @@
 import DashboardLayout from "@/components/layout/DashboardLayout";
-import PageTutorial from "@/components/PageTutorial";
-import { MessageCircle, Phone, Clock, HelpCircle, ExternalLink } from "lucide-react";
+import { MessageCircle, Clock, HelpCircle, ExternalLink, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { vendors, CURRENT_VENDOR_ID } from "@/data/mockData";
+import { vendors, companies, CURRENT_VENDOR_ID, CURRENT_COMPANY_ID } from "@/data/mockData";
+import { useDemo } from "@/contexts/DemoContext";
+import { Link } from "react-router-dom";
 
 const faqs = [
-  { q: "¿Cuánto tarda en liberarse mi comisión?", a: "Las comisiones se liberan 14 días después de que la empresa aprueba la venta." },
-  { q: "¿Cómo retiro mis comisiones?", a: "Ve a la sección Comisiones y haz clic en 'Retirar'. Puedes elegir entre transferencia bancaria o PayPal." },
-  { q: "¿Qué pasa si rechazan mi venta?", a: "Recibirás una notificación con el motivo. Puedes corregir y volver a enviar si aplica." },
-  { q: "¿Puedo vender varios servicios?", a: "Sí, puedes vender todos los servicios en los que hayas completado la capacitación requerida." }
+  { q: "¿Cuánto tarda en liberarse mi comisión?", a: "Las comisiones se liberan 7 días después de la venta. El pago se transfiere automáticamente." },
+  { q: "¿Cómo retiro mis comisiones?", a: "Las transferencias son automáticas a tu cuenta bancaria configurada en tu perfil." },
+  { q: "¿Qué pasa si rechazan mi venta?", a: "Recibirás una notificación con el motivo. Puedes corregir y volver a enviar." },
+  { q: "¿Puedo usar cupones de descuento?", a: "Si la empresa tiene plan Premium o Enterprise, podrás aplicar cupones al registrar ventas." }
 ];
 
 export default function VendorSupport() {
+  const { currentCompanyPlan } = useDemo();
   const vendor = vendors.find(v => v.id === CURRENT_VENDOR_ID);
-  const whatsappNumber = "5215512345678";
-  const message = encodeURIComponent(`Hola Mensualista, soy ${vendor?.name} (ID ${CURRENT_VENDOR_ID}). Necesito ayuda con: `);
+  const company = companies.find(c => c.id === CURRENT_COMPANY_ID);
+
+  // Chat only available for Premium/Enterprise
+  if (currentCompanyPlan === 'freemium') {
+    return (
+      <DashboardLayout role="vendor" userName={vendor?.name}>
+        <div className="flex flex-col items-center justify-center py-20 text-center">
+          <Lock className="w-12 h-12 text-muted-foreground/30 mb-4" />
+          <h2 className="text-lg font-semibold mb-2">Chat no disponible</h2>
+          <p className="text-sm text-muted-foreground max-w-md">
+            El chat con la empresa no está disponible en el plan Freemium. 
+            Contacta a {company?.name} directamente.
+          </p>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  const whatsappNumber = company?.contactPhone?.replace(/\D/g, '') || "573001234567";
+  const message = encodeURIComponent(`Hola ${company?.name}, soy ${vendor?.name} (vendedor). Tengo una consulta: `);
   const whatsappLink = `https://wa.me/${whatsappNumber}?text=${message}`;
 
   return (
     <DashboardLayout role="vendor" userName={vendor?.name}>
       <div className="space-y-6">
-        <PageTutorial
-          pageId="vendor-support"
-          title="Soporte"
-          description="Envía tus dudas o problemas y consulta las preguntas frecuentes."
-          steps={[
-            "Usa WhatsApp para soporte rápido durante horario de atención",
-            "Revisa las preguntas frecuentes antes de contactarnos"
-          ]}
-        />
-
         <div>
-          <h1 className="text-2xl font-bold">Soporte</h1>
-          <p className="text-muted-foreground">¿Necesitas ayuda? Estamos para ti</p>
+          <h1 className="text-2xl font-bold">Chat con {company?.name}</h1>
+          <p className="text-muted-foreground">Comunícate directamente con tu empresa</p>
         </div>
 
-        {/* WhatsApp Card */}
-        <div className="card-premium p-5 text-center bg-gradient-to-br from-green-50 to-green-100/50 dark:from-green-900/20 dark:to-green-800/10 border-green-200 dark:border-green-800">
-          <div className="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center mx-auto mb-3">
-            <MessageCircle className="w-5 h-5 text-white" />
+        {/* Chat placeholder */}
+        <div className="card-premium p-6 text-center bg-gradient-to-br from-primary/5 to-primary/10">
+          <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
+            <MessageCircle className="w-6 h-6 text-primary" />
           </div>
-          <h2 className="text-base font-bold mb-2">Soporte por WhatsApp</h2>
-          <p className="text-muted-foreground mb-6">Respuesta rápida de nuestro equipo de soporte</p>
+          <h2 className="text-base font-bold mb-2">Chat en vivo</h2>
+          <p className="text-sm text-muted-foreground mb-4">
+            Escribe directamente a {company?.name} para resolver dudas sobre servicios, ventas o comisiones.
+          </p>
+          <div className="rounded-xl border border-border bg-card p-8 mb-4">
+            <p className="text-xs text-muted-foreground">💬 El chat se habilitará con la integración real. Por ahora, usa WhatsApp:</p>
+          </div>
           <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
             <Button className="bg-green-500 hover:bg-green-600 text-white">
               <MessageCircle className="w-5 h-5 mr-2" />
-              Abrir WhatsApp
+              WhatsApp con {company?.name}
               <ExternalLink className="w-4 h-4 ml-2" />
             </Button>
           </a>
@@ -67,7 +82,6 @@ export default function VendorSupport() {
               <span className="font-medium">10:00 AM - 2:00 PM</span>
             </div>
           </div>
-          <p className="text-xs text-muted-foreground mt-3">Horario Ciudad de México (GMT-6)</p>
         </div>
 
         {/* FAQs */}
@@ -84,17 +98,6 @@ export default function VendorSupport() {
               </div>
             ))}
           </div>
-        </div>
-
-        {/* Contacto alternativo */}
-        <div className="card-premium p-6">
-          <div className="flex items-center gap-3 mb-4">
-            <Phone className="w-5 h-5 text-primary" />
-            <h3 className="font-semibold">Contacto alternativo</h3>
-          </div>
-          <p className="text-sm text-muted-foreground">
-            También puedes escribirnos a <a href="mailto:soporte@mensualista.com" className="text-primary hover:underline">soporte@mensualista.com</a>
-          </p>
         </div>
       </div>
     </DashboardLayout>
