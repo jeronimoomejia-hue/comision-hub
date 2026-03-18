@@ -1,0 +1,264 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+/* Mensualista Design System - Light Professional with Purple Identity */
+
+@layer base {
+  :root {
+    /* Core Brand */
+    --primary: 258 96% 50%;
+    --primary-foreground: 0 0% 100%;
+    
+    /* Backgrounds */
+    --background: 0 0% 100%;
+    --foreground: 270 40% 7%;
+    
+    /* Cards & Surfaces */
+    --card: 0 0% 100%;
+    --card-foreground: 270 40% 7%;
+    
+    /* Popover */
+    --popover: 0 0% 100%;
+    --popover-foreground: 270 40% 7%;
+    
+    /* Secondary */
+    --secondary: 270 40% 97%;
+    --secondary-foreground: 270 40% 7%;
+    
+    /* Muted */
+    --muted: 0 0% 98%;
+    --muted-foreground: 264 12% 43%;
+    
+    /* Accent */
+    --accent: 270 40% 97%;
+    --accent-foreground: 271 76% 53%;
+    
+    /* Destructive */
+    --destructive: 348 77% 53%;
+    --destructive-foreground: 0 0% 100%;
+    
+    /* Success */
+    --success: 160 100% 36%;
+    --success-foreground: 0 0% 100%;
+    
+    /* Warning */
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 8%;
+    
+    /* Info */
+    --info: 230 72% 62%;
+    --info-foreground: 0 0% 100%;
+    
+    /* Borders & Inputs */
+    --border: 270 24% 91%;
+    --input: 270 24% 91%;
+    --ring: 258 96% 50%;
+    
+    --radius: 0.75rem;
+    
+    /* Sidebar */
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 264 12% 43%;
+    --sidebar-primary: 258 96% 50%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 270 40% 97%;
+    --sidebar-accent-foreground: 271 76% 53%;
+    --sidebar-border: 270 24% 91%;
+    --sidebar-ring: 258 96% 50%;
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgba(80,7,250,0.04);
+    --shadow-card: 0 1px 4px rgba(80,7,250,0.06);
+    --shadow-card-hover: 0 4px 16px rgba(80,7,250,0.1);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', system-ui, sans-serif;
+    @apply font-bold tracking-tight;
+  }
+}
+
+@layer components {
+  /* Card Styles */
+  .card-premium {
+    @apply bg-card rounded-xl border border-border;
+    box-shadow: var(--shadow-card);
+    transition: all 0.2s ease;
+  }
+  
+  .card-premium:hover {
+    border-color: hsl(var(--primary));
+    box-shadow: var(--shadow-card-hover);
+  }
+  
+  /* Dashboard Layout */
+  .dashboard-container {
+    @apply min-h-screen bg-background;
+  }
+  
+  .dashboard-main {
+    @apply flex-1 p-6 lg:p-8;
+  }
+  
+  /* Stats Cards */
+  .stat-card {
+    @apply card-premium p-6;
+    border-top: 3px solid hsl(var(--primary));
+  }
+  
+  .stat-value {
+    font-family: 'Inter', system-ui, sans-serif;
+    @apply text-lg sm:text-2xl font-bold tracking-tight;
+    color: hsl(var(--foreground));
+  }
+  
+  .stat-label {
+    font-family: 'Inter', system-ui, sans-serif;
+    @apply text-[10px] sm:text-xs font-medium uppercase tracking-widest mt-0.5 sm:mt-1;
+    color: hsl(var(--muted-foreground));
+  }
+  
+  /* Table Styles */
+  .data-table {
+    @apply w-full;
+  }
+  
+  .data-table th {
+    @apply text-left text-xs font-medium uppercase tracking-widest py-3 px-4;
+    color: hsl(var(--muted-foreground));
+    background: #F4F0FA;
+    border-bottom: 2px solid #E8E0F0;
+  }
+  
+  .data-table td {
+    @apply py-4 px-4 text-sm;
+  }
+  
+  .data-table tr {
+    border-bottom: 1px solid #F0EBF8;
+    @apply transition-colors;
+  }
+  
+  .data-table tbody tr:hover {
+    background: #FAF7FF;
+  }
+  
+  /* Status Badges */
+  .status-badge {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+  
+  .status-pending {
+    background: #FEF3E2;
+    color: #F59E0B;
+    border: 1px solid #FDE08A;
+  }
+  
+  .status-approved {
+    background: #E8FAF3;
+    color: #00B87A;
+    border: 1px solid #B3EDD8;
+  }
+  
+  .status-rejected {
+    background: #FDE8EC;
+    color: #E5294A;
+    border: 1px solid #F9B8C4;
+  }
+  
+  .status-active {
+    background: #EDE8FE;
+    color: #5007FA;
+    border: 1px solid #C4B5FD;
+  }
+  
+  /* Form Styles */
+  .form-section {
+    @apply space-y-4;
+  }
+  
+  .form-label {
+    font-family: 'Inter', system-ui, sans-serif;
+    @apply text-xs font-medium uppercase tracking-widest;
+    color: hsl(var(--muted-foreground));
+  }
+  
+  .form-description {
+    @apply text-xs text-muted-foreground mt-1;
+  }
+  
+  /* Animations */
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  @keyframes slide-in-right {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+  
+  .animate-fade-in {
+    animation: fade-in 0.5s ease-out forwards;
+  }
+  
+  .animate-slide-in {
+    animation: slide-in-right 0.4s ease-out forwards;
+  }
+  
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  /* Stagger animations */
+  .stagger-1 { animation-delay: 0.1s; }
+  .stagger-2 { animation-delay: 0.2s; }
+  .stagger-3 { animation-delay: 0.3s; }
+  .stagger-4 { animation-delay: 0.4s; }
+  .stagger-5 { animation-delay: 0.5s; }
+  .stagger-6 { animation-delay: 0.6s; }
+}
+
+/* Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F4F0FA;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #D4C8E8;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #B0A8C0;
+}
