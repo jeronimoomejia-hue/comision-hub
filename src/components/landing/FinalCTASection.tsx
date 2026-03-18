@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowRight, Briefcase, Building2 } from "lucide-react";
+import { ArrowRight, Building2, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
@@ -14,32 +14,30 @@ export const FinalCTASection = () => {
           className="text-center"
         >
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-foreground">
-            Empieza a{" "}
-            <span className="text-primary">ganar comisión</span>
-            {" "}hoy
+            Monta tu <span className="text-primary">red de vendedores</span> hoy
           </h2>
           <p className="text-muted-foreground text-lg mb-10 max-w-xl mx-auto">
-            Sin inversión, sin experiencia. Elige un servicio, capacítate y empieza a generar ingresos recurrentes.
+            Empieza gratis. Personaliza tu plataforma. Invita a tus vendedores. Sin compromiso.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
-            <Link to="/auth?mode=register&role=vendor">
+            <Link to="/auth?mode=register&role=company">
               <Button size="lg" className="px-8 group w-full sm:w-auto">
-                <Briefcase className="mr-2 w-4 h-4" />
-                Quiero vender servicios
+                <Building2 className="mr-2 w-4 h-4" />
+                Registrar mi empresa gratis
                 <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
           </div>
 
-          <Link
-            to="/auth?mode=register&role=company"
+          <a
+            href="#planes"
             className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm group"
           >
-            <Building2 className="w-4 h-4" />
-            Soy empresa de servicios
+            <Zap className="w-4 h-4" />
+            Comparar planes
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </Link>
+          </a>
         </motion.div>
       </div>
     </section>

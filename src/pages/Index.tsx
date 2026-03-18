@@ -1,12 +1,11 @@
 import LandingHeader from "@/components/landing/LandingHeader";
 import LandingHero from "@/components/landing/LandingHero";
 import HowItWorksSection from "@/components/landing/HowItWorksSection";
-import ServicesSection from "@/components/landing/ServicesSection";
-import CompaniesSection from "@/components/landing/CompaniesSection";
+import FeaturesSection from "@/components/landing/FeaturesSection";
+import PricingSection from "@/components/landing/PricingSection";
 import TestimonialsSection from "@/components/landing/TestimonialsSection";
 import FAQSection from "@/components/landing/FAQSection";
 import FinalCTASection from "@/components/landing/FinalCTASection";
-import CrewsBanner from "@/components/landing/CrewsBanner";
 import LandingFooter from "@/components/landing/LandingFooter";
 
 const Index = () => {
@@ -16,12 +15,11 @@ const Index = () => {
       <main>
         <LandingHero />
         <HowItWorksSection />
-        <ServicesSection />
-        <CompaniesSection />
+        <FeaturesSection />
+        <PricingSection />
         <TestimonialsSection />
         <FAQSection />
         <FinalCTASection />
-        <CrewsBanner />
       </main>
       <LandingFooter />
     </div>

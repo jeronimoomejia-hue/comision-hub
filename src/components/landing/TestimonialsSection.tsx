@@ -4,53 +4,52 @@ import { Star, Quote } from "lucide-react";
 const testimonials = [
   {
     id: 1,
-    name: "Carolina Mejía",
-    role: "Vendedora independiente",
-    quote: "En 3 meses pasé de no saber nada de ventas a tener 12 clientes activos que me generan comisión cada mes. Mensualista me cambió la vida.",
-    avatar: "CM",
+    name: "María González",
+    role: "CEO, Poliza.ai",
+    quote: "Con Mensualista montamos nuestra red de vendedores en 2 días. Ahora tenemos 47 vendedores activos vendiendo nuestro software sin que tuviéramos que contratar a nadie.",
+    avatar: "MG",
   },
   {
     id: 2,
-    name: "Valentina Ríos",
-    role: "Vendedora de SaaS",
-    quote: "Lo mejor es que no tengo que preocuparme por nada técnico. Mensualista se encarga de todo y yo solo me concentro en vender.",
-    avatar: "VR",
+    name: "Roberto Mejía",
+    role: "Dir. Comercial, LexIA",
+    quote: "El plan Enterprise nos permitió integrar nuestro sistema de activación automática. Los vendedores reciben todo al instante y nosotros no tocamos nada.",
+    avatar: "RM",
   },
   {
     id: 3,
-    name: "María José Herrera",
-    role: "Freelancer",
-    quote: "Vendo 2-3 servicios al mes y con eso pago mi arriendo. Las capacitaciones son súper claras y el soporte siempre está disponible.",
-    avatar: "MH",
+    name: "Lucía Fernández",
+    role: "Fundadora, Kreativo",
+    quote: "Empezamos con el plan gratuito para probar y en 3 semanas ya teníamos 12 vendedores. La inversión del Premium se paga sola con las ventas que generan.",
+    avatar: "LF",
   },
   {
     id: 4,
-    name: "Andrés Gómez",
-    role: "Vendedor digital",
-    quote: "Nunca pensé que podría generar ingresos recurrentes sin tener mi propio negocio. Ahora tengo 8 clientes activos y cada mes crece.",
-    avatar: "AG",
+    name: "Andrés Paredes",
+    role: "COO, Cierro.co",
+    quote: "Los cupones de descuento del plan Premium fueron clave para que nuestros vendedores cerraran más. Duplicamos ventas en el primer mes.",
+    avatar: "AP",
   },
   {
     id: 5,
-    name: "Diego Ramírez",
-    role: "Estudiante universitario",
-    quote: "Perfecto para hacer plata mientras estudio. Comparto mi link, la gente compra y yo gano cada mes. Así de simple.",
-    avatar: "DR",
+    name: "Patricia Luna",
+    role: "Head of Sales, Asista",
+    quote: "Tener nuestra propia plataforma con nuestra marca le da seriedad al proceso. Los vendedores sienten que son parte de nuestra empresa.",
+    avatar: "PL",
   },
   {
     id: 6,
-    name: "Sebastián Castro",
-    role: "Ex-freelancer",
-    quote: "Dejé de buscar clientes para proyectos y ahora vendo servicios con comisión recurrente. Es un modelo brutal para ingresos estables.",
-    avatar: "SC",
+    name: "Jorge Quispe",
+    role: "CTO, NumeroIA",
+    quote: "La integración API del Enterprise nos ahorró meses de desarrollo. Conectamos nuestro sistema de licencias en una tarde.",
+    avatar: "JQ",
   },
 ];
 
 export const TestimonialsSection = () => {
   return (
-    <section className="py-24 px-4 sm:px-6 lg:px-8 bg-background relative overflow-hidden">
+    <section className="py-24 px-4 sm:px-6 lg:px-8 bg-[#F9F6FF] relative overflow-hidden">
       <div className="container mx-auto max-w-6xl">
-        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -62,14 +61,13 @@ export const TestimonialsSection = () => {
             Testimonios
           </span>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-foreground">
-            Lo que dicen nuestros vendedores
+            Empresas que ya usan Mensualista
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Historias reales de personas que están generando ingresos recurrentes con Mensualista.
+            Historias reales de empresas que escalaron sus ventas con su propia red de vendedores.
           </p>
         </motion.div>
 
-        {/* Testimonials Grid */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {testimonials.map((testimonial, index) => (
             <motion.div
@@ -80,24 +78,17 @@ export const TestimonialsSection = () => {
               transition={{ delay: index * 0.1, type: "spring", stiffness: 100 }}
               className="card-premium p-6 relative group"
             >
-              {/* Quote icon */}
               <div className="absolute top-4 right-4 opacity-10">
                 <Quote className="w-8 h-8 text-primary" />
               </div>
-
-              {/* Stars */}
               <div className="flex gap-0.5 mb-4">
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} className="w-4 h-4 fill-current text-primary" />
                 ))}
               </div>
-
-              {/* Quote */}
               <p className="text-sm mb-6 leading-relaxed text-muted-foreground">
                 "{testimonial.quote}"
               </p>
-
-              {/* Author */}
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-sm font-semibold text-white">
                   {testimonial.avatar}

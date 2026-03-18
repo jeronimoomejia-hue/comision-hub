@@ -1,80 +1,79 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ChevronDown, Briefcase, Building2, DollarSign, HelpCircle } from "lucide-react";
+import { ChevronDown, Building2, DollarSign, Users, HelpCircle } from "lucide-react";
 
-type FAQCategory = "vendedores" | "empresas" | "pagos";
+type FAQCategory = "empresas" | "vendedores" | "pagos";
 
 const faqData: Record<FAQCategory, { question: string; answer: string }[]> = {
-  vendedores: [
-    {
-      question: "¿Necesito experiencia en ventas?",
-      answer: "No, no necesitas experiencia previa. Cada servicio incluye capacitaciones cortas (10-15 minutos) que te enseñan todo lo que necesitas saber para vender. Además, tienes materiales de apoyo y guiones de venta.",
-    },
-    {
-      question: "¿Cómo funciona la comisión recurrente?",
-      answer: "Cuando vendes un servicio por suscripción, recibes tu porcentaje de comisión cada mes mientras el cliente siga activo. Si vendes 10 clientes, cobras por los 10 todos los meses.",
-    },
-    {
-      question: "¿Cuántos servicios puedo vender?",
-      answer: "Puedes vender tantos servicios como quieras. No hay límite. Entre más servicios actives y más clientes consigas, más comisiones generas.",
-    },
-    {
-      question: "¿Qué pasa si un cliente cancela?",
-      answer: "Si un cliente cancela su suscripción, dejas de recibir la comisión correspondiente a ese cliente. Pero tus otros clientes activos siguen generándote ingresos normalmente.",
-    },
-  ],
   empresas: [
     {
-      question: "¿Cómo publico mi servicio?",
-      answer: "Crea tu cuenta de empresa, completa el perfil con información de tu servicio (precio, comisión, materiales) y lo revisamos en menos de 24 horas. Una vez aprobado, los vendedores pueden empezar a promocionarlo.",
+      question: "¿Qué es Mensualista exactamente?",
+      answer: "Mensualista es un software B2B que le permite a tu empresa tener su propia plataforma de vendedores independientes. Tú personalizas la plataforma con tu marca, publicas tus servicios, invitas a tus vendedores y ellos venden por ti. Nosotros nos encargamos de la tecnología, comisiones y pagos.",
     },
     {
-      question: "¿Cuánto cuesta usar Mensualista?",
-      answer: "Mensualista cobra una comisión sobre cada venta realizada. No hay costos fijos mensuales ni pagos por adelantado. Solo pagas cuando vendes.",
+      question: "¿Puedo empezar sin pagar nada?",
+      answer: "Sí, el plan Freemium es completamente gratis. Puedes registrar tu empresa, personalizar tu plataforma y publicar hasta 5 servicios. Solo cobramos un 15% de fee por venta + los costos de pasarela (3% + $1.000 COP por transferencia).",
     },
     {
-      question: "¿Cómo se gestionan los pagos a vendedores?",
-      answer: "Mensualista se encarga de todo. Tú nos transfieres el monto de las comisiones y nosotros distribuimos automáticamente a cada vendedor según sus ventas.",
+      question: "¿Qué diferencia hay entre los planes?",
+      answer: "Freemium: hasta 5 servicios, códigos manuales, fee del 15%. Premium (€100/mes): servicios ilimitados, sin fee del 15%, cupones de descuento y chat vendedor-empresa. Enterprise (€300/mes): todo lo de Premium + integración automática de códigos, dominio personalizado y marca blanca.",
     },
     {
-      question: "¿Puedo seleccionar qué vendedores promocionan mi servicio?",
-      answer: "Por defecto, todos los vendedores activos pueden ver y promocionar tu servicio. Si necesitas un modelo más exclusivo, contáctanos para opciones personalizadas.",
+      question: "¿Mis vendedores ven la marca de Mensualista?",
+      answer: "En los planes Premium y Enterprise, la experiencia es completamente personalizada con tu marca. En el plan Freemium también puedes configurar tu logo y colores, aunque la plataforma muestra la marca Mensualista en algunas partes. En Enterprise es marca blanca completa con dominio propio.",
+    },
+  ],
+  vendedores: [
+    {
+      question: "¿Cómo llegan los vendedores a mi plataforma?",
+      answer: "Tú traes a tus vendedores por tus propios medios (redes sociales, referidos, etc.). Les compartes el enlace de tu plataforma personalizada y ellos se registran directamente. Mensualista NO es un marketplace de vendedores.",
+    },
+    {
+      question: "¿Cuántos vendedores puedo tener?",
+      answer: "No hay límite de vendedores en ningún plan. Puedes tener todos los que quieras.",
+    },
+    {
+      question: "¿Los vendedores necesitan capacitarse?",
+      answer: "Tú decides. Puedes subir materiales de capacitación (PDFs, videos) y requerirlos antes de que el vendedor pueda empezar a vender, o puedes dejarlo opcional.",
+    },
+    {
+      question: "¿Los vendedores pueden vender para otras empresas?",
+      answer: "No, en Mensualista cada empresa tiene su red privada de vendedores. Los vendedores que registras solo ven y venden tus servicios.",
     },
   ],
   pagos: [
     {
-      question: "¿Cuándo recibo mis pagos?",
-      answer: "Los pagos se procesan mensualmente, entre el 1 y el 5 de cada mes.",
+      question: "¿Cómo funcionan los pagos a vendedores?",
+      answer: "Los pagos se procesan automáticamente. Cuando un vendedor cierra una venta, la comisión se calcula y se programa para pago. Los costos de pasarela (3% + $1.000 COP) se descuentan de cada transacción.",
     },
     {
-      question: "¿Qué métodos de pago aceptan?",
-      answer: "Transferimos a cuentas bancarias colombianas (Bancolombia, Davivienda, Nequi, Daviplata, etc.). Para otros países, usamos transferencias internacionales o billeteras digitales.",
+      question: "¿Qué es el fee del 15% en Freemium?",
+      answer: "En el plan gratuito, Mensualista cobra un 15% adicional sobre cada venta como fee de plataforma, además de los costos de pasarela. Este fee NO aplica en Premium ni Enterprise.",
     },
     {
-      question: "¿Hay un mínimo para retirar?",
-      answer: "Sí, el mínimo para solicitar retiro es de $50.000 COP. Esto nos permite mantener los costos de transacción bajos para todos.",
+      question: "¿Puedo cambiar de plan en cualquier momento?",
+      answer: "Sí, puedes subir o bajar de plan cuando quieras. Si subes de plan, se te cobra la diferencia prorrateada. Si bajas, el cambio aplica al próximo ciclo de facturación.",
     },
     {
-      question: "¿Cómo veo mis comisiones acumuladas?",
-      answer: "En tu dashboard tienes un panel completo donde ves: comisiones pendientes, comisiones disponibles para retiro, historial de pagos y desglose por servicio.",
+      question: "¿Qué cupones de descuento puedo crear?",
+      answer: "En Premium y Enterprise puedes crear cupones de descuento que los vendedores aplican al registrar una venta. Esto incentiva a los vendedores a cerrar más ventas ofreciendo descuentos a clientes.",
     },
   ],
 };
 
 const categories: { id: FAQCategory; label: string; icon: React.ElementType }[] = [
-  { id: "vendedores", label: "Vendedores", icon: Briefcase },
-  { id: "empresas", label: "Empresas", icon: Building2 },
-  { id: "pagos", label: "Pagos / Comisiones", icon: DollarSign },
+  { id: "empresas", label: "Para empresas", icon: Building2 },
+  { id: "vendedores", label: "Vendedores", icon: Users },
+  { id: "pagos", label: "Pagos y planes", icon: DollarSign },
 ];
 
 export const FAQSection = () => {
-  const [activeCategory, setActiveCategory] = useState<FAQCategory>("vendedores");
+  const [activeCategory, setActiveCategory] = useState<FAQCategory>("empresas");
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section id="faq" className="py-24 px-4 sm:px-6 lg:px-8 bg-[#F9F6FF] relative overflow-hidden">
+    <section id="faq" className="py-24 px-4 sm:px-6 lg:px-8 bg-background relative overflow-hidden">
       <div className="container mx-auto max-w-4xl relative">
-        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -89,23 +88,19 @@ export const FAQSection = () => {
             Preguntas frecuentes
           </h2>
           <p className="text-muted-foreground text-lg">
-            Encuentra respuestas a las dudas más comunes.
+            Todo lo que necesitas saber antes de empezar.
           </p>
         </motion.div>
 
-        {/* Category Tabs */}
         <div className="flex flex-wrap justify-center gap-2 mb-10">
           {categories.map((cat) => (
             <button
               key={cat.id}
-              onClick={() => {
-                setActiveCategory(cat.id);
-                setOpenIndex(null);
-              }}
+              onClick={() => { setActiveCategory(cat.id); setOpenIndex(null); }}
               className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
                 activeCategory === cat.id
-                  ? "bg-gradient-to-r from-[hsl(292,100%,50%)] to-[hsl(287,100%,19%)] text-white"
-                  : "bg-background border border-border hover:border-primary/30 text-foreground"
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-card border border-border hover:border-primary/30 text-foreground"
               }`}
             >
               <cat.icon className="w-4 h-4" />
@@ -114,7 +109,6 @@ export const FAQSection = () => {
           ))}
         </div>
 
-        {/* FAQ Accordion */}
         <motion.div
           key={activeCategory}
           initial={{ opacity: 0, y: 10 }}
@@ -135,25 +129,17 @@ export const FAQSection = () => {
                 className="w-full flex items-center justify-between p-5 text-left group"
               >
                 <span className="font-medium pr-4 text-foreground group-hover:text-primary transition-colors">{faq.question}</span>
-                <motion.div
-                  animate={{ rotate: openIndex === index ? 180 : 0 }}
-                  transition={{ duration: 0.3 }}
-                >
+                <motion.div animate={{ rotate: openIndex === index ? 180 : 0 }} transition={{ duration: 0.3 }}>
                   <ChevronDown className="w-5 h-5 text-muted-foreground shrink-0" />
                 </motion.div>
               </button>
               <motion.div
                 initial={false}
-                animate={{
-                  height: openIndex === index ? "auto" : 0,
-                  opacity: openIndex === index ? 1 : 0,
-                }}
+                animate={{ height: openIndex === index ? "auto" : 0, opacity: openIndex === index ? 1 : 0 }}
                 transition={{ duration: 0.3 }}
                 className="overflow-hidden"
               >
-                <p className="px-5 pb-5 text-muted-foreground text-sm leading-relaxed">
-                  {faq.answer}
-                </p>
+                <p className="px-5 pb-5 text-muted-foreground text-sm leading-relaxed">{faq.answer}</p>
               </motion.div>
             </motion.div>
           ))}

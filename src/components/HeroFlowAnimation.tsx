@@ -132,7 +132,7 @@ export const HeroFlowAnimation = () => {
       { time: 12500, phase: 5 },  // Reset transition (2.5s duration)
     ];
 
-    let timers: NodeJS.Timeout[] = [];
+    let timers: ReturnType<typeof setTimeout>[] = [];
 
     const runTimeline = () => {
       setSalesCount(0);
