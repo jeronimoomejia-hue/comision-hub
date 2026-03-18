@@ -14,6 +14,7 @@ import VendorTrainings from "./pages/vendor/VendorTrainings";
 import VendorTrainingDetail from "./pages/vendor/VendorTrainingDetail";
 import VendorSales from "./pages/vendor/VendorSales";
 import VendorPayments from "./pages/vendor/VendorPayments";
+import VendorRefunds from "./pages/vendor/VendorRefunds";
 import VendorMaterials from "./pages/vendor/VendorMaterials";
 import VendorSupport from "./pages/vendor/VendorSupport";
 import VendorProfile from "./pages/vendor/VendorProfile";
@@ -24,6 +25,10 @@ import CompanyVendors from "./pages/company/CompanyVendors";
 import CompanyPayments from "./pages/company/CompanyPayments";
 import CompanySettings from "./pages/company/CompanySettings";
 import CompanyProfile from "./pages/company/CompanyProfile";
+import CompanyChat from "./pages/company/CompanyChat";
+import CompanyCoupons from "./pages/company/CompanyCoupons";
+import CompanyDomain from "./pages/company/CompanyDomain";
+import CompanyApi from "./pages/company/CompanyApi";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminVendors from "./pages/admin/AdminVendors";
@@ -55,8 +60,8 @@ const App = () => (
             <Route path="/vendor/trainings" element={<VendorTrainings />} />
             <Route path="/vendor/trainings/:trainingId" element={<VendorTrainingDetail />} />
             <Route path="/vendor/sales" element={<VendorSales />} />
-            <Route path="/vendor/payments" element={<VendorSales />} />
-            <Route path="/vendor/refunds" element={<VendorSales />} />
+            <Route path="/vendor/payments" element={<VendorPayments />} />
+            <Route path="/vendor/refunds" element={<VendorRefunds />} />
             <Route path="/vendor/materials" element={<VendorMaterials />} />
             <Route path="/vendor/support" element={<VendorSupport />} />
             <Route path="/vendor/profile" element={<VendorProfile />} />
@@ -69,6 +74,10 @@ const App = () => (
             <Route path="/company/payments" element={<CompanyPayments />} />
             <Route path="/company/settings" element={<CompanySettings />} />
             <Route path="/company/profile" element={<CompanyProfile />} />
+            <Route path="/company/chat" element={<CompanyChat />} />
+            <Route path="/company/coupons" element={<CompanyCoupons />} />
+            <Route path="/company/domain" element={<CompanyDomain />} />
+            <Route path="/company/api" element={<CompanyApi />} />
             
             {/* Admin Routes */}
             <Route path="/admin" element={<AdminDashboard />} />
