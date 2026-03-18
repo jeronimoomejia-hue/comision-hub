@@ -91,7 +91,7 @@ function getCompanyNav(plan: CompanyPlan) {
   // Premium & Enterprise: Cupones & Chat
   if (plan !== 'freemium') {
     base.splice(5, 0, { icon: Tag, label: "Cupones", href: "/company/coupons" });
-    base.splice(6, 0, { icon: MessageCircle, label: "Chat", href: "/company/chat" });
+    base.push({ icon: MessageCircle, label: "Chat", href: "/company/chat" });
   }
 
   // Enterprise: Dominio & API
