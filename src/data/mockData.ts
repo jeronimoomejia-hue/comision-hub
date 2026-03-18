@@ -16,18 +16,24 @@ export interface User {
   avatarUrl?: string;
 }
 
+export type CompanyPlan = 'freemium' | 'premium' | 'enterprise';
+
 export interface Company {
   id: string;
   name: string;
   industry: string;
   country: string;
   status: 'active' | 'paused' | 'blocked';
+  plan: CompanyPlan;
   pendingPaymentCOP: number;
   nextPaymentDate: string;
   contactEmail: string;
   contactPhone: string;
   websiteUrl?: string;
-  supportOnly: boolean; // Siempre true - solo soporte via Mensualista
+  customDomain?: string;
+  logoUrl?: string;
+  primaryColor?: string;
+  secondaryColor?: string;
 }
 
 export interface Vendor {
