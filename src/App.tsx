@@ -46,10 +46,6 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/servicios" element={<Index />} />
-            <Route path="/crews" element={<Index />} />
-            <Route path="/empresas" element={<Index />} />
-            <Route path="/crews/empresas" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
             
             {/* Vendor Routes */}

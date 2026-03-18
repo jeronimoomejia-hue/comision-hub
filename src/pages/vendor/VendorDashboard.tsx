@@ -4,23 +4,33 @@ import { StatCard } from "@/components/dashboard/DashboardComponents";
 import { 
   DollarSign, ShoppingCart, Package, TrendingUp,
   BookOpen, Plus, Clock, CheckCircle,
-  Star, Zap, Users, ArrowRight, Target, Repeat,
-  BarChart3
+  Zap, Users, Target, Repeat,
+  BarChart3, Crown, Building2, Tag, MessageCircle, Lock
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Link, useNavigate } from "react-router-dom";
 import { useDemo } from "@/contexts/DemoContext";
-import { vendors, services as allServices, companies, CURRENT_VENDOR_ID, formatCOP, formatDate } from "@/data/mockData";
-import { Badge } from "@/components/ui/badge";
+import { vendors, services as allServices, companies, CURRENT_VENDOR_ID, CURRENT_COMPANY_ID, formatCOP, CompanyPlan } from "@/data/mockData";
 import {
   BarChart, Bar,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
 
+const planLabels: Record<CompanyPlan, string> = {
+  freemium: "Freemium",
+  premium: "Premium",
+  enterprise: "Enterprise",
+};
+
 export default function VendorDashboard() {
   const navigate = useNavigate();
   const { sales, commissions, trainingProgress, subscriptions, pinnedServices } = useDemo();
   const vendor = vendors.find(v => v.id === CURRENT_VENDOR_ID);
+  
+  // The vendor belongs to a specific company - get company's plan
+  const company = companies.find(c => c.id === CURRENT_COMPANY_ID);
+  const companyPlan = company?.plan || 'freemium';
   
   const vendorSales = sales.filter(s => s.vendorId === CURRENT_VENDOR_ID);
   const vendorCommissions = commissions.filter(c => c.vendorId === CURRENT_VENDOR_ID);
@@ -35,11 +45,7 @@ export default function VendorDashboard() {
   const completedTrainings = vendorTrainings.filter(t => t.status === 'declared_completed');
   const inProgressTrainings = vendorTrainings.filter(t => t.status === 'in_progress');
 
-  const activeServices = allServices.filter(s => s.status === 'activo');
-  const vendorActiveCount = activeServices.filter(service => {
-    const training = vendorTrainings.find(t => t.serviceId === service.id);
-    return !service.requiresTraining || training?.status === 'declared_completed';
-  }).length;
+  const activeServices = allServices.filter(s => s.status === 'activo' && s.companyId === CURRENT_COMPANY_ID);
 
   const salesThisMonth = vendorSales.filter(s => s.createdAt.startsWith(thisMonth));
   const totalSalesCount = vendorSales.length;
@@ -50,16 +56,11 @@ export default function VendorDashboard() {
     ? vendorCommissions.filter(c => c.status !== 'REFUNDED').reduce((a, c) => a + c.amountCOP, 0) / vendorCommissions.filter(c => c.status !== 'REFUNDED').length
     : 0;
 
-  const lastSale = vendorSales[0];
-  const lastSaleService = lastSale ? allServices.find(s => s.id === lastSale.serviceId) : null;
-
-  // Recent sales (last 4)
   const recentSales = vendorSales.slice(0, 4).map(sale => {
     const svc = allServices.find(s => s.id === sale.serviceId);
     return { ...sale, serviceName: svc?.name || '' };
   });
 
-  // Weekly commissions chart
   const today = new Date();
   const weeklyCommissions = Array.from({ length: 8 }, (_, i) => {
     const weekStart = new Date(today);
@@ -70,18 +71,8 @@ export default function VendorDashboard() {
       const d = new Date(c.createdAt);
       return d >= weekStart && d < weekEnd && c.status !== 'REFUNDED';
     });
-    return {
-      week: `S${i + 1}`,
-      comisiones: weekComms.reduce((a, c) => a + c.amountCOP, 0)
-    };
+    return { week: `S${i + 1}`, comisiones: weekComms.reduce((a, c) => a + c.amountCOP, 0) };
   });
-
-  // Recommended services
-  const vendorServiceIds = new Set(vendorTrainings.map(t => t.serviceId));
-  const recommendedServices = activeServices
-    .filter(s => !vendorServiceIds.has(s.id) && s.requiresTraining)
-    .sort((a, b) => (b.activeSubscriptions || 0) - (a.activeSubscriptions || 0))
-    .slice(0, 4);
 
   const getStatusConfig = (status: string) => {
     const map: Record<string, { cls: string; label: string }> = {
@@ -97,6 +88,7 @@ export default function VendorDashboard() {
     { label: "Comisiones", path: "/vendor/payments", icon: DollarSign },
     { label: "Servicios", path: "/vendor/services", icon: Package },
     { label: "Capacitaciones", path: "/vendor/trainings", icon: BookOpen },
+    ...(companyPlan !== 'freemium' ? [{ label: "Chat", path: "/vendor/support", icon: MessageCircle }] : []),
   ];
 
   return (
@@ -105,7 +97,7 @@ export default function VendorDashboard() {
         <PageTutorial
           pageId="vendor-dashboard"
           title="¡Bienvenido a tu Dashboard!"
-          description="Aquí ves un resumen de tu actividad, servicios activos y comisiones."
+          description={`Panel de vendedor de ${company?.name || 'la empresa'}`}
           steps={[
             "Revisa tus comisiones del mes en la parte superior",
             "Consulta tu actividad reciente y KPIs",
@@ -113,10 +105,16 @@ export default function VendorDashboard() {
           ]}
         />
 
-        {/* ── HERO: Balance principal ── */}
+        {/* HERO: Balance + Company branding */}
         <div className="rounded-2xl bg-[#F4F0FA] p-4 sm:p-6 relative overflow-hidden">
           <div className="flex items-start justify-between">
             <div>
+              <div className="flex items-center gap-2 mb-1">
+                <p className="text-xs sm:text-sm font-medium text-foreground">
+                  {company?.name}
+                </p>
+                <Badge variant="outline" className="text-[9px]">{planLabels[companyPlan]}</Badge>
+              </div>
               <p className="text-xs sm:text-sm text-muted-foreground">Hola, {vendor?.name.split(' ')[0]} 👋</p>
               <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5">Comisiones del mes</p>
               <p className="text-2xl sm:text-4xl font-bold tracking-tight mt-1" style={{ color: 'hsl(var(--primary))' }}>
@@ -141,7 +139,7 @@ export default function VendorDashboard() {
           </div>
         </div>
 
-        {/* ── PILLS de navegación ── */}
+        {/* PILLS de navegación */}
         <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide -mx-1 px-1">
           {pills.map(pill => (
             <Link
@@ -155,7 +153,7 @@ export default function VendorDashboard() {
           ))}
         </div>
 
-        {/* ── GRÁFICA: Comisiones semanales ── */}
+        {/* GRÁFICA: Comisiones semanales */}
         <div className="card-premium p-3 sm:p-5">
           <h3 className="font-semibold text-xs sm:text-sm mb-3 flex items-center gap-2">
             <BarChart3 className="w-4 h-4 text-primary" />
@@ -175,7 +173,7 @@ export default function VendorDashboard() {
           </ResponsiveContainer>
         </div>
 
-        {/* ── ACTIVIDAD RECIENTE ── */}
+        {/* ACTIVIDAD RECIENTE */}
         <div className="card-premium p-3 sm:p-5">
           <div className="flex items-center justify-between mb-3">
             <h3 className="font-semibold text-xs sm:text-sm">Actividad reciente</h3>
@@ -207,71 +205,48 @@ export default function VendorDashboard() {
           </div>
         </div>
 
-        {/* ── KPIs 2x2 compactos ── */}
+        {/* KPIs 2x2 compactos */}
         <div className="grid grid-cols-2 gap-2 sm:gap-3">
-          <StatCard
-            title="Ventas del mes"
-            value={salesThisMonth.length}
-            icon={ShoppingCart}
-            trend={{ value: 12, isPositive: true }}
-          />
-          <StatCard
-            title="Tasa de éxito"
-            value={`${successRate}%`}
-            icon={Target}
-            variant={successRate >= 80 ? 'success' : 'warning'}
-          />
-          <StatCard
-            title="Suscripciones"
-            value={activeSubscriptions}
-            icon={Repeat}
-          />
-          <StatCard
-            title="Comisión prom."
-            value={formatCOP(avgCommission)}
-            icon={TrendingUp}
-          />
+          <StatCard title="Ventas del mes" value={salesThisMonth.length} icon={ShoppingCart} trend={{ value: 12, isPositive: true }} />
+          <StatCard title="Tasa de éxito" value={`${successRate}%`} icon={Target} variant={successRate >= 80 ? 'success' : 'warning'} />
+          <StatCard title="Suscripciones" value={activeSubscriptions} icon={Repeat} />
+          <StatCard title="Comisión prom." value={formatCOP(avgCommission)} icon={TrendingUp} />
         </div>
 
-        {/* ── SERVICIOS RECOMENDADOS ── */}
-        {recommendedServices.length > 0 && (
-          <div>
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-sm sm:text-base font-bold flex items-center gap-2">
-                <Star className="w-4 h-4 text-[#F59E0B]" />
-                Recomendados para ti
-              </h2>
-              <Link to="/vendor/services" className="text-[10px] sm:text-xs text-primary hover:underline">Ver todos</Link>
+        {/* Plan-dependent features */}
+        {companyPlan !== 'freemium' && (
+          <div className="grid grid-cols-2 gap-2">
+            <div className="card-premium p-3 text-center">
+              <Tag className="w-5 h-5 mx-auto mb-1 text-primary" />
+              <p className="text-xs font-medium">Cupones disponibles</p>
+              <p className="text-[10px] text-muted-foreground">Usa cupones al registrar ventas</p>
             </div>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
-              {recommendedServices.map(service => {
-                const company = companies.find(c => c.id === service.companyId);
-                return (
-                  <div 
-                    key={service.id}
-                    className="card-premium p-3 hover:border-primary/40 transition-all cursor-pointer group"
-                    onClick={() => navigate('/vendor/services')}
-                  >
-                    <div className="flex items-center gap-1.5 mb-1.5">
-                      <div className="w-6 h-6 rounded-lg bg-primary/10 flex items-center justify-center">
-                        <Zap className="w-3 h-3 text-primary" />
-                      </div>
-                      <Badge variant="outline" className="text-[8px] sm:text-[10px] px-1.5 py-0">{service.category}</Badge>
-                    </div>
-                    <h4 className="font-semibold text-[11px] sm:text-sm group-hover:text-primary transition-colors truncate">{service.name}</h4>
-                    <p className="text-[10px] text-muted-foreground truncate">{company?.name}</p>
-                    <div className="flex items-center justify-between mt-2 pt-1.5 border-t border-border/50">
-                      <span className="text-[9px] sm:text-xs text-muted-foreground">{formatCOP(service.priceCOP)}</span>
-                      <span className="text-[9px] sm:text-xs font-semibold text-[#00B87A]">{service.vendorCommissionPct}%</span>
-                    </div>
-                  </div>
-                );
-              })}
+            <Link to="/vendor/support">
+              <div className="card-premium p-3 text-center hover:border-primary/30 transition-colors">
+                <MessageCircle className="w-5 h-5 mx-auto mb-1 text-primary" />
+                <p className="text-xs font-medium">Chat con empresa</p>
+                <p className="text-[10px] text-muted-foreground">Resuelve dudas directo</p>
+              </div>
+            </Link>
+          </div>
+        )}
+
+        {companyPlan === 'freemium' && (
+          <div className="grid grid-cols-2 gap-2">
+            <div className="card-premium p-3 text-center opacity-50">
+              <Lock className="w-5 h-5 mx-auto mb-1 text-muted-foreground" />
+              <p className="text-xs font-medium text-muted-foreground">Cupones</p>
+              <p className="text-[10px] text-muted-foreground">No disponible en este plan</p>
+            </div>
+            <div className="card-premium p-3 text-center opacity-50">
+              <Lock className="w-5 h-5 mx-auto mb-1 text-muted-foreground" />
+              <p className="text-xs font-medium text-muted-foreground">Chat</p>
+              <p className="text-[10px] text-muted-foreground">No disponible en este plan</p>
             </div>
           </div>
         )}
 
-        {/* ── CAPACITACIONES compacto ── */}
+        {/* CAPACITACIONES compacto */}
         <div className="card-premium p-3 sm:p-4">
           <div className="flex items-center justify-between mb-2">
             <h3 className="font-semibold text-xs sm:text-sm flex items-center gap-2">

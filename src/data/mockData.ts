@@ -16,18 +16,24 @@ export interface User {
   avatarUrl?: string;
 }
 
+export type CompanyPlan = 'freemium' | 'premium' | 'enterprise';
+
 export interface Company {
   id: string;
   name: string;
   industry: string;
   country: string;
   status: 'active' | 'paused' | 'blocked';
+  plan: CompanyPlan;
   pendingPaymentCOP: number;
   nextPaymentDate: string;
   contactEmail: string;
   contactPhone: string;
   websiteUrl?: string;
-  supportOnly: boolean; // Siempre true - solo soporte via Mensualista
+  customDomain?: string;
+  logoUrl?: string;
+  primaryColor?: string;
+  secondaryColor?: string;
 }
 
 export interface Vendor {
@@ -347,14 +353,14 @@ export const adminUser: User = {
 
 // Companies (8) - Empresas de IA y SaaS
 export const companies: Company[] = [
-  { id: 'company-001', name: 'Poliza.ai', industry: 'IA para Seguros', country: 'Colombia', status: 'active', pendingPaymentCOP: 45200000, nextPaymentDate: '2025-01-24', contactEmail: 'contacto@poliza.ai', contactPhone: '+57 300 123 4567', websiteUrl: 'https://poliza.ai', supportOnly: true },
-  { id: 'company-002', name: 'LexIA', industry: 'IA Legal', country: 'Colombia', status: 'active', pendingPaymentCOP: 78500000, nextPaymentDate: '2025-01-24', contactEmail: 'ventas@lexia.co', contactPhone: '+57 301 234 5678', websiteUrl: 'https://lexia.co', supportOnly: true },
-  { id: 'company-003', name: 'Kreativo', industry: 'IA para Marketing', country: 'Colombia', status: 'active', pendingPaymentCOP: 22100000, nextPaymentDate: '2025-01-24', contactEmail: 'hola@kreativo.co', contactPhone: '+57 302 345 6789', websiteUrl: 'https://kreativo.co', supportOnly: true },
-  { id: 'company-004', name: 'Cierro', industry: 'IA para Ventas', country: 'Colombia', status: 'active', pendingPaymentCOP: 35600000, nextPaymentDate: '2025-01-24', contactEmail: 'info@cierro.co', contactPhone: '+57 303 456 7890', websiteUrl: 'https://cierro.co', supportOnly: true },
-  { id: 'company-005', name: 'Asista', industry: 'IA para Atención', country: 'Colombia', status: 'active', pendingPaymentCOP: 95200000, nextPaymentDate: '2025-01-24', contactEmail: 'soporte@asista.co', contactPhone: '+57 304 567 8901', websiteUrl: 'https://asista.co', supportOnly: true },
-  { id: 'company-006', name: 'NumeroIA', industry: 'IA para Contabilidad', country: 'Colombia', status: 'active', pendingPaymentCOP: 18900000, nextPaymentDate: '2025-01-24', contactEmail: 'contacto@numeroia.co', contactPhone: '+57 305 678 9012', websiteUrl: 'https://numeroia.co', supportOnly: true },
-  { id: 'company-007', name: 'Recruta', industry: 'IA para RRHH', country: 'Colombia', status: 'active', pendingPaymentCOP: 28400000, nextPaymentDate: '2025-01-24', contactEmail: 'admin@recruta.co', contactPhone: '+57 306 789 0123', websiteUrl: 'https://recruta.co', supportOnly: true },
-  { id: 'company-008', name: 'Blindaje', industry: 'IA para Ciberseguridad', country: 'Colombia', status: 'active', pendingPaymentCOP: 67800000, nextPaymentDate: '2025-01-24', contactEmail: 'info@blindaje.co', contactPhone: '+57 307 890 1234', websiteUrl: 'https://blindaje.co', supportOnly: true }
+  { id: 'company-001', name: 'Poliza.ai', industry: 'IA para Seguros', country: 'Colombia', status: 'active', plan: 'enterprise', pendingPaymentCOP: 45200000, nextPaymentDate: '2025-01-24', contactEmail: 'contacto@poliza.ai', contactPhone: '+57 300 123 4567', websiteUrl: 'https://poliza.ai', customDomain: 'ventas.poliza.ai', primaryColor: '#5B6FE0', secondaryColor: '#4A5BC7' },
+  { id: 'company-002', name: 'LexIA', industry: 'IA Legal', country: 'Colombia', status: 'active', plan: 'premium', pendingPaymentCOP: 78500000, nextPaymentDate: '2025-01-24', contactEmail: 'ventas@lexia.co', contactPhone: '+57 301 234 5678', websiteUrl: 'https://lexia.co', primaryColor: '#00B87A', secondaryColor: '#009965' },
+  { id: 'company-003', name: 'Kreativo', industry: 'IA para Marketing', country: 'Colombia', status: 'active', plan: 'premium', pendingPaymentCOP: 22100000, nextPaymentDate: '2025-01-24', contactEmail: 'hola@kreativo.co', contactPhone: '+57 302 345 6789', websiteUrl: 'https://kreativo.co', primaryColor: '#E5294A', secondaryColor: '#C91D3D' },
+  { id: 'company-004', name: 'Cierro', industry: 'IA para Ventas', country: 'Colombia', status: 'active', plan: 'freemium', pendingPaymentCOP: 35600000, nextPaymentDate: '2025-01-24', contactEmail: 'info@cierro.co', contactPhone: '+57 303 456 7890', websiteUrl: 'https://cierro.co', primaryColor: '#F59E0B', secondaryColor: '#D97706' },
+  { id: 'company-005', name: 'Asista', industry: 'IA para Atención', country: 'Colombia', status: 'active', plan: 'enterprise', pendingPaymentCOP: 95200000, nextPaymentDate: '2025-01-24', contactEmail: 'soporte@asista.co', contactPhone: '+57 304 567 8901', websiteUrl: 'https://asista.co', customDomain: 'vendedores.asista.co', primaryColor: '#5007FA', secondaryColor: '#3D04C2' },
+  { id: 'company-006', name: 'NumeroIA', industry: 'IA para Contabilidad', country: 'Colombia', status: 'active', plan: 'freemium', pendingPaymentCOP: 18900000, nextPaymentDate: '2025-01-24', contactEmail: 'contacto@numeroia.co', contactPhone: '+57 305 678 9012', websiteUrl: 'https://numeroia.co', primaryColor: '#6366F1', secondaryColor: '#4F46E5' },
+  { id: 'company-007', name: 'Recruta', industry: 'IA para RRHH', country: 'Colombia', status: 'active', plan: 'premium', pendingPaymentCOP: 28400000, nextPaymentDate: '2025-01-24', contactEmail: 'admin@recruta.co', contactPhone: '+57 306 789 0123', websiteUrl: 'https://recruta.co', primaryColor: '#EC4899', secondaryColor: '#DB2777' },
+  { id: 'company-008', name: 'Blindaje', industry: 'IA para Ciberseguridad', country: 'Colombia', status: 'active', plan: 'enterprise', pendingPaymentCOP: 67800000, nextPaymentDate: '2025-01-24', contactEmail: 'info@blindaje.co', contactPhone: '+57 307 890 1234', websiteUrl: 'https://blindaje.co', customDomain: 'red.blindaje.co', primaryColor: '#10B981', secondaryColor: '#059669' }
 ];
 
 // Company Users (8)

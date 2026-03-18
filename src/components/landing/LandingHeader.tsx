@@ -10,17 +10,15 @@ export const LandingHeader = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const navLinks = [
     { label: "Cómo funciona", href: "#como-funciona" },
-    { label: "Servicios", href: "#servicios" },
-    { label: "Empresas", href: "#empresas" },
+    { label: "Funcionalidades", href: "#funcionalidades" },
+    { label: "Planes", href: "#planes" },
     { label: "FAQ", href: "#faq" },
   ];
 
@@ -35,11 +33,7 @@ export const LandingHeader = () => {
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center">
             <div className="w-11 h-11 relative">
-              <img 
-                src={logoMensualista} 
-                alt="Mensualista" 
-                className="w-full h-full object-contain"
-              />
+              <img src={logoMensualista} alt="Mensualista" className="w-full h-full object-contain" />
             </div>
           </Link>
 
@@ -58,14 +52,10 @@ export const LandingHeader = () => {
 
           <div className="hidden lg:flex items-center gap-3">
             <Link to="/auth">
-              <Button variant="ghost" size="sm">
-                Iniciar sesión
-              </Button>
+              <Button variant="ghost" size="sm">Iniciar sesión</Button>
             </Link>
-            <Link to="/auth?mode=register">
-              <Button size="sm">
-                Registrarse
-              </Button>
+            <Link to="/auth?mode=register&role=company">
+              <Button size="sm">Registrar empresa</Button>
             </Link>
           </div>
 
@@ -97,14 +87,10 @@ export const LandingHeader = () => {
               ))}
               <div className="flex flex-col gap-2 mt-4 pt-4 border-t border-border">
                 <Link to="/auth" onClick={() => setIsMobileMenuOpen(false)}>
-                  <Button variant="outline" size="sm" className="w-full">
-                    Iniciar sesión
-                  </Button>
+                  <Button variant="outline" size="sm" className="w-full">Iniciar sesión</Button>
                 </Link>
-                <Link to="/auth?mode=register" onClick={() => setIsMobileMenuOpen(false)}>
-                  <Button size="sm" className="w-full">
-                    Registrarse
-                  </Button>
+                <Link to="/auth?mode=register&role=company" onClick={() => setIsMobileMenuOpen(false)}>
+                  <Button size="sm" className="w-full">Registrar empresa</Button>
                 </Link>
               </div>
             </nav>
