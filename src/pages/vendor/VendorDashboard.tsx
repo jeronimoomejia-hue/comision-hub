@@ -13,8 +13,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDemo } from "@/contexts/DemoContext";
 import { vendors, services as allServices, companies, CURRENT_VENDOR_ID, CURRENT_COMPANY_ID, formatCOP, CompanyPlan } from "@/data/mockData";
 import {
-  BarChart, Bar,
-  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
 
 const planConfig: Record<CompanyPlan, { label: string; icon: React.ElementType }> = {
@@ -27,10 +26,10 @@ const allPlans: CompanyPlan[] = ['freemium', 'premium', 'enterprise'];
 
 export default function VendorDashboard() {
   const navigate = useNavigate();
-  const { sales, commissions, trainingProgress, subscriptions, currentCompanyPlan, setCurrentCompanyPlan } = useDemo();
+  const { sales, commissions, trainingProgress, subscriptions, currentCompanyPlan, setCurrentCompanyPlan, currentCompanyId } = useDemo();
   const vendor = vendors.find(v => v.id === CURRENT_VENDOR_ID);
   
-  const company = companies.find(c => c.id === CURRENT_COMPANY_ID);
+  const company = companies.find(c => c.id === currentCompanyId);
   const companyPlan = currentCompanyPlan;
   const pc = planConfig[companyPlan];
   
@@ -47,14 +46,11 @@ export default function VendorDashboard() {
   const completedTrainings = vendorTrainings.filter(t => t.status === 'declared_completed');
   const inProgressTrainings = vendorTrainings.filter(t => t.status === 'in_progress');
 
-  const activeServices = allServices.filter(s => s.status === 'activo' && s.companyId === CURRENT_COMPANY_ID);
-
   const salesThisMonth = vendorSales.filter(s => s.createdAt.startsWith(thisMonth));
-  const totalSalesCount = vendorSales.length;
   const successfulSales = vendorSales.filter(s => s.status !== 'REFUNDED').length;
-  const successRate = totalSalesCount > 0 ? Math.round((successfulSales / totalSalesCount) * 100) : 0;
+  const successRate = vendorSales.length > 0 ? Math.round((successfulSales / vendorSales.length) * 100) : 0;
   const activeSubscriptions = subscriptions.filter(s => s.vendorId === CURRENT_VENDOR_ID && s.status === 'active').length;
-  const avgCommission = vendorCommissions.length > 0
+  const avgCommission = vendorCommissions.filter(c => c.status !== 'REFUNDED').length > 0
     ? vendorCommissions.filter(c => c.status !== 'REFUNDED').reduce((a, c) => a + c.amountCOP, 0) / vendorCommissions.filter(c => c.status !== 'REFUNDED').length
     : 0;
 
@@ -78,36 +74,28 @@ export default function VendorDashboard() {
 
   const getStatusConfig = (status: string) => {
     const map: Record<string, { cls: string; label: string }> = {
-      'HELD': { cls: "bg-[#FEF3E2] text-[#F59E0B]", label: "Retenida" },
-      'RELEASED': { cls: "bg-[#E8FAF3] text-[#00B87A]", label: "Liberada" },
-      'REFUNDED': { cls: "bg-[#FDE8EC] text-[#E5294A]", label: "Devuelta" },
+      'HELD': { cls: "bg-amber-50 text-amber-600", label: "Retenida" },
+      'RELEASED': { cls: "bg-emerald-50 text-emerald-600", label: "Liberada" },
+      'REFUNDED': { cls: "bg-red-50 text-red-600", label: "Devuelta" },
     };
     return map[status] || { cls: "bg-muted text-muted-foreground", label: status };
   };
-
-  const pills = [
-    { label: "Ventas", path: "/vendor/sales", icon: ShoppingCart },
-    { label: "Comisiones", path: "/vendor/payments", icon: DollarSign },
-    { label: "Servicios", path: "/vendor/services", icon: Package },
-    { label: "Capacitaciones", path: "/vendor/trainings", icon: BookOpen },
-    ...(companyPlan !== 'freemium' ? [{ label: "Chat", path: "/vendor/support", icon: MessageCircle }] : []),
-  ];
 
   return (
     <DashboardLayout role="vendor" userName={vendor?.name}>
       <div className="space-y-4 sm:space-y-6">
         <PageTutorial
           pageId="vendor-dashboard"
-          title="¡Bienvenido a tu Dashboard!"
-          description={`Panel de vendedor de ${company?.name || 'la empresa'}`}
+          title="¡Bienvenido a tu panel de vendedor!"
+          description={`Panel de ventas de ${company?.name || 'la empresa'}`}
           steps={[
             "Revisa tus comisiones del mes en la parte superior",
-            "Consulta tu actividad reciente y KPIs",
-            "Accede rápidamente a vender un servicio"
+            "Accede a los servicios de tu empresa para vender",
+            "Consulta tu actividad y capacitaciones pendientes"
           ]}
         />
 
-        {/* ── DEMO Plan Switcher ── */}
+        {/* DEMO Plan Switcher */}
         <div className="rounded-xl border-2 border-dashed border-primary/30 bg-primary/5 p-3">
           <p className="text-[10px] uppercase tracking-widest text-primary font-semibold mb-2">🔀 Demo: Plan de la empresa</p>
           <div className="flex gap-2">
@@ -131,8 +119,8 @@ export default function VendorDashboard() {
           </div>
         </div>
 
-        {/* HERO: Balance + Company branding */}
-        <div className="rounded-2xl bg-[#F4F0FA] p-4 sm:p-6 relative overflow-hidden">
+        {/* HERO */}
+        <div className="rounded-2xl bg-primary/5 p-4 sm:p-6 relative overflow-hidden border border-border">
           <div className="flex items-start justify-between">
             <div>
               <div className="flex items-center gap-2 mb-1">
@@ -149,11 +137,11 @@ export default function VendorDashboard() {
               </p>
               <div className="flex items-center gap-3 mt-2 text-[10px] sm:text-xs text-muted-foreground">
                 <span className="flex items-center gap-1">
-                  <Clock className="w-3 h-3 text-[#F59E0B]" />
+                  <Clock className="w-3 h-3 text-amber-500" />
                   {formatCOP(heldCommissions)} retenidas
                 </span>
                 <span className="flex items-center gap-1">
-                  <CheckCircle className="w-3 h-3 text-[#00B87A]" />
+                  <CheckCircle className="w-3 h-3 text-emerald-500" />
                   {formatCOP(releasedCommissions)} liberadas
                 </span>
               </div>
@@ -166,9 +154,15 @@ export default function VendorDashboard() {
           </div>
         </div>
 
-        {/* PILLS de navegación */}
+        {/* Quick nav pills */}
         <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide -mx-1 px-1">
-          {pills.map(pill => (
+          {[
+            { label: "Ventas", path: "/vendor/sales", icon: ShoppingCart },
+            { label: "Pagos", path: "/vendor/payments", icon: DollarSign },
+            { label: "Servicios", path: "/vendor/services", icon: Package },
+            { label: "Capacitaciones", path: "/vendor/trainings", icon: BookOpen },
+            ...(companyPlan !== 'freemium' ? [{ label: "Chat", path: "/vendor/support", icon: MessageCircle }] : []),
+          ].map(pill => (
             <Link
               key={pill.path}
               to={pill.path}
@@ -180,7 +174,7 @@ export default function VendorDashboard() {
           ))}
         </div>
 
-        {/* GRÁFICA */}
+        {/* Chart */}
         <div className="card-premium p-3 sm:p-5">
           <h3 className="font-semibold text-xs sm:text-sm mb-3 flex items-center gap-2">
             <BarChart3 className="w-4 h-4 text-primary" />
@@ -200,7 +194,7 @@ export default function VendorDashboard() {
           </ResponsiveContainer>
         </div>
 
-        {/* ACTIVIDAD RECIENTE */}
+        {/* Recent activity */}
         <div className="card-premium p-3 sm:p-5">
           <div className="flex items-center justify-between mb-3">
             <h3 className="font-semibold text-xs sm:text-sm">Actividad reciente</h3>
@@ -261,17 +255,16 @@ export default function VendorDashboard() {
             <div className="card-premium p-3 text-center opacity-40 cursor-not-allowed">
               <Lock className="w-5 h-5 mx-auto mb-1 text-muted-foreground" />
               <p className="text-xs font-medium text-muted-foreground">Cupones</p>
-              <p className="text-[10px] text-muted-foreground">No disponible</p>
+              <p className="text-[10px] text-muted-foreground">No disponible en este plan</p>
             </div>
             <div className="card-premium p-3 text-center opacity-40 cursor-not-allowed">
               <Lock className="w-5 h-5 mx-auto mb-1 text-muted-foreground" />
               <p className="text-xs font-medium text-muted-foreground">Chat</p>
-              <p className="text-[10px] text-muted-foreground">No disponible</p>
+              <p className="text-[10px] text-muted-foreground">No disponible en este plan</p>
             </div>
           </div>
         )}
 
-        {/* Enterprise: extra info */}
         {companyPlan === 'enterprise' && (
           <div className="rounded-xl border border-primary/20 bg-primary/5 p-3">
             <p className="text-xs font-semibold text-foreground flex items-center gap-2">
@@ -284,7 +277,7 @@ export default function VendorDashboard() {
           </div>
         )}
 
-        {/* CAPACITACIONES */}
+        {/* Trainings */}
         <div className="card-premium p-3 sm:p-4">
           <div className="flex items-center justify-between mb-2">
             <h3 className="font-semibold text-xs sm:text-sm flex items-center gap-2">
@@ -295,11 +288,11 @@ export default function VendorDashboard() {
           </div>
           <div className="flex items-center gap-4 text-xs">
             <div className="flex items-center gap-1.5">
-              <div className="w-2 h-2 rounded-full bg-[#00B87A]" />
+              <div className="w-2 h-2 rounded-full bg-emerald-500" />
               <span className="text-muted-foreground text-[10px] sm:text-xs">{completedTrainings.length} completadas</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <div className="w-2 h-2 rounded-full bg-[#5B6FE0]" />
+              <div className="w-2 h-2 rounded-full bg-primary" />
               <span className="text-muted-foreground text-[10px] sm:text-xs">{inProgressTrainings.length} en progreso</span>
             </div>
           </div>
@@ -310,7 +303,7 @@ export default function VendorDashboard() {
                 return (
                   <Link key={t.id} to={`/vendor/trainings/${t.id}`} className="flex items-center justify-between py-1.5 text-xs hover:text-primary transition-colors">
                     <span className="truncate text-[11px] sm:text-sm">{svc?.name}</span>
-                    <Badge className="bg-[#EEF0FC] text-[#5B6FE0] text-[9px] sm:text-xs">En progreso</Badge>
+                    <Badge variant="secondary" className="text-[9px] sm:text-xs">En progreso</Badge>
                   </Link>
                 );
               })}

@@ -19,8 +19,14 @@ import {
   ChevronDown,
   Activity,
   UserCheck,
-  Plus,
-  Briefcase
+  MessageCircle,
+  Tag,
+  Globe,
+  Code,
+  Crown,
+  Zap,
+  Lock,
+  Palette
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -32,6 +38,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useDemo } from "@/contexts/DemoContext";
+import { Badge } from "@/components/ui/badge";
+import type { CompanyPlan } from "@/data/mockData";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -39,35 +47,10 @@ interface DashboardLayoutProps {
   userName?: string;
 }
 
-const navigationItems = {
-  vendor: [
-    { icon: LayoutDashboard, label: "Dashboard", href: "/vendor" },
-    { icon: Package, label: "Servicios", href: "/vendor/services", hasSubItems: true },
-    { icon: ShoppingCart, label: "Mis Ventas", href: "/vendor/sales" },
-    { icon: User, label: "Mi perfil", href: "/vendor/profile" },
-    { icon: HelpCircle, label: "Soporte", href: "/vendor/support" },
-  ],
-  company: [
-    { icon: LayoutDashboard, label: "Dashboard", href: "/company" },
-    { icon: Package, label: "Servicios", href: "/company/services" },
-    { icon: ShoppingCart, label: "Ventas", href: "/company/sales" },
-    { icon: Users, label: "Vendedores", href: "/company/vendors" },
-    { icon: DollarSign, label: "Pagos", href: "/company/payments" },
-    { icon: Building2, label: "Mi empresa", href: "/company/profile" },
-    { icon: Settings, label: "Configuración", href: "/company/settings" },
-  ],
-  admin: [
-    { icon: LayoutDashboard, label: "Dashboard", href: "/admin" },
-    { icon: UserCheck, label: "Vendedores", href: "/admin/vendors" },
-    { icon: Building2, label: "Empresas", href: "/admin/companies" },
-    { icon: Activity, label: "Transacciones Live", href: "/admin/transactions" },
-    { icon: Package, label: "Servicios", href: "/admin/services" },
-    { icon: BookOpen, label: "Capacitaciones", href: "/admin/trainings" },
-    { icon: ShoppingCart, label: "Ventas", href: "/admin/sales" },
-    { icon: DollarSign, label: "Pagos", href: "/admin/payments" },
-    { icon: Users, label: "Usuarios", href: "/admin/users" },
-    { icon: Settings, label: "Configuración", href: "/admin/settings" },
-  ],
+const planConfig: Record<CompanyPlan, { label: string; icon: React.ElementType }> = {
+  freemium: { label: "Freemium", icon: Zap },
+  premium: { label: "Premium", icon: Crown },
+  enterprise: { label: "Enterprise", icon: Building2 },
 };
 
 const roleLabels = {
@@ -76,39 +59,76 @@ const roleLabels = {
   admin: "Administrador",
 };
 
+function getVendorNav(plan: CompanyPlan) {
+  const base = [
+    { icon: LayoutDashboard, label: "Dashboard", href: "/vendor" },
+    { icon: Package, label: "Servicios", href: "/vendor/services" },
+    { icon: ShoppingCart, label: "Mis Ventas", href: "/vendor/sales" },
+    { icon: DollarSign, label: "Pagos", href: "/vendor/payments" },
+    { icon: BookOpen, label: "Capacitaciones", href: "/vendor/trainings" },
+    { icon: User, label: "Mi Perfil", href: "/vendor/profile" },
+  ];
+
+  // Premium & Enterprise: Chat con empresa
+  if (plan !== 'freemium') {
+    base.push({ icon: MessageCircle, label: "Chat Empresa", href: "/vendor/support" });
+  }
+
+  return base;
+}
+
+function getCompanyNav(plan: CompanyPlan) {
+  const base = [
+    { icon: LayoutDashboard, label: "Dashboard", href: "/company" },
+    { icon: Package, label: "Servicios", href: "/company/services" },
+    { icon: Users, label: "Vendedores", href: "/company/vendors" },
+    { icon: ShoppingCart, label: "Ventas", href: "/company/sales" },
+    { icon: DollarSign, label: "Pagos", href: "/company/payments" },
+    { icon: Palette, label: "Personalizar", href: "/company/profile" },
+    { icon: Settings, label: "Configuración", href: "/company/settings" },
+  ];
+
+  // Premium & Enterprise: Cupones & Chat
+  if (plan !== 'freemium') {
+    base.splice(5, 0, { icon: Tag, label: "Cupones", href: "/company/coupons" });
+    base.splice(6, 0, { icon: MessageCircle, label: "Chat", href: "/company/chat" });
+  }
+
+  // Enterprise: Dominio & API
+  if (plan === 'enterprise') {
+    base.push({ icon: Globe, label: "Dominio", href: "/company/domain" });
+    base.push({ icon: Code, label: "API", href: "/company/api" });
+  }
+
+  return base;
+}
+
+const adminNav = [
+  { icon: LayoutDashboard, label: "Dashboard", href: "/admin" },
+  { icon: UserCheck, label: "Vendedores", href: "/admin/vendors" },
+  { icon: Building2, label: "Empresas", href: "/admin/companies" },
+  { icon: Activity, label: "Transacciones", href: "/admin/transactions" },
+  { icon: Package, label: "Servicios", href: "/admin/services" },
+  { icon: BookOpen, label: "Capacitaciones", href: "/admin/trainings" },
+  { icon: ShoppingCart, label: "Ventas", href: "/admin/sales" },
+  { icon: DollarSign, label: "Pagos", href: "/admin/payments" },
+  { icon: Users, label: "Usuarios", href: "/admin/users" },
+  { icon: Settings, label: "Configuración", href: "/admin/settings" },
+];
+
 export default function DashboardLayout({ children, role, userName = "Usuario" }: DashboardLayoutProps) {
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [servicesExpanded, setServicesExpanded] = useState(
-    location.pathname.startsWith('/vendor/services')
-  );
-  const items = navigationItems[role];
+  const { currentCompanyPlan, companies, currentCompanyId } = useDemo();
 
-  const { services, trainingProgress, currentVendorId, companies, pinnedServices } = useDemo();
-  
-  const vendorSidebarServices = role === 'vendor' 
-    ? services.filter(s => s.status === 'activo' && pinnedServices.includes(s.id)).map(service => {
-        const training = trainingProgress.find(
-          tp => tp.vendorId === currentVendorId && tp.serviceId === service.id
-        );
-        const isCompleted = !service.requiresTraining || training?.status === 'declared_completed';
-        const company = companies.find(c => c.id === service.companyId);
-        
-        return {
-          ...service,
-          isCompleted,
-          companyName: company?.name || 'Sin empresa',
-          trainingId: training?.id,
-          link: isCompleted ? `/vendor/services/${service.id}` : (training ? `/vendor/trainings/${training.id}` : `/vendor/services`),
-        };
-      })
-    : [];
+  const company = companies.find(c => c.id === currentCompanyId);
+  const pc = planConfig[currentCompanyPlan];
 
-  const servicesByCompany = vendorSidebarServices.reduce((acc, service) => {
-    if (!acc[service.companyName]) acc[service.companyName] = [];
-    acc[service.companyName].push(service);
-    return acc;
-  }, {} as Record<string, typeof vendorSidebarServices>);
+  const items = role === 'admin'
+    ? adminNav
+    : role === 'company'
+      ? getCompanyNav(currentCompanyPlan)
+      : getVendorNav(currentCompanyPlan);
 
   return (
     <div className="min-h-screen bg-background">
@@ -127,13 +147,24 @@ export default function DashboardLayout({ children, role, userName = "Usuario" }
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
         <div className="flex flex-col h-full">
-          {/* Logo */}
+          {/* Logo / Company branding */}
           <div className="flex items-center justify-between h-16 px-4 border-b border-border">
             <Link to="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-lg">M</span>
-              </div>
-              <span className="font-bold text-lg text-foreground">Mensualista</span>
+              {role === 'vendor' && company ? (
+                <>
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: company.primaryColor || 'hsl(var(--primary))' }}>
+                    <span className="text-white font-bold text-lg">{company.name[0]}</span>
+                  </div>
+                  <span className="font-bold text-lg text-foreground truncate">{company.name}</span>
+                </>
+              ) : (
+                <>
+                  <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+                    <span className="text-primary-foreground font-bold text-lg">M</span>
+                  </div>
+                  <span className="font-bold text-lg text-foreground">Mensualista</span>
+                </>
+              )}
             </Link>
             <button 
               onClick={() => setSidebarOpen(false)}
@@ -143,13 +174,21 @@ export default function DashboardLayout({ children, role, userName = "Usuario" }
             </button>
           </div>
           
-          {/* Role Badge */}
+          {/* Role + Plan Badge */}
           <div className="px-4 py-3 border-b border-border">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium bg-primary text-primary-foreground">
-              {role === "vendor" && <User className="w-3 h-3" />}
-              {role === "company" && <Building2 className="w-3 h-3" />}
-              {role === "admin" && <Settings className="w-3 h-3" />}
-              {roleLabels[role]}
+            <div className="flex items-center gap-2">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium bg-primary text-primary-foreground">
+                {role === "vendor" && <User className="w-3 h-3" />}
+                {role === "company" && <Building2 className="w-3 h-3" />}
+                {role === "admin" && <Settings className="w-3 h-3" />}
+                {roleLabels[role]}
+              </div>
+              {role !== 'admin' && (
+                <Badge variant="outline" className="text-[9px] gap-1">
+                  <pc.icon className="w-3 h-3" />
+                  {pc.label}
+                </Badge>
+              )}
             </div>
           </div>
           
@@ -157,77 +196,6 @@ export default function DashboardLayout({ children, role, userName = "Usuario" }
           <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
             {items.map((item) => {
               const isActive = location.pathname === item.href;
-              const isServiceSection = 'hasSubItems' in item && item.hasSubItems;
-              const isInServiceSection = location.pathname.startsWith('/vendor/services');
-              
-              if (isServiceSection && role === 'vendor') {
-                return (
-                  <div key={item.href}>
-                    <div className="flex items-center">
-                      <Link
-                        to={item.href}
-                        onClick={() => setSidebarOpen(false)}
-                        className={`
-                          flex-1 flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
-                          ${isInServiceSection
-                            ? 'bg-[#F4F0FA] text-foreground font-semibold border-l-[3px] border-l-primary' 
-                            : 'text-muted-foreground hover:bg-[#FAF7FF] hover:text-foreground'
-                          }
-                        `}
-                      >
-                        <item.icon className="w-5 h-5" />
-                        {item.label}
-                      </Link>
-                      <button
-                        onClick={() => setServicesExpanded(!servicesExpanded)}
-                        className="p-1.5 rounded-md hover:bg-secondary text-muted-foreground transition-colors"
-                      >
-                        <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${servicesExpanded ? '' : '-rotate-90'}`} />
-                      </button>
-                    </div>
-                    
-                    {servicesExpanded && Object.keys(servicesByCompany).length > 0 && (
-                      <div className="ml-4 mt-1 space-y-2 border-l-2 border-border pl-3">
-                        {Object.entries(servicesByCompany).map(([companyName, companyServices]) => (
-                          <div key={companyName}>
-                            <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold px-2 py-1">
-                              {companyName}
-                            </p>
-                            {companyServices.map(service => {
-                              const isServiceActive = location.pathname === service.link;
-                              return (
-                                <Link
-                                  key={service.id}
-                                  to={service.link}
-                                  onClick={() => setSidebarOpen(false)}
-                                  className={`
-                                    flex items-center gap-2 px-2 py-2 rounded-md text-xs font-medium transition-colors
-                                    ${isServiceActive
-                                      ? 'bg-[#F4F0FA] text-foreground font-semibold'
-                                      : 'text-muted-foreground hover:bg-[#FAF7FF] hover:text-foreground'
-                                    }
-                                  `}
-                                >
-                                  <div className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${service.isCompleted ? 'bg-[#00B87A]' : 'bg-[#F59E0B]'}`} />
-                                  <span className="truncate">{service.name}</span>
-                                </Link>
-                              );
-                            })}
-                          </div>
-                        ))}
-                        <Link
-                          to="/vendor/services"
-                          onClick={() => setSidebarOpen(false)}
-                          className="flex items-center gap-2 px-2 py-2 rounded-md text-xs font-medium text-primary hover:bg-primary/5 transition-colors mt-1"
-                        >
-                          <Plus className="w-3 h-3" />
-                          <span>Explorar más servicios</span>
-                        </Link>
-                      </div>
-                    )}
-                  </div>
-                );
-              }
               
               return (
                 <Link
@@ -237,8 +205,8 @@ export default function DashboardLayout({ children, role, userName = "Usuario" }
                   className={`
                     flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
                     ${isActive 
-                      ? 'bg-[#F4F0FA] text-foreground font-semibold border-l-[3px] border-l-primary' 
-                      : 'text-muted-foreground hover:bg-[#FAF7FF] hover:text-foreground'
+                      ? 'bg-primary/10 text-foreground font-semibold border-l-[3px] border-l-primary' 
+                      : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
                     }
                   `}
                 >

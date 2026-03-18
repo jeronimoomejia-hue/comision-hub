@@ -3,14 +3,7 @@ import DashboardLayout from "@/components/layout/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { StatusBadge, ProgressBar, EmptyState } from "@/components/dashboard/DashboardComponents";
 import { 
-  BookOpen, 
-  Play, 
-  CheckCircle2, 
-  Clock, 
-  FileText,
-  ChevronRight,
-  Video,
-  Eye
+  BookOpen, Play, CheckCircle2, Clock, FileText, ChevronRight, Video, Eye
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useDemo } from "@/contexts/DemoContext";
@@ -19,47 +12,39 @@ import { Badge } from "@/components/ui/badge";
 
 export default function VendorTrainings() {
   const navigate = useNavigate();
-  const { trainingProgress, startTraining, currentVendorId } = useDemo();
+  const { trainingProgress, startTraining, currentVendorId, currentCompanyId } = useDemo();
 
-  // Get all trainings for current vendor
+  const company = companies.find(c => c.id === currentCompanyId);
+
   const vendorTrainings = trainingProgress.filter(tp => tp.vendorId === currentVendorId);
   
-  // Map trainings with service and company info
-  const trainingsWithDetails = vendorTrainings.map(tp => {
-    const service = services.find(s => s.id === tp.serviceId);
-    const company = service ? companies.find(c => c.id === service.companyId) : null;
-    return {
-      ...tp,
-      service,
-      company,
-      serviceName: service?.name || 'Servicio desconocido',
-      companyName: company?.name || 'Empresa',
-      trainingType: service?.trainingType || 'pdf',
-      estimatedDuration: service?.trainingType === 'video' ? '15 min' : '10 min'
-    };
-  });
+  // Only show services from vendor's company
+  const companyServices = services.filter(s => s.companyId === currentCompanyId);
+  
+  const trainingsWithDetails = vendorTrainings
+    .filter(tp => companyServices.some(s => s.id === tp.serviceId))
+    .map(tp => {
+      const service = companyServices.find(s => s.id === tp.serviceId);
+      return {
+        ...tp,
+        service,
+        serviceName: service?.name || 'Servicio desconocido',
+        companyName: company?.name || 'Empresa',
+        trainingType: service?.trainingType || 'pdf',
+        estimatedDuration: service?.trainingType === 'video' ? '15 min' : '10 min'
+      };
+    });
 
-  // Get services that need training but haven't been started
-  const servicesWithTraining = services.filter(s => s.requiresTraining && s.status === 'activo');
+  const servicesWithTraining = companyServices.filter(s => s.requiresTraining && s.status === 'activo');
   const startedServiceIds = vendorTrainings.map(tp => tp.serviceId);
   const availableServices = servicesWithTraining.filter(s => !startedServiceIds.includes(s.id));
 
-  // Categorize trainings
   const completedTrainings = trainingsWithDetails.filter(t => t.status === 'declared_completed');
   const inProgressTrainings = trainingsWithDetails.filter(t => t.status === 'in_progress');
   const pendingTrainings = trainingsWithDetails.filter(t => t.status === 'not_started');
 
-  const handleStartTraining = (serviceId: string) => {
-    startTraining(currentVendorId, serviceId);
-    const newTraining = trainingProgress.find(tp => tp.vendorId === currentVendorId && tp.serviceId === serviceId);
-    if (newTraining) {
-      navigate(`/vendor/trainings/${newTraining.id}`);
-    }
-  };
-
-  const handleStartNewTraining = (service: typeof services[0]) => {
+  const handleStartNewTraining = (service: typeof companyServices[0]) => {
     startTraining(currentVendorId, service.id);
-    // Need to wait for state update
     setTimeout(() => {
       const newTraining = trainingProgress.find(tp => tp.vendorId === currentVendorId && tp.serviceId === service.id);
       if (newTraining) {
@@ -71,26 +56,24 @@ export default function VendorTrainings() {
   return (
     <DashboardLayout role="vendor" userName="Carlos Mendoza">
       <div className="space-y-6">
-        {/* Header */}
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold">Capacitaciones</h1>
           <p className="text-muted-foreground mt-1">
-            Completa las capacitaciones para activar servicios y empezar a vender
+            Completa las capacitaciones de {company?.name} para activar servicios
           </p>
         </div>
 
         {/* Stats */}
         <div className="grid sm:grid-cols-3 gap-4">
           <div className="card-premium p-4 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-success/10 flex items-center justify-center">
-              <CheckCircle2 className="w-6 h-6 text-success" />
+            <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center">
+              <CheckCircle2 className="w-6 h-6 text-emerald-500" />
             </div>
             <div>
               <p className="text-2xl font-bold">{completedTrainings.length}</p>
               <p className="text-sm text-muted-foreground">Completadas</p>
             </div>
           </div>
-          
           <div className="card-premium p-4 flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
               <Play className="w-6 h-6 text-primary" />
@@ -100,7 +83,6 @@ export default function VendorTrainings() {
               <p className="text-sm text-muted-foreground">En progreso</p>
             </div>
           </div>
-          
           <div className="card-premium p-4 flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center">
               <Clock className="w-6 h-6 text-muted-foreground" />
@@ -112,18 +94,11 @@ export default function VendorTrainings() {
           </div>
         </div>
 
-        {/* Tabs */}
         <Tabs defaultValue="in-progress" className="w-full">
           <TabsList>
-            <TabsTrigger value="in-progress">
-              En progreso ({inProgressTrainings.length})
-            </TabsTrigger>
-            <TabsTrigger value="completed">
-              Completadas ({completedTrainings.length})
-            </TabsTrigger>
-            <TabsTrigger value="available">
-              Disponibles ({pendingTrainings.length + availableServices.length})
-            </TabsTrigger>
+            <TabsTrigger value="in-progress">En progreso ({inProgressTrainings.length})</TabsTrigger>
+            <TabsTrigger value="completed">Completadas ({completedTrainings.length})</TabsTrigger>
+            <TabsTrigger value="available">Disponibles ({pendingTrainings.length + availableServices.length})</TabsTrigger>
           </TabsList>
 
           <TabsContent value="in-progress" className="mt-6">
@@ -134,34 +109,21 @@ export default function VendorTrainings() {
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                       <div className="flex items-center gap-4">
                         <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                          {training.trainingType === 'video' ? (
-                            <Video className="w-6 h-6 text-primary" />
-                          ) : (
-                            <FileText className="w-6 h-6 text-primary" />
-                          )}
+                          {training.trainingType === 'video' ? <Video className="w-6 h-6 text-primary" /> : <FileText className="w-6 h-6 text-primary" />}
                         </div>
                         <div>
                           <h3 className="font-semibold">{training.serviceName}</h3>
                           <p className="text-sm text-muted-foreground">{training.companyName}</p>
                           <div className="flex items-center gap-2 mt-1">
-                            <Badge variant="outline" className="text-xs">
-                              {training.trainingType === 'video' ? 'Video' : 'PDF'}
-                            </Badge>
-                            <span className="text-xs text-muted-foreground">
-                              ~{training.estimatedDuration}
-                            </span>
+                            <Badge variant="outline" className="text-xs">{training.trainingType === 'video' ? 'Video' : 'PDF'}</Badge>
+                            <span className="text-xs text-muted-foreground">~{training.estimatedDuration}</span>
                           </div>
                         </div>
                       </div>
-                      
                       <div className="flex items-center gap-4">
                         <Badge variant="secondary">En progreso</Badge>
-                        <Button 
-                          className="hover:opacity-90"
-                          onClick={() => navigate(`/vendor/trainings/${training.id}`)}
-                        >
-                          Continuar
-                          <ChevronRight className="ml-2 w-4 h-4" />
+                        <Button onClick={() => navigate(`/vendor/trainings/${training.id}`)}>
+                          Continuar <ChevronRight className="ml-2 w-4 h-4" />
                         </Button>
                       </div>
                     </div>
@@ -169,16 +131,7 @@ export default function VendorTrainings() {
                 ))}
               </div>
             ) : (
-              <EmptyState
-                icon={Play}
-                title="No tienes capacitaciones en progreso"
-                description="Inicia una capacitación para empezar a vender nuevos servicios"
-                action={
-                  <Button variant="outline" onClick={() => {}}>
-                    Ver servicios disponibles
-                  </Button>
-                }
-              />
+              <EmptyState icon={Play} title="Sin capacitaciones en progreso" description="Inicia una capacitación para empezar a vender" />
             )}
           </TabsContent>
 
@@ -189,143 +142,57 @@ export default function VendorTrainings() {
                   <div key={training.id} className="card-premium p-6">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                       <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-success/10 flex items-center justify-center">
-                          <CheckCircle2 className="w-6 h-6 text-success" />
+                        <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center">
+                          <CheckCircle2 className="w-6 h-6 text-emerald-500" />
                         </div>
                         <div>
                           <h3 className="font-semibold">{training.serviceName}</h3>
                           <p className="text-sm text-muted-foreground">{training.companyName}</p>
                         </div>
                       </div>
-                      
                       <div className="flex items-center gap-4">
-                        <div className="text-right">
-                          <StatusBadge status="completed" label="Completada" />
-                          <p className="text-xs text-muted-foreground mt-1">
-                            {training.completedAt ? new Date(training.completedAt).toLocaleDateString('es-ES') : ''}
-                          </p>
-                        </div>
-                        <div className="flex gap-2">
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            onClick={() => navigate(`/vendor/trainings/${training.id}`)}
-                          >
-                            <Eye className="mr-2 w-4 h-4" />
-                            Ver
-                          </Button>
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            onClick={() => navigate('/vendor/materials')}
-                          >
-                            <FileText className="mr-2 w-4 h-4" />
-                            Materiales
-                          </Button>
-                        </div>
+                        <StatusBadge status="completed" label="Completada" />
+                        <Button variant="outline" size="sm" onClick={() => navigate(`/vendor/trainings/${training.id}`)}>
+                          <Eye className="mr-2 w-4 h-4" /> Ver
+                        </Button>
                       </div>
                     </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <EmptyState
-                icon={CheckCircle2}
-                title="No has completado capacitaciones"
-                description="Completa tu primera capacitación para empezar a vender"
-              />
+              <EmptyState icon={CheckCircle2} title="Sin capacitaciones completadas" description="Completa tu primera capacitación" />
             )}
           </TabsContent>
 
           <TabsContent value="available" className="mt-6">
             {(pendingTrainings.length > 0 || availableServices.length > 0) ? (
               <div className="grid md:grid-cols-2 gap-4">
-                {/* Pending trainings (started but not progressed) */}
-                {pendingTrainings.map((training) => (
-                  <div key={training.id} className="card-premium p-6">
+                {availableServices.map((service) => (
+                  <div key={service.id} className="card-premium p-6">
                     <div className="flex items-start gap-4 mb-4">
                       <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center">
-                        {training.trainingType === 'video' ? (
-                          <Video className="w-6 h-6 text-muted-foreground" />
-                        ) : (
-                          <FileText className="w-6 h-6 text-muted-foreground" />
-                        )}
+                        {service.trainingType === 'video' ? <Video className="w-6 h-6 text-muted-foreground" /> : <FileText className="w-6 h-6 text-muted-foreground" />}
                       </div>
                       <div className="flex-1">
-                        <h3 className="font-semibold">{training.serviceName}</h3>
-                        <p className="text-sm text-muted-foreground">{training.companyName}</p>
-                        <div className="flex items-center gap-2 mt-1">
-                          <Badge variant="outline" className="text-xs">
-                            {training.trainingType === 'video' ? 'Video' : 'PDF'}
-                          </Badge>
-                          <span className="text-xs text-muted-foreground">
-                            ~{training.estimatedDuration}
-                          </span>
-                        </div>
+                        <h3 className="font-semibold">{service.name}</h3>
+                        <p className="text-sm text-muted-foreground">{company?.name}</p>
+                        <Badge variant="outline" className="text-xs mt-1">{service.trainingType === 'video' ? 'Video' : 'PDF'}</Badge>
                       </div>
                     </div>
-                    <Button 
-                      className="w-full" 
-                      variant="outline"
-                      onClick={() => navigate(`/vendor/trainings/${training.id}`)}
-                    >
-                      <Play className="mr-2 w-4 h-4" />
-                      Empezar capacitación
+                    <p className="text-sm text-muted-foreground mb-4 line-clamp-2">{service.description}</p>
+                    <div className="flex items-center justify-between mb-4 text-sm">
+                      <span className="text-muted-foreground">Comisión:</span>
+                      <span className="font-semibold text-emerald-600">{service.vendorCommissionPct}%</span>
+                    </div>
+                    <Button className="w-full" variant="outline" onClick={() => handleStartNewTraining(service)}>
+                      <Play className="mr-2 w-4 h-4" /> Empezar capacitación
                     </Button>
                   </div>
                 ))}
-                
-                {/* Available services without training started */}
-                {availableServices.map((service) => {
-                  const company = companies.find(c => c.id === service.companyId);
-                  return (
-                    <div key={service.id} className="card-premium p-6">
-                      <div className="flex items-start gap-4 mb-4">
-                        <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center">
-                          {service.trainingType === 'video' ? (
-                            <Video className="w-6 h-6 text-muted-foreground" />
-                          ) : (
-                            <FileText className="w-6 h-6 text-muted-foreground" />
-                          )}
-                        </div>
-                        <div className="flex-1">
-                          <h3 className="font-semibold">{service.name}</h3>
-                          <p className="text-sm text-muted-foreground">{company?.name}</p>
-                          <div className="flex items-center gap-2 mt-1">
-                            <Badge variant="outline" className="text-xs">
-                              {service.trainingType === 'video' ? 'Video' : 'PDF'}
-                            </Badge>
-                            <span className="text-xs text-muted-foreground">
-                              ~{service.trainingType === 'video' ? '15 min' : '10 min'}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                      <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
-                        {service.description}
-                      </p>
-                      <div className="flex items-center justify-between mb-4 text-sm">
-                        <span className="text-muted-foreground">Comisión:</span>
-                        <span className="font-semibold text-green-600">{service.vendorCommissionPct}%</span>
-                      </div>
-                      <Button 
-                        className="w-full" 
-                        variant="outline"
-                        onClick={() => handleStartNewTraining(service)}
-                      >
-                        <Play className="mr-2 w-4 h-4" />
-                        Empezar capacitación
-                      </Button>
-                    </div>
-                  );
-                })}
               </div>
             ) : (
-              <EmptyState
-                icon={BookOpen}
-                title="No hay capacitaciones pendientes"
-                description="Has completado todas las capacitaciones disponibles"
-              />
+              <EmptyState icon={BookOpen} title="Sin capacitaciones pendientes" description="Has completado todas las capacitaciones disponibles" />
             )}
           </TabsContent>
         </Tabs>
