@@ -7,6 +7,7 @@ import {
   TrainingProgress,
   Service,
   Company,
+  CompanyPlan,
   Subscription,
   RefundRequest,
   ServiceRequest,
