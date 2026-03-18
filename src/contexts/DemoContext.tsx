@@ -7,6 +7,7 @@ import {
   TrainingProgress,
   Service,
   Company,
+  CompanyPlan,
   Subscription,
   RefundRequest,
   ServiceRequest,
@@ -39,7 +40,9 @@ interface DemoContextType {
   currentVendorId: string;
   currentCompanyId: string;
   currentRole: 'vendor' | 'company' | 'admin';
+  currentCompanyPlan: CompanyPlan;
   setCurrentRole: (role: 'vendor' | 'company' | 'admin') => void;
+  setCurrentCompanyPlan: (plan: CompanyPlan) => void;
   setCurrentVendorId: (id: string) => void;
   setCurrentCompanyId: (id: string) => void;
   addSale: (sale: Omit<Sale, 'id' | 'createdAt'>) => void;
@@ -75,6 +78,7 @@ export function DemoProvider({ children }: { children: ReactNode }) {
   const [currentRole, setCurrentRole] = useState<'vendor' | 'company' | 'admin'>('vendor');
   const [currentVendorId, setCurrentVendorId] = useState('vendor-001');
   const [currentCompanyId, setCurrentCompanyId] = useState('company-001');
+  const [currentCompanyPlan, setCurrentCompanyPlan] = useState<CompanyPlan>('enterprise');
   
   // Pinned services - initial: services where vendor has training (completed or in progress)
   const [pinnedServices, setPinnedServices] = useState<string[]>(() => {
@@ -268,7 +272,9 @@ export function DemoProvider({ children }: { children: ReactNode }) {
       currentVendorId,
       currentCompanyId,
       currentRole,
+      currentCompanyPlan,
       setCurrentRole,
+      setCurrentCompanyPlan,
       setCurrentVendorId,
       setCurrentCompanyId,
       addSale,
