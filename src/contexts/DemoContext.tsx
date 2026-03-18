@@ -40,7 +40,9 @@ interface DemoContextType {
   currentVendorId: string;
   currentCompanyId: string;
   currentRole: 'vendor' | 'company' | 'admin';
+  currentCompanyPlan: CompanyPlan;
   setCurrentRole: (role: 'vendor' | 'company' | 'admin') => void;
+  setCurrentCompanyPlan: (plan: CompanyPlan) => void;
   setCurrentVendorId: (id: string) => void;
   setCurrentCompanyId: (id: string) => void;
   addSale: (sale: Omit<Sale, 'id' | 'createdAt'>) => void;
