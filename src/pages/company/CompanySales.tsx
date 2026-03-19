@@ -130,6 +130,12 @@ export default function CompanySales() {
                   <div className="flex justify-between"><span className="text-muted-foreground">Vendedor</span><span className="font-medium">{vendor?.name}</span></div>
                   <div className="flex justify-between"><span className="text-muted-foreground">Estado</span>{getStatusBadge(selectedSale.status)}</div>
                   <div className="flex justify-between"><span className="text-muted-foreground">Devolución</span><span className="text-xs">{service?.refundPolicy.refundWindowDays} días</span></div>
+                  {selectedSale.activationCode && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-muted-foreground">Código entregado</span>
+                      <code className="text-xs bg-muted px-2 py-0.5 rounded font-mono">{selectedSale.activationCode}</code>
+                    </div>
+                  )}
                   <div className="border-t border-border pt-3 space-y-1.5">
                     <div className="flex justify-between"><span className="text-muted-foreground">Monto bruto</span><span>{formatCOP(selectedSale.grossAmount)}</span></div>
                     <div className="flex justify-between"><span className="text-muted-foreground">Comisión vendedor</span><span className="text-red-500">-{formatCOP(vendorComm)}</span></div>

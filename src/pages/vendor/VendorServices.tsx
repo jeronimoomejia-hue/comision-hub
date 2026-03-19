@@ -1,7 +1,7 @@
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { 
-  Search, BookOpen, Eye, TrendingUp, Zap, ArrowRight, Users, RefreshCw
+  Search, BookOpen, Eye, TrendingUp, Zap, ArrowRight, Users, RefreshCw, AlertTriangle
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
@@ -151,6 +151,23 @@ export default function VendorServices() {
                       <span className="text-[10px] sm:text-xs font-semibold text-primary">{service.vendorCommissionPct}%{service.type === 'suscripción' ? '/mes' : ''}</span>
                     </div>
                   </div>
+
+                  {/* Activation codes availability */}
+                  {(() => {
+                    const availableCodes = service.activationCodes.filter(c => c.status === 'available').length;
+                    const noStock = availableCodes === 0;
+                    return noStock ? (
+                      <div className="flex items-center gap-1 mb-2 sm:mb-3 text-[9px] sm:text-[11px] text-destructive">
+                        <AlertTriangle className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                        <span>Sin códigos disponibles</span>
+                      </div>
+                    ) : availableCodes < 5 ? (
+                      <div className="flex items-center gap-1 mb-2 sm:mb-3 text-[9px] sm:text-[11px] text-amber-600">
+                        <AlertTriangle className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                        <span>{availableCodes} códigos restantes</span>
+                      </div>
+                    ) : null;
+                  })()}
 
                   {/* Active subscriptions */}
                   {service.type === 'suscripción' && service.activeSubscriptions && service.isActive && (

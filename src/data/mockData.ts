@@ -61,6 +61,14 @@ export interface Material {
   uploadedAt: string;
 }
 
+export interface ActivationCode {
+  id: string;
+  code: string;
+  status: 'available' | 'delivered' | 'expired';
+  assignedToSaleId?: string;
+  deliveredAt?: string;
+}
+
 export interface Service {
   id: string;
   companyId: string;
@@ -78,6 +86,7 @@ export interface Service {
   trainingUrl?: string;
   materials: Material[];
   activeSubscriptions?: number;
+  activationCodes: ActivationCode[];
   createdAt: string;
 }
 
@@ -136,6 +145,7 @@ export interface Sale {
   isSubscription: boolean;
   subscriptionActive?: boolean;
   notes?: string;
+  activationCode?: string; // Code delivered to client
   createdAt: string;
   // Legacy compatibility
   amountCOP?: number;
@@ -401,84 +411,55 @@ export const vendors: User[] = vendorNames.map((name, i) => ({
 export const services: Service[] = [
   // Poliza.ai - IA para Seguros
   { 
-    id: 'service-001', 
-    companyId: 'company-001', 
-    name: 'Poliza Cotizador IA', 
+    id: 'service-001', companyId: 'company-001', name: 'Poliza Cotizador IA', 
     description: 'IA que genera cotizaciones de seguros en segundos analizando el perfil del cliente.', 
-    category: 'IA para Seguros', 
-    priceCOP: 179000, 
-    type: 'suscripción', 
-    vendorCommissionPct: 20, 
-    mensualistaPct: 8, 
-    status: 'activo', 
+    category: 'IA para Seguros', priceCOP: 179000, type: 'suscripción',
+    vendorCommissionPct: 20, mensualistaPct: 8, status: 'activo',
     refundPolicy: { autoRefund: false, refundWindowDays: 14 }, 
-    requiresTraining: true, 
-    trainingType: 'video', 
-    trainingUrl: 'https://example.com/poliza-training',
+    requiresTraining: true, trainingType: 'video', trainingUrl: 'https://example.com/poliza-training',
     activeSubscriptions: 42,
-    materials: [{ id: 'mat-001', serviceId: 'service-001', title: 'Guión de venta Poliza', type: 'pdf', url: '/materials/guion-poliza.pdf', uploadedAt: '2024-06-01' }], 
+    materials: [{ id: 'mat-001', serviceId: 'service-001', title: 'Guion de venta Poliza', type: 'pdf', url: '/materials/guion-poliza.pdf', uploadedAt: '2024-06-01' }], 
+    activationCodes: [{ id: 'ac-001-001', code: 'POLIZA-COT-0001', status: 'delivered' as const, assignedToSaleId: 'sale-001', deliveredAt: '2025-01-11' }, { id: 'ac-001-002', code: 'POLIZA-COT-0002', status: 'delivered' as const, assignedToSaleId: 'sale-002', deliveredAt: '2025-01-12' }, { id: 'ac-001-003', code: 'POLIZA-COT-0003', status: 'delivered' as const, assignedToSaleId: 'sale-003', deliveredAt: '2025-01-13' }, { id: 'ac-001-004', code: 'POLIZA-COT-0004', status: 'delivered' as const, assignedToSaleId: 'sale-004', deliveredAt: '2025-01-14' }, { id: 'ac-001-005', code: 'POLIZA-COT-0005', status: 'delivered' as const, assignedToSaleId: 'sale-005', deliveredAt: '2025-01-15' }, { id: 'ac-001-006', code: 'POLIZA-COT-0006', status: 'delivered' as const, assignedToSaleId: 'sale-006', deliveredAt: '2025-01-16' }, { id: 'ac-001-007', code: 'POLIZA-COT-0007', status: 'delivered' as const, assignedToSaleId: 'sale-007', deliveredAt: '2025-01-17' }, { id: 'ac-001-008', code: 'POLIZA-COT-0008', status: 'delivered' as const, assignedToSaleId: 'sale-008', deliveredAt: '2025-01-18' }, { id: 'ac-001-009', code: 'POLIZA-COT-0009', status: 'delivered' as const, assignedToSaleId: 'sale-009', deliveredAt: '2025-01-19' }, { id: 'ac-001-010', code: 'POLIZA-COT-0010', status: 'delivered' as const, assignedToSaleId: 'sale-010', deliveredAt: '2025-01-20' }, { id: 'ac-001-011', code: 'POLIZA-COT-0011', status: 'delivered' as const, assignedToSaleId: 'sale-011', deliveredAt: '2025-01-21' }, { id: 'ac-001-012', code: 'POLIZA-COT-0012', status: 'delivered' as const, assignedToSaleId: 'sale-012', deliveredAt: '2025-01-22' }, { id: 'ac-001-013', code: 'POLIZA-COT-0013', status: 'available' as const }, { id: 'ac-001-014', code: 'POLIZA-COT-0014', status: 'available' as const }, { id: 'ac-001-015', code: 'POLIZA-COT-0015', status: 'available' as const }, { id: 'ac-001-016', code: 'POLIZA-COT-0016', status: 'available' as const }, { id: 'ac-001-017', code: 'POLIZA-COT-0017', status: 'available' as const }, { id: 'ac-001-018', code: 'POLIZA-COT-0018', status: 'available' as const }, { id: 'ac-001-019', code: 'POLIZA-COT-0019', status: 'available' as const }, { id: 'ac-001-020', code: 'POLIZA-COT-0020', status: 'available' as const }, { id: 'ac-001-021', code: 'POLIZA-COT-0021', status: 'available' as const }, { id: 'ac-001-022', code: 'POLIZA-COT-0022', status: 'available' as const }, { id: 'ac-001-023', code: 'POLIZA-COT-0023', status: 'available' as const }, { id: 'ac-001-024', code: 'POLIZA-COT-0024', status: 'available' as const }, { id: 'ac-001-025', code: 'POLIZA-COT-0025', status: 'available' as const }],
     createdAt: '2024-06-01' 
   },
   { 
-    id: 'service-002', 
-    companyId: 'company-001', 
-    name: 'Poliza Claims Bot', 
-    description: 'Bot de IA para gestión automática de reclamos de seguros.', 
-    category: 'IA para Seguros', 
-    priceCOP: 199000, 
-    type: 'suscripción', 
-    vendorCommissionPct: 18, 
-    mensualistaPct: 8, 
-    status: 'activo', 
+    id: 'service-002', companyId: 'company-001', name: 'Poliza Claims Bot', 
+    description: 'Bot de IA para gestion automatica de reclamos de seguros.',
+    category: 'IA para Seguros', priceCOP: 199000, type: 'suscripción',
+    vendorCommissionPct: 18, mensualistaPct: 8, status: 'activo',
     refundPolicy: { autoRefund: true, refundWindowDays: 7 }, 
-    requiresTraining: true, 
-    trainingType: 'pdf', 
-    trainingUrl: 'https://example.com/poliza-claims.pdf',
+    requiresTraining: true, trainingType: 'pdf', trainingUrl: 'https://example.com/poliza-claims.pdf',
     activeSubscriptions: 28,
     materials: [{ id: 'mat-002', serviceId: 'service-002', title: 'Manual Claims Bot', type: 'pdf', url: '/materials/claims-bot.pdf', uploadedAt: '2024-06-15' }], 
+    activationCodes: [{ id: 'ac-002-001', code: 'POLIZA-CLM-0001', status: 'delivered' as const, assignedToSaleId: 'sale-001', deliveredAt: '2025-01-11' }, { id: 'ac-002-002', code: 'POLIZA-CLM-0002', status: 'delivered' as const, assignedToSaleId: 'sale-002', deliveredAt: '2025-01-12' }, { id: 'ac-002-003', code: 'POLIZA-CLM-0003', status: 'delivered' as const, assignedToSaleId: 'sale-003', deliveredAt: '2025-01-13' }, { id: 'ac-002-004', code: 'POLIZA-CLM-0004', status: 'delivered' as const, assignedToSaleId: 'sale-004', deliveredAt: '2025-01-14' }, { id: 'ac-002-005', code: 'POLIZA-CLM-0005', status: 'delivered' as const, assignedToSaleId: 'sale-005', deliveredAt: '2025-01-15' }, { id: 'ac-002-006', code: 'POLIZA-CLM-0006', status: 'delivered' as const, assignedToSaleId: 'sale-006', deliveredAt: '2025-01-16' }, { id: 'ac-002-007', code: 'POLIZA-CLM-0007', status: 'delivered' as const, assignedToSaleId: 'sale-007', deliveredAt: '2025-01-17' }, { id: 'ac-002-008', code: 'POLIZA-CLM-0008', status: 'delivered' as const, assignedToSaleId: 'sale-008', deliveredAt: '2025-01-18' }, { id: 'ac-002-009', code: 'POLIZA-CLM-0009', status: 'available' as const }, { id: 'ac-002-010', code: 'POLIZA-CLM-0010', status: 'available' as const }, { id: 'ac-002-011', code: 'POLIZA-CLM-0011', status: 'available' as const }, { id: 'ac-002-012', code: 'POLIZA-CLM-0012', status: 'available' as const }, { id: 'ac-002-013', code: 'POLIZA-CLM-0013', status: 'available' as const }, { id: 'ac-002-014', code: 'POLIZA-CLM-0014', status: 'available' as const }, { id: 'ac-002-015', code: 'POLIZA-CLM-0015', status: 'available' as const }, { id: 'ac-002-016', code: 'POLIZA-CLM-0016', status: 'available' as const }, { id: 'ac-002-017', code: 'POLIZA-CLM-0017', status: 'available' as const }, { id: 'ac-002-018', code: 'POLIZA-CLM-0018', status: 'available' as const }, { id: 'ac-002-019', code: 'POLIZA-CLM-0019', status: 'available' as const }, { id: 'ac-002-020', code: 'POLIZA-CLM-0020', status: 'available' as const }, { id: 'ac-002-021', code: 'POLIZA-CLM-0021', status: 'available' as const }, { id: 'ac-002-022', code: 'POLIZA-CLM-0022', status: 'available' as const }, { id: 'ac-002-023', code: 'POLIZA-CLM-0023', status: 'available' as const }, { id: 'ac-002-024', code: 'POLIZA-CLM-0024', status: 'available' as const }, { id: 'ac-002-025', code: 'POLIZA-CLM-0025', status: 'available' as const }],
     createdAt: '2024-06-15' 
   },
   
   // LexIA - IA Legal
   { 
-    id: 'service-003', 
-    companyId: 'company-002', 
-    name: 'LexIA Contratos', 
-    description: 'Generación y revisión de contratos con inteligencia artificial en minutos.', 
-    category: 'IA Legal', 
-    priceCOP: 249000, 
-    type: 'suscripción', 
-    vendorCommissionPct: 18, 
-    mensualistaPct: 8, 
-    status: 'activo', 
+    id: 'service-003', companyId: 'company-002', name: 'LexIA Contratos', 
+    description: 'Generacion y revision de contratos con inteligencia artificial en minutos.',
+    category: 'IA Legal', priceCOP: 249000, type: 'suscripción',
+    vendorCommissionPct: 18, mensualistaPct: 8, status: 'activo',
     refundPolicy: { autoRefund: false, refundWindowDays: 14 }, 
-    requiresTraining: true, 
-    trainingType: 'video', 
-    trainingUrl: 'https://example.com/lexia-training',
+    requiresTraining: true, trainingType: 'video', trainingUrl: 'https://example.com/lexia-training',
     activeSubscriptions: 35,
     materials: [{ id: 'mat-003', serviceId: 'service-003', title: 'Demo LexIA', type: 'pdf', url: '/materials/demo-lexia.pdf', uploadedAt: '2024-07-01' }], 
+    activationCodes: [{ id: 'ac-003-001', code: 'LEXIA-CTR-0001', status: 'delivered' as const, assignedToSaleId: 'sale-001', deliveredAt: '2025-01-11' }, { id: 'ac-003-002', code: 'LEXIA-CTR-0002', status: 'delivered' as const, assignedToSaleId: 'sale-002', deliveredAt: '2025-01-12' }, { id: 'ac-003-003', code: 'LEXIA-CTR-0003', status: 'delivered' as const, assignedToSaleId: 'sale-003', deliveredAt: '2025-01-13' }, { id: 'ac-003-004', code: 'LEXIA-CTR-0004', status: 'delivered' as const, assignedToSaleId: 'sale-004', deliveredAt: '2025-01-14' }, { id: 'ac-003-005', code: 'LEXIA-CTR-0005', status: 'delivered' as const, assignedToSaleId: 'sale-005', deliveredAt: '2025-01-15' }, { id: 'ac-003-006', code: 'LEXIA-CTR-0006', status: 'delivered' as const, assignedToSaleId: 'sale-006', deliveredAt: '2025-01-16' }, { id: 'ac-003-007', code: 'LEXIA-CTR-0007', status: 'available' as const }, { id: 'ac-003-008', code: 'LEXIA-CTR-0008', status: 'available' as const }, { id: 'ac-003-009', code: 'LEXIA-CTR-0009', status: 'available' as const }, { id: 'ac-003-010', code: 'LEXIA-CTR-0010', status: 'available' as const }, { id: 'ac-003-011', code: 'LEXIA-CTR-0011', status: 'available' as const }, { id: 'ac-003-012', code: 'LEXIA-CTR-0012', status: 'available' as const }, { id: 'ac-003-013', code: 'LEXIA-CTR-0013', status: 'available' as const }, { id: 'ac-003-014', code: 'LEXIA-CTR-0014', status: 'available' as const }, { id: 'ac-003-015', code: 'LEXIA-CTR-0015', status: 'available' as const }, { id: 'ac-003-016', code: 'LEXIA-CTR-0016', status: 'available' as const }, { id: 'ac-003-017', code: 'LEXIA-CTR-0017', status: 'available' as const }, { id: 'ac-003-018', code: 'LEXIA-CTR-0018', status: 'available' as const }, { id: 'ac-003-019', code: 'LEXIA-CTR-0019', status: 'available' as const }, { id: 'ac-003-020', code: 'LEXIA-CTR-0020', status: 'available' as const }, { id: 'ac-003-021', code: 'LEXIA-CTR-0021', status: 'available' as const }, { id: 'ac-003-022', code: 'LEXIA-CTR-0022', status: 'available' as const }, { id: 'ac-003-023', code: 'LEXIA-CTR-0023', status: 'available' as const }, { id: 'ac-003-024', code: 'LEXIA-CTR-0024', status: 'available' as const }, { id: 'ac-003-025', code: 'LEXIA-CTR-0025', status: 'available' as const }],
     createdAt: '2024-07-01' 
   },
   { 
-    id: 'service-004', 
-    companyId: 'company-002', 
-    name: 'LexIA Due Diligence', 
-    description: 'Análisis legal automatizado para procesos de M&A y compliance.', 
-    category: 'IA Legal', 
-    priceCOP: 299000, 
-    type: 'puntual', 
-    vendorCommissionPct: 22, 
-    mensualistaPct: 8, 
-    status: 'activo', 
+    id: 'service-004', companyId: 'company-002', name: 'LexIA Due Diligence', 
+    description: 'Analisis legal automatizado para procesos de M&A y compliance.',
+    category: 'IA Legal', priceCOP: 299000, type: 'puntual',
+    vendorCommissionPct: 22, mensualistaPct: 8, status: 'activo',
     refundPolicy: { autoRefund: false, refundWindowDays: 30 }, 
-    requiresTraining: true, 
-    trainingType: 'video', 
-    trainingUrl: 'https://example.com/due-diligence',
+    requiresTraining: true, trainingType: 'video', trainingUrl: 'https://example.com/due-diligence',
     materials: [{ id: 'mat-004', serviceId: 'service-004', title: 'Proceso Due Diligence', type: 'pdf', url: '/materials/due-diligence.pdf', uploadedAt: '2024-07-15' }], 
+    activationCodes: [{ id: 'ac-004-001', code: 'LEXIA-DD-0001', status: 'delivered' as const, assignedToSaleId: 'sale-001', deliveredAt: '2025-01-11' }, { id: 'ac-004-002', code: 'LEXIA-DD-0002', status: 'delivered' as const, assignedToSaleId: 'sale-002', deliveredAt: '2025-01-12' }, { id: 'ac-004-003', code: 'LEXIA-DD-0003', status: 'delivered' as const, assignedToSaleId: 'sale-003', deliveredAt: '2025-01-13' }, { id: 'ac-004-004', code: 'LEXIA-DD-0004', status: 'available' as const }, { id: 'ac-004-005', code: 'LEXIA-DD-0005', status: 'available' as const }, { id: 'ac-004-006', code: 'LEXIA-DD-0006', status: 'available' as const }, { id: 'ac-004-007', code: 'LEXIA-DD-0007', status: 'available' as const }, { id: 'ac-004-008', code: 'LEXIA-DD-0008', status: 'available' as const }, { id: 'ac-004-009', code: 'LEXIA-DD-0009', status: 'available' as const }, { id: 'ac-004-010', code: 'LEXIA-DD-0010', status: 'available' as const }, { id: 'ac-004-011', code: 'LEXIA-DD-0011', status: 'available' as const }, { id: 'ac-004-012', code: 'LEXIA-DD-0012', status: 'available' as const }, { id: 'ac-004-013', code: 'LEXIA-DD-0013', status: 'available' as const }, { id: 'ac-004-014', code: 'LEXIA-DD-0014', status: 'available' as const }, { id: 'ac-004-015', code: 'LEXIA-DD-0015', status: 'available' as const }, { id: 'ac-004-016', code: 'LEXIA-DD-0016', status: 'available' as const }, { id: 'ac-004-017', code: 'LEXIA-DD-0017', status: 'available' as const }, { id: 'ac-004-018', code: 'LEXIA-DD-0018', status: 'available' as const }, { id: 'ac-004-019', code: 'LEXIA-DD-0019', status: 'available' as const }, { id: 'ac-004-020', code: 'LEXIA-DD-0020', status: 'available' as const }, { id: 'ac-004-021', code: 'LEXIA-DD-0021', status: 'available' as const }, { id: 'ac-004-022', code: 'LEXIA-DD-0022', status: 'available' as const }, { id: 'ac-004-023', code: 'LEXIA-DD-0023', status: 'available' as const }, { id: 'ac-004-024', code: 'LEXIA-DD-0024', status: 'available' as const }, { id: 'ac-004-025', code: 'LEXIA-DD-0025', status: 'available' as const }],
     createdAt: '2024-07-15' 
   },
 
-  // Kreativo - IA Marketing
   { 
     id: 'service-005', 
     companyId: 'company-003', 
@@ -496,7 +477,8 @@ export const services: Service[] = [
     trainingUrl: 'https://example.com/kreativo.pdf',
     activeSubscriptions: 67,
     materials: [{ id: 'mat-005', serviceId: 'service-005', title: 'Guía Kreativo', type: 'pdf', url: '/materials/guia-kreativo.pdf', uploadedAt: '2024-08-01' }], 
-    createdAt: '2024-08-01' 
+    activationCodes: [],
+    createdAt: '2024-08-01'
   },
   { 
     id: 'service-006', 
@@ -514,7 +496,8 @@ export const services: Service[] = [
     trainingType: 'video', 
     trainingUrl: 'https://example.com/landing-builder',
     materials: [{ id: 'mat-006', serviceId: 'service-006', title: 'Demo Landing Builder', type: 'pdf', url: '/materials/landing-builder.pdf', uploadedAt: '2024-08-15' }], 
-    createdAt: '2024-08-15' 
+    activationCodes: [],
+    createdAt: '2024-08-15'
   },
 
   // Cierro - IA Ventas
@@ -535,7 +518,8 @@ export const services: Service[] = [
     trainingUrl: 'https://example.com/cierro-crm',
     activeSubscriptions: 48,
     materials: [{ id: 'mat-007', serviceId: 'service-007', title: 'Manual Cierro CRM', type: 'pdf', url: '/materials/cierro-crm.pdf', uploadedAt: '2024-09-01' }], 
-    createdAt: '2024-09-01' 
+    activationCodes: [],
+    createdAt: '2024-09-01'
   },
   { 
     id: 'service-008', 
@@ -552,7 +536,8 @@ export const services: Service[] = [
     requiresTraining: false,
     activeSubscriptions: 33,
     materials: [{ id: 'mat-008', serviceId: 'service-008', title: 'Guía Cotizador', type: 'pdf', url: '/materials/cotizador.pdf', uploadedAt: '2024-09-10' }], 
-    createdAt: '2024-09-10' 
+    activationCodes: [],
+    createdAt: '2024-09-10'
   },
 
   // Asista - IA Atención
@@ -573,7 +558,8 @@ export const services: Service[] = [
     trainingUrl: 'https://example.com/whatsapp-ia',
     activeSubscriptions: 89,
     materials: [{ id: 'mat-009', serviceId: 'service-009', title: 'Setup WhatsApp IA', type: 'pdf', url: '/materials/whatsapp-ia.pdf', uploadedAt: '2024-09-15' }], 
-    createdAt: '2024-09-15' 
+    activationCodes: [],
+    createdAt: '2024-09-15'
   },
   { 
     id: 'service-010', 
@@ -592,7 +578,8 @@ export const services: Service[] = [
     trainingUrl: 'https://example.com/soporte-ia.pdf',
     activeSubscriptions: 56,
     materials: [{ id: 'mat-010', serviceId: 'service-010', title: 'Manual Soporte IA', type: 'pdf', url: '/materials/soporte-ia.pdf', uploadedAt: '2024-10-01' }], 
-    createdAt: '2024-10-01' 
+    activationCodes: [],
+    createdAt: '2024-10-01'
   },
 
   // NumeroIA - IA Contabilidad
@@ -613,7 +600,8 @@ export const services: Service[] = [
     trainingUrl: 'https://example.com/numeroia',
     activeSubscriptions: 41,
     materials: [{ id: 'mat-011', serviceId: 'service-011', title: 'Demo NumeroIA', type: 'pdf', url: '/materials/demo-numeroia.pdf', uploadedAt: '2024-10-10' }], 
-    createdAt: '2024-10-10' 
+    activationCodes: [],
+    createdAt: '2024-10-10'
   },
   { 
     id: 'service-012', 
@@ -632,7 +620,8 @@ export const services: Service[] = [
     trainingUrl: 'https://example.com/reportes-ia.pdf',
     activeSubscriptions: 27,
     materials: [{ id: 'mat-012', serviceId: 'service-012', title: 'Guía Reportes', type: 'pdf', url: '/materials/reportes-ia.pdf', uploadedAt: '2024-10-15' }], 
-    createdAt: '2024-10-15' 
+    activationCodes: [],
+    createdAt: '2024-10-15'
   },
 
   // Recruta - IA RRHH
@@ -653,7 +642,8 @@ export const services: Service[] = [
     trainingUrl: 'https://example.com/recruta',
     activeSubscriptions: 31,
     materials: [{ id: 'mat-013', serviceId: 'service-013', title: 'Manual Recruta', type: 'pdf', url: '/materials/recruta.pdf', uploadedAt: '2024-10-20' }], 
-    createdAt: '2024-10-20' 
+    activationCodes: [],
+    createdAt: '2024-10-20'
   },
   { 
     id: 'service-014', 
@@ -670,7 +660,8 @@ export const services: Service[] = [
     requiresTraining: false,
     activeSubscriptions: 24,
     materials: [{ id: 'mat-014', serviceId: 'service-014', title: 'Guía Onboarding', type: 'pdf', url: '/materials/onboarding.pdf', uploadedAt: '2024-11-01' }], 
-    createdAt: '2024-11-01' 
+    activationCodes: [],
+    createdAt: '2024-11-01'
   },
 
   // Blindaje - IA Ciberseguridad
@@ -691,7 +682,8 @@ export const services: Service[] = [
     trainingUrl: 'https://example.com/blindaje',
     activeSubscriptions: 18,
     materials: [{ id: 'mat-015', serviceId: 'service-015', title: 'Setup Blindaje', type: 'pdf', url: '/materials/blindaje.pdf', uploadedAt: '2024-11-10' }], 
-    createdAt: '2024-11-10' 
+    activationCodes: [],
+    createdAt: '2024-11-10'
   },
   { 
     id: 'service-016', 
@@ -709,7 +701,8 @@ export const services: Service[] = [
     trainingType: 'pdf', 
     trainingUrl: 'https://example.com/pentesting.pdf',
     materials: [{ id: 'mat-016', serviceId: 'service-016', title: 'Metodología Pentest', type: 'pdf', url: '/materials/pentesting.pdf', uploadedAt: '2024-11-15' }], 
-    createdAt: '2024-11-15' 
+    activationCodes: [],
+    createdAt: '2024-11-15'
   },
 
   // Servicios adicionales
@@ -730,7 +723,8 @@ export const services: Service[] = [
     trainingUrl: 'https://example.com/social-manager',
     activeSubscriptions: 54,
     materials: [{ id: 'mat-017', serviceId: 'service-017', title: 'Manual Social Manager', type: 'pdf', url: '/materials/social-manager.pdf', uploadedAt: '2024-11-20' }], 
-    createdAt: '2024-11-20' 
+    activationCodes: [],
+    createdAt: '2024-11-20'
   },
   { 
     id: 'service-018', 
@@ -749,7 +743,8 @@ export const services: Service[] = [
     trainingUrl: 'https://example.com/analytics.pdf',
     activeSubscriptions: 38,
     materials: [{ id: 'mat-018', serviceId: 'service-018', title: 'Guía Analytics', type: 'pdf', url: '/materials/analytics.pdf', uploadedAt: '2024-11-25' }], 
-    createdAt: '2024-11-25' 
+    activationCodes: [],
+    createdAt: '2024-11-25'
   },
   { 
     id: 'service-019', 
@@ -766,7 +761,8 @@ export const services: Service[] = [
     requiresTraining: false,
     activeSubscriptions: 72,
     materials: [{ id: 'mat-019', serviceId: 'service-019', title: 'Setup Chatbot', type: 'pdf', url: '/materials/chatbot-web.pdf', uploadedAt: '2024-12-01' }], 
-    createdAt: '2024-12-01' 
+    activationCodes: [],
+    createdAt: '2024-12-01'
   },
   { 
     id: 'service-020', 
@@ -785,7 +781,8 @@ export const services: Service[] = [
     trainingUrl: 'https://example.com/riesgo-ia',
     activeSubscriptions: 19,
     materials: [{ id: 'mat-020', serviceId: 'service-020', title: 'Manual Riesgo IA', type: 'pdf', url: '/materials/riesgo-ia.pdf', uploadedAt: '2024-12-05' }], 
-    createdAt: '2024-12-05' 
+    activationCodes: [],
+    createdAt: '2024-12-05'
   },
   { 
     id: 'service-021', 
@@ -804,7 +801,8 @@ export const services: Service[] = [
     trainingUrl: 'https://example.com/compliance',
     activeSubscriptions: 22,
     materials: [{ id: 'mat-021', serviceId: 'service-021', title: 'Manual Compliance', type: 'pdf', url: '/materials/compliance.pdf', uploadedAt: '2024-12-10' }], 
-    createdAt: '2024-12-10' 
+    activationCodes: [],
+    createdAt: '2024-12-10'
   },
   { 
     id: 'service-022', 
@@ -823,7 +821,8 @@ export const services: Service[] = [
     trainingUrl: 'https://example.com/nomina',
     activeSubscriptions: 35,
     materials: [{ id: 'mat-022', serviceId: 'service-022', title: 'Manual Nómina IA', type: 'pdf', url: '/materials/nomina.pdf', uploadedAt: '2024-12-15' }], 
-    createdAt: '2024-12-15' 
+    activationCodes: [],
+    createdAt: '2024-12-15'
   },
   { 
     id: 'service-023', 
@@ -842,7 +841,8 @@ export const services: Service[] = [
     trainingUrl: 'https://example.com/performance.pdf',
     activeSubscriptions: 28,
     materials: [{ id: 'mat-023', serviceId: 'service-023', title: 'Guía Performance', type: 'pdf', url: '/materials/performance.pdf', uploadedAt: '2024-12-20' }], 
-    createdAt: '2024-12-20' 
+    activationCodes: [],
+    createdAt: '2024-12-20'
   },
   { 
     id: 'service-024', 
@@ -861,7 +861,8 @@ export const services: Service[] = [
     trainingUrl: 'https://example.com/cyber-training',
     activeSubscriptions: 45,
     materials: [{ id: 'mat-024', serviceId: 'service-024', title: 'Manual Cyber Training', type: 'pdf', url: '/materials/cyber-training.pdf', uploadedAt: '2024-12-25' }], 
-    createdAt: '2024-12-25' 
+    activationCodes: [],
+    createdAt: '2024-12-25'
   }
 ];
 

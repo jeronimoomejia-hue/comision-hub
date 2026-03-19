@@ -176,8 +176,14 @@ export default function VendorServiceDetail() {
   };
 
   // Sale submission
+  const availableCodes = service.activationCodes.filter(c => c.status === 'available').length;
+  
   const handleSubmitSale = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (availableCodes === 0) {
+      toast.error("No hay códigos de activación disponibles. Contacta a la empresa.");
+      return;
+    }
     setSaleLoading(true);
     await new Promise(resolve => setTimeout(resolve, 800));
     const grossAmount = service.priceCOP;
@@ -192,7 +198,7 @@ export default function VendorServiceDetail() {
       amountCOP: grossAmount, holdStartAt: new Date().toISOString(), holdEndAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
       paymentProvider: 'MercadoPago', mpPaymentId: `MP-${Date.now()}`
     });
-    toast.success("¡Venta registrada!", { description: `Comisión de ${formatCOP(sellerCommissionAmount)} en retención 7 días.` });
+    toast.success("¡Venta registrada! Código de activación entregado al cliente.", { description: `Comisión de ${formatCOP(sellerCommissionAmount)} en retención 7 días.` });
     setSaleForm({ clientName: "", clientEmail: "" });
     setSaleLoading(false);
     setSaleDialogOpen(false);
@@ -343,6 +349,7 @@ export default function VendorServiceDetail() {
                 <TableRow>
                   <TableHead>Fecha</TableHead>
                   <TableHead>Cliente</TableHead>
+                  <TableHead>Código</TableHead>
                   <TableHead>Estado</TableHead>
                   <TableHead className="text-right">Monto</TableHead>
                   <TableHead className="text-right">Comisión</TableHead>
@@ -364,6 +371,13 @@ export default function VendorServiceDetail() {
                           <p className="font-medium">{sale.clientName}</p>
                           <p className="text-xs text-muted-foreground">{sale.clientEmail}</p>
                         </div>
+                      </TableCell>
+                      <TableCell>
+                        {sale.activationCode ? (
+                          <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">{sale.activationCode}</code>
+                        ) : (
+                          <span className="text-xs text-muted-foreground">—</span>
+                        )}
                       </TableCell>
                       <TableCell>
                         <StatusBadge 

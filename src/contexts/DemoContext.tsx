@@ -54,6 +54,7 @@ interface DemoContextType {
   togglePinService: (serviceId: string) => void;
   addService: (service: Omit<Service, 'id' | 'createdAt'>) => void;
   updateService: (serviceId: string, updates: Partial<Service>) => void;
+  addActivationCodes: (serviceId: string, codes: string[]) => void;
   addRefundRequest: (refund: Omit<RefundRequest, 'id' | 'createdAt'>) => void;
   updateRefundRequest: (refundId: string, updates: Partial<RefundRequest>) => void;
   addServiceRequest: (request: Omit<ServiceRequest, 'id' | 'createdAt' | 'updatedAt'>) => void;
@@ -98,11 +99,31 @@ export function DemoProvider({ children }: { children: ReactNode }) {
   const demoMode = true;
   
   const addSale = (saleData: Omit<Sale, 'id' | 'createdAt'>) => {
+    const saleId = `sale-${Date.now()}`;
     const newSale: Sale = {
       ...saleData,
-      id: `sale-${Date.now()}`,
+      id: saleId,
       createdAt: new Date().toISOString().split('T')[0]
     };
+    
+    // Auto-deliver activation code from the service's pool
+    const service = services.find(s => s.id === saleData.serviceId);
+    if (service) {
+      const availableCode = service.activationCodes.find(c => c.status === 'available');
+      if (availableCode) {
+        newSale.activationCode = availableCode.code;
+        setServices(prev => prev.map(s => 
+          s.id === saleData.serviceId 
+            ? { ...s, activationCodes: s.activationCodes.map(c => 
+                c.id === availableCode.id 
+                  ? { ...c, status: 'delivered' as const, assignedToSaleId: saleId, deliveredAt: newSale.createdAt }
+                  : c
+              )}
+            : s
+        ));
+      }
+    }
+    
     setSales(prev => [newSale, ...prev]);
     
     const commission: Commission = {
@@ -191,6 +212,18 @@ export function DemoProvider({ children }: { children: ReactNode }) {
     setServices(prev => prev.map(service =>
       service.id === serviceId ? { ...service, ...updates } : service
     ));
+  };
+  
+  const addActivationCodes = (serviceId: string, codes: string[]) => {
+    setServices(prev => prev.map(service => {
+      if (service.id !== serviceId) return service;
+      const newCodes = codes.map((code, i) => ({
+        id: `ac-${Date.now()}-${i}`,
+        code,
+        status: 'available' as const,
+      }));
+      return { ...service, activationCodes: [...service.activationCodes, ...newCodes] };
+    }));
   };
   
   const addRefundRequest = (refundData: Omit<RefundRequest, 'id' | 'createdAt'>) => {
@@ -286,6 +319,7 @@ export function DemoProvider({ children }: { children: ReactNode }) {
       togglePinService,
       addService,
       updateService,
+      addActivationCodes,
       addRefundRequest,
       updateRefundRequest,
       addServiceRequest,
