@@ -108,7 +108,7 @@ const adminNav = [
   { icon: UserCheck, label: "Vendedores", href: "/admin/vendors" },
   { icon: Building2, label: "Empresas", href: "/admin/companies" },
   { icon: Activity, label: "Transacciones", href: "/admin/transactions" },
-  { icon: Package, label: "Gigs", href: "/admin/gigs" },
+  { icon: Package, label: "Servicios", href: "/admin/services" },
   { icon: BookOpen, label: "Capacitaciones", href: "/admin/trainings" },
   { icon: ShoppingCart, label: "Ventas", href: "/admin/sales" },
   { icon: DollarSign, label: "Pagos", href: "/admin/payments" },
