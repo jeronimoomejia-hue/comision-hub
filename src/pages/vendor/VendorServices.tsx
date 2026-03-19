@@ -65,7 +65,7 @@ export default function VendorServices() {
         {/* Header */}
         <div className="flex flex-col gap-0.5">
           <h1 className="text-lg sm:text-2xl font-bold text-foreground">
-            Servicios de {company?.name || 'la empresa'}
+            Gigs de {company?.name || 'la empresa'}
           </h1>
           <p className="text-[11px] sm:text-sm text-muted-foreground">
             {totalActive} listos para vender · {totalPending} pendientes de capacitación
@@ -76,7 +76,7 @@ export default function VendorServices() {
         <div className="relative max-w-xl">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
           <Input
-            placeholder="Buscar servicios..."
+            placeholder="Buscar gigs..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-9 h-9 sm:h-11 bg-card border-border rounded-xl text-xs sm:text-sm"

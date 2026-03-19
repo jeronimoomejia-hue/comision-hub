@@ -418,7 +418,7 @@ export const ServiceDetailsModal = ({
                 <div>
                   <h4 className="font-semibold mb-3 flex items-center gap-2">
                     <Download className="w-5 h-5" />
-                    Materiales de venta
+                    Materiales del gig
                   </h4>
                   <div className="grid sm:grid-cols-2 gap-3">
                     {[
@@ -449,7 +449,7 @@ export const ServiceDetailsModal = ({
                 {!isTrainingComplete && userRole === 'vendor' && (
                   <div className="p-4 rounded-lg bg-amber-500/10 border border-amber-500/20">
                     <p className="text-sm text-amber-600 dark:text-amber-400">
-                      ⚠️ Completa la capacitación para desbloquear todos los materiales y poder vender este servicio.
+                      ⚠️ Completa la capacitación para desbloquear todos los materiales y poder vender este gig.
                     </p>
                   </div>
                 )}
@@ -568,8 +568,8 @@ export const ServiceDetailsModal = ({
                   <h5 className="font-medium mb-2">Términos importantes</h5>
                   <p className="text-sm text-muted-foreground">
                     {details?.termsHighlights || 
-                      'Al adquirir el servicio, el cliente acepta los términos de uso de la plataforma. ' +
-                      'El servicio se presta bajo las condiciones vigentes al momento de la compra.'}
+                      'Al adquirir el gig, el cliente acepta los términos de uso de la plataforma. ' +
+                      'El gig se presta bajo las condiciones vigentes al momento de la compra.'}
                   </p>
                 </div>
               </TabsContent>
@@ -640,7 +640,7 @@ export const ServiceDetailsModal = ({
                     <div>
                       <h5 className="font-medium text-amber-700 dark:text-amber-400">Privacidad protegida</h5>
                       <p className="text-sm text-muted-foreground mt-1">
-                        No tienes contacto directo con las empresas. Si necesitas ayuda con este servicio, 
+                        No tienes contacto directo con las empresas. Si necesitas ayuda con este gig, 
                         usa el <span className="font-medium text-primary">sistema de soporte</span> de Mensualista y nosotros coordinamos por ti.
                       </p>
                     </div>

@@ -19,7 +19,7 @@ const plans = [
     description: "Ideal para negocios pequeños que quieren empezar sin inversión.",
     badge: null,
     features: [
-      { text: "Máximo 5 servicios", included: true },
+      { text: "Máximo 5 gigs", included: true },
       { text: "Personalización básica (logo y colores)", included: true },
       { text: "Panel de vendedores", included: true },
       { text: "Reportes básicos", included: true },

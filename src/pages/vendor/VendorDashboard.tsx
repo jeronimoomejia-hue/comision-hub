@@ -90,7 +90,7 @@ export default function VendorDashboard() {
           description={`Panel de ventas de ${company?.name || 'la empresa'}`}
           steps={[
             "Revisa tus comisiones del mes en la parte superior",
-            "Accede a los servicios de tu empresa para vender",
+            "Accede a los gigs de tu empresa para vender",
             "Consulta tu actividad y capacitaciones pendientes"
           ]}
         />
@@ -159,7 +159,7 @@ export default function VendorDashboard() {
           {[
             { label: "Ventas", path: "/vendor/sales", icon: ShoppingCart },
             { label: "Pagos", path: "/vendor/payments", icon: DollarSign },
-            { label: "Servicios", path: "/vendor/services", icon: Package },
+            { label: "Gigs", path: "/vendor/services", icon: Package },
             { label: "Capacitaciones", path: "/vendor/trainings", icon: BookOpen },
             ...(companyPlan !== 'freemium' ? [{ label: "Chat", path: "/vendor/support", icon: MessageCircle }] : []),
           ].map(pill => (

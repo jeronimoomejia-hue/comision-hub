@@ -103,7 +103,7 @@ export const ServicesSection = () => {
             Comisiones recurrentes vendiendo suscripciones
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Elige entre docenas de servicios digitales de empresas verificadas y gana cada mes.
+            Elige entre docenas de gigs digitales de empresas verificadas y gana cada mes.
           </p>
         </motion.div>
 

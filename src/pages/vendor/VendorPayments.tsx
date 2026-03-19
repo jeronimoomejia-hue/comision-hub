@@ -165,7 +165,7 @@ export default function VendorPayments() {
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold">Mis Ventas y Pagos</h1>
           <p className="text-muted-foreground mt-1">
-            Tus ventas por servicio, estado de retención y pagos automáticos
+            Tus ventas por gig, estado de retención y pagos automáticos
           </p>
         </div>
 
@@ -224,7 +224,7 @@ export default function VendorPayments() {
           <p className="text-sm">
             <strong>¿Cómo funciona?</strong> Cada venta entra en <strong>retención</strong> (7 días). 
             Al liberarse, tu comisión se transfiere automáticamente a tu cuenta bancaria. 
-            Puedes solicitar devolución si estás dentro del período de gracia del servicio.
+            Puedes solicitar devolución si estás dentro del período de gracia del gig.
           </p>
         </div>
 
@@ -387,7 +387,7 @@ export default function VendorPayments() {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
-                placeholder="Buscar por cliente o servicio..."
+                placeholder="Buscar por cliente o gig..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10"
@@ -410,7 +410,7 @@ export default function VendorPayments() {
                 <SelectValue placeholder="Servicio" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Todos los servicios</SelectItem>
+                <SelectItem value="all">Todos los gigs</SelectItem>
                 {uniqueServices.map(service => (
                   <SelectItem key={service!.id} value={service!.id}>
                     {service!.name}
@@ -597,7 +597,7 @@ export default function VendorPayments() {
               {refundSale && (() => {
                 const service = allServices.find(s => s.id === refundSale.serviceId);
                 return service?.refundPolicy.autoRefund 
-                  ? "Este servicio tiene devolución automática. Se procesará al instante."
+                  ? "Este gig tiene devolución automática. Se procesará al instante."
                   : "La empresa revisará tu solicitud y te notificará.";
               })()}
             </DialogDescription>

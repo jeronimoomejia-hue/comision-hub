@@ -49,9 +49,9 @@ export default function VendorMaterials() {
     <DashboardLayout role="vendor" userName={vendor?.name}>
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold">Materiales de venta</h1>
+          <h1 className="text-2xl font-bold">Materiales del gig</h1>
           <p className="text-muted-foreground">
-            Descarga materiales de los servicios con capacitación completada
+            Descarga materiales de los gigs con capacitación completada
           </p>
         </div>
 
@@ -88,7 +88,7 @@ export default function VendorMaterials() {
               <SelectValue placeholder="Filtrar por servicio" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Todos los servicios</SelectItem>
+              <SelectItem value="all">Todos los gigs</SelectItem>
               {availableServices.map(s => (
                 <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
               ))}

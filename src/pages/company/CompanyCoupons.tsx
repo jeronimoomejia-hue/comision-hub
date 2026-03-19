@@ -189,7 +189,7 @@ export default function CompanyCoupons() {
                   <Select value={newCoupon.serviceId} onValueChange={v => setNewCoupon({ ...newCoupon, serviceId: v })}>
                     <SelectTrigger className="h-8 text-xs mt-1"><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">Todos los servicios</SelectItem>
+                      <SelectItem value="all">Todos los gigs</SelectItem>
                       {companyServices.map(s => (
                         <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
                       ))}
