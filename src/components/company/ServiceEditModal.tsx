@@ -469,6 +469,78 @@ export default function ServiceEditModal({ service, sales, onClose, onSave }: Se
               )}
             </TabsContent>
 
+            {/* TAB: Codes */}
+            <TabsContent value="codes" className="space-y-6 m-0">
+              <div className="card-premium p-6">
+                <h4 className="font-semibold mb-4 flex items-center gap-2">
+                  🔑 Códigos de activación
+                </h4>
+                {(() => {
+                  const codes = service.activationCodes;
+                  const available = codes.filter(c => c.status === 'available').length;
+                  const delivered = codes.filter(c => c.status === 'delivered').length;
+                  const total = codes.length;
+                  const pct = total > 0 ? (available / total) * 100 : 0;
+                  return (
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-3 gap-4">
+                        <div className="p-3 bg-muted/50 rounded-lg text-center">
+                          <p className="text-2xl font-bold">{total}</p>
+                          <p className="text-xs text-muted-foreground">Total cargados</p>
+                        </div>
+                        <div className="p-3 bg-muted/50 rounded-lg text-center">
+                          <p className="text-2xl font-bold text-primary">{available}</p>
+                          <p className="text-xs text-muted-foreground">Disponibles</p>
+                        </div>
+                        <div className="p-3 bg-muted/50 rounded-lg text-center">
+                          <p className="text-2xl font-bold">{delivered}</p>
+                          <p className="text-xs text-muted-foreground">Entregados</p>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-1.5">
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="text-muted-foreground">Stock de códigos</span>
+                          <span className={available < 5 ? 'text-destructive font-medium' : 'text-muted-foreground'}>{available} disponibles</span>
+                        </div>
+                        <div className="w-full bg-muted rounded-full h-2">
+                          <div 
+                            className={`h-2 rounded-full transition-all ${available === 0 ? 'bg-destructive' : available < 5 ? 'bg-amber-500' : 'bg-primary'}`}
+                            style={{ width: `${pct}%` }}
+                          />
+                        </div>
+                      </div>
+                      
+                      {available < 5 && (
+                        <div className={`p-3 rounded-lg border ${available === 0 ? 'border-destructive/30 bg-destructive/5' : 'border-amber-200 bg-amber-50'}`}>
+                          <p className={`text-xs font-medium ${available === 0 ? 'text-destructive' : 'text-amber-700'}`}>
+                            {available === 0 
+                              ? '⚠️ Sin códigos disponibles. Las ventas no podrán completarse hasta que cargues más.'
+                              : `⚠️ Quedan solo ${available} códigos. Agrega más para no interrumpir las ventas.`
+                            }
+                          </p>
+                        </div>
+                      )}
+
+                      {delivered > 0 && (
+                        <div>
+                          <h5 className="text-sm font-medium mb-2">Últimas entregas</h5>
+                          <div className="space-y-1 max-h-40 overflow-y-auto">
+                            {codes.filter(c => c.status === 'delivered').slice(-10).reverse().map(c => (
+                              <div key={c.id} className="flex items-center justify-between text-xs p-2 bg-muted/30 rounded">
+                                <code className="font-mono text-muted-foreground">{c.code}</code>
+                                <span className="text-muted-foreground">{c.deliveredAt}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
+              </div>
+            </TabsContent>
+
             {/* TAB: Training */}
             <TabsContent value="training" className="space-y-6 m-0">
               <div className="card-premium p-6">
