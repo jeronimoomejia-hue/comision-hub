@@ -193,7 +193,7 @@ export default function CompanyDashboard() {
 
         {/* ── Plan-specific action cards ── */}
         <div className="grid grid-cols-2 gap-2">
-          <Link to="/company/services">
+          <Link to="/company/gigs">
             <div className="rounded-xl border border-border bg-card p-3 hover:border-primary/30 transition-colors text-center">
               <ShoppingCart className="w-5 h-5 mx-auto mb-1 text-primary" />
               <p className="text-sm font-medium">Servicios</p>

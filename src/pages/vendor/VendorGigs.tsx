@@ -192,7 +192,7 @@ export default function VendorServices() {
                       <Button
                         size="sm"
                         className="flex-1 h-7 sm:h-9 text-[10px] sm:text-xs px-2"
-                        onClick={() => navigate(`/vendor/services/${service.id}`)}
+                        onClick={() => navigate(`/vendor/gigs/${service.id}`)}
                       >
                         Vender
                         <ArrowRight className="w-3 h-3 ml-1" />
