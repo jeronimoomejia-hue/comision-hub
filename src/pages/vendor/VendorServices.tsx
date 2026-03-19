@@ -1,42 +1,35 @@
 import DashboardLayout from "@/components/layout/DashboardLayout";
-import { Button } from "@/components/ui/button";
 import { 
-  Search, BookOpen, Eye, TrendingUp, Zap, ArrowRight, Users, RefreshCw, AlertTriangle,
-  Star, Clock, Shield, Package
+  Search, Zap, RefreshCw, AlertTriangle,
+  Star, Clock, Shield, Package, Lock
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useDemo } from "@/contexts/DemoContext";
 import { formatCOP, companies } from "@/data/mockData";
-import { useNavigate } from "react-router-dom";
 import ServiceDetailsModal from "@/components/ServiceDetailsModal";
-import { Badge } from "@/components/ui/badge";
 
-// Category gradient map for servicio header visuals
-const categoryGradients: Record<string, string> = {
-  'IA para Seguros': 'from-blue-500/20 to-indigo-500/20',
-  'IA Legal': 'from-emerald-500/20 to-teal-500/20',
-  'IA para Marketing': 'from-pink-500/20 to-rose-500/20',
-  'IA para Ventas': 'from-amber-500/20 to-orange-500/20',
-  'IA para Atención': 'from-violet-500/20 to-purple-500/20',
-  'IA para Contabilidad': 'from-cyan-500/20 to-blue-500/20',
-  'IA para RRHH': 'from-fuchsia-500/20 to-pink-500/20',
-  'IA para Ciberseguridad': 'from-green-500/20 to-emerald-500/20',
+import insuranceImg from "@/assets/service-covers/insurance-ai.jpg";
+import legalImg from "@/assets/service-covers/legal-ai.jpg";
+import marketingImg from "@/assets/service-covers/marketing-ai.jpg";
+import salesImg from "@/assets/service-covers/sales-ai.jpg";
+import supportImg from "@/assets/service-covers/support-ai.jpg";
+import accountingImg from "@/assets/service-covers/accounting-ai.jpg";
+import hrImg from "@/assets/service-covers/hr-ai.jpg";
+import securityImg from "@/assets/service-covers/security-ai.jpg";
+
+const categoryCovers: Record<string, string> = {
+  'IA para Seguros': insuranceImg,
+  'IA Legal': legalImg,
+  'IA para Marketing': marketingImg,
+  'IA para Ventas': salesImg,
+  'IA para Atención': supportImg,
+  'IA para Contabilidad': accountingImg,
+  'IA para RRHH': hrImg,
+  'IA para Ciberseguridad': securityImg,
 };
 
-const categoryIcons: Record<string, string> = {
-  'IA para Seguros': '🛡️',
-  'IA Legal': '⚖️',
-  'IA para Marketing': '📢',
-  'IA para Ventas': '🎯',
-  'IA para Atención': '💬',
-  'IA para Contabilidad': '📊',
-  'IA para RRHH': '👥',
-  'IA para Ciberseguridad': '🔒',
-};
-
-export default function VendorGigs() {
-  const navigate = useNavigate();
+export default function VendorServices() {
   const { services, sales, trainingProgress, currentVendorId, currentCompanyId } = useDemo();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedServiceId, setSelectedServiceId] = useState<string | null>(null);
@@ -48,13 +41,6 @@ export default function VendorGigs() {
       tp => tp.vendorId === currentVendorId && tp.serviceId === serviceId
     );
     return training?.status === 'declared_completed';
-  };
-
-  const getTrainingId = (serviceId: string) => {
-    const training = trainingProgress.find(
-      tp => tp.vendorId === currentVendorId && tp.serviceId === serviceId
-    );
-    return training?.id || serviceId;
   };
 
   const companyServices = services.filter(s => s.status === 'activo' && s.companyId === currentCompanyId);
@@ -74,10 +60,10 @@ export default function VendorGigs() {
     .filter(s => s.salesCount > 0)
     .map(s => s.id);
 
-  const filteredServices = sortedServices.filter(service => {
-    return service.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-           service.description.toLowerCase().includes(searchQuery.toLowerCase());
-  });
+  const filteredServices = sortedServices.filter(service =>
+    service.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    service.description.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const totalActive = vendorServices.filter(s => s.isActive).length;
   const totalPending = vendorServices.filter(s => !s.isActive).length;
@@ -112,37 +98,52 @@ export default function VendorGigs() {
           />
         </div>
 
-        {/* Services Grid - Fiverr style */}
+        {/* Services Grid */}
         {filteredServices.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
             {filteredServices.map((service) => {
               const isPopular = topServiceIds.includes(service.id);
               const earningsPerSale = Math.round(service.priceCOP * service.vendorCommissionPct / 100);
-              const gradient = categoryGradients[service.category] || 'from-primary/20 to-primary/10';
-              const icon = categoryIcons[service.category] || '📦';
+              const coverImg = categoryCovers[service.category];
               const availableCodes = service.activationCodes.filter(c => c.status === 'available').length;
 
               return (
                 <div
                   key={service.id}
-                  className={`rounded-xl border border-border bg-card overflow-hidden group hover:shadow-lg hover:border-primary/30 transition-all duration-300 ${
-                    !service.isActive ? 'opacity-70' : ''
+                  onClick={() => setSelectedServiceId(service.id)}
+                  className={`rounded-xl border border-border bg-card overflow-hidden cursor-pointer group hover:shadow-lg hover:border-primary/30 transition-all duration-300 ${
+                    !service.isActive ? 'grayscale opacity-75' : ''
                   }`}
                 >
-                  {/* Service Header / Cover */}
-                  <div className={`relative h-28 sm:h-36 bg-gradient-to-br ${gradient} p-4 flex flex-col justify-between`}>
-                    {/* Category icon */}
-                    <div className="text-3xl sm:text-4xl">{icon}</div>
-                    
-                    {/* Badges row */}
-                    <div className="flex items-center gap-1.5 flex-wrap">
+                  {/* Cover Image */}
+                  <div className="relative h-36 sm:h-44 overflow-hidden">
+                    <img
+                      src={coverImg}
+                      alt={service.category}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    {/* Overlay gradient */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+
+                    {/* Inactive overlay */}
+                    {!service.isActive && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                        <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full bg-black/70 text-white border border-white/20">
+                          <Lock className="w-3.5 h-3.5" />
+                          Sin activar
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Badges on image */}
+                    <div className="absolute top-3 left-3 flex items-center gap-1.5 flex-wrap">
                       {isPopular && (
-                        <span className="inline-flex items-center gap-0.5 text-[9px] sm:text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-500 text-white">
+                        <span className="inline-flex items-center gap-0.5 text-[9px] sm:text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-500 text-white shadow-sm">
                           <Star className="w-2.5 h-2.5" fill="currentColor" />
-                          Top Seller
+                          Top
                         </span>
                       )}
-                      <span className={`inline-flex items-center gap-0.5 text-[9px] sm:text-[10px] font-medium px-2 py-0.5 rounded-full ${
+                      <span className={`inline-flex items-center gap-0.5 text-[9px] sm:text-[10px] font-medium px-2 py-0.5 rounded-full shadow-sm ${
                         service.type === 'suscripción' 
                           ? 'bg-blue-500/90 text-white' 
                           : 'bg-purple-500/90 text-white'
@@ -154,19 +155,25 @@ export default function VendorGigs() {
                         )}
                       </span>
                       {availableCodes === 0 && (
-                        <span className="inline-flex items-center gap-0.5 text-[9px] sm:text-[10px] font-medium px-2 py-0.5 rounded-full bg-destructive text-destructive-foreground">
+                        <span className="inline-flex items-center gap-0.5 text-[9px] sm:text-[10px] font-medium px-2 py-0.5 rounded-full bg-destructive text-destructive-foreground shadow-sm">
                           <AlertTriangle className="w-2.5 h-2.5" /> Agotado
                         </span>
                       )}
                     </div>
+
+                    {/* Price on bottom-right of image */}
+                    <div className="absolute bottom-3 right-3 text-right">
+                      <p className="text-[9px] text-white/70 uppercase tracking-wider">Tu comisión</p>
+                      <p className="text-sm sm:text-base font-bold text-white drop-shadow-md">{formatCOP(earningsPerSale)}</p>
+                    </div>
                   </div>
 
-                  {/* Service Body */}
-                  <div className="p-3 sm:p-4 space-y-3">
-                    {/* Company info row */}
+                  {/* Body */}
+                  <div className="p-3 sm:p-4 space-y-2">
+                    {/* Company row */}
                     <div className="flex items-center gap-2">
                       <div 
-                        className="w-6 h-6 rounded-full flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0"
+                        className="w-5 h-5 rounded-full flex items-center justify-center text-white text-[9px] font-bold flex-shrink-0"
                         style={{ backgroundColor: company?.primaryColor || 'hsl(var(--primary))' }}
                       >
                         {company?.name?.[0] || 'E'}
@@ -180,7 +187,7 @@ export default function VendorGigs() {
                     </div>
 
                     {/* Title */}
-                    <h3 className="font-semibold text-sm sm:text-base text-foreground leading-snug line-clamp-2 group-hover:text-primary transition-colors min-h-[2.5rem]">
+                    <h3 className="font-semibold text-sm sm:text-base text-foreground leading-snug line-clamp-2 group-hover:text-primary transition-colors">
                       {service.name}
                     </h3>
 
@@ -189,71 +196,22 @@ export default function VendorGigs() {
                       {service.description}
                     </p>
 
-                    {/* Info pills */}
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="inline-flex items-center gap-1 text-[9px] sm:text-[10px] text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
-                        <Clock className="w-2.5 h-2.5" />
-                        {service.refundPolicy.refundWindowDays}d devolución
-                      </span>
-                      <span className="inline-flex items-center gap-1 text-[9px] sm:text-[10px] text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
-                        <Shield className="w-2.5 h-2.5" />
-                        {service.refundPolicy.autoRefund ? 'Auto-refund' : 'Aprobación'}
-                      </span>
-                      {availableCodes > 0 && availableCodes < 5 && (
-                        <span className="inline-flex items-center gap-1 text-[9px] sm:text-[10px] text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">
-                          <AlertTriangle className="w-2.5 h-2.5" />
-                          {availableCodes} códigos
+                    {/* Footer */}
+                    <div className="border-t border-border pt-2 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="inline-flex items-center gap-1 text-[9px] text-muted-foreground">
+                          <Clock className="w-2.5 h-2.5" />
+                          {service.refundPolicy.refundWindowDays}d
                         </span>
-                      )}
+                        <span className="inline-flex items-center gap-1 text-[9px] text-muted-foreground">
+                          <Shield className="w-2.5 h-2.5" />
+                          {service.refundPolicy.autoRefund ? 'Auto' : 'Aprob.'}
+                        </span>
+                      </div>
+                      <p className="text-xs font-medium text-muted-foreground">
+                        {formatCOP(service.priceCOP)}
+                      </p>
                     </div>
-
-                    {/* Divider */}
-                    <div className="border-t border-border" />
-
-                    {/* Pricing footer - Fiverr style */}
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-[9px] sm:text-[10px] uppercase tracking-wider text-muted-foreground">Tu comisión</p>
-                        <p className="text-sm sm:text-lg font-bold text-primary">{formatCOP(earningsPerSale)}</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-[9px] sm:text-[10px] text-muted-foreground">Precio al cliente</p>
-                        <p className="text-xs sm:text-sm font-semibold text-foreground">{formatCOP(service.priceCOP)}</p>
-                      </div>
-                    </div>
-
-                    {/* CTA */}
-                    {service.isActive ? (
-                      <div className="flex gap-2 pt-1">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="flex-1 h-8 sm:h-9 text-xs"
-                          onClick={() => setSelectedServiceId(service.id)}
-                        >
-                          <Eye className="w-3.5 h-3.5 mr-1" />
-                          Detalles
-                        </Button>
-                        <Button
-                          size="sm"
-                          className="flex-1 h-8 sm:h-9 text-xs"
-                          onClick={() => navigate(`/vendor/services/${service.id}`)}
-                        >
-                          Vender
-                          <ArrowRight className="w-3.5 h-3.5 ml-1" />
-                        </Button>
-                      </div>
-                    ) : (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="w-full h-8 sm:h-9 text-xs border-amber-300 text-amber-700 hover:bg-amber-50"
-                        onClick={() => navigate(`/vendor/trainings/${getTrainingId(service.id)}`)}
-                      >
-                        <BookOpen className="w-3.5 h-3.5 mr-1" />
-                        Completar capacitación para desbloquear
-                      </Button>
-                    )}
                   </div>
                 </div>
               );
