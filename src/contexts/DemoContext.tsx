@@ -214,6 +214,18 @@ export function DemoProvider({ children }: { children: ReactNode }) {
     ));
   };
   
+  const addActivationCodes = (serviceId: string, codes: string[]) => {
+    setServices(prev => prev.map(service => {
+      if (service.id !== serviceId) return service;
+      const newCodes = codes.map((code, i) => ({
+        id: `ac-${Date.now()}-${i}`,
+        code,
+        status: 'available' as const,
+      }));
+      return { ...service, activationCodes: [...service.activationCodes, ...newCodes] };
+    }));
+  };
+  
   const addRefundRequest = (refundData: Omit<RefundRequest, 'id' | 'createdAt'>) => {
     const newRefund: RefundRequest = {
       ...refundData,
