@@ -99,11 +99,31 @@ export function DemoProvider({ children }: { children: ReactNode }) {
   const demoMode = true;
   
   const addSale = (saleData: Omit<Sale, 'id' | 'createdAt'>) => {
+    const saleId = `sale-${Date.now()}`;
     const newSale: Sale = {
       ...saleData,
-      id: `sale-${Date.now()}`,
+      id: saleId,
       createdAt: new Date().toISOString().split('T')[0]
     };
+    
+    // Auto-deliver activation code from the service's pool
+    const service = services.find(s => s.id === saleData.serviceId);
+    if (service) {
+      const availableCode = service.activationCodes.find(c => c.status === 'available');
+      if (availableCode) {
+        newSale.activationCode = availableCode.code;
+        setServices(prev => prev.map(s => 
+          s.id === saleData.serviceId 
+            ? { ...s, activationCodes: s.activationCodes.map(c => 
+                c.id === availableCode.id 
+                  ? { ...c, status: 'delivered' as const, assignedToSaleId: saleId, deliveredAt: newSale.createdAt }
+                  : c
+              )}
+            : s
+        ));
+      }
+    }
+    
     setSales(prev => [newSale, ...prev]);
     
     const commission: Commission = {
