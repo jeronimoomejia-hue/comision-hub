@@ -1,7 +1,8 @@
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { 
-  Search, BookOpen, Eye, TrendingUp, Zap, ArrowRight, Users, RefreshCw, AlertTriangle
+  Search, BookOpen, Eye, TrendingUp, Zap, ArrowRight, Users, RefreshCw, AlertTriangle,
+  Star, Clock, Shield, Package
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
@@ -11,9 +12,32 @@ import { useNavigate } from "react-router-dom";
 import GigDetailsModal from "@/components/GigDetailsModal";
 import { Badge } from "@/components/ui/badge";
 
-export default function VendorServices() {
+// Category gradient map for gig header visuals
+const categoryGradients: Record<string, string> = {
+  'IA para Seguros': 'from-blue-500/20 to-indigo-500/20',
+  'IA Legal': 'from-emerald-500/20 to-teal-500/20',
+  'IA para Marketing': 'from-pink-500/20 to-rose-500/20',
+  'IA para Ventas': 'from-amber-500/20 to-orange-500/20',
+  'IA para Atención': 'from-violet-500/20 to-purple-500/20',
+  'IA para Contabilidad': 'from-cyan-500/20 to-blue-500/20',
+  'IA para RRHH': 'from-fuchsia-500/20 to-pink-500/20',
+  'IA para Ciberseguridad': 'from-green-500/20 to-emerald-500/20',
+};
+
+const categoryIcons: Record<string, string> = {
+  'IA para Seguros': '🛡️',
+  'IA Legal': '⚖️',
+  'IA para Marketing': '📢',
+  'IA para Ventas': '🎯',
+  'IA para Atención': '💬',
+  'IA para Contabilidad': '📊',
+  'IA para RRHH': '👥',
+  'IA para Ciberseguridad': '🔒',
+};
+
+export default function VendorGigs() {
   const navigate = useNavigate();
-  const { services, sales, trainingProgress, currentVendorId, currentCompanyId, currentCompanyPlan } = useDemo();
+  const { services, sales, trainingProgress, currentVendorId, currentCompanyId } = useDemo();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedServiceId, setSelectedServiceId] = useState<string | null>(null);
 
@@ -33,7 +57,6 @@ export default function VendorServices() {
     return training?.id || serviceId;
   };
 
-  // Only show services from the vendor's company (private network)
   const companyServices = services.filter(s => s.status === 'activo' && s.companyId === currentCompanyId);
   const vendorSales = sales.filter(s => s.vendorId === currentVendorId);
 
@@ -63,13 +86,19 @@ export default function VendorServices() {
     <DashboardLayout role="vendor" userName="Carlos Mendoza">
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex flex-col gap-0.5">
-          <h1 className="text-lg sm:text-2xl font-bold text-foreground">
-            Gigs de {company?.name || 'la empresa'}
-          </h1>
-          <p className="text-[11px] sm:text-sm text-muted-foreground">
-            {totalActive} listos para vender · {totalPending} pendientes de capacitación
-          </p>
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2">
+          <div>
+            <h1 className="text-lg sm:text-2xl font-bold text-foreground">
+              Gigs de {company?.name || 'la empresa'}
+            </h1>
+            <p className="text-[11px] sm:text-sm text-muted-foreground">
+              {totalActive} listos para vender · {totalPending} pendientes de capacitación
+            </p>
+          </div>
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <Package className="w-3.5 h-3.5" />
+            {filteredServices.length} gig{filteredServices.length !== 1 ? 's' : ''} disponibles
+          </div>
         </div>
 
         {/* Search */}
@@ -83,132 +112,149 @@ export default function VendorServices() {
           />
         </div>
 
-        {/* Results */}
-        <p className="text-[10px] sm:text-xs text-muted-foreground">
-          {filteredServices.length} servicio{filteredServices.length !== 1 ? 's' : ''} disponibles
-        </p>
-
-        {/* Services Grid */}
+        {/* Gigs Grid - Fiverr style */}
         {filteredServices.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-3 gap-2.5 sm:gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
             {filteredServices.map((service) => {
               const isPopular = topServiceIds.includes(service.id);
               const earningsPerSale = Math.round(service.priceCOP * service.vendorCommissionPct / 100);
+              const gradient = categoryGradients[service.category] || 'from-primary/20 to-primary/10';
+              const icon = categoryIcons[service.category] || '📦';
+              const availableCodes = service.activationCodes.filter(c => c.status === 'available').length;
 
               return (
                 <div
                   key={service.id}
-                  className={`card-premium p-3 sm:p-5 flex flex-col relative group transition-all duration-200 ${
-                    !service.isActive ? 'opacity-75' : ''
+                  className={`rounded-xl border border-border bg-card overflow-hidden group hover:shadow-lg hover:border-primary/30 transition-all duration-300 ${
+                    !service.isActive ? 'opacity-70' : ''
                   }`}
                 >
-                  {/* Top badges */}
-                  <div className="flex items-center gap-1 flex-wrap mb-2 sm:mb-3">
-                    {isPopular && (
-                      <Badge variant="secondary" className="text-[8px] sm:text-[10px] px-1.5 py-0 sm:px-2 sm:py-0.5 bg-amber-50 text-amber-700 border-amber-200">
-                        <TrendingUp className="w-2.5 h-2.5 sm:w-3 sm:h-3 mr-0.5" />
-                        Popular
-                      </Badge>
-                    )}
-                    {service.type === 'suscripción' ? (
-                      <Badge variant="secondary" className="text-[8px] sm:text-[10px] px-1.5 py-0 sm:px-2 sm:py-0.5 bg-blue-50 text-blue-600 border-blue-200">
-                        <RefreshCw className="w-2.5 h-2.5 sm:w-3 sm:h-3 mr-0.5" />
-                        Recurrente
-                      </Badge>
-                    ) : (
-                      <Badge variant="secondary" className="text-[8px] sm:text-[10px] px-1.5 py-0 sm:px-2 sm:py-0.5 bg-purple-50 text-purple-600 border-purple-200">
-                        <Zap className="w-2.5 h-2.5 sm:w-3 sm:h-3 mr-0.5" />
-                        Puntual
-                      </Badge>
-                    )}
+                  {/* Gig Header / Cover */}
+                  <div className={`relative h-28 sm:h-36 bg-gradient-to-br ${gradient} p-4 flex flex-col justify-between`}>
+                    {/* Category icon */}
+                    <div className="text-3xl sm:text-4xl">{icon}</div>
+                    
+                    {/* Badges row */}
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      {isPopular && (
+                        <span className="inline-flex items-center gap-0.5 text-[9px] sm:text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-500 text-white">
+                          <Star className="w-2.5 h-2.5" fill="currentColor" />
+                          Top Seller
+                        </span>
+                      )}
+                      <span className={`inline-flex items-center gap-0.5 text-[9px] sm:text-[10px] font-medium px-2 py-0.5 rounded-full ${
+                        service.type === 'suscripción' 
+                          ? 'bg-blue-500/90 text-white' 
+                          : 'bg-purple-500/90 text-white'
+                      }`}>
+                        {service.type === 'suscripción' ? (
+                          <><RefreshCw className="w-2.5 h-2.5" /> Recurrente</>
+                        ) : (
+                          <><Zap className="w-2.5 h-2.5" /> Puntual</>
+                        )}
+                      </span>
+                      {availableCodes === 0 && (
+                        <span className="inline-flex items-center gap-0.5 text-[9px] sm:text-[10px] font-medium px-2 py-0.5 rounded-full bg-destructive text-destructive-foreground">
+                          <AlertTriangle className="w-2.5 h-2.5" /> Agotado
+                        </span>
+                      )}
+                    </div>
                   </div>
 
-                  {/* Name & Category */}
-                  <h3 className="font-semibold text-[11px] sm:text-sm text-foreground mb-0.5 group-hover:text-primary transition-colors leading-tight">
-                    {service.name}
-                  </h3>
-                  <p className="text-[9px] sm:text-[11px] text-muted-foreground mb-1.5 sm:mb-2">{service.category}</p>
+                  {/* Gig Body */}
+                  <div className="p-3 sm:p-4 space-y-3">
+                    {/* Company info row */}
+                    <div className="flex items-center gap-2">
+                      <div 
+                        className="w-6 h-6 rounded-full flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0"
+                        style={{ backgroundColor: company?.primaryColor || 'hsl(var(--primary))' }}
+                      >
+                        {company?.name?.[0] || 'E'}
+                      </div>
+                      <span className="text-[10px] sm:text-xs text-muted-foreground truncate">{company?.name}</span>
+                      {service.salesCount > 0 && (
+                        <span className="text-[10px] text-muted-foreground ml-auto">
+                          {service.salesCount} venta{service.salesCount !== 1 ? 's' : ''}
+                        </span>
+                      )}
+                    </div>
 
-                  <p className="hidden sm:block text-xs text-muted-foreground leading-relaxed line-clamp-2 mb-4 flex-1">
-                    {service.description}
-                  </p>
-                  <div className="flex-1 sm:hidden" />
+                    {/* Title */}
+                    <h3 className="font-semibold text-sm sm:text-base text-foreground leading-snug line-clamp-2 group-hover:text-primary transition-colors min-h-[2.5rem]">
+                      {service.name}
+                    </h3>
 
-                  {/* Pricing */}
-                  <div className="bg-secondary/60 rounded-lg p-2 sm:p-3 mb-2.5 sm:mb-4">
-                    <div className="flex items-end justify-between">
+                    {/* Description */}
+                    <p className="text-[11px] sm:text-xs text-muted-foreground leading-relaxed line-clamp-2">
+                      {service.description}
+                    </p>
+
+                    {/* Info pills */}
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="inline-flex items-center gap-1 text-[9px] sm:text-[10px] text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
+                        <Clock className="w-2.5 h-2.5" />
+                        {service.refundPolicy.refundWindowDays}d devolución
+                      </span>
+                      <span className="inline-flex items-center gap-1 text-[9px] sm:text-[10px] text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
+                        <Shield className="w-2.5 h-2.5" />
+                        {service.refundPolicy.autoRefund ? 'Auto-refund' : 'Aprobación'}
+                      </span>
+                      {availableCodes > 0 && availableCodes < 5 && (
+                        <span className="inline-flex items-center gap-1 text-[9px] sm:text-[10px] text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">
+                          <AlertTriangle className="w-2.5 h-2.5" />
+                          {availableCodes} códigos
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Divider */}
+                    <div className="border-t border-border" />
+
+                    {/* Pricing footer - Fiverr style */}
+                    <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-[8px] sm:text-[10px] uppercase tracking-wider text-muted-foreground font-medium">Precio</p>
-                        <p className="text-[11px] sm:text-base font-bold text-foreground">{formatCOP(service.priceCOP)}</p>
+                        <p className="text-[9px] sm:text-[10px] uppercase tracking-wider text-muted-foreground">Tu comisión</p>
+                        <p className="text-sm sm:text-lg font-bold text-primary">{formatCOP(earningsPerSale)}</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-[8px] sm:text-[10px] uppercase tracking-wider text-muted-foreground font-medium">Ganas</p>
-                        <p className="text-[11px] sm:text-base font-bold text-primary">{formatCOP(earningsPerSale)}</p>
+                        <p className="text-[9px] sm:text-[10px] text-muted-foreground">Precio al cliente</p>
+                        <p className="text-xs sm:text-sm font-semibold text-foreground">{formatCOP(service.priceCOP)}</p>
                       </div>
                     </div>
-                    <div className="mt-1.5 pt-1.5 sm:mt-2 sm:pt-2 border-t border-border/50 flex items-center justify-between">
-                      <span className="text-[8px] sm:text-[10px] text-muted-foreground">Comisión</span>
-                      <span className="text-[10px] sm:text-xs font-semibold text-primary">{service.vendorCommissionPct}%{service.type === 'suscripción' ? '/mes' : ''}</span>
-                    </div>
-                  </div>
 
-                  {/* Activation codes availability */}
-                  {(() => {
-                    const availableCodes = service.activationCodes.filter(c => c.status === 'available').length;
-                    const noStock = availableCodes === 0;
-                    return noStock ? (
-                      <div className="flex items-center gap-1 mb-2 sm:mb-3 text-[9px] sm:text-[11px] text-destructive">
-                        <AlertTriangle className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
-                        <span>Sin códigos disponibles</span>
+                    {/* CTA */}
+                    {service.isActive ? (
+                      <div className="flex gap-2 pt-1">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="flex-1 h-8 sm:h-9 text-xs"
+                          onClick={() => setSelectedServiceId(service.id)}
+                        >
+                          <Eye className="w-3.5 h-3.5 mr-1" />
+                          Detalles
+                        </Button>
+                        <Button
+                          size="sm"
+                          className="flex-1 h-8 sm:h-9 text-xs"
+                          onClick={() => navigate(`/vendor/gigs/${service.id}`)}
+                        >
+                          Vender
+                          <ArrowRight className="w-3.5 h-3.5 ml-1" />
+                        </Button>
                       </div>
-                    ) : availableCodes < 5 ? (
-                      <div className="flex items-center gap-1 mb-2 sm:mb-3 text-[9px] sm:text-[11px] text-amber-600">
-                        <AlertTriangle className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
-                        <span>{availableCodes} códigos restantes</span>
-                      </div>
-                    ) : null;
-                  })()}
-
-                  {/* Active subscriptions */}
-                  {service.type === 'suscripción' && service.activeSubscriptions && service.isActive && (
-                    <div className="flex items-center gap-1 mb-2 sm:mb-3 text-[9px] sm:text-[11px] text-muted-foreground">
-                      <Users className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
-                      <span>{service.activeSubscriptions} activos</span>
-                    </div>
-                  )}
-
-                  {/* CTA */}
-                  {service.isActive ? (
-                    <div className="flex gap-1.5 sm:gap-2">
+                    ) : (
                       <Button
+                        size="sm"
                         variant="outline"
-                        size="sm"
-                        className="flex-1 h-7 sm:h-9 text-[10px] sm:text-xs px-2"
-                        onClick={() => setSelectedServiceId(service.id)}
+                        className="w-full h-8 sm:h-9 text-xs border-amber-300 text-amber-700 hover:bg-amber-50"
+                        onClick={() => navigate(`/vendor/trainings/${getTrainingId(service.id)}`)}
                       >
-                        <Eye className="w-3 h-3 mr-1" />
-                        Ver
+                        <BookOpen className="w-3.5 h-3.5 mr-1" />
+                        Completar capacitación para desbloquear
                       </Button>
-                      <Button
-                        size="sm"
-                        className="flex-1 h-7 sm:h-9 text-[10px] sm:text-xs px-2"
-                        onClick={() => navigate(`/vendor/gigs/${service.id}`)}
-                      >
-                        Vender
-                        <ArrowRight className="w-3 h-3 ml-1" />
-                      </Button>
-                    </div>
-                  ) : (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="w-full h-7 sm:h-9 text-[10px] sm:text-xs border-amber-300 text-amber-700 hover:bg-amber-50 px-2"
-                      onClick={() => navigate(`/vendor/trainings/${getTrainingId(service.id)}`)}
-                    >
-                      <BookOpen className="w-3 h-3 mr-1" />
-                      Capacitarse
-                    </Button>
-                  )}
+                    )}
+                  </div>
                 </div>
               );
             })}
