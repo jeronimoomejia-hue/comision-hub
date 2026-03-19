@@ -37,7 +37,7 @@ export default function VendorTrainingDetail() {
           <p className="text-muted-foreground mb-4">
             La capacitación que buscas no existe o no tienes acceso
           </p>
-          <Button onClick={() => navigate('/vendor/gigs')}>
+          <Button onClick={() => navigate('/vendor/services')}>
             <ArrowLeft className="w-4 h-4 mr-2" />
             Volver a servicios
           </Button>
@@ -62,7 +62,7 @@ export default function VendorTrainingDetail() {
     });
     
     setTimeout(() => {
-      navigate(`/vendor/gigs/${service.id}`);
+      navigate(`/vendor/services/${service.id}`);
     }, 1500);
   };
 
@@ -84,7 +84,7 @@ export default function VendorTrainingDetail() {
         />
         <Button 
           variant="ghost" 
-          onClick={() => navigate('/vendor/gigs')}
+          onClick={() => navigate('/vendor/services')}
           className="mb-2"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
@@ -269,7 +269,7 @@ export default function VendorTrainingDetail() {
             </Button>
             <Button 
               variant="outline"
-              onClick={() => navigate(`/vendor/gigs/${service.id}`)}
+              onClick={() => navigate(`/vendor/services/${service.id}`)}
             >
               Ver detalle del servicio
             </Button>

@@ -104,7 +104,7 @@ export default function VendorServiceDetail() {
           title="Servicio no encontrado"
           description="El servicio que buscas no existe"
           action={
-            <Button onClick={() => navigate('/vendor/gigs')}>
+            <Button onClick={() => navigate('/vendor/services')}>
               Volver a servicios
             </Button>
           }
@@ -227,7 +227,7 @@ export default function VendorServiceDetail() {
           ]}
         />
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <Button variant="ghost" onClick={() => navigate('/vendor/gigs')}>
+          <Button variant="ghost" onClick={() => navigate('/vendor/services')}>
             <ArrowLeft className="mr-2 w-4 h-4" />
             Volver a servicios
           </Button>
