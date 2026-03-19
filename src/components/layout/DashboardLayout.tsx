@@ -80,7 +80,7 @@ function getVendorNav(plan: CompanyPlan) {
 function getCompanyNav(plan: CompanyPlan) {
   const base = [
     { icon: LayoutDashboard, label: "Dashboard", href: "/company" },
-    { icon: Package, label: "Gigs", href: "/company/gigs" },
+    { icon: Package, label: "Servicios", href: "/company/services" },
     { icon: Users, label: "Vendedores", href: "/company/vendors" },
     { icon: ShoppingCart, label: "Ventas", href: "/company/sales" },
     { icon: DollarSign, label: "Pagos", href: "/company/payments" },
