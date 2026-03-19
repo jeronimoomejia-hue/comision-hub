@@ -13,7 +13,7 @@ import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import { formatCOP, CURRENT_COMPANY_ID, type Service } from "@/data/mockData";
 import { useDemo } from "@/contexts/DemoContext";
-import ServiceEditModal from "@/components/company/ServiceEditModal";
+import GigEditModal from "@/components/company/GigEditModal";
 
 export default function CompanyServices() {
   const { sales: demoSales, services, currentCompanyPlan, addService, updateService, addActivationCodes } = useDemo();
@@ -86,7 +86,7 @@ export default function CompanyServices() {
     });
     setShowNewService(false);
     setNewForm({ name: '', description: '', category: 'seguros', type: 'suscripción', priceCOP: 150000, vendorCommissionPct: 20, requiresTraining: true, trainingType: 'pdf', refundWindowDays: 14, autoRefund: false, initialCodes: '' });
-    toast.success("Servicio creado con " + codeLines.length + " códigos");
+    toast.success("Gig creado con " + codeLines.length + " códigos");
   };
 
   const handleAddCodes = () => {
@@ -112,7 +112,7 @@ export default function CompanyServices() {
           <div>
             <h1 className="text-xl font-bold">Servicios</h1>
             {currentCompanyPlan === 'freemium' && (
-              <p className="text-xs text-muted-foreground">{companyServices.length}/5 servicios (Freemium)</p>
+              <p className="text-xs text-muted-foreground">{companyServices.length}/5 gigs (Freemium)</p>
             )}
           </div>
           <Button 
@@ -120,14 +120,14 @@ export default function CompanyServices() {
             onClick={() => canAddMore ? setShowNewService(true) : toast.error("Límite alcanzado. Mejora tu plan.")}
           >
             <Plus className="w-3.5 h-3.5 mr-1" />
-            Nuevo servicio
+            Nuevo gig
           </Button>
         </div>
 
         {currentCompanyPlan === 'freemium' && !canAddMore && (
           <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 flex items-center gap-2">
             <AlertCircle className="w-4 h-4 text-amber-600 flex-shrink-0" />
-            <p className="text-xs text-amber-700">Límite de 5 servicios alcanzado. Mejora a Premium para servicios ilimitados.</p>
+            <p className="text-xs text-amber-700">Límite de 5 gigs alcanzado. Mejora a Premium para gigs ilimitados.</p>
           </div>
         )}
 
@@ -144,7 +144,7 @@ export default function CompanyServices() {
             <div className="flex items-center gap-2">
               <Key className="w-4 h-4 text-primary flex-shrink-0" />
               <p className="text-xs text-muted-foreground">
-                <span className="font-medium text-foreground">Códigos de activación:</span> Carga mínimo 20 códigos por servicio. La plataforma los entrega automáticamente a cada comprador. Cuando se agoten, agrega más.
+                <span className="font-medium text-foreground">Códigos de activación:</span> Carga mínimo 20 códigos por gig. La plataforma los entrega automáticamente a cada comprador. Cuando se agoten, agrega más.
               </p>
             </div>
           )}
@@ -156,7 +156,7 @@ export default function CompanyServices() {
             <div className="flex items-center gap-2">
               <AlertTriangle className="w-4 h-4 text-destructive flex-shrink-0" />
               <p className="text-xs font-medium text-destructive">
-                {lowStockServices.length === 1 ? '1 servicio tiene' : `${lowStockServices.length} servicios tienen`} pocos códigos disponibles
+                {lowStockServices.length === 1 ? '1 gig tiene' : `${lowStockServices.length} gigs tienen`} pocos códigos disponibles
               </p>
             </div>
             {lowStockServices.map(s => {
@@ -227,11 +227,11 @@ export default function CompanyServices() {
             );
           })}
           {companyServices.length === 0 && (
-            <p className="text-xs text-muted-foreground text-center py-8">Sin servicios. Crea el primero.</p>
+            <p className="text-xs text-muted-foreground text-center py-8">Sin gigs. Crea el primero.</p>
           )}
         </div>
 
-        <ServiceEditModal 
+        <GigEditModal 
           service={selectedService}
           sales={companySales}
           onClose={() => setSelectedService(null)}
@@ -274,9 +274,9 @@ export default function CompanyServices() {
         {/* Create dialog */}
         <Dialog open={showNewService} onOpenChange={setShowNewService}>
           <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
-            <DialogHeader><DialogTitle className="text-base">Crear nuevo servicio</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle className="text-base">Crear nuevo gig</DialogTitle></DialogHeader>
             <div className="space-y-3">
-              <div><Label className="text-xs">Nombre del servicio</Label>
+              <div><Label className="text-xs">Nombre del gig</Label>
                 <Input className="h-8 text-sm mt-1" value={newForm.name} onChange={e => setNewForm({...newForm, name: e.target.value})} />
               </div>
               <div><Label className="text-xs">Descripción</Label>
@@ -370,7 +370,7 @@ export default function CompanyServices() {
             </div>
             <DialogFooter>
               <Button size="sm" className="text-xs" onClick={handleCreateService}>
-                Crear servicio
+                Crear gig
               </Button>
             </DialogFooter>
           </DialogContent>

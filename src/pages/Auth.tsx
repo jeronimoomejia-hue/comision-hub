@@ -67,7 +67,7 @@ const Auth = () => {
                 ? "Accede a tu panel de control" 
                 : role === "vendor" 
                   ? "Empieza a vender y ganar comisiones"
-                  : "Publica tus servicios y encuentra vendedores"
+                  : "Publica tus gigs y encuentra vendedores"
               }
             </p>
             
@@ -269,8 +269,8 @@ const Auth = () => {
           
           <p className="text-lg opacity-90 mb-8">
             {role === "vendor"
-              ? "Únete a cientos de vendedores que ya generan ingresos extra vendiendo servicios de empresas líderes."
-              : "Accede a una red de vendedores motivados listos para vender tus servicios. Solo pagas por resultados."
+              ? "Únete a cientos de vendedores que ya generan ingresos extra vendiendo gigs de empresas líderes."
+              : "Accede a una red de vendedores motivados listos para vender tus gigs. Solo pagas por resultados."
             }
           </p>
           

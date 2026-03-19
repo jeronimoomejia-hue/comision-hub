@@ -8,8 +8,8 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
 import VendorDashboard from "./pages/vendor/VendorDashboard";
-import VendorServices from "./pages/vendor/VendorServices";
-import VendorServiceDetail from "./pages/vendor/VendorServiceDetail";
+import VendorGigs from "./pages/vendor/VendorGigs";
+import VendorGigDetail from "./pages/vendor/VendorGigDetail";
 import VendorTrainings from "./pages/vendor/VendorTrainings";
 import VendorTrainingDetail from "./pages/vendor/VendorTrainingDetail";
 import VendorSales from "./pages/vendor/VendorSales";
@@ -19,7 +19,7 @@ import VendorMaterials from "./pages/vendor/VendorMaterials";
 import VendorSupport from "./pages/vendor/VendorSupport";
 import VendorProfile from "./pages/vendor/VendorProfile";
 import CompanyDashboard from "./pages/company/CompanyDashboard";
-import CompanyServices from "./pages/company/CompanyServices";
+import CompanyGigs from "./pages/company/CompanyGigs";
 import CompanySales from "./pages/company/CompanySales";
 import CompanyVendors from "./pages/company/CompanyVendors";
 import CompanyPayments from "./pages/company/CompanyPayments";
@@ -34,7 +34,7 @@ import AdminUsers from "./pages/admin/AdminUsers";
 import AdminVendors from "./pages/admin/AdminVendors";
 import AdminCompanies from "./pages/admin/AdminCompanies";
 import AdminTransactions from "./pages/admin/AdminTransactions";
-import AdminServices from "./pages/admin/AdminServices";
+import AdminGigs from "./pages/admin/AdminGigs";
 import AdminTrainings from "./pages/admin/AdminTrainings";
 import AdminSales from "./pages/admin/AdminSales";
 import AdminPayments from "./pages/admin/AdminPayments";
@@ -55,8 +55,11 @@ const App = () => (
             
             {/* Vendor Routes */}
             <Route path="/vendor" element={<VendorDashboard />} />
-            <Route path="/vendor/services" element={<VendorServices />} />
-            <Route path="/vendor/services/:serviceId" element={<VendorServiceDetail />} />
+            <Route path="/vendor/gigs" element={<VendorGigs />} />
+            <Route path="/vendor/gigs/:serviceId" element={<VendorGigDetail />} />
+            {/* Legacy routes */}
+            <Route path="/vendor/services" element={<VendorGigs />} />
+            <Route path="/vendor/services/:serviceId" element={<VendorGigDetail />} />
             <Route path="/vendor/trainings" element={<VendorTrainings />} />
             <Route path="/vendor/trainings/:trainingId" element={<VendorTrainingDetail />} />
             <Route path="/vendor/sales" element={<VendorSales />} />
@@ -68,7 +71,8 @@ const App = () => (
             
             {/* Company Routes */}
             <Route path="/company" element={<CompanyDashboard />} />
-            <Route path="/company/services" element={<CompanyServices />} />
+            <Route path="/company/gigs" element={<CompanyGigs />} />
+            <Route path="/company/services" element={<CompanyGigs />} />
             <Route path="/company/sales" element={<CompanySales />} />
             <Route path="/company/vendors" element={<CompanyVendors />} />
             <Route path="/company/payments" element={<CompanyPayments />} />
@@ -85,7 +89,8 @@ const App = () => (
             <Route path="/admin/vendors" element={<AdminVendors />} />
             <Route path="/admin/companies" element={<AdminCompanies />} />
             <Route path="/admin/transactions" element={<AdminTransactions />} />
-            <Route path="/admin/services" element={<AdminServices />} />
+            <Route path="/admin/gigs" element={<AdminGigs />} />
+            <Route path="/admin/services" element={<AdminGigs />} />
             <Route path="/admin/trainings" element={<AdminTrainings />} />
             <Route path="/admin/sales" element={<AdminSales />} />
             <Route path="/admin/payments" element={<AdminPayments />} />

@@ -87,7 +87,7 @@ export const ServicesSection = () => {
   };
 
   return (
-    <section id="servicios" className="py-24 px-4 sm:px-6 lg:px-8 bg-background relative overflow-hidden">
+    <section id="gigs" className="py-24 px-4 sm:px-6 lg:px-8 bg-background relative overflow-hidden">
       <div className="container mx-auto max-w-6xl">
         {/* Header */}
         <motion.div
@@ -103,7 +103,7 @@ export const ServicesSection = () => {
             Comisiones recurrentes vendiendo suscripciones
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Elige entre docenas de servicios digitales de empresas verificadas y gana cada mes.
+            Elige entre docenas de gigs digitales de empresas verificadas y gana cada mes.
           </p>
         </motion.div>
 

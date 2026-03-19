@@ -49,9 +49,9 @@ export default function VendorMaterials() {
     <DashboardLayout role="vendor" userName={vendor?.name}>
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold">Materiales de venta</h1>
+          <h1 className="text-2xl font-bold">Materiales del gig</h1>
           <p className="text-muted-foreground">
-            Descarga materiales de los servicios con capacitación completada
+            Descarga materiales de los gigs con capacitación completada
           </p>
         </div>
 
@@ -59,7 +59,7 @@ export default function VendorMaterials() {
         <div className="grid sm:grid-cols-3 gap-4">
           <div className="card-premium p-4 text-center">
             <p className="text-2xl font-bold">{availableServices.length}</p>
-            <p className="text-sm text-muted-foreground">Servicios disponibles</p>
+            <p className="text-sm text-muted-foreground">Gigs disponibles</p>
           </div>
           <div className="card-premium p-4 text-center">
             <p className="text-2xl font-bold">{totalMaterials}</p>
@@ -85,10 +85,10 @@ export default function VendorMaterials() {
           <Select value={serviceFilter} onValueChange={setServiceFilter}>
             <SelectTrigger className="w-full sm:w-[200px]">
               <Filter className="w-4 h-4 mr-2" />
-              <SelectValue placeholder="Filtrar por servicio" />
+              <SelectValue placeholder="Filtrar por gig" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Todos los servicios</SelectItem>
+              <SelectItem value="all">Todos los gigs</SelectItem>
               {availableServices.map(s => (
                 <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
               ))}

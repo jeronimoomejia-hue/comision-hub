@@ -377,7 +377,7 @@ export default function VendorProfile() {
                   </div>
                   <div>
                     <p className="text-lg font-bold">{activeServices}</p>
-                    <p className="text-sm text-muted-foreground">Servicios activos</p>
+                    <p className="text-sm text-muted-foreground">Gigs activos</p>
                   </div>
                 </div>
 

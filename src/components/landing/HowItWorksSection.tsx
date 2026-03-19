@@ -3,7 +3,7 @@ import { Building2, Palette, Users, DollarSign, Rocket } from "lucide-react";
 
 const steps = [
   { icon: Building2, title: "Registra tu empresa", description: "Crea tu cuenta empresarial gratis y configura tu perfil en minutos." },
-  { icon: Palette, title: "Personaliza tu plataforma", description: "Sube tu logo, elige tus colores y configura tus servicios con sus comisiones." },
+  { icon: Palette, title: "Personaliza tu plataforma", description: "Sube tu logo, elige tus colores y configura tus gigs con sus comisiones." },
   { icon: Users, title: "Invita a tus vendedores", description: "Comparte el enlace de tu plataforma y tus vendedores se registran directamente." },
   { icon: DollarSign, title: "Gestiona y cobra", description: "Tus vendedores venden, tú ves todo en tiempo real. Pagos y comisiones automáticas." },
 ];

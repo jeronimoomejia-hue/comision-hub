@@ -64,7 +64,7 @@ export const HeroFullScreen = () => {
             className="space-y-4"
           >
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight">
-              Vende servicios y{" "}
+              Vende gigs y{" "}
               <span className="bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
                 gana comisión mensual.
               </span>

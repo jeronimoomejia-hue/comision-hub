@@ -119,7 +119,7 @@ export default function ServiceEditModal({ service, sales, onClose, onSave }: Se
   const handleSave = () => {
     onSave(editData);
     setIsEditing(false);
-    toast.success("Servicio actualizado correctamente");
+    toast.success("Gig actualizado correctamente");
   };
 
   const handleCancelEdit = () => {
@@ -128,7 +128,7 @@ export default function ServiceEditModal({ service, sales, onClose, onSave }: Se
   };
 
   const handleSupport = () => {
-    const message = `Hola, necesito ayuda con mi servicio:\n- Servicio: ${service?.name}\n- ID: ${service?.id}`;
+    const message = `Hola, necesito ayuda con mi servicio:\n- Gig: ${service?.name}\n- ID: ${service?.id}`;
     window.open(`https://wa.me/573001234567?text=${encodeURIComponent(message)}`, '_blank');
   };
 
@@ -160,7 +160,7 @@ export default function ServiceEditModal({ service, sales, onClose, onSave }: Se
               {!isEditing ? (
                 <Button onClick={handleStartEdit} size="sm">
                   <Edit3 className="w-4 h-4 mr-2" />
-                  Editar servicio
+                  Editar gig
                 </Button>
               ) : (
                 <>
@@ -348,7 +348,7 @@ export default function ServiceEditModal({ service, sales, onClose, onSave }: Se
                     </h4>
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label>Nombre del servicio</Label>
+                        <Label>Nombre del gig</Label>
                         <Input 
                           value={editData.name || ''} 
                           onChange={e => setEditData({ ...editData, name: e.target.value })}
@@ -416,7 +416,7 @@ export default function ServiceEditModal({ service, sales, onClose, onSave }: Se
               ) : (
                 <div className="space-y-6">
                   <div className="card-premium p-6">
-                    <h4 className="font-semibold mb-4">Información del servicio</h4>
+                    <h4 className="font-semibold mb-4">Información del gig</h4>
                     <p className="text-muted-foreground mb-4">{service.description}</p>
                     <div className="grid md:grid-cols-3 gap-4">
                       <div className="p-3 bg-muted/50 rounded-lg">

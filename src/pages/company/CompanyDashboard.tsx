@@ -66,7 +66,7 @@ export default function CompanyDashboard() {
 
   // Feature matrix per plan
   const featureMatrix = [
-    { label: "Servicios", freemium: "Máx. 5", premium: "Ilimitados", enterprise: "Ilimitados" },
+    { label: "Gigs", freemium: "Máx. 5", premium: "Ilimitados", enterprise: "Ilimitados" },
     { label: "Códigos de activación", freemium: "Manual", premium: "Manual", enterprise: "Automático + API" },
     { label: "Fee Mensualista", freemium: "15% por venta", premium: "Sin fee", enterprise: "Sin fee" },
     { label: "Cupones de descuento", freemium: false, premium: true, enterprise: true },
@@ -135,7 +135,7 @@ export default function CompanyDashboard() {
           {[
             { label: "Ventas mes", value: salesThisMonth.length },
             { label: "Retenidas", value: heldSales.length },
-            { label: "Servicios", value: plan === 'freemium' ? `${activeServicesCount}/5` : `${activeServicesCount}` },
+            { label: "Gigs", value: plan === 'freemium' ? `${activeServicesCount}/5` : `${activeServicesCount}` },
             { label: "Vendedores", value: uniqueVendors },
           ].map(stat => (
             <div key={stat.label} className="text-center p-3 rounded-xl border border-border bg-card">
@@ -193,10 +193,10 @@ export default function CompanyDashboard() {
 
         {/* ── Plan-specific action cards ── */}
         <div className="grid grid-cols-2 gap-2">
-          <Link to="/company/services">
+          <Link to="/company/gigs">
             <div className="rounded-xl border border-border bg-card p-3 hover:border-primary/30 transition-colors text-center">
               <ShoppingCart className="w-5 h-5 mx-auto mb-1 text-primary" />
-              <p className="text-sm font-medium">Servicios</p>
+              <p className="text-sm font-medium">Gigs</p>
               <p className="text-[10px] text-muted-foreground">
                 {plan === 'freemium' ? 'Máximo 5' : 'Ilimitados'}
               </p>
@@ -302,7 +302,7 @@ export default function CompanyDashboard() {
                 </p>
                 <p className="text-xs text-muted-foreground">
                   {plan === 'freemium'
-                    ? 'Servicios ilimitados, cupones, chat y sin fee del 15%'
+                    ? 'Gigs ilimitados, cupones, chat y sin fee del 15%'
                     : 'Dominio propio, marca blanca, integración API automática'}
                 </p>
               </div>
