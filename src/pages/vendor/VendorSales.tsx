@@ -185,7 +185,7 @@ export default function VendorSales() {
     e.preventDefault();
     setIsLoading(true);
     const service = services.find(s => s.id === formData.serviceId);
-    if (!service) { toast.error("Gig no encontrado"); setIsLoading(false); return; }
+    if (!service) { toast.error("Servicio no encontrado"); setIsLoading(false); return; }
     await new Promise(resolve => setTimeout(resolve, 800));
     const grossAmount = service.priceCOP;
     const sellerCommissionAmount = Math.round(grossAmount * service.vendorCommissionPct / 100);
@@ -207,7 +207,7 @@ export default function VendorSales() {
 
   const handleSupport = (sale: Sale) => {
     const service = allServices.find(s => s.id === sale.serviceId);
-    const message = `Hola, necesito ayuda con una venta:\n📋 Gig: ${service?.name}\n👤 Cliente: ${sale.clientName}\n💰 Monto: ${formatCOP(sale.grossAmount)}\n📅 Fecha: ${formatDate(sale.createdAt)}`;
+    const message = `Hola, necesito ayuda con una venta:\n📋 Servicio: ${service?.name}\n👤 Cliente: ${sale.clientName}\n💰 Monto: ${formatCOP(sale.grossAmount)}\n📅 Fecha: ${formatDate(sale.createdAt)}`;
     window.open(`https://wa.me/573001234567?text=${encodeURIComponent(message)}`, '_blank');
   };
 
@@ -224,7 +224,7 @@ export default function VendorSales() {
           title="Mis Ventas"
           description="Consulta el historial de todas tus ventas, pagos y devoluciones en un solo lugar."
           steps={[
-            "Para registrar una venta, ve al menú del gig correspondiente",
+            "Para registrar una venta, ve al menú del servicio correspondiente",
             "Aquí puedes ver el estado de retención y liberación de tus comisiones",
             "Solicita devoluciones dentro del período de gracia de cada gig"
           ]}
@@ -237,7 +237,7 @@ export default function VendorSales() {
             </p>
           </div>
           <p className="text-sm text-muted-foreground">
-            Para registrar una venta, ve al gig correspondiente
+            Para registrar una venta, ve al servicio correspondiente
           </p>
         </div>
 
@@ -417,7 +417,7 @@ export default function VendorSales() {
                   </SelectContent>
                 </Select>
                 <Select value={serviceFilter} onValueChange={setServiceFilter}>
-                  <SelectTrigger className="w-full sm:w-48"><SelectValue placeholder="Gig" /></SelectTrigger>
+                  <SelectTrigger className="w-full sm:w-48"><SelectValue placeholder="Servicio" /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">Todos</SelectItem>
                     {uniqueServices.map(s => <SelectItem key={s!.id} value={s!.id}>{s!.name}</SelectItem>)}

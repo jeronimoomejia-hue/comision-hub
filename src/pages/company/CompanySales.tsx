@@ -74,7 +74,7 @@ export default function CompanySales() {
         <div className="flex gap-2">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
-            <Input placeholder="Buscar cliente, gig o vendedor..." value={searchQuery}
+            <Input placeholder="Buscar cliente, servicio o vendedor..." value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)} className="pl-9 h-8 text-xs" />
           </div>
           <Select value={statusFilter} onValueChange={setStatusFilter}>

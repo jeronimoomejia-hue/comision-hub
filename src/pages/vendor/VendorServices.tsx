@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 import ServiceDetailsModal from "@/components/ServiceDetailsModal";
 import { Badge } from "@/components/ui/badge";
 
-// Category gradient map for gig header visuals
+// Category gradient map for servicio header visuals
 const categoryGradients: Record<string, string> = {
   'IA para Seguros': 'from-blue-500/20 to-indigo-500/20',
   'IA Legal': 'from-emerald-500/20 to-teal-500/20',
@@ -89,7 +89,7 @@ export default function VendorGigs() {
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2">
           <div>
             <h1 className="text-lg sm:text-2xl font-bold text-foreground">
-              Gigs de {company?.name || 'la empresa'}
+              Servicios de {company?.name || 'la empresa'}
             </h1>
             <p className="text-[11px] sm:text-sm text-muted-foreground">
               {totalActive} listos para vender · {totalPending} pendientes de capacitación
@@ -105,7 +105,7 @@ export default function VendorGigs() {
         <div className="relative max-w-xl">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
           <Input
-            placeholder="Buscar gigs..."
+            placeholder="Buscar servicios..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-9 h-9 sm:h-11 bg-card border-border rounded-xl text-xs sm:text-sm"

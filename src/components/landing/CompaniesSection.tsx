@@ -33,7 +33,7 @@ export const CompaniesSection = () => {
               ¿Eres empresa de gigs?
             </h2>
             <p className="text-muted-foreground text-lg mb-8">
-              Conecta tu SaaS o gig digital con una red de vendedores independientes. Paga solo por resultados.
+              Conecta tu SaaS o servicio digital con una red de vendedores independientes. Paga solo por resultados.
             </p>
 
             <div className="grid sm:grid-cols-2 gap-4 mb-8">

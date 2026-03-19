@@ -66,7 +66,7 @@ export default function CompanyDashboard() {
 
   // Feature matrix per plan
   const featureMatrix = [
-    { label: "Gigs", freemium: "Máx. 5", premium: "Ilimitados", enterprise: "Ilimitados" },
+    { label: "Servicios", freemium: "Máx. 5", premium: "Ilimitados", enterprise: "Ilimitados" },
     { label: "Códigos de activación", freemium: "Manual", premium: "Manual", enterprise: "Automático + API" },
     { label: "Fee Mensualista", freemium: "15% por venta", premium: "Sin fee", enterprise: "Sin fee" },
     { label: "Cupones de descuento", freemium: false, premium: true, enterprise: true },
@@ -135,7 +135,7 @@ export default function CompanyDashboard() {
           {[
             { label: "Ventas mes", value: salesThisMonth.length },
             { label: "Retenidas", value: heldSales.length },
-            { label: "Gigs", value: plan === 'freemium' ? `${activeServicesCount}/5` : `${activeServicesCount}` },
+            { label: "Servicios", value: plan === 'freemium' ? `${activeServicesCount}/5` : `${activeServicesCount}` },
             { label: "Vendedores", value: uniqueVendors },
           ].map(stat => (
             <div key={stat.label} className="text-center p-3 rounded-xl border border-border bg-card">
@@ -302,7 +302,7 @@ export default function CompanyDashboard() {
                 </p>
                 <p className="text-xs text-muted-foreground">
                   {plan === 'freemium'
-                    ? 'Gigs ilimitados, cupones, chat y sin fee del 15%'
+                    ? 'Servicios ilimitados, cupones, chat y sin fee del 15%'
                     : 'Dominio propio, marca blanca, integración API automática'}
                 </p>
               </div>

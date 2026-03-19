@@ -101,8 +101,8 @@ export default function VendorServiceDetail() {
       <DashboardLayout role="vendor" userName="Carlos Mendoza">
         <EmptyState
           icon={Building2}
-          title="Gig no encontrado"
-          description="El gig que buscas no existe"
+          title="Servicio no encontrado"
+          description="El servicio que buscas no existe"
           action={
             <Button onClick={() => navigate('/vendor/gigs')}>
               Volver a servicios
@@ -218,7 +218,7 @@ export default function VendorServiceDetail() {
       <div className="space-y-6">
         <PageTutorial
           pageId="vendor-service-detail"
-          title="Detalle del gig"
+          title="Detalle del servicio"
           description="Desde aquí registras ventas, descargas materiales y consultas la guía de venta."
           steps={[
             "Usa 'Guía de venta' para ver el pitch, objeciones y datos del cliente ideal",
@@ -312,7 +312,7 @@ export default function VendorServiceDetail() {
             <div className="p-4 border-b border-border flex items-center justify-between">
               <h2 className="font-semibold flex items-center gap-2">
                 <FileText className="w-4 h-4 text-primary" />
-                Materiales del gig
+                Materiales del servicio
               </h2>
               <span className="text-xs text-muted-foreground">{service.materials.length} archivo{service.materials.length !== 1 ? 's' : ''}</span>
             </div>

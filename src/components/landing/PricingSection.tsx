@@ -19,7 +19,7 @@ const plans = [
     description: "Ideal para negocios pequeños que quieren empezar sin inversión.",
     badge: null,
     features: [
-      { text: "Máximo 5 gigs", included: true },
+      { text: "Máximo 5 servicios", included: true },
       { text: "Personalización básica (logo y colores)", included: true },
       { text: "Panel de vendedores", included: true },
       { text: "Reportes básicos", included: true },
@@ -44,7 +44,7 @@ const plans = [
     description: "Para empresas que necesitan funciones avanzadas y sin fee por venta.",
     badge: "Más popular",
     features: [
-      { text: "Gigs ilimitados", included: true },
+      { text: "Servicios ilimitados", included: true },
       { text: "Personalización completa", included: true },
       { text: "Panel de vendedores avanzado", included: true },
       { text: "Reportes detallados", included: true },
@@ -69,7 +69,7 @@ const plans = [
     description: "Para empresas digitales con integración automática y marca blanca.",
     badge: "Más completo",
     features: [
-      { text: "Gigs ilimitados", included: true },
+      { text: "Servicios ilimitados", included: true },
       { text: "Personalización completa", included: true },
       { text: "Panel de vendedores avanzado", included: true },
       { text: "Reportes detallados", included: true },
