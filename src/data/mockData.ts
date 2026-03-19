@@ -426,7 +426,8 @@ export const services: Service[] = [
     trainingUrl: 'https://example.com/poliza-training',
     activeSubscriptions: 42,
     materials: [{ id: 'mat-001', serviceId: 'service-001', title: 'Guión de venta Poliza', type: 'pdf', url: '/materials/guion-poliza.pdf', uploadedAt: '2024-06-01' }], 
-    createdAt: '2024-06-01' 
+    activationCodes: [],
+    createdAt: '2024-06-01'
   },
   { 
     id: 'service-002', 
@@ -445,7 +446,8 @@ export const services: Service[] = [
     trainingUrl: 'https://example.com/poliza-claims.pdf',
     activeSubscriptions: 28,
     materials: [{ id: 'mat-002', serviceId: 'service-002', title: 'Manual Claims Bot', type: 'pdf', url: '/materials/claims-bot.pdf', uploadedAt: '2024-06-15' }], 
-    createdAt: '2024-06-15' 
+    activationCodes: [],
+    createdAt: '2024-06-15'
   },
   
   // LexIA - IA Legal
@@ -466,7 +468,8 @@ export const services: Service[] = [
     trainingUrl: 'https://example.com/lexia-training',
     activeSubscriptions: 35,
     materials: [{ id: 'mat-003', serviceId: 'service-003', title: 'Demo LexIA', type: 'pdf', url: '/materials/demo-lexia.pdf', uploadedAt: '2024-07-01' }], 
-    createdAt: '2024-07-01' 
+    activationCodes: [],
+    createdAt: '2024-07-01'
   },
   { 
     id: 'service-004', 
@@ -484,7 +487,8 @@ export const services: Service[] = [
     trainingType: 'video', 
     trainingUrl: 'https://example.com/due-diligence',
     materials: [{ id: 'mat-004', serviceId: 'service-004', title: 'Proceso Due Diligence', type: 'pdf', url: '/materials/due-diligence.pdf', uploadedAt: '2024-07-15' }], 
-    createdAt: '2024-07-15' 
+    activationCodes: [],
+    createdAt: '2024-07-15'
   },
 
   // Kreativo - IA Marketing
@@ -505,7 +509,8 @@ export const services: Service[] = [
     trainingUrl: 'https://example.com/kreativo.pdf',
     activeSubscriptions: 67,
     materials: [{ id: 'mat-005', serviceId: 'service-005', title: 'Guía Kreativo', type: 'pdf', url: '/materials/guia-kreativo.pdf', uploadedAt: '2024-08-01' }], 
-    createdAt: '2024-08-01' 
+    activationCodes: [],
+    createdAt: '2024-08-01'
   },
   { 
     id: 'service-006', 
@@ -523,7 +528,8 @@ export const services: Service[] = [
     trainingType: 'video', 
     trainingUrl: 'https://example.com/landing-builder',
     materials: [{ id: 'mat-006', serviceId: 'service-006', title: 'Demo Landing Builder', type: 'pdf', url: '/materials/landing-builder.pdf', uploadedAt: '2024-08-15' }], 
-    createdAt: '2024-08-15' 
+    activationCodes: [],
+    createdAt: '2024-08-15'
   },
 
   // Cierro - IA Ventas
@@ -544,7 +550,8 @@ export const services: Service[] = [
     trainingUrl: 'https://example.com/cierro-crm',
     activeSubscriptions: 48,
     materials: [{ id: 'mat-007', serviceId: 'service-007', title: 'Manual Cierro CRM', type: 'pdf', url: '/materials/cierro-crm.pdf', uploadedAt: '2024-09-01' }], 
-    createdAt: '2024-09-01' 
+    activationCodes: [],
+    createdAt: '2024-09-01'
   },
   { 
     id: 'service-008', 
@@ -561,7 +568,8 @@ export const services: Service[] = [
     requiresTraining: false,
     activeSubscriptions: 33,
     materials: [{ id: 'mat-008', serviceId: 'service-008', title: 'Guía Cotizador', type: 'pdf', url: '/materials/cotizador.pdf', uploadedAt: '2024-09-10' }], 
-    createdAt: '2024-09-10' 
+    activationCodes: [],
+    createdAt: '2024-09-10'
   },
 
   // Asista - IA Atención
@@ -582,7 +590,8 @@ export const services: Service[] = [
     trainingUrl: 'https://example.com/whatsapp-ia',
     activeSubscriptions: 89,
     materials: [{ id: 'mat-009', serviceId: 'service-009', title: 'Setup WhatsApp IA', type: 'pdf', url: '/materials/whatsapp-ia.pdf', uploadedAt: '2024-09-15' }], 
-    createdAt: '2024-09-15' 
+    activationCodes: [],
+    createdAt: '2024-09-15'
   },
   { 
     id: 'service-010', 
@@ -601,7 +610,8 @@ export const services: Service[] = [
     trainingUrl: 'https://example.com/soporte-ia.pdf',
     activeSubscriptions: 56,
     materials: [{ id: 'mat-010', serviceId: 'service-010', title: 'Manual Soporte IA', type: 'pdf', url: '/materials/soporte-ia.pdf', uploadedAt: '2024-10-01' }], 
-    createdAt: '2024-10-01' 
+    activationCodes: [],
+    createdAt: '2024-10-01'
   },
 
   // NumeroIA - IA Contabilidad
@@ -622,7 +632,8 @@ export const services: Service[] = [
     trainingUrl: 'https://example.com/numeroia',
     activeSubscriptions: 41,
     materials: [{ id: 'mat-011', serviceId: 'service-011', title: 'Demo NumeroIA', type: 'pdf', url: '/materials/demo-numeroia.pdf', uploadedAt: '2024-10-10' }], 
-    createdAt: '2024-10-10' 
+    activationCodes: [],
+    createdAt: '2024-10-10'
   },
   { 
     id: 'service-012', 
@@ -641,7 +652,8 @@ export const services: Service[] = [
     trainingUrl: 'https://example.com/reportes-ia.pdf',
     activeSubscriptions: 27,
     materials: [{ id: 'mat-012', serviceId: 'service-012', title: 'Guía Reportes', type: 'pdf', url: '/materials/reportes-ia.pdf', uploadedAt: '2024-10-15' }], 
-    createdAt: '2024-10-15' 
+    activationCodes: [],
+    createdAt: '2024-10-15'
   },
 
   // Recruta - IA RRHH
@@ -662,7 +674,8 @@ export const services: Service[] = [
     trainingUrl: 'https://example.com/recruta',
     activeSubscriptions: 31,
     materials: [{ id: 'mat-013', serviceId: 'service-013', title: 'Manual Recruta', type: 'pdf', url: '/materials/recruta.pdf', uploadedAt: '2024-10-20' }], 
-    createdAt: '2024-10-20' 
+    activationCodes: [],
+    createdAt: '2024-10-20'
   },
   { 
     id: 'service-014', 
@@ -679,7 +692,8 @@ export const services: Service[] = [
     requiresTraining: false,
     activeSubscriptions: 24,
     materials: [{ id: 'mat-014', serviceId: 'service-014', title: 'Guía Onboarding', type: 'pdf', url: '/materials/onboarding.pdf', uploadedAt: '2024-11-01' }], 
-    createdAt: '2024-11-01' 
+    activationCodes: [],
+    createdAt: '2024-11-01'
   },
 
   // Blindaje - IA Ciberseguridad
@@ -700,7 +714,8 @@ export const services: Service[] = [
     trainingUrl: 'https://example.com/blindaje',
     activeSubscriptions: 18,
     materials: [{ id: 'mat-015', serviceId: 'service-015', title: 'Setup Blindaje', type: 'pdf', url: '/materials/blindaje.pdf', uploadedAt: '2024-11-10' }], 
-    createdAt: '2024-11-10' 
+    activationCodes: [],
+    createdAt: '2024-11-10'
   },
   { 
     id: 'service-016', 
@@ -718,7 +733,8 @@ export const services: Service[] = [
     trainingType: 'pdf', 
     trainingUrl: 'https://example.com/pentesting.pdf',
     materials: [{ id: 'mat-016', serviceId: 'service-016', title: 'Metodología Pentest', type: 'pdf', url: '/materials/pentesting.pdf', uploadedAt: '2024-11-15' }], 
-    createdAt: '2024-11-15' 
+    activationCodes: [],
+    createdAt: '2024-11-15'
   },
 
   // Servicios adicionales
@@ -739,7 +755,8 @@ export const services: Service[] = [
     trainingUrl: 'https://example.com/social-manager',
     activeSubscriptions: 54,
     materials: [{ id: 'mat-017', serviceId: 'service-017', title: 'Manual Social Manager', type: 'pdf', url: '/materials/social-manager.pdf', uploadedAt: '2024-11-20' }], 
-    createdAt: '2024-11-20' 
+    activationCodes: [],
+    createdAt: '2024-11-20'
   },
   { 
     id: 'service-018', 
@@ -758,7 +775,8 @@ export const services: Service[] = [
     trainingUrl: 'https://example.com/analytics.pdf',
     activeSubscriptions: 38,
     materials: [{ id: 'mat-018', serviceId: 'service-018', title: 'Guía Analytics', type: 'pdf', url: '/materials/analytics.pdf', uploadedAt: '2024-11-25' }], 
-    createdAt: '2024-11-25' 
+    activationCodes: [],
+    createdAt: '2024-11-25'
   },
   { 
     id: 'service-019', 
@@ -775,7 +793,8 @@ export const services: Service[] = [
     requiresTraining: false,
     activeSubscriptions: 72,
     materials: [{ id: 'mat-019', serviceId: 'service-019', title: 'Setup Chatbot', type: 'pdf', url: '/materials/chatbot-web.pdf', uploadedAt: '2024-12-01' }], 
-    createdAt: '2024-12-01' 
+    activationCodes: [],
+    createdAt: '2024-12-01'
   },
   { 
     id: 'service-020', 
@@ -794,7 +813,8 @@ export const services: Service[] = [
     trainingUrl: 'https://example.com/riesgo-ia',
     activeSubscriptions: 19,
     materials: [{ id: 'mat-020', serviceId: 'service-020', title: 'Manual Riesgo IA', type: 'pdf', url: '/materials/riesgo-ia.pdf', uploadedAt: '2024-12-05' }], 
-    createdAt: '2024-12-05' 
+    activationCodes: [],
+    createdAt: '2024-12-05'
   },
   { 
     id: 'service-021', 
@@ -813,7 +833,8 @@ export const services: Service[] = [
     trainingUrl: 'https://example.com/compliance',
     activeSubscriptions: 22,
     materials: [{ id: 'mat-021', serviceId: 'service-021', title: 'Manual Compliance', type: 'pdf', url: '/materials/compliance.pdf', uploadedAt: '2024-12-10' }], 
-    createdAt: '2024-12-10' 
+    activationCodes: [],
+    createdAt: '2024-12-10'
   },
   { 
     id: 'service-022', 
@@ -832,7 +853,8 @@ export const services: Service[] = [
     trainingUrl: 'https://example.com/nomina',
     activeSubscriptions: 35,
     materials: [{ id: 'mat-022', serviceId: 'service-022', title: 'Manual Nómina IA', type: 'pdf', url: '/materials/nomina.pdf', uploadedAt: '2024-12-15' }], 
-    createdAt: '2024-12-15' 
+    activationCodes: [],
+    createdAt: '2024-12-15'
   },
   { 
     id: 'service-023', 
@@ -851,7 +873,8 @@ export const services: Service[] = [
     trainingUrl: 'https://example.com/performance.pdf',
     activeSubscriptions: 28,
     materials: [{ id: 'mat-023', serviceId: 'service-023', title: 'Guía Performance', type: 'pdf', url: '/materials/performance.pdf', uploadedAt: '2024-12-20' }], 
-    createdAt: '2024-12-20' 
+    activationCodes: [],
+    createdAt: '2024-12-20'
   },
   { 
     id: 'service-024', 
@@ -870,7 +893,8 @@ export const services: Service[] = [
     trainingUrl: 'https://example.com/cyber-training',
     activeSubscriptions: 45,
     materials: [{ id: 'mat-024', serviceId: 'service-024', title: 'Manual Cyber Training', type: 'pdf', url: '/materials/cyber-training.pdf', uploadedAt: '2024-12-25' }], 
-    createdAt: '2024-12-25' 
+    activationCodes: [],
+    createdAt: '2024-12-25'
   }
 ];
 
