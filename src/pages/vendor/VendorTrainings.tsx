@@ -28,7 +28,7 @@ export default function VendorTrainings() {
       return {
         ...tp,
         service,
-        serviceName: service?.name || 'Gig desconocido',
+        serviceName: service?.name || 'Servicio desconocido',
         companyName: company?.name || 'Empresa',
         trainingType: service?.trainingType || 'pdf',
         estimatedDuration: service?.trainingType === 'video' ? '15 min' : '10 min'
@@ -59,7 +59,7 @@ export default function VendorTrainings() {
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold">Capacitaciones</h1>
           <p className="text-muted-foreground mt-1">
-            Completa las capacitaciones de {company?.name} para activar gigs
+            Completa las capacitaciones de {company?.name} para activar servicios
           </p>
         </div>
 

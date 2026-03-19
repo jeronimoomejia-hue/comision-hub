@@ -146,7 +146,7 @@ export default function VendorDashboard() {
                 </span>
               </div>
             </div>
-            <Link to="/vendor/gigs">
+            <Link to="/vendor/services">
               <Button size="icon" className="rounded-full w-10 h-10 sm:w-12 sm:h-12 shadow-lg">
                 <Plus className="w-5 h-5" />
               </Button>
@@ -159,7 +159,7 @@ export default function VendorDashboard() {
           {[
             { label: "Ventas", path: "/vendor/sales", icon: ShoppingCart },
             { label: "Pagos", path: "/vendor/payments", icon: DollarSign },
-            { label: "Servicios", path: "/vendor/gigs", icon: Package },
+            { label: "Servicios", path: "/vendor/services", icon: Package },
             { label: "Capacitaciones", path: "/vendor/trainings", icon: BookOpen },
             ...(companyPlan !== 'freemium' ? [{ label: "Chat", path: "/vendor/support", icon: MessageCircle }] : []),
           ].map(pill => (

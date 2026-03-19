@@ -97,7 +97,7 @@ export default function VendorGigs() {
           </div>
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <Package className="w-3.5 h-3.5" />
-            {filteredServices.length} gig{filteredServices.length !== 1 ? 's' : ''} disponibles
+            {filteredServices.length} servicio{filteredServices.length !== 1 ? 's' : ''} disponibles
           </div>
         </div>
 
@@ -112,7 +112,7 @@ export default function VendorGigs() {
           />
         </div>
 
-        {/* Gigs Grid - Fiverr style */}
+        {/* Services Grid - Fiverr style */}
         {filteredServices.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
             {filteredServices.map((service) => {
@@ -129,7 +129,7 @@ export default function VendorGigs() {
                     !service.isActive ? 'opacity-70' : ''
                   }`}
                 >
-                  {/* Gig Header / Cover */}
+                  {/* Service Header / Cover */}
                   <div className={`relative h-28 sm:h-36 bg-gradient-to-br ${gradient} p-4 flex flex-col justify-between`}>
                     {/* Category icon */}
                     <div className="text-3xl sm:text-4xl">{icon}</div>
@@ -161,7 +161,7 @@ export default function VendorGigs() {
                     </div>
                   </div>
 
-                  {/* Gig Body */}
+                  {/* Service Body */}
                   <div className="p-3 sm:p-4 space-y-3">
                     {/* Company info row */}
                     <div className="flex items-center gap-2">
