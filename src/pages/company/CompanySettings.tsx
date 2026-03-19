@@ -166,7 +166,7 @@ export default function CompanySettings() {
                 <Badge variant="outline" className="text-[9px]">Enterprise</Badge>
               </div>
               <p className="text-xs text-muted-foreground mb-3">
-                Conecta tu sistema para activación automática de códigos de gigs digitales.
+                Conecta tu sistema para activación automática de códigos de servicios digitales.
               </p>
               <div className="space-y-2">
                 <Label>API Key</Label>

@@ -71,7 +71,7 @@ export default function AdminCompanies() {
                     <p className="text-sm font-medium truncate">{company.name}</p>
                     {getStatusBadge(company.status)}
                   </div>
-                  <p className="text-[10px] text-muted-foreground">{company.industry} · {stats.activeServices} gigs · {stats.totalSales} ventas</p>
+                  <p className="text-[10px] text-muted-foreground">{company.industry} · {stats.activeServices} servicios · {stats.totalSales} ventas</p>
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0">
                   <span className="text-sm font-semibold">{formatCOP(stats.totalGMV)}</span>
