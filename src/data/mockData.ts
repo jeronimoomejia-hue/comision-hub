@@ -61,6 +61,14 @@ export interface Material {
   uploadedAt: string;
 }
 
+export interface ActivationCode {
+  id: string;
+  code: string;
+  status: 'available' | 'delivered' | 'expired';
+  assignedToSaleId?: string;
+  deliveredAt?: string;
+}
+
 export interface Service {
   id: string;
   companyId: string;
@@ -78,6 +86,7 @@ export interface Service {
   trainingUrl?: string;
   materials: Material[];
   activeSubscriptions?: number;
+  activationCodes: ActivationCode[];
   createdAt: string;
 }
 
