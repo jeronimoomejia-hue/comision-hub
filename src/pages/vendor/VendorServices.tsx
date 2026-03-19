@@ -1,7 +1,7 @@
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { 
-  Search, BookOpen, Eye, TrendingUp, Zap, ArrowRight, Users, RefreshCw
+  Search, BookOpen, Eye, TrendingUp, Zap, ArrowRight, Users, RefreshCw, AlertTriangle
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
