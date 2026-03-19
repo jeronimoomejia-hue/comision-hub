@@ -54,6 +54,7 @@ interface DemoContextType {
   togglePinService: (serviceId: string) => void;
   addService: (service: Omit<Service, 'id' | 'createdAt'>) => void;
   updateService: (serviceId: string, updates: Partial<Service>) => void;
+  addActivationCodes: (serviceId: string, codes: string[]) => void;
   addRefundRequest: (refund: Omit<RefundRequest, 'id' | 'createdAt'>) => void;
   updateRefundRequest: (refundId: string, updates: Partial<RefundRequest>) => void;
   addServiceRequest: (request: Omit<ServiceRequest, 'id' | 'createdAt' | 'updatedAt'>) => void;
