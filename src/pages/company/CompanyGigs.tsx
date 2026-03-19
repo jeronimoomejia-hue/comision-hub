@@ -13,7 +13,7 @@ import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import { formatCOP, CURRENT_COMPANY_ID, type Service } from "@/data/mockData";
 import { useDemo } from "@/contexts/DemoContext";
-import ServiceEditModal from "@/components/company/ServiceEditModal";
+import GigEditModal from "@/components/company/GigEditModal";
 
 export default function CompanyServices() {
   const { sales: demoSales, services, currentCompanyPlan, addService, updateService, addActivationCodes } = useDemo();
@@ -231,7 +231,7 @@ export default function CompanyServices() {
           )}
         </div>
 
-        <ServiceEditModal 
+        <GigEditModal 
           service={selectedService}
           sales={companySales}
           onClose={() => setSelectedService(null)}

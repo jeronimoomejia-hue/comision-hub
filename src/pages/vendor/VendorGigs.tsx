@@ -8,7 +8,7 @@ import { useState } from "react";
 import { useDemo } from "@/contexts/DemoContext";
 import { formatCOP, companies } from "@/data/mockData";
 import { useNavigate } from "react-router-dom";
-import ServiceDetailsModal from "@/components/ServiceDetailsModal";
+import GigDetailsModal from "@/components/GigDetailsModal";
 import { Badge } from "@/components/ui/badge";
 
 export default function VendorServices() {
@@ -223,7 +223,7 @@ export default function VendorServices() {
       </div>
 
       {selectedServiceId && (
-        <ServiceDetailsModal
+        <GigDetailsModal
           serviceId={selectedServiceId}
           isOpen={!!selectedServiceId}
           onClose={() => setSelectedServiceId(null)}
