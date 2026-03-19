@@ -179,9 +179,10 @@ export default function ServiceEditModal({ service, sales, onClose, onSave }: Se
         </DialogHeader>
 
         <Tabs defaultValue="metrics" className="flex-1 overflow-hidden flex flex-col">
-          <TabsList className="grid w-full grid-cols-4 flex-shrink-0">
+          <TabsList className="grid w-full grid-cols-5 flex-shrink-0">
             <TabsTrigger value="metrics">📊 Métricas</TabsTrigger>
             <TabsTrigger value="details">📝 Detalles</TabsTrigger>
+            <TabsTrigger value="codes">🔑 Códigos</TabsTrigger>
             <TabsTrigger value="training">🎓 Capacitación</TabsTrigger>
             <TabsTrigger value="sales">💰 Ventas</TabsTrigger>
           </TabsList>
