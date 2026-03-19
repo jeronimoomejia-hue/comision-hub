@@ -13,7 +13,7 @@ import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import { formatCOP, CURRENT_COMPANY_ID, type Service } from "@/data/mockData";
 import { useDemo } from "@/contexts/DemoContext";
-import GigEditModal from "@/components/company/GigEditModal";
+import ServiceEditModal from "@/components/company/ServiceEditModal";
 
 export default function CompanyServices() {
   const { sales: demoSales, services, currentCompanyPlan, addService, updateService, addActivationCodes } = useDemo();

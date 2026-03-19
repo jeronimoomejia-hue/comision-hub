@@ -9,7 +9,7 @@ import { useState } from "react";
 import { useDemo } from "@/contexts/DemoContext";
 import { formatCOP, companies } from "@/data/mockData";
 import { useNavigate } from "react-router-dom";
-import GigDetailsModal from "@/components/GigDetailsModal";
+import ServiceDetailsModal from "@/components/ServiceDetailsModal";
 import { Badge } from "@/components/ui/badge";
 
 // Category gradient map for gig header visuals
