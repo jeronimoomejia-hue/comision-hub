@@ -343,6 +343,7 @@ export default function VendorServiceDetail() {
                 <TableRow>
                   <TableHead>Fecha</TableHead>
                   <TableHead>Cliente</TableHead>
+                  <TableHead>Código</TableHead>
                   <TableHead>Estado</TableHead>
                   <TableHead className="text-right">Monto</TableHead>
                   <TableHead className="text-right">Comisión</TableHead>
