@@ -145,6 +145,7 @@ export interface Sale {
   isSubscription: boolean;
   subscriptionActive?: boolean;
   notes?: string;
+  activationCode?: string; // Code delivered to client
   createdAt: string;
   // Legacy compatibility
   amountCOP?: number;
