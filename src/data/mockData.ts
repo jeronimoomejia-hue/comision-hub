@@ -413,7 +413,7 @@ export const services: Service[] = [
   { 
     id: 'service-001', companyId: 'company-001', name: 'Poliza Cotizador IA', 
     description: 'IA que genera cotizaciones de seguros en segundos analizando el perfil del cliente.', 
-    category: 'IA para Seguros', priceCOP: 179000, type: 'suscripcion' as 'suscripcion' | 'puntual',
+    category: 'IA para Seguros', priceCOP: 179000, type: 'suscripción',
     vendorCommissionPct: 20, mensualistaPct: 8, status: 'activo',
     refundPolicy: { autoRefund: false, refundWindowDays: 14 }, 
     requiresTraining: true, trainingType: 'video', trainingUrl: 'https://example.com/poliza-training',
@@ -425,7 +425,7 @@ export const services: Service[] = [
   { 
     id: 'service-002', companyId: 'company-001', name: 'Poliza Claims Bot', 
     description: 'Bot de IA para gestion automatica de reclamos de seguros.',
-    category: 'IA para Seguros', priceCOP: 199000, type: 'suscripcion' as 'suscripcion' | 'puntual',
+    category: 'IA para Seguros', priceCOP: 199000, type: 'suscripción',
     vendorCommissionPct: 18, mensualistaPct: 8, status: 'activo',
     refundPolicy: { autoRefund: true, refundWindowDays: 7 }, 
     requiresTraining: true, trainingType: 'pdf', trainingUrl: 'https://example.com/poliza-claims.pdf',
@@ -439,7 +439,7 @@ export const services: Service[] = [
   { 
     id: 'service-003', companyId: 'company-002', name: 'LexIA Contratos', 
     description: 'Generacion y revision de contratos con inteligencia artificial en minutos.',
-    category: 'IA Legal', priceCOP: 249000, type: 'suscripcion' as 'suscripcion' | 'puntual',
+    category: 'IA Legal', priceCOP: 249000, type: 'suscripción',
     vendorCommissionPct: 18, mensualistaPct: 8, status: 'activo',
     refundPolicy: { autoRefund: false, refundWindowDays: 14 }, 
     requiresTraining: true, trainingType: 'video', trainingUrl: 'https://example.com/lexia-training',
