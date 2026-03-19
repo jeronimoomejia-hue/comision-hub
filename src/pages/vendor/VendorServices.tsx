@@ -9,10 +9,10 @@ import { useState } from "react";
 import { useDemo } from "@/contexts/DemoContext";
 import { formatCOP, companies } from "@/data/mockData";
 import { useNavigate } from "react-router-dom";
-import GigDetailsModal from "@/components/GigDetailsModal";
+import ServiceDetailsModal from "@/components/ServiceDetailsModal";
 import { Badge } from "@/components/ui/badge";
 
-// Category gradient map for gig header visuals
+// Category gradient map for servicio header visuals
 const categoryGradients: Record<string, string> = {
   'IA para Seguros': 'from-blue-500/20 to-indigo-500/20',
   'IA Legal': 'from-emerald-500/20 to-teal-500/20',
@@ -89,7 +89,7 @@ export default function VendorGigs() {
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2">
           <div>
             <h1 className="text-lg sm:text-2xl font-bold text-foreground">
-              Gigs de {company?.name || 'la empresa'}
+              Servicios de {company?.name || 'la empresa'}
             </h1>
             <p className="text-[11px] sm:text-sm text-muted-foreground">
               {totalActive} listos para vender · {totalPending} pendientes de capacitación
@@ -97,7 +97,7 @@ export default function VendorGigs() {
           </div>
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <Package className="w-3.5 h-3.5" />
-            {filteredServices.length} gig{filteredServices.length !== 1 ? 's' : ''} disponibles
+            {filteredServices.length} servicio{filteredServices.length !== 1 ? 's' : ''} disponibles
           </div>
         </div>
 
@@ -105,14 +105,14 @@ export default function VendorGigs() {
         <div className="relative max-w-xl">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
           <Input
-            placeholder="Buscar gigs..."
+            placeholder="Buscar servicios..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-9 h-9 sm:h-11 bg-card border-border rounded-xl text-xs sm:text-sm"
           />
         </div>
 
-        {/* Gigs Grid - Fiverr style */}
+        {/* Services Grid - Fiverr style */}
         {filteredServices.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
             {filteredServices.map((service) => {
@@ -129,7 +129,7 @@ export default function VendorGigs() {
                     !service.isActive ? 'opacity-70' : ''
                   }`}
                 >
-                  {/* Gig Header / Cover */}
+                  {/* Service Header / Cover */}
                   <div className={`relative h-28 sm:h-36 bg-gradient-to-br ${gradient} p-4 flex flex-col justify-between`}>
                     {/* Category icon */}
                     <div className="text-3xl sm:text-4xl">{icon}</div>
@@ -161,7 +161,7 @@ export default function VendorGigs() {
                     </div>
                   </div>
 
-                  {/* Gig Body */}
+                  {/* Service Body */}
                   <div className="p-3 sm:p-4 space-y-3">
                     {/* Company info row */}
                     <div className="flex items-center gap-2">
@@ -237,7 +237,7 @@ export default function VendorGigs() {
                         <Button
                           size="sm"
                           className="flex-1 h-8 sm:h-9 text-xs"
-                          onClick={() => navigate(`/vendor/gigs/${service.id}`)}
+                          onClick={() => navigate(`/vendor/services/${service.id}`)}
                         >
                           Vender
                           <ArrowRight className="w-3.5 h-3.5 ml-1" />
@@ -269,7 +269,7 @@ export default function VendorGigs() {
       </div>
 
       {selectedServiceId && (
-        <GigDetailsModal
+        <ServiceDetailsModal
           serviceId={selectedServiceId}
           isOpen={!!selectedServiceId}
           onClose={() => setSelectedServiceId(null)}

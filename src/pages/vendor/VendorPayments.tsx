@@ -151,7 +151,7 @@ export default function VendorPayments() {
   const handleSupport = (sale: Sale) => {
     const service = allServices.find(s => s.id === sale.serviceId);
     const message = `Hola, necesito ayuda con una venta:\n\n` +
-      `📋 Gig: ${service?.name || 'N/A'}\n` +
+      `📋 Servicio: ${service?.name || 'N/A'}\n` +
       `👤 Cliente: ${sale.clientName}\n` +
       `💰 Monto: ${formatCOP(sale.grossAmount)}\n` +
       `📅 Fecha: ${formatDate(sale.createdAt)}\n` +
@@ -165,7 +165,7 @@ export default function VendorPayments() {
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold">Mis Ventas y Pagos</h1>
           <p className="text-muted-foreground mt-1">
-            Tus ventas por gig, estado de retención y pagos automáticos
+            Tus ventas por servicio, estado de retención y pagos automáticos
           </p>
         </div>
 
@@ -195,7 +195,7 @@ export default function VendorPayments() {
             title="Total ventas" 
             value={mySales.length} 
             icon={DollarSign}
-            subtitle={`${uniqueServices.length} gigs`}
+            subtitle={`${uniqueServices.length} servicios`}
           />
           <StatCard 
             title="En retención" 
@@ -224,7 +224,7 @@ export default function VendorPayments() {
           <p className="text-sm">
             <strong>¿Cómo funciona?</strong> Cada venta entra en <strong>retención</strong> (7 días). 
             Al liberarse, tu comisión se transfiere automáticamente a tu cuenta bancaria. 
-            Puedes solicitar devolución si estás dentro del período de gracia del gig.
+            Puedes solicitar devolución si estás dentro del período de gracia del servicio.
           </p>
         </div>
 
@@ -232,7 +232,7 @@ export default function VendorPayments() {
         <div>
           <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
             <Package className="w-5 h-5 text-primary" />
-            Ventas por gig
+            Ventas por servicio
           </h2>
 
           <div className="space-y-3">
@@ -387,7 +387,7 @@ export default function VendorPayments() {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
-                placeholder="Buscar por cliente o gig..."
+                placeholder="Buscar por cliente o servicio..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10"
@@ -407,10 +407,10 @@ export default function VendorPayments() {
             </Select>
             <Select value={serviceFilter} onValueChange={setServiceFilter}>
               <SelectTrigger className="w-full sm:w-52">
-                <SelectValue placeholder="Gig" />
+                <SelectValue placeholder="Servicio" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Todos los gigs</SelectItem>
+                <SelectItem value="all">Todos los servicios</SelectItem>
                 {uniqueServices.map(service => (
                   <SelectItem key={service!.id} value={service!.id}>
                     {service!.name}
@@ -429,7 +429,7 @@ export default function VendorPayments() {
               />
             </div>
           ) : (
-            <DataTable headers={["Fecha", "Gig", "Cliente", "Venta bruta", "Tu comisión", "Estado", "Acciones"]}>
+            <DataTable headers={["Fecha", "Servicio", "Cliente", "Venta bruta", "Tu comisión", "Estado", "Acciones"]}>
               {filteredSales.slice(0, 50).map(sale => {
                 const service = allServices.find(s => s.id === sale.serviceId);
                 const eligible = canRequestRefund(sale);
@@ -545,7 +545,7 @@ export default function VendorPayments() {
                 {/* Details */}
                 <div className="space-y-2">
                   {[
-                    ['Gig', service?.name],
+                    ['Servicio', service?.name],
                     ['Tipo', service?.type === 'suscripción' ? 'Suscripción mensual' : 'Pago único'],
                     ['Cliente', selectedSale.clientName],
                     ['Email', selectedSale.clientEmail],
@@ -597,7 +597,7 @@ export default function VendorPayments() {
               {refundSale && (() => {
                 const service = allServices.find(s => s.id === refundSale.serviceId);
                 return service?.refundPolicy.autoRefund 
-                  ? "Este gig tiene devolución automática. Se procesará al instante."
+                  ? "Este servicio tiene devolución automática. Se procesará al instante."
                   : "La empresa revisará tu solicitud y te notificará.";
               })()}
             </DialogDescription>

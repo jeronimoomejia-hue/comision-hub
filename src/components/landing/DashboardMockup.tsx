@@ -219,7 +219,7 @@ export const DashboardMockup = () => {
                     <div className="flex items-center justify-between px-3 py-2 border-b border-border/50">
                       <h4 className="text-xs font-semibold flex items-center gap-1.5">
                         <Package className="w-3 h-3 text-primary" />
-                        Gigs disponibles
+                        Servicios disponibles
                       </h4>
                       <span className="text-[9px] text-primary flex items-center gap-0.5 cursor-pointer hover:underline">
                         Ver catálogo <ChevronRight className="w-2.5 h-2.5" />

@@ -405,7 +405,7 @@ export const vendors: User[] = vendorNames.map((name, i) => ({
 }));
 
 // =============================================================================
-// SERVICIOS DE IA - 24 gigs (precios $100k - $300k COP)
+// SERVICIOS DE IA - 24 servicios (precios $100k - $300k COP)
 // =============================================================================
 
 export const services: Service[] = [
@@ -880,7 +880,7 @@ export const serviceRequests: ServiceRequest[] = [
 // =============================================================================
 
 export const notifications: Notification[] = [
-  { id: 'notif-001', targetRole: 'vendor', title: '¡Nuevos gigs disponibles!', body: 'Se han añadido 3 nuevos gigs de IA para que puedas vender. Revisa el marketplace.', type: 'system', isActive: true, createdAt: '2025-01-20' },
+  { id: 'notif-001', targetRole: 'vendor', title: '¡Nuevos servicios disponibles!', body: 'Se han añadido 3 nuevos servicios de IA para que puedas vender. Revisa el marketplace.', type: 'system', isActive: true, createdAt: '2025-01-20' },
   { id: 'notif-002', targetRole: 'vendor', title: 'Pagos automáticos mejorados', body: 'Ahora tus comisiones se liberan automáticamente después del período de retención.', type: 'payment', isActive: true, createdAt: '2025-01-18' },
   { id: 'notif-003', targetRole: 'company', title: 'Nuevas métricas de vendedores', body: 'Ahora puedes ver estadísticas detalladas de ventas en tu panel.', type: 'system', isActive: true, createdAt: '2025-01-19' },
   { id: 'notif-004', targetRole: 'all', title: 'Mantenimiento programado', body: 'El sistema estará en mantenimiento el domingo 26 de enero de 2-4am.', type: 'system', isActive: true, createdAt: '2025-01-21' },
@@ -904,7 +904,7 @@ function generateSales(): Sale[] {
   const today = new Date();
   const activeServices = services.filter(s => s.status === 'activo');
   
-  // Gigs de Poliza.ai para vendor-001
+  // Servicios de Poliza.ai para vendor-001
   const polizaServices = services.filter(s => s.companyId === 'company-001' && s.status === 'activo');
   
   // Generar 18 RELEASED, 9 HELD, 3 REFUNDED = 30 transacciones para vendor-001
@@ -1204,7 +1204,7 @@ export const refundRequests: RefundRequest[] = [
 // =============================================================================
 
 export const trainingProgress: TrainingProgress[] = [
-  // Vendor-001 completó varios gigs de Poliza.ai
+  // Vendor-001 completó varios servicios de Poliza.ai
   { id: 'tp-001', vendorId: 'vendor-001', serviceId: 'service-001', status: 'declared_completed', lastAccessedAt: '2024-12-01', completedAt: '2024-12-01' },
   { id: 'tp-002', vendorId: 'vendor-001', serviceId: 'service-002', status: 'declared_completed', lastAccessedAt: '2024-12-05', completedAt: '2024-12-05' },
   { id: 'tp-003', vendorId: 'vendor-001', serviceId: 'service-020', status: 'declared_completed', lastAccessedAt: '2024-12-10', completedAt: '2024-12-10' },

@@ -5,7 +5,7 @@ const features = [
   { icon: Palette, title: "Tu marca, tu identidad", description: "Logo, colores primarios y secundarios. Tus vendedores ven tu marca, no la nuestra." },
   { icon: Users, title: "Red de vendedores privada", description: "Trae a tus vendedores por tus propios medios. Ellos se registran en tu plataforma personalizada." },
   { icon: BarChart3, title: "Dashboard en tiempo real", description: "Ve ventas, comisiones, rendimiento de vendedores y métricas clave al instante." },
-  { icon: Shield, title: "Códigos de activación", description: "Gestiona la activación de gigs con códigos manuales o integración automática." },
+  { icon: Shield, title: "Códigos de activación", description: "Gestiona la activación de servicios con códigos manuales o integración automática." },
   { icon: Tag, title: "Cupones de descuento", description: "Crea cupones para incentivar a tus vendedores a cerrar más ventas. (Premium+)" },
   { icon: MessageCircle, title: "Chat empresa-vendedor", description: "Comunicación directa con tus vendedores para resolver dudas y dar soporte. (Premium+)" },
   { icon: Globe, title: "Dominio personalizado", description: "Tu plataforma con tu propio dominio. Marca blanca completa. (Enterprise)" },

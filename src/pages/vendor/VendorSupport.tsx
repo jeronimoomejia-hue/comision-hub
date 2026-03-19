@@ -52,7 +52,7 @@ export default function VendorSupport() {
           </div>
           <h2 className="text-base font-bold mb-2">Chat en vivo</h2>
           <p className="text-sm text-muted-foreground mb-4">
-            Escribe directamente a {company?.name} para resolver dudas sobre gigs, ventas o comisiones.
+            Escribe directamente a {company?.name} para resolver dudas sobre servicios, ventas o comisiones.
           </p>
           <div className="rounded-xl border border-border bg-card p-8 mb-4">
             <p className="text-xs text-muted-foreground">💬 El chat se habilitará con la integración real. Por ahora, usa WhatsApp:</p>

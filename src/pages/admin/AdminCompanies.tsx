@@ -71,7 +71,7 @@ export default function AdminCompanies() {
                     <p className="text-sm font-medium truncate">{company.name}</p>
                     {getStatusBadge(company.status)}
                   </div>
-                  <p className="text-[10px] text-muted-foreground">{company.industry} · {stats.activeServices} gigs · {stats.totalSales} ventas</p>
+                  <p className="text-[10px] text-muted-foreground">{company.industry} · {stats.activeServices} servicios · {stats.totalSales} ventas</p>
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0">
                   <span className="text-sm font-semibold">{formatCOP(stats.totalGMV)}</span>
@@ -93,7 +93,7 @@ export default function AdminCompanies() {
                 <div className="grid grid-cols-2 gap-2 text-center text-sm">
                   <div className="p-2 rounded-lg bg-muted/50"><p className="font-bold">{selected.stats.totalSales}</p><p className="text-[10px] text-muted-foreground">Ventas</p></div>
                   <div className="p-2 rounded-lg bg-muted/50"><p className="font-bold">{formatCOP(selected.stats.totalGMV)}</p><p className="text-[10px] text-muted-foreground">GMV</p></div>
-                  <div className="p-2 rounded-lg bg-muted/50"><p className="font-bold">{selected.stats.activeServices}</p><p className="text-[10px] text-muted-foreground">Gigs</p></div>
+                  <div className="p-2 rounded-lg bg-muted/50"><p className="font-bold">{selected.stats.activeServices}</p><p className="text-[10px] text-muted-foreground">Servicios</p></div>
                   <div className="p-2 rounded-lg bg-muted/50"><p className="font-bold">{selected.stats.uniqueVendors}</p><p className="text-[10px] text-muted-foreground">Vendedores</p></div>
                 </div>
                 <div className="text-xs space-y-1 text-muted-foreground">

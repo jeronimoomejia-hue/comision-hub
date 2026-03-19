@@ -37,7 +37,7 @@ export default function VendorTrainingDetail() {
           <p className="text-muted-foreground mb-4">
             La capacitación que buscas no existe o no tienes acceso
           </p>
-          <Button onClick={() => navigate('/vendor/gigs')}>
+          <Button onClick={() => navigate('/vendor/services')}>
             <ArrowLeft className="w-4 h-4 mr-2" />
             Volver a servicios
           </Button>
@@ -57,12 +57,12 @@ export default function VendorTrainingDetail() {
   const handleComplete = () => {
     completeTraining(currentVendorId, service.id);
     toast.success("¡Capacitación completada! Servicio activado.", {
-      description: "Ahora puedes vender este gig y acceder a los materiales.",
+      description: "Ahora puedes vender este servicio y acceder a los materiales.",
       duration: 5000
     });
     
     setTimeout(() => {
-      navigate(`/vendor/gigs/${service.id}`);
+      navigate(`/vendor/services/${service.id}`);
     }, 1500);
   };
 
@@ -75,16 +75,16 @@ export default function VendorTrainingDetail() {
         <PageTutorial
           pageId="vendor-training"
           title="Capacitación del servicio"
-          description="Revisa el material de capacitación y cuando termines, declárala completada para activar el gig."
+          description="Revisa el material de capacitación y cuando termines, declárala completada para activar el servicio."
           steps={[
             "Revisa el contenido (video o PDF) completo",
             "Cuando te sientas listo, haz clic en 'Declarar completada'",
-            "El gig se activará y podrás empezar a vender"
+            "El servicio se activará y podrás empezar a vender"
           ]}
         />
         <Button 
           variant="ghost" 
-          onClick={() => navigate('/vendor/gigs')}
+          onClick={() => navigate('/vendor/services')}
           className="mb-2"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
@@ -269,7 +269,7 @@ export default function VendorTrainingDetail() {
             </Button>
             <Button 
               variant="outline"
-              onClick={() => navigate(`/vendor/gigs/${service.id}`)}
+              onClick={() => navigate(`/vendor/services/${service.id}`)}
             >
               Ver detalle del servicio
             </Button>
