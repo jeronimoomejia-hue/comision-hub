@@ -62,7 +62,7 @@ const roleLabels = {
 function getVendorNav(plan: CompanyPlan) {
   const base = [
     { icon: LayoutDashboard, label: "Dashboard", href: "/vendor" },
-    { icon: Package, label: "Gigs", href: "/vendor/services" },
+    { icon: Package, label: "Gigs", href: "/vendor/gigs" },
     { icon: ShoppingCart, label: "Mis Ventas", href: "/vendor/sales" },
     { icon: DollarSign, label: "Pagos", href: "/vendor/payments" },
     { icon: BookOpen, label: "Capacitaciones", href: "/vendor/trainings" },
