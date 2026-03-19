@@ -319,6 +319,7 @@ export function DemoProvider({ children }: { children: ReactNode }) {
       togglePinService,
       addService,
       updateService,
+      addActivationCodes,
       addRefundRequest,
       updateRefundRequest,
       addServiceRequest,
