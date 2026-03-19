@@ -195,7 +195,7 @@ export default function VendorPayments() {
             title="Total ventas" 
             value={mySales.length} 
             icon={DollarSign}
-            subtitle={`${uniqueServices.length} gigs`}
+            subtitle={`${uniqueServices.length} servicios`}
           />
           <StatCard 
             title="En retención" 
@@ -545,7 +545,7 @@ export default function VendorPayments() {
                 {/* Details */}
                 <div className="space-y-2">
                   {[
-                    ['Gig', service?.name],
+                    ['Servicio', service?.name],
                     ['Tipo', service?.type === 'suscripción' ? 'Suscripción mensual' : 'Pago único'],
                     ['Cliente', selectedSale.clientName],
                     ['Email', selectedSale.clientEmail],

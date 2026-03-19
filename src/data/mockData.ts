@@ -405,7 +405,7 @@ export const vendors: User[] = vendorNames.map((name, i) => ({
 }));
 
 // =============================================================================
-// SERVICIOS DE IA - 24 gigs (precios $100k - $300k COP)
+// SERVICIOS DE IA - 24 servicios (precios $100k - $300k COP)
 // =============================================================================
 
 export const services: Service[] = [

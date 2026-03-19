@@ -30,7 +30,7 @@ export const CompaniesSection = () => {
             </span>
 
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-foreground">
-              ¿Eres empresa de gigs?
+              ¿Eres empresa de servicios?
             </h2>
             <p className="text-muted-foreground text-lg mb-8">
               Conecta tu SaaS o servicio digital con una red de vendedores independientes. Paga solo por resultados.

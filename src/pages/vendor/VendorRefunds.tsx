@@ -155,7 +155,7 @@ export default function VendorRefunds() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Fecha</TableHead>
-                  <TableHead>Gig</TableHead>
+                  <TableHead>Servicio</TableHead>
                   <TableHead>Cliente</TableHead>
                   <TableHead className="text-right">Monto</TableHead>
                   <TableHead>Estado</TableHead>
