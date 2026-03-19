@@ -269,7 +269,7 @@ export default function VendorGigs() {
       </div>
 
       {selectedServiceId && (
-        <GigDetailsModal
+        <ServiceDetailsModal
           serviceId={selectedServiceId}
           isOpen={!!selectedServiceId}
           onClose={() => setSelectedServiceId(null)}

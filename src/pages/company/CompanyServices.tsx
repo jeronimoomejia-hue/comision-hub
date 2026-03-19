@@ -231,7 +231,7 @@ export default function CompanyServices() {
           )}
         </div>
 
-        <GigEditModal 
+        <ServiceEditModal 
           service={selectedService}
           sales={companySales}
           onClose={() => setSelectedService(null)}
