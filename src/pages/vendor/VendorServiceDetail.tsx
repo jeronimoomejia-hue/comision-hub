@@ -367,6 +367,13 @@ export default function VendorServiceDetail() {
                         </div>
                       </TableCell>
                       <TableCell>
+                        {sale.activationCode ? (
+                          <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">{sale.activationCode}</code>
+                        ) : (
+                          <span className="text-xs text-muted-foreground">—</span>
+                        )}
+                      </TableCell>
+                      <TableCell>
                         <StatusBadge 
                           status={sale.status === 'RELEASED' ? 'activo' : sale.status === 'REFUNDED' ? 'rechazado' : 'pendiente'} 
                           label={getStatusLabel(sale.status)}
