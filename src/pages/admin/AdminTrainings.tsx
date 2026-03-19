@@ -62,7 +62,7 @@ export default function AdminTrainings() {
         {/* Table */}
         <Card>
           <Table>
-            <TableHeader><TableRow><TableHead>Servicio</TableHead><TableHead>Empresa</TableHead><TableHead>Tipo contenido</TableHead><TableHead>Duración</TableHead><TableHead>% Completado global</TableHead><TableHead className="text-right"># Completaron</TableHead><TableHead>Estado</TableHead><TableHead>Acciones</TableHead></TableRow></TableHeader>
+            <TableHeader><TableRow><TableHead>Gig</TableHead><TableHead>Empresa</TableHead><TableHead>Tipo contenido</TableHead><TableHead>Duración</TableHead><TableHead>% Completado global</TableHead><TableHead className="text-right"># Completaron</TableHead><TableHead>Estado</TableHead><TableHead>Acciones</TableHead></TableRow></TableHeader>
             <TableBody>
               {trainings.map(training => {
                 const service = services.find(s => s.id === training.serviceId);

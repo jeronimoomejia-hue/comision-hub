@@ -196,7 +196,7 @@ export default function CompanyDashboard() {
           <Link to="/company/gigs">
             <div className="rounded-xl border border-border bg-card p-3 hover:border-primary/30 transition-colors text-center">
               <ShoppingCart className="w-5 h-5 mx-auto mb-1 text-primary" />
-              <p className="text-sm font-medium">Servicios</p>
+              <p className="text-sm font-medium">Gigs</p>
               <p className="text-[10px] text-muted-foreground">
                 {plan === 'freemium' ? 'Máximo 5' : 'Ilimitados'}
               </p>
@@ -302,7 +302,7 @@ export default function CompanyDashboard() {
                 </p>
                 <p className="text-xs text-muted-foreground">
                   {plan === 'freemium'
-                    ? 'Servicios ilimitados, cupones, chat y sin fee del 15%'
+                    ? 'Gigs ilimitados, cupones, chat y sin fee del 15%'
                     : 'Dominio propio, marca blanca, integración API automática'}
                 </p>
               </div>

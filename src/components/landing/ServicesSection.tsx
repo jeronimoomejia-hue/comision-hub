@@ -87,7 +87,7 @@ export const ServicesSection = () => {
   };
 
   return (
-    <section id="servicios" className="py-24 px-4 sm:px-6 lg:px-8 bg-background relative overflow-hidden">
+    <section id="gigs" className="py-24 px-4 sm:px-6 lg:px-8 bg-background relative overflow-hidden">
       <div className="container mx-auto max-w-6xl">
         {/* Header */}
         <motion.div

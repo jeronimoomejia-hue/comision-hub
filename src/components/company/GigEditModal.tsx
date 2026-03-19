@@ -128,7 +128,7 @@ export default function ServiceEditModal({ service, sales, onClose, onSave }: Se
   };
 
   const handleSupport = () => {
-    const message = `Hola, necesito ayuda con mi servicio:\n- Servicio: ${service?.name}\n- ID: ${service?.id}`;
+    const message = `Hola, necesito ayuda con mi servicio:\n- Gig: ${service?.name}\n- ID: ${service?.id}`;
     window.open(`https://wa.me/573001234567?text=${encodeURIComponent(message)}`, '_blank');
   };
 

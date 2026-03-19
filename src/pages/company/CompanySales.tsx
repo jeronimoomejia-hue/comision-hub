@@ -126,7 +126,7 @@ export default function CompanySales() {
               return (
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between"><span className="text-muted-foreground">Cliente</span><span className="font-medium">{selectedSale.clientName}</span></div>
-                  <div className="flex justify-between"><span className="text-muted-foreground">Servicio</span><span className="font-medium">{service?.name}</span></div>
+                  <div className="flex justify-between"><span className="text-muted-foreground">Gig</span><span className="font-medium">{service?.name}</span></div>
                   <div className="flex justify-between"><span className="text-muted-foreground">Vendedor</span><span className="font-medium">{vendor?.name}</span></div>
                   <div className="flex justify-between"><span className="text-muted-foreground">Estado</span>{getStatusBadge(selectedSale.status)}</div>
                   <div className="flex justify-between"><span className="text-muted-foreground">Devolución</span><span className="text-xs">{service?.refundPolicy.refundWindowDays} días</span></div>

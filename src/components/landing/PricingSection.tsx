@@ -44,7 +44,7 @@ const plans = [
     description: "Para empresas que necesitan funciones avanzadas y sin fee por venta.",
     badge: "Más popular",
     features: [
-      { text: "Servicios ilimitados", included: true },
+      { text: "Gigs ilimitados", included: true },
       { text: "Personalización completa", included: true },
       { text: "Panel de vendedores avanzado", included: true },
       { text: "Reportes detallados", included: true },
@@ -69,7 +69,7 @@ const plans = [
     description: "Para empresas digitales con integración automática y marca blanca.",
     badge: "Más completo",
     features: [
-      { text: "Servicios ilimitados", included: true },
+      { text: "Gigs ilimitados", included: true },
       { text: "Personalización completa", included: true },
       { text: "Panel de vendedores avanzado", included: true },
       { text: "Reportes detallados", included: true },

@@ -151,7 +151,7 @@ export default function VendorPayments() {
   const handleSupport = (sale: Sale) => {
     const service = allServices.find(s => s.id === sale.serviceId);
     const message = `Hola, necesito ayuda con una venta:\n\n` +
-      `📋 Servicio: ${service?.name || 'N/A'}\n` +
+      `📋 Gig: ${service?.name || 'N/A'}\n` +
       `👤 Cliente: ${sale.clientName}\n` +
       `💰 Monto: ${formatCOP(sale.grossAmount)}\n` +
       `📅 Fecha: ${formatDate(sale.createdAt)}\n` +
@@ -195,7 +195,7 @@ export default function VendorPayments() {
             title="Total ventas" 
             value={mySales.length} 
             icon={DollarSign}
-            subtitle={`${uniqueServices.length} servicios`}
+            subtitle={`${uniqueServices.length} gigs`}
           />
           <StatCard 
             title="En retención" 
@@ -232,7 +232,7 @@ export default function VendorPayments() {
         <div>
           <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
             <Package className="w-5 h-5 text-primary" />
-            Ventas por servicio
+            Ventas por gig
           </h2>
 
           <div className="space-y-3">
@@ -407,7 +407,7 @@ export default function VendorPayments() {
             </Select>
             <Select value={serviceFilter} onValueChange={setServiceFilter}>
               <SelectTrigger className="w-full sm:w-52">
-                <SelectValue placeholder="Servicio" />
+                <SelectValue placeholder="Gig" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Todos los gigs</SelectItem>
@@ -429,7 +429,7 @@ export default function VendorPayments() {
               />
             </div>
           ) : (
-            <DataTable headers={["Fecha", "Servicio", "Cliente", "Venta bruta", "Tu comisión", "Estado", "Acciones"]}>
+            <DataTable headers={["Fecha", "Gig", "Cliente", "Venta bruta", "Tu comisión", "Estado", "Acciones"]}>
               {filteredSales.slice(0, 50).map(sale => {
                 const service = allServices.find(s => s.id === sale.serviceId);
                 const eligible = canRequestRefund(sale);
@@ -545,7 +545,7 @@ export default function VendorPayments() {
                 {/* Details */}
                 <div className="space-y-2">
                   {[
-                    ['Servicio', service?.name],
+                    ['Gig', service?.name],
                     ['Tipo', service?.type === 'suscripción' ? 'Suscripción mensual' : 'Pago único'],
                     ['Cliente', selectedSale.clientName],
                     ['Email', selectedSale.clientEmail],
@@ -607,7 +607,7 @@ export default function VendorPayments() {
             <div className="space-y-4">
               <div className="p-3 bg-muted/50 rounded-lg space-y-1 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Servicio</span>
+                  <span className="text-muted-foreground">Gig</span>
                   <span className="font-medium">{allServices.find(s => s.id === refundSale.serviceId)?.name}</span>
                 </div>
                 <div className="flex justify-between">

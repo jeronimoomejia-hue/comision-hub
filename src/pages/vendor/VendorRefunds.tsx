@@ -135,7 +135,7 @@ export default function VendorRefunds() {
           </Select>
           <Select value={serviceFilter} onValueChange={setServiceFilter}>
             <SelectTrigger className="w-full sm:w-48">
-              <SelectValue placeholder="Servicio" />
+              <SelectValue placeholder="Gig" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Todos los gigs</SelectItem>
@@ -155,7 +155,7 @@ export default function VendorRefunds() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Fecha</TableHead>
-                  <TableHead>Servicio</TableHead>
+                  <TableHead>Gig</TableHead>
                   <TableHead>Cliente</TableHead>
                   <TableHead className="text-right">Monto</TableHead>
                   <TableHead>Estado</TableHead>

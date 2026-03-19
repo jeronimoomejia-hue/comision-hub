@@ -104,7 +104,7 @@ export default function VendorSales() {
       .filter(s => s.vendorId === currentVendorId)
       .map(sub => {
         const service = allServices.find(s => s.id === sub.serviceId);
-        return { ...sub, service, serviceName: service?.name || 'Servicio', monthlyAmount: service?.priceCOP || 0, commission: service ? Math.round(service.priceCOP * service.vendorCommissionPct / 100) : 0 };
+        return { ...sub, service, serviceName: service?.name || 'Gig', monthlyAmount: service?.priceCOP || 0, commission: service ? Math.round(service.priceCOP * service.vendorCommissionPct / 100) : 0 };
       });
   }, [subscriptions, currentVendorId]);
 
@@ -207,7 +207,7 @@ export default function VendorSales() {
 
   const handleSupport = (sale: Sale) => {
     const service = allServices.find(s => s.id === sale.serviceId);
-    const message = `Hola, necesito ayuda con una venta:\n📋 Servicio: ${service?.name}\n👤 Cliente: ${sale.clientName}\n💰 Monto: ${formatCOP(sale.grossAmount)}\n📅 Fecha: ${formatDate(sale.createdAt)}`;
+    const message = `Hola, necesito ayuda con una venta:\n📋 Gig: ${service?.name}\n👤 Cliente: ${sale.clientName}\n💰 Monto: ${formatCOP(sale.grossAmount)}\n📅 Fecha: ${formatDate(sale.createdAt)}`;
     window.open(`https://wa.me/573001234567?text=${encodeURIComponent(message)}`, '_blank');
   };
 
@@ -226,7 +226,7 @@ export default function VendorSales() {
           steps={[
             "Para registrar una venta, ve al menú del gig correspondiente",
             "Aquí puedes ver el estado de retención y liberación de tus comisiones",
-            "Solicita devoluciones dentro del período de gracia de cada servicio"
+            "Solicita devoluciones dentro del período de gracia de cada gig"
           ]}
         />
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -260,7 +260,7 @@ export default function VendorSales() {
 
         {/* Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatCard title="Total ventas" value={mySales.length} icon={ShoppingCart} subtitle={`${uniqueServices.length} servicios`} />
+          <StatCard title="Total ventas" value={mySales.length} icon={ShoppingCart} subtitle={`${uniqueServices.length} gigs`} />
           <StatCard title="En retención" value={formatCOP(totalHeld)} icon={Clock} subtitle={`${heldSales.length} ventas`} variant="warning" />
           <StatCard title="Liberadas" value={formatCOP(totalReleased)} icon={CheckCircle2} subtitle={`${releasedSales.length} ventas`} variant="success" />
           <StatCard title="Devoluciones" value={myRefunds.length} icon={RotateCcw} variant={myRefunds.length > 0 ? "error" : "default"} />
@@ -298,7 +298,7 @@ export default function VendorSales() {
             <div>
               <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
                 <Package className="w-5 h-5 text-primary" />
-                Por servicio
+                Por gig
               </h3>
               <div className="space-y-3">
                 {salesByService.map(({ service, sales: serviceSales }) => {
@@ -417,7 +417,7 @@ export default function VendorSales() {
                   </SelectContent>
                 </Select>
                 <Select value={serviceFilter} onValueChange={setServiceFilter}>
-                  <SelectTrigger className="w-full sm:w-48"><SelectValue placeholder="Servicio" /></SelectTrigger>
+                  <SelectTrigger className="w-full sm:w-48"><SelectValue placeholder="Gig" /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">Todos</SelectItem>
                     {uniqueServices.map(s => <SelectItem key={s!.id} value={s!.id}>{s!.name}</SelectItem>)}
@@ -429,7 +429,7 @@ export default function VendorSales() {
                   <thead>
                     <tr className="bg-muted/40">
                       <th className="text-left p-3 font-medium text-muted-foreground">Fecha</th>
-                      <th className="text-left p-3 font-medium text-muted-foreground">Servicio</th>
+                      <th className="text-left p-3 font-medium text-muted-foreground">Gig</th>
                       <th className="text-left p-3 font-medium text-muted-foreground">Cliente</th>
                       <th className="text-right p-3 font-medium text-muted-foreground">Venta</th>
                       <th className="text-right p-3 font-medium text-muted-foreground">Comisión</th>
@@ -496,7 +496,7 @@ export default function VendorSales() {
                     <thead>
                       <tr className="bg-muted/40">
                         <th className="text-left p-3 font-medium text-muted-foreground">Fecha</th>
-                        <th className="text-left p-3 font-medium text-muted-foreground">Servicio</th>
+                        <th className="text-left p-3 font-medium text-muted-foreground">Gig</th>
                         <th className="text-left p-3 font-medium text-muted-foreground">Cliente</th>
                         <th className="text-right p-3 font-medium text-muted-foreground">Venta bruta</th>
                         <th className="text-right p-3 font-medium text-muted-foreground">Tu comisión</th>
@@ -554,7 +554,7 @@ export default function VendorSales() {
                     <thead>
                       <tr className="bg-muted/40">
                         <th className="text-left p-3 font-medium text-muted-foreground">Fecha</th>
-                        <th className="text-left p-3 font-medium text-muted-foreground">Servicio</th>
+                        <th className="text-left p-3 font-medium text-muted-foreground">Gig</th>
                         <th className="text-left p-3 font-medium text-muted-foreground">Cliente</th>
                         <th className="text-right p-3 font-medium text-muted-foreground">Monto</th>
                         <th className="text-center p-3 font-medium text-muted-foreground">Estado</th>
@@ -632,7 +632,7 @@ export default function VendorSales() {
                   <div className="border-t border-border pt-2 flex justify-between text-sm"><span className="text-muted-foreground">Neto empresa</span><span>{formatCOP(selectedSale.providerNetAmount)}</span></div>
                 </div>
                 <div className="space-y-2">
-                  {[['Servicio', service?.name], ['Cliente', selectedSale.clientName], ['Fecha', formatDate(selectedSale.createdAt)], ['Ref. MP', selectedSale.mpPaymentId]].map(([l, v]) => (
+                  {[['Gig', service?.name], ['Cliente', selectedSale.clientName], ['Fecha', formatDate(selectedSale.createdAt)], ['Ref. MP', selectedSale.mpPaymentId]].map(([l, v]) => (
                     <div key={String(l)} className="flex justify-between items-center py-1.5 border-b border-border/50 text-sm"><span className="text-muted-foreground">{l}</span><span className="font-medium">{v}</span></div>
                   ))}
                 </div>
@@ -666,7 +666,7 @@ export default function VendorSales() {
                   <div className="border-t border-border pt-2 flex justify-between text-sm"><span className="text-muted-foreground">Neto empresa</span><span>{formatCOP(selectedPayment.providerNet)}</span></div>
                 </div>
                 <div className="space-y-2">
-                  {[['Servicio', service?.name], ['Cliente', selectedPayment.clientName], ['Fecha', formatDate(selectedPayment.scheduledDate)], ['Referencia', selectedPayment.referenceId || selectedPayment.id]].map(([l, v]) => (
+                  {[['Gig', service?.name], ['Cliente', selectedPayment.clientName], ['Fecha', formatDate(selectedPayment.scheduledDate)], ['Referencia', selectedPayment.referenceId || selectedPayment.id]].map(([l, v]) => (
                     <div key={String(l)} className="flex justify-between items-center py-1.5 border-b border-border/50 text-sm"><span className="text-muted-foreground">{l}</span><span className="font-medium">{v}</span></div>
                   ))}
                 </div>
@@ -697,7 +697,7 @@ export default function VendorSales() {
           {refundSale && (
             <div className="space-y-4">
               <div className="p-3 bg-muted/50 rounded-lg space-y-1 text-sm">
-                <div className="flex justify-between"><span className="text-muted-foreground">Servicio</span><span className="font-medium">{allServices.find(s => s.id === refundSale.serviceId)?.name}</span></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">Gig</span><span className="font-medium">{allServices.find(s => s.id === refundSale.serviceId)?.name}</span></div>
                 <div className="flex justify-between"><span className="text-muted-foreground">Cliente</span><span>{refundSale.clientName}</span></div>
                 <div className="flex justify-between"><span className="text-muted-foreground">Monto</span><span className="font-semibold text-primary">{formatCOP(refundSale.grossAmount)}</span></div>
                 <div className="flex justify-between"><span className="text-muted-foreground">Comisión que se revierte</span><span className="text-red-600">- {formatCOP(refundSale.sellerCommissionAmount)}</span></div>

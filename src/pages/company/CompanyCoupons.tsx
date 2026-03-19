@@ -185,7 +185,7 @@ export default function CompanyCoupons() {
                     onChange={e => setNewCoupon({ ...newCoupon, expiresAt: e.target.value })} />
                 </div>
                 <div>
-                  <Label className="text-xs">Servicio</Label>
+                  <Label className="text-xs">Gig</Label>
                   <Select value={newCoupon.serviceId} onValueChange={v => setNewCoupon({ ...newCoupon, serviceId: v })}>
                     <SelectTrigger className="h-8 text-xs mt-1"><SelectValue /></SelectTrigger>
                     <SelectContent>

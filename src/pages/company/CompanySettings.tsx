@@ -36,7 +36,7 @@ export default function CompanySettings() {
               <Badge className="text-sm">{currentCompanyPlan === 'freemium' ? 'Freemium' : currentCompanyPlan === 'premium' ? 'Premium — €100/mes' : 'Enterprise — €300/mes'}</Badge>
               <p className="text-xs text-muted-foreground mt-2">
                 {currentCompanyPlan === 'freemium' && 'Máximo 5 gigs · Fee 15% por venta · Códigos manuales'}
-                {currentCompanyPlan === 'premium' && 'Servicios ilimitados · Sin fee · Cupones · Chat · Códigos manuales'}
+                {currentCompanyPlan === 'premium' && 'Gigs ilimitados · Sin fee · Cupones · Chat · Códigos manuales'}
                 {currentCompanyPlan === 'enterprise' && 'Todo Premium + Dominio propio · Marca blanca · API · Códigos automáticos'}
               </p>
             </div>
