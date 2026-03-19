@@ -128,17 +128,19 @@ export default function CompanySettings() {
           </div>
         </div>
 
-        {/* Premium+ features */}
+        {/* Premium+ features - link to coupons page */}
         {currentCompanyPlan !== 'freemium' && (
           <div className="card-premium p-6">
-            <div className="flex items-center gap-3 mb-6">
+            <div className="flex items-center gap-3 mb-4">
               <Tag className="w-5 h-5 text-primary" />
               <h3 className="font-semibold">Cupones de descuento</h3>
               <Badge variant="outline" className="text-[9px]">Premium+</Badge>
             </div>
-            <p className="text-xs text-muted-foreground mb-3">Crea cupones que tus vendedores pueden aplicar al registrar ventas.</p>
-            <Button size="sm" variant="outline" onClick={() => toast.info("Funcionalidad de demo")}>
-              <Tag className="w-3.5 h-3.5 mr-1" /> Crear cupón
+            <p className="text-xs text-muted-foreground mb-3">Crea y administra cupones de descuento que tus vendedores pueden aplicar al registrar ventas.</p>
+            <Button size="sm" variant="outline" asChild>
+              <a href="/company/coupons">
+                <Tag className="w-3.5 h-3.5 mr-1" /> Ir a Cupones
+              </a>
             </Button>
           </div>
         )}
