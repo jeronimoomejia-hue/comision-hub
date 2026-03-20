@@ -7,6 +7,8 @@ import { DemoProvider } from "@/contexts/DemoContext";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
+import VendorLanding from "./pages/VendorLanding";
+import VendorHome from "./pages/vendor/VendorHome";
 import VendorDashboard from "./pages/vendor/VendorDashboard";
 import VendorServices from "./pages/vendor/VendorServices";
 import VendorServiceDetail from "./pages/vendor/VendorServiceDetail";
@@ -51,9 +53,11 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/vendedores" element={<VendorLanding />} />
             <Route path="/auth" element={<Auth />} />
             
             {/* Vendor Routes */}
+            <Route path="/vendor/home" element={<VendorHome />} />
             <Route path="/vendor" element={<VendorDashboard />} />
             <Route path="/vendor/services" element={<VendorServices />} />
             <Route path="/vendor/services/:serviceId" element={<VendorServiceDetail />} />

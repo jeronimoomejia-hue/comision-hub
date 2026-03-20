@@ -28,7 +28,7 @@ const Auth = () => {
     setIsLoading(false);
     
     if (role === "vendor") {
-      window.location.href = "/vendor";
+      window.location.href = "/vendor/home";
     } else if (role === "company") {
       window.location.href = "/company";
     }
