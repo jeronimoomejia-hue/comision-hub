@@ -7,6 +7,8 @@ import { DemoProvider } from "@/contexts/DemoContext";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
+import VendorLanding from "./pages/VendorLanding";
+import VendorHome from "./pages/vendor/VendorHome";
 import VendorDashboard from "./pages/vendor/VendorDashboard";
 import VendorServices from "./pages/vendor/VendorServices";
 import VendorServiceDetail from "./pages/vendor/VendorServiceDetail";
