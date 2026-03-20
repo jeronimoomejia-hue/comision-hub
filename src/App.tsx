@@ -53,9 +53,11 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/vendedores" element={<VendorLanding />} />
             <Route path="/auth" element={<Auth />} />
             
             {/* Vendor Routes */}
+            <Route path="/vendor/home" element={<VendorHome />} />
             <Route path="/vendor" element={<VendorDashboard />} />
             <Route path="/vendor/services" element={<VendorServices />} />
             <Route path="/vendor/services/:serviceId" element={<VendorServiceDetail />} />
