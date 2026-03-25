@@ -29,7 +29,7 @@ import type { Sale, VendorPayment } from "@/data/mockData";
 const getStatusBadge = (status: string) => {
   const map: Record<string, { className: string; label: string }> = {
     'HELD': { className: "bg-yellow-500/10 text-yellow-600 border-yellow-500/20", label: 'En retención' },
-    'RELEASED': { className: "bg-green-500/10 text-green-600 border-green-500/20", label: 'Liberado' },
+    'COMPLETED': { className: "bg-green-500/10 text-green-600 border-green-500/20", label: 'Liberado' },
     'REFUNDED': { className: "bg-red-500/10 text-red-600 border-red-500/20", label: 'Reembolsado' },
   };
   const item = map[status] || { className: "bg-muted text-muted-foreground", label: status };
@@ -124,11 +124,11 @@ export default function VendorSales() {
   // Commissions
   const vendorCommissions = commissions.filter(c => c.vendorId === currentVendorId);
   const thisMonth = new Date().toISOString().slice(0, 7);
-  const releasedThisMonth = vendorCommissions.filter(c => c.status === 'RELEASED' && c.createdAt.startsWith(thisMonth));
+  const releasedThisMonth = vendorCommissions.filter(c => c.status === 'COMPLETED' && c.createdAt.startsWith(thisMonth));
   const totalReleasedThisMonth = releasedThisMonth.reduce((acc, c) => acc + c.amountCOP, 0);
   
   const heldSales = mySales.filter(s => s.status === 'HELD');
-  const releasedSales = mySales.filter(s => s.status === 'RELEASED');
+  const releasedSales = mySales.filter(s => s.status === 'COMPLETED');
   const totalHeld = heldSales.reduce((acc, s) => acc + s.sellerCommissionAmount, 0);
   const totalReleased = releasedSales.reduce((acc, s) => acc + s.sellerCommissionAmount, 0);
 
@@ -303,7 +303,7 @@ export default function VendorSales() {
               <div className="space-y-3">
                 {salesByService.map(({ service, sales: serviceSales }) => {
                   const held = serviceSales.filter(s => s.status === 'HELD');
-                  const released = serviceSales.filter(s => s.status === 'RELEASED');
+                  const released = serviceSales.filter(s => s.status === 'COMPLETED');
                   const refunded = serviceSales.filter(s => s.status === 'REFUNDED');
                   const totalComm = serviceSales.reduce((sum, s) => sum + s.sellerCommissionAmount, 0);
                   const isExpanded = expandedService === service.id;
@@ -364,7 +364,7 @@ export default function VendorSales() {
                                     <td className="p-3 text-center">{getStatusBadge(sale.status)}</td>
                                     <td className="p-3 text-center text-xs">
                                       {sale.status === 'HELD' && <span className="text-yellow-600 font-medium">Hasta {formatDate(sale.holdEndAt)}</span>}
-                                      {sale.status === 'RELEASED' && <span className="text-green-600">{sale.releasedAt ? formatDate(sale.releasedAt) : '—'}</span>}
+                                      {sale.status === 'COMPLETED' && <span className="text-green-600">{sale.releasedAt ? formatDate(sale.releasedAt) : '—'}</span>}
                                       {sale.status === 'REFUNDED' && <span className="text-red-600">Devuelto</span>}
                                     </td>
                                     <td className="p-3 text-right">
@@ -412,7 +412,7 @@ export default function VendorSales() {
                   <SelectContent>
                     <SelectItem value="all">Todos</SelectItem>
                     <SelectItem value="HELD">En retención</SelectItem>
-                    <SelectItem value="RELEASED">Liberados</SelectItem>
+                    <SelectItem value="COMPLETED">Liberados</SelectItem>
                     <SelectItem value="REFUNDED">Reembolsados</SelectItem>
                   </SelectContent>
                 </Select>
@@ -619,9 +619,9 @@ export default function VendorSales() {
                   <p className="text-3xl font-bold text-primary">{formatCOP(selectedSale.sellerCommissionAmount)}</p>
                   <p className="text-sm text-muted-foreground mt-1">Tu comisión ({service?.vendorCommissionPct}%)</p>
                 </div>
-                <div className={`p-3 rounded-lg flex items-center gap-3 ${selectedSale.status === 'HELD' ? 'bg-yellow-500/10 border border-yellow-500/20' : selectedSale.status === 'RELEASED' ? 'bg-green-500/10 border border-green-500/20' : 'bg-red-500/10 border border-red-500/20'}`}>
+                <div className={`p-3 rounded-lg flex items-center gap-3 ${selectedSale.status === 'HELD' ? 'bg-yellow-500/10 border border-yellow-500/20' : selectedSale.status === 'COMPLETED' ? 'bg-green-500/10 border border-green-500/20' : 'bg-red-500/10 border border-red-500/20'}`}>
                   {selectedSale.status === 'HELD' && <><Clock className="w-5 h-5 text-yellow-600" /><p className="font-medium text-sm">En retención hasta {formatDate(selectedSale.holdEndAt)}</p></>}
-                  {selectedSale.status === 'RELEASED' && <><CheckCircle2 className="w-5 h-5 text-green-600" /><p className="font-medium text-sm">Liberado y transferido</p></>}
+                  {selectedSale.status === 'COMPLETED' && <><CheckCircle2 className="w-5 h-5 text-green-600" /><p className="font-medium text-sm">Liberado y transferido</p></>}
                   {selectedSale.status === 'REFUNDED' && <><RotateCcw className="w-5 h-5 text-red-600" /><p className="font-medium text-sm">Reembolsado</p></>}
                 </div>
                 <div className="p-4 bg-primary/5 rounded-lg border border-primary/10 space-y-2">

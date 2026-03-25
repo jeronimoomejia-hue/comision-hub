@@ -38,7 +38,7 @@ export default function VendorDashboard() {
 
   const totalSales = vendorSales.filter(s => s.status !== 'REFUNDED').length;
   const heldCommissions = vendorCommissions.filter(c => c.status === 'HELD').reduce((a, c) => a + c.amountCOP, 0);
-  const releasedCommissions = vendorCommissions.filter(c => c.status === 'RELEASED').reduce((a, c) => a + c.amountCOP, 0);
+  const releasedCommissions = vendorCommissions.filter(c => c.status === 'COMPLETED').reduce((a, c) => a + c.amountCOP, 0);
   const refundedCount = vendorSales.filter(s => s.status === 'REFUNDED').length;
   const totalSalesAmount = vendorSales.filter(s => s.status !== 'REFUNDED').reduce((a, s) => a + s.grossAmount, 0);
   const conversionRate = totalSales > 0 ? Math.round((totalSales / (totalSales + refundedCount)) * 100) : 0;

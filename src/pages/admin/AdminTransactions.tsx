@@ -44,7 +44,7 @@ export default function AdminTransactions() {
             <SelectContent>
               <SelectItem value="all">Todos</SelectItem>
               <SelectItem value="HELD">Retenida</SelectItem>
-              <SelectItem value="RELEASED">Liberada</SelectItem>
+              <SelectItem value="COMPLETED">Liberada</SelectItem>
               <SelectItem value="REFUNDED">Devuelta</SelectItem>
             </SelectContent>
           </Select>

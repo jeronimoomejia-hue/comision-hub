@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 
 export default function AdminCommissions() {
   const pending = commissions.filter(c => c.status === 'HELD');
-  const paid = commissions.filter(c => c.status === 'RELEASED');
+  const paid = commissions.filter(c => c.status === 'COMPLETED');
   const reverted = commissions.filter(c => c.status === 'REFUNDED');
   
   const totalPending = pending.reduce((acc, c) => acc + c.amountCOP, 0);
@@ -16,12 +16,12 @@ export default function AdminCommissions() {
   const getStatusBadge = (status: string) => {
     const colors: Record<string, string> = {
       'HELD': "bg-yellow-500/10 text-yellow-500",
-      'RELEASED': "bg-green-500/10 text-green-500",
+      'COMPLETED': "bg-green-500/10 text-green-500",
       'REFUNDED': "bg-red-500/10 text-red-500"
     };
     const labels: Record<string, string> = {
       'HELD': 'En retención',
-      'RELEASED': 'Liberada',
+      'COMPLETED': 'Liberada',
       'REFUNDED': 'Revertida'
     };
     return <Badge className={colors[status] || "bg-gray-500/10 text-gray-500"}>{labels[status] || status}</Badge>;

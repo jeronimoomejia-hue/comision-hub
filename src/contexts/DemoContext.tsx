@@ -146,9 +146,9 @@ export function DemoProvider({ children }: { children: ReactNode }) {
       setCommissions(prev => prev.map(comm =>
         comm.saleId === saleId ? { ...comm, status: 'REFUNDED' as const } : comm
       ));
-    } else if (status === 'RELEASED') {
+    } else if (status === 'COMPLETED') {
       setCommissions(prev => prev.map(comm =>
-        comm.saleId === saleId ? { ...comm, status: 'RELEASED' as const } : comm
+        comm.saleId === saleId ? { ...comm, status: 'COMPLETED' as const } : comm
       ));
     }
   };

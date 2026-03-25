@@ -26,7 +26,7 @@ export default function VendorPayments() {
   const [refundReason, setRefundReason] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [activeTab, setActiveTab] = useState<'all' | 'HELD' | 'RELEASED' | 'REFUNDED'>("all");
+  const [activeTab, setActiveTab] = useState<'all' | 'HELD' | 'COMPLETED' | 'REFUNDED'>("all");
 
   const mySales = useMemo(() => 
     sales.filter(s => s.vendorId === currentVendorId)
@@ -36,11 +36,11 @@ export default function VendorPayments() {
 
   const vendorCommissions = commissions.filter(c => c.vendorId === currentVendorId);
   const thisMonth = new Date().toISOString().slice(0, 7);
-  const releasedThisMonth = vendorCommissions.filter(c => c.status === 'RELEASED' && c.createdAt.startsWith(thisMonth));
+  const releasedThisMonth = vendorCommissions.filter(c => c.status === 'COMPLETED' && c.createdAt.startsWith(thisMonth));
   const totalReleasedThisMonth = releasedThisMonth.reduce((acc, c) => acc + c.amountCOP, 0);
   
   const heldSales = mySales.filter(s => s.status === 'HELD');
-  const releasedSales = mySales.filter(s => s.status === 'RELEASED');
+  const releasedSales = mySales.filter(s => s.status === 'COMPLETED');
   const refundedSales = mySales.filter(s => s.status === 'REFUNDED');
   const totalHeld = heldSales.reduce((acc, s) => acc + s.sellerCommissionAmount, 0);
   const totalReleased = releasedSales.reduce((acc, s) => acc + s.sellerCommissionAmount, 0);
@@ -113,7 +113,7 @@ export default function VendorPayments() {
   const statusTabs = [
     { key: 'all' as const, label: 'Todas', count: mySales.length },
     { key: 'HELD' as const, label: 'Retenidas', count: heldSales.length },
-    { key: 'RELEASED' as const, label: 'Liberadas', count: releasedSales.length },
+    { key: 'COMPLETED' as const, label: 'Liberadas', count: releasedSales.length },
     { key: 'REFUNDED' as const, label: 'Devueltas', count: refundedSales.length },
   ];
 

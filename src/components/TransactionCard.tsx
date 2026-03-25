@@ -43,7 +43,7 @@ interface TransactionCardProps {
 
 const saleStatusConfig: Record<string, { icon: typeof Clock; color: string; bg: string; label: string }> = {
   'HELD': { icon: Clock, color: "text-amber-600", bg: "bg-amber-500/10 border-amber-500/20", label: "En retención" },
-  'RELEASED': { icon: CheckCircle2, color: "text-emerald-600", bg: "bg-emerald-500/10 border-emerald-500/20", label: "Liberada" },
+  'COMPLETED': { icon: CheckCircle2, color: "text-emerald-600", bg: "bg-emerald-500/10 border-emerald-500/20", label: "Liberada" },
   'REFUNDED': { icon: RotateCcw, color: "text-red-600", bg: "bg-red-500/10 border-red-500/20", label: "Devuelta" },
 };
 
@@ -192,7 +192,7 @@ export default function TransactionCard({
                     <span className="text-muted-foreground truncate">{clientEmail}</span>
                   </div>
                 )}
-                {releasedDate && status === 'RELEASED' && (
+                {releasedDate && status === 'COMPLETED' && (
                   <div className="flex items-center gap-2 text-xs">
                     <CheckCircle2 className="w-3 h-3 text-emerald-500" />
                     <span className="text-emerald-600">Liberada {new Date(releasedDate).toLocaleDateString('es-CO', { day: 'numeric', month: 'short' })}</span>
