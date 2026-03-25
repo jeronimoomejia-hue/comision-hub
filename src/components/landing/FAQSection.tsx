@@ -8,15 +8,15 @@ const faqData: Record<FAQCategory, { question: string; answer: string }[]> = {
   empresas: [
     {
       question: "¿Qué es Mensualista exactamente?",
-      answer: "Mensualista es un software B2B que le permite a tu empresa tener su propia plataforma de vendedores independientes. Tú personalizas la plataforma con tu marca, publicas tus servicios, invitas a tus vendedores y ellos venden por ti. Nosotros nos encargamos de la tecnología, comisiones y pagos.",
+      answer: "Mensualista es un software B2B que le permite a tu empresa tener su propia plataforma de vendedores independientes. Tú personalizas la plataforma con tu marca, publicas tus productos, invitas a tus vendedores y ellos venden por ti. Nosotros nos encargamos de la tecnología, comisiones y pagos.",
     },
     {
       question: "¿Puedo empezar sin pagar nada?",
-      answer: "Sí, el plan Freemium es completamente gratis. Puedes registrar tu empresa, personalizar tu plataforma y publicar hasta 5 servicios. Solo cobramos un 15% de fee por venta + los costos de pasarela (3% + $1.000 COP por transferencia).",
+      answer: "Sí, el plan Freemium es completamente gratis. Puedes registrar tu empresa, personalizar tu plataforma y publicar hasta 5 productos. Solo cobramos un 15% de fee por venta + los costos de pasarela (3% + $1.000 COP por transferencia).",
     },
     {
       question: "¿Qué diferencia hay entre los planes?",
-      answer: "Freemium: hasta 5 servicios, códigos manuales, fee del 15%. Premium (€100/mes): servicios ilimitados, sin fee del 15%, cupones de descuento y chat vendedor-empresa. Enterprise (€300/mes): todo lo de Premium + integración automática de códigos, dominio personalizado y marca blanca.",
+      answer: "Freemium: hasta 5 productos, códigos manuales, fee del 15%. Premium (€100/mes): productos ilimitados, sin fee del 15%, cupones de descuento y chat vendedor-empresa. Enterprise (€300/mes): todo lo de Premium + integración automática de códigos, dominio personalizado y marca blanca.",
     },
     {
       question: "¿Mis vendedores ven la marca de Mensualista?",
@@ -34,11 +34,11 @@ const faqData: Record<FAQCategory, { question: string; answer: string }[]> = {
     },
     {
       question: "¿Los vendedores necesitan capacitarse?",
-      answer: "Tú decides. Puedes subir materiales de capacitación (PDFs, videos) y requerirlos antes de que el vendedor pueda empezar a vender, o puedes dejarlo opcional.",
+      answer: "Tú decides. Puedes subir materiales de entrenamiento (PDFs, videos) y requerirlos antes de que el vendedor pueda empezar a vender, o puedes dejarlo opcional.",
     },
     {
       question: "¿Los vendedores pueden vender para otras empresas?",
-      answer: "No, en Mensualista cada empresa tiene su red privada de vendedores. Los vendedores que registras solo ven y venden tus servicios.",
+      answer: "No, en Mensualista cada empresa tiene su red privada de vendedores. Los vendedores que registras solo ven y venden tus productos.",
     },
   ],
   pagos: [

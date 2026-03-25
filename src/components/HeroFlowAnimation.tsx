@@ -220,7 +220,7 @@ export const HeroFlowAnimation = () => {
 
         <div className="flex items-center gap-2 sm:gap-4 flex-wrap justify-center">
           <button onClick={() => goToStep(1)}>
-            <StepIndicator step={1} label="Elige el servicio" isActive={phase === 1} isComplete={phase > 1} />
+            <StepIndicator step={1} label="Elige el producto" isActive={phase === 1} isComplete={phase > 1} />
           </button>
           <motion.div 
             animate={{ opacity: phase >= 1 ? 1 : 0.3 }}
@@ -320,7 +320,7 @@ export const HeroFlowAnimation = () => {
                       className="absolute -bottom-3 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-full bg-green-500 text-white text-xs font-medium flex items-center gap-1.5 shadow-lg whitespace-nowrap"
                     >
                       <Check className="w-3 h-3" />
-                      Capacitación ✓
+                      Entrenamiento ✓
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -402,7 +402,7 @@ export const HeroFlowAnimation = () => {
 
                   <div className="flex items-center justify-between pt-4 border-t border-white/20">
                     <div>
-                      <p className="text-white/70 text-xs">Precio del servicio</p>
+                      <p className="text-white/70 text-xs">Precio del producto</p>
                       <p className="font-semibold">{currentService.price} COP</p>
                     </div>
                     <motion.div

@@ -74,7 +74,7 @@ export const trainingContents: Record<string, TrainingContent> = {
         title: 'Manejo de objeciones',
         duration: '3 min',
         type: 'text',
-        content: 'Las objeciones más comunes y cómo responder:\n\n"Es muy caro"\n→ "¿Cuánto vale una hora de tu tiempo? Si ahorras 5 horas por semana, son 20 horas al mes. A $50.000/hora, estás ahorrando $1.000.000 mensuales por una inversión de $179.000."\n\n"Ya tengo mi método"\n→ "Entiendo, ¿pero cuántos clientes podrías atender si cotizaras en 30 segundos en vez de 30 minutos? La herramienta no reemplaza tu método, lo potencia."\n\n"No soy bueno con tecnología"\n→ "La capacitación dura 12 minutos y la interfaz es tan simple como WhatsApp. Además tienes soporte 24/7 por WhatsApp."\n\n"Necesito pensarlo"\n→ "Claro, ¿qué información necesitas para tomar la decisión? Recuerda que tienes 14 días de garantía, así que puedes probarlo sin riesgo."',
+        content: 'Las objeciones más comunes y cómo responder:\n\n"Es muy caro"\n→ "¿Cuánto vale una hora de tu tiempo? Si ahorras 5 horas por semana, son 20 horas al mes. A $50.000/hora, estás ahorrando $1.000.000 mensuales por una inversión de $179.000."\n\n"Ya tengo mi método"\n→ "Entiendo, ¿pero cuántos clientes podrías atender si cotizaras en 30 segundos en vez de 30 minutos? La herramienta no reemplaza tu método, lo potencia."\n\n"No soy bueno con tecnología"\n→ "La entrenamiento dura 12 minutos y la interfaz es tan simple como WhatsApp. Además tienes soporte 24/7 por WhatsApp."\n\n"Necesito pensarlo"\n→ "Claro, ¿qué información necesitas para tomar la decisión? Recuerda que tienes 14 días de garantía, así que puedes probarlo sin riesgo."',
         keyPoints: [
           'Responder con ROI concreto',
           'Garantía de 14 días como respaldo',
@@ -116,7 +116,7 @@ services.forEach(service => {
           title: `Qué es ${service.name}`,
           duration: '4 min',
           type: service.trainingType === 'video' ? 'video' : 'text',
-          content: `${service.description}\n\nEste servicio está diseñado para resolver problemas reales de las empresas. Su precio de ${new Intl.NumberFormat('es-CO').format(service.priceCOP)} COP refleja el valor que entrega.\n\nComo vendedor, tu comisión es del ${service.vendorCommissionPct}%, lo que significa ${new Intl.NumberFormat('es-CO').format(Math.round(service.priceCOP * service.vendorCommissionPct / 100))} COP por cada venta.\n\nPuntos clave:\n- Resuelve un problema real y medible\n- Fácil de configurar y usar\n- Soporte incluido\n- Resultados desde el primer mes`,
+          content: `${service.description}\n\nEste producto está diseñado para resolver problemas reales de las empresas. Su precio de ${new Intl.NumberFormat('es-CO').format(service.priceCOP)} COP refleja el valor que entrega.\n\nComo vendedor, tu comisión es del ${service.vendorCommissionPct}%, lo que significa ${new Intl.NumberFormat('es-CO').format(Math.round(service.priceCOP * service.vendorCommissionPct / 100))} COP por cada venta.\n\nPuntos clave:\n- Resuelve un problema real y medible\n- Fácil de configurar y usar\n- Soporte incluido\n- Resultados desde el primer mes`,
           videoUrl: service.trainingUrl,
           keyPoints: [
             'Producto con valor demostrable',
@@ -130,7 +130,7 @@ services.forEach(service => {
           title: 'Perfil del cliente ideal',
           duration: '3 min',
           type: 'text',
-          content: 'El cliente ideal para este servicio es una empresa o profesional que:\n\n1. Tiene procesos manuales que quiere automatizar\n2. Busca herramientas de IA para ser más productivo\n3. Tiene presupuesto mensual para tecnología\n4. Toma decisiones rápidas\n\nPreguntas de calificación:\n- ¿Cuánto tiempo dedicas a este proceso actualmente?\n- ¿Cuántas personas trabajan en esto?\n- ¿Has probado otras herramientas?\n- ¿Cuál es tu presupuesto mensual para tecnología?',
+          content: 'El cliente ideal para este producto es una empresa o profesional que:\n\n1. Tiene procesos manuales que quiere automatizar\n2. Busca herramientas de IA para ser más productivo\n3. Tiene presupuesto mensual para tecnología\n4. Toma decisiones rápidas\n\nPreguntas de calificación:\n- ¿Cuánto tiempo dedicas a este proceso actualmente?\n- ¿Cuántas personas trabajan en esto?\n- ¿Has probado otras herramientas?\n- ¿Cuál es tu presupuesto mensual para tecnología?',
           keyPoints: [
             'Empresa con procesos manuales',
             'Presupuesto para tecnología',

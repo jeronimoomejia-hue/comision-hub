@@ -344,7 +344,7 @@ export default function ServiceEditModal({ service, sales, onClose, onSave }: Se
                 </div>
                 <div className="border-t border-primary/10 pt-3">
                   <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-medium mb-1">Guión corto</p>
-                  <p className="text-xs text-muted-foreground leading-relaxed">{details?.pitchThreeLines || 'Guión de ventas del servicio.'}</p>
+                  <p className="text-xs text-muted-foreground leading-relaxed">{details?.pitchThreeLines || 'Guión de ventas del producto.'}</p>
                 </div>
               </div>
             </section>
@@ -415,7 +415,7 @@ export default function ServiceEditModal({ service, sales, onClose, onSave }: Se
             {/* ── Training ── */}
             <section className="p-4 rounded-xl border">
               <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
-                <FileText className="w-4 h-4 text-primary" /> Capacitación
+                <FileText className="w-4 h-4 text-primary" /> Entrenamiento
               </h3>
               {isEditing ? (
                 <div className="space-y-3">
@@ -424,11 +424,11 @@ export default function ServiceEditModal({ service, sales, onClose, onSave }: Se
                       checked={editData.requiresTraining ?? service.requiresTraining}
                       onCheckedChange={v => setEditData({ ...editData, requiresTraining: v })}
                     />
-                    <Label className="text-xs">Requiere capacitación</Label>
+                    <Label className="text-xs">Requiere entrenamiento</Label>
                   </div>
                   {(editData.requiresTraining ?? service.requiresTraining) && (
                     <div className="space-y-1.5">
-                      <Label className="text-xs">URL de capacitación</Label>
+                      <Label className="text-xs">URL de entrenamiento</Label>
                       <Input className="h-9 text-sm" value={editData.trainingUrl || service.trainingUrl || ''} onChange={e => setEditData({ ...editData, trainingUrl: e.target.value })} placeholder="https://..." />
                     </div>
                   )}
@@ -439,7 +439,7 @@ export default function ServiceEditModal({ service, sales, onClose, onSave }: Se
                     {service.trainingType === 'video' ? <Play className="w-5 h-5 text-primary" /> : <FileText className="w-5 h-5 text-primary" />}
                     <div>
                       <p className="text-sm font-medium">
-                        {service.requiresTraining ? `Capacitación en ${service.trainingType?.toUpperCase() || 'PDF'}` : 'Sin capacitación requerida'}
+                        {service.requiresTraining ? `Entrenamiento en ${service.trainingType?.toUpperCase() || 'PDF'}` : 'Sin entrenamiento requerida'}
                       </p>
                       <p className="text-xs text-muted-foreground">~{details?.trainingDurationMinutes || 15} min</p>
                     </div>

@@ -159,7 +159,7 @@ export default function VendorHome() {
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <Star className="w-4 h-4 text-primary" />
-                <span className="text-sm font-semibold text-foreground">Servicios top</span>
+                <span className="text-sm font-semibold text-foreground">Productos top</span>
               </div>
               <span className="text-[10px] text-muted-foreground">Por ventas</span>
             </div>
@@ -240,7 +240,7 @@ export default function VendorHome() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="font-semibold text-sm text-foreground truncate">{company.name}</p>
-                      <p className="text-[11px] text-muted-foreground">{companyServices.length} servicios · {companySales.length} ventas</p>
+                      <p className="text-[11px] text-muted-foreground">{companyServices.length} productos · {companySales.length} ventas</p>
                     </div>
                     <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors flex-shrink-0" />
                   </button>
@@ -282,7 +282,7 @@ export default function VendorHome() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-medium text-foreground text-sm truncate">{company.name}</p>
-                    <p className="text-xs text-muted-foreground">{company.industry} · {companyServices.length} servicios</p>
+                    <p className="text-xs text-muted-foreground">{company.industry} · {companyServices.length} productos</p>
                   </div>
                   <Badge variant="outline" className="text-[10px] flex-shrink-0">
                     <Plus className="w-3 h-3 mr-1" /> Unirte

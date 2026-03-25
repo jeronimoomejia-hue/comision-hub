@@ -67,7 +67,7 @@ const Auth = () => {
                 ? "Accede a tu panel de control" 
                 : role === "vendor" 
                   ? "Empieza a vender y ganar comisiones"
-                  : "Publica tus servicios y encuentra vendedores"
+                  : "Publica tus productos y encuentra vendedores"
               }
             </p>
             
@@ -204,7 +204,7 @@ const Auth = () => {
                   <input type="checkbox" id="terms" className="mt-1" required />
                   <label htmlFor="terms" className="text-sm text-muted-foreground">
                     Acepto los{" "}
-                    <a href="#" className="text-primary hover:underline">términos de servicio</a>
+                    <a href="#" className="text-primary hover:underline">términos de producto</a>
                     {" "}y la{" "}
                     <a href="#" className="text-primary hover:underline">política de privacidad</a>
                   </label>
@@ -269,8 +269,8 @@ const Auth = () => {
           
           <p className="text-lg opacity-90 mb-8">
             {role === "vendor"
-              ? "Únete a cientos de vendedores que ya generan ingresos extra vendiendo servicios de empresas líderes."
-              : "Accede a una red de vendedores motivados listos para vender tus servicios. Solo pagas por resultados."
+              ? "Únete a cientos de vendedores que ya generan ingresos extra vendiendo productos de empresas líderes."
+              : "Accede a una red de vendedores motivados listos para vender tus productos. Solo pagas por resultados."
             }
           </p>
           

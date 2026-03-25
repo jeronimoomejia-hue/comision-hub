@@ -102,7 +102,7 @@ export default function VendorPayments() {
   const handleSupport = (sale: Sale) => {
     const service = allServices.find(s => s.id === sale.serviceId);
     const message = `Hola, necesito ayuda con una venta:\n\n` +
-      `Servicio: ${service?.name || 'N/A'}\n` +
+      `Producto: ${service?.name || 'N/A'}\n` +
       `Cliente: ${sale.clientName}\n` +
       `Monto: ${formatCOP(sale.grossAmount)}\n` +
       `Fecha: ${formatDate(sale.createdAt)}\n` +
@@ -172,7 +172,7 @@ export default function VendorPayments() {
         <div className="flex items-start gap-3 p-3.5 rounded-xl bg-muted/30 border border-border">
           <CreditCard className="w-4 h-4 text-muted-foreground mt-0.5 flex-shrink-0" />
           <p className="text-xs text-muted-foreground leading-relaxed">
-            Cada venta pasa por un <strong className="text-foreground">periodo de retención</strong> definido por la empresa (7, 14 o 30 días según el servicio). Al liberarse, tu comisión se transfiere automáticamente.
+            Cada venta pasa por un <strong className="text-foreground">periodo de retención</strong> definido por la empresa (7, 14 o 30 días según el producto). Al liberarse, tu comisión se transfiere automáticamente.
           </p>
         </div>
 
@@ -200,7 +200,7 @@ export default function VendorPayments() {
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
           <Input
-            placeholder="Buscar por cliente o servicio..."
+            placeholder="Buscar por cliente o producto..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-9 h-9 bg-card border-border rounded-xl text-xs"
@@ -278,7 +278,7 @@ export default function VendorPayments() {
             <div className="space-y-4">
               <div className="rounded-xl bg-muted/30 p-3.5 space-y-2 text-sm">
                 {[
-                  ['Servicio', allServices.find(s => s.id === refundSale.serviceId)?.name],
+                  ['Producto', allServices.find(s => s.id === refundSale.serviceId)?.name],
                   ['Cliente', refundSale.clientName],
                   ['Monto', formatCOP(refundSale.grossAmount)],
                 ].map(([label, val]) => (

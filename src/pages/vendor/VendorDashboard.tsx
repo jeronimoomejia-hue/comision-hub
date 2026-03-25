@@ -285,7 +285,7 @@ export default function VendorDashboard() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className="text-sm font-semibold text-foreground truncate">{company.name}</h3>
-                      <p className="text-[11px] text-muted-foreground truncate">{company.industry} · {serviceCount} servicios</p>
+                      <p className="text-[11px] text-muted-foreground truncate">{company.industry} · {serviceCount} productos</p>
                     </div>
                     <ChevronRight className="w-4 h-4 text-muted-foreground/40 group-hover:text-primary transition-colors flex-shrink-0" />
                   </Link>

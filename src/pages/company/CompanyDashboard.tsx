@@ -68,7 +68,7 @@ export default function CompanyDashboard() {
           {[
             { label: "Ventas este mes", value: formatCOP(gmvThisMonth), sub: `${salesThisMonth.length} transacciones`, icon: DollarSign },
             { label: "Suscripciones activas", value: totalSubscriptions.toLocaleString(), sub: "recurrentes", icon: RefreshCw },
-            { label: "Servicios activos", value: companyServices.filter(s => s.status === 'activo').length, sub: plan === 'freemium' ? 'máx. 5' : 'ilimitados', icon: Package },
+            { label: "Productos activos", value: companyServices.filter(s => s.status === 'activo').length, sub: plan === 'freemium' ? 'máx. 5' : 'ilimitados', icon: Package },
             { label: "Vendedores", value: uniqueVendors, sub: "en tu red", icon: Users },
           ].map(stat => (
             <div key={stat.label} className="rounded-xl border border-border bg-card p-4">
@@ -85,7 +85,7 @@ export default function CompanyDashboard() {
         {/* Services section */}
         <div>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-sm font-semibold text-foreground">Mis Servicios</h2>
+            <h2 className="text-sm font-semibold text-foreground">Mis Productos</h2>
             <Link to="/company/services" className="text-[11px] text-primary hover:underline flex items-center gap-0.5">
               Ver todos <ChevronRight className="w-3 h-3" />
             </Link>
@@ -142,7 +142,7 @@ export default function CompanyDashboard() {
           <div className="flex items-center justify-between px-4 py-3 border-b border-border">
             <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Ventas recientes</span>
             <Link to="/company/services" className="text-[11px] text-primary hover:underline flex items-center gap-0.5">
-              Ver en servicios <ChevronRight className="w-3 h-3" />
+              Ver en productos <ChevronRight className="w-3 h-3" />
             </Link>
           </div>
           <div className="divide-y divide-border/50">
@@ -183,7 +183,7 @@ export default function CompanyDashboard() {
                 </p>
                 <p className="text-[11px] text-muted-foreground">
                   {plan === 'freemium'
-                    ? 'Servicios ilimitados, cupones, chat y sin fee del 15%'
+                    ? 'Productos ilimitados, cupones, chat y sin fee del 15%'
                     : 'Dominio propio, marca blanca, integración API'}
                 </p>
               </div>

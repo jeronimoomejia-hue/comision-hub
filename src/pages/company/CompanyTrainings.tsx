@@ -55,9 +55,9 @@ export default function CompanyTrainings() {
       <div className="space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-lg sm:text-2xl font-bold text-foreground">Capacitaciones</h1>
+          <h1 className="text-lg sm:text-2xl font-bold text-foreground">Entrenamientos</h1>
           <p className="text-[11px] sm:text-sm text-muted-foreground mt-0.5">
-            Gestiona el contenido que los vendedores verán antes de poder vender tus servicios
+            Gestiona el contenido que los vendedores verán antes de poder vender tus productos
           </p>
         </div>
 
@@ -195,8 +195,8 @@ export default function CompanyTrainings() {
           {companyServices.length === 0 && (
             <div className="text-center py-16">
               <BookOpen className="w-10 h-10 text-muted-foreground/30 mx-auto mb-3" />
-              <p className="text-sm font-medium text-foreground mb-1">Sin capacitaciones</p>
-              <p className="text-xs text-muted-foreground">Crea un servicio con capacitación requerida para empezar</p>
+              <p className="text-sm font-medium text-foreground mb-1">Sin entrenamientos</p>
+              <p className="text-xs text-muted-foreground">Crea un producto con entrenamiento requerida para empezar</p>
             </div>
           )}
         </div>

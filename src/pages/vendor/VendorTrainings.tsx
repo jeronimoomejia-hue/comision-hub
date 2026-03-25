@@ -28,7 +28,7 @@ export default function VendorTrainings() {
       return {
         ...tp,
         service,
-        serviceName: service?.name || 'Servicio desconocido',
+        serviceName: service?.name || 'Producto desconocido',
         companyName: company?.name || 'Empresa',
         trainingType: service?.trainingType || 'pdf',
         estimatedDuration: service?.trainingType === 'video' ? '15 min' : '10 min'
@@ -52,9 +52,9 @@ export default function VendorTrainings() {
     <VendorTabLayout>
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold">Capacitaciones</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold">Entrenamientos</h1>
           <p className="text-muted-foreground mt-1">
-            Completa las capacitaciones de {company?.name} para activar servicios
+            Completa las entrenamientos de {company?.name} para activar productos
           </p>
         </div>
 
@@ -126,7 +126,7 @@ export default function VendorTrainings() {
                 ))}
               </div>
             ) : (
-              <EmptyState icon={Play} title="Sin capacitaciones en progreso" description="Inicia una capacitación para empezar a vender" />
+              <EmptyState icon={Play} title="Sin entrenamientos en progreso" description="Inicia una entrenamiento para empezar a vender" />
             )}
           </TabsContent>
 
@@ -156,7 +156,7 @@ export default function VendorTrainings() {
                 ))}
               </div>
             ) : (
-              <EmptyState icon={CheckCircle2} title="Sin capacitaciones completadas" description="Completa tu primera capacitación" />
+              <EmptyState icon={CheckCircle2} title="Sin entrenamientos completadas" description="Completa tu primera entrenamiento" />
             )}
           </TabsContent>
 
@@ -181,13 +181,13 @@ export default function VendorTrainings() {
                       <span className="font-semibold text-emerald-600">{service.vendorCommissionPct}%</span>
                     </div>
                     <Button className="w-full" variant="outline" onClick={() => handleStartNewTraining(service)}>
-                      <Play className="mr-2 w-4 h-4" /> Empezar capacitación
+                      <Play className="mr-2 w-4 h-4" /> Empezar entrenamiento
                     </Button>
                   </div>
                 ))}
               </div>
             ) : (
-              <EmptyState icon={BookOpen} title="Sin capacitaciones pendientes" description="Has completado todas las capacitaciones disponibles" />
+              <EmptyState icon={BookOpen} title="Sin entrenamientos pendientes" description="Has completado todas las entrenamientos disponibles" />
             )}
           </TabsContent>
         </Tabs>

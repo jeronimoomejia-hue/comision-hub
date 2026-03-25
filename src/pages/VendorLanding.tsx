@@ -43,7 +43,7 @@ export default function VendorLanding() {
                 <Zap className="w-3 h-3" /> Para vendedores independientes
               </span>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight mb-6">
-                Vende servicios.<br />
+                Vende productos.<br />
                 <span className="text-primary">Gana comisiones.</span>
               </h1>
               <p className="text-lg text-muted-foreground mb-8 max-w-md">
@@ -82,7 +82,7 @@ export default function VendorLanding() {
           <div className="grid sm:grid-cols-3 gap-8">
             {[
               { step: "1", title: "Regístrate", desc: "Crea tu cuenta gratis en 30 segundos" },
-              { step: "2", title: "Elige empresas", desc: "Explora servicios y capacítate" },
+              { step: "2", title: "Elige empresas", desc: "Explora productos y capacítate" },
               { step: "3", title: "Vende y gana", desc: "Cada venta genera comisión automática" },
             ].map((item, i) => (
               <motion.div
@@ -146,7 +146,7 @@ export default function VendorLanding() {
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
             <h2 className="text-3xl font-bold mb-4 text-foreground">Empresas que ya confían en Mensualista</h2>
             <p className="text-muted-foreground mb-10 max-w-lg mx-auto">
-              Accede a servicios de IA de empresas líderes y vende con respaldo.
+              Accede a productos de IA de empresas líderes y vende con respaldo.
             </p>
             <img
               src={companiesMockup}

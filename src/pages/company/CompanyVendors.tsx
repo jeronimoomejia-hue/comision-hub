@@ -226,11 +226,11 @@ export default function CompanyVendors() {
                         </div>
                         <div>
                           <p className="text-base font-bold text-foreground">{d.servicesCount}</p>
-                          <p className="text-[9px] text-muted-foreground">Servicios</p>
+                          <p className="text-[9px] text-muted-foreground">Productos</p>
                         </div>
                         <div>
                           <p className="text-base font-bold text-foreground">{d.completedTrainings}/{companyServices.length}</p>
-                          <p className="text-[9px] text-muted-foreground">Capacitaciones</p>
+                          <p className="text-[9px] text-muted-foreground">Entrenamientos</p>
                         </div>
                       </div>
 
@@ -238,7 +238,7 @@ export default function CompanyVendors() {
                       {companyServices.length > 0 && (
                         <div className="mt-2.5 space-y-1">
                           <div className="flex items-center justify-between">
-                            <span className="text-[9px] text-muted-foreground">Progreso de capacitación</span>
+                            <span className="text-[9px] text-muted-foreground">Progreso de entrenamiento</span>
                             <span className="text-[9px] font-medium text-muted-foreground">
                               {Math.round((d.completedTrainings / companyServices.length) * 100)}%
                             </span>
@@ -298,7 +298,7 @@ export default function CompanyVendors() {
                     { icon: DollarSign, label: "GMV / mes", value: formatCOP(d.gmv) },
                     { icon: TrendingUp, label: "Comisión total", value: formatCOP(d.commission) },
                     { icon: Package, label: "Total ventas", value: String(d.totalSales) },
-                    { icon: BookOpen, label: "Capacitaciones", value: `${d.completedTrainings} completadas` },
+                    { icon: BookOpen, label: "Entrenamientos", value: `${d.completedTrainings} completadas` },
                     { icon: RefreshCw, label: "Suscripciones", value: String(d.activeSubs) },
                   ].map((s, i) => (
                     <div key={i} className="rounded-xl border border-border bg-card p-3">
@@ -313,7 +313,7 @@ export default function CompanyVendors() {
 
                 {/* Service breakdown */}
                 <section>
-                  <h3 className="text-xs font-semibold mb-2">Servicios vendidos</h3>
+                  <h3 className="text-xs font-semibold mb-2">Productos vendidos</h3>
                   <div className="space-y-1">
                     {companyServices.map(svc => {
                       const svcSales = companySales.filter(s => s.vendorId === selectedVendor.id && s.serviceId === svc.id);
