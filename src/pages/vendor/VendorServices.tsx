@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import VendorTabLayout from "@/components/layout/VendorTabLayout";
 import { 
   Search, Zap, RefreshCw, AlertTriangle,
@@ -30,6 +31,7 @@ const categoryCovers: Record<string, string> = {
 };
 
 export default function VendorServices() {
+  const navigate = useNavigate();
   const { services, sales, trainingProgress, currentVendorId, currentCompanyId } = useDemo();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedServiceId, setSelectedServiceId] = useState<string | null>(null);
@@ -110,7 +112,7 @@ export default function VendorServices() {
               return (
                 <div
                   key={service.id}
-                  onClick={() => setSelectedServiceId(service.id)}
+                  onClick={() => service.isActive ? setSelectedServiceId(service.id) : navigate(`/vendor/trainings/${service.id}`)}
                   className={`rounded-xl border border-border bg-card overflow-hidden cursor-pointer group hover:shadow-lg hover:border-primary/30 transition-all duration-300 ${
                     !service.isActive ? 'grayscale opacity-75' : ''
                   }`}

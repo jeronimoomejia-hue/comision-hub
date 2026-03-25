@@ -45,12 +45,7 @@ export default function VendorTrainings() {
 
   const handleStartNewTraining = (service: typeof companyServices[0]) => {
     startTraining(currentVendorId, service.id);
-    setTimeout(() => {
-      const newTraining = trainingProgress.find(tp => tp.vendorId === currentVendorId && tp.serviceId === service.id);
-      if (newTraining) {
-        navigate(`/vendor/trainings/${newTraining.id}`);
-      }
-    }, 100);
+    navigate(`/vendor/trainings/${service.id}`);
   };
 
   return (
@@ -122,7 +117,7 @@ export default function VendorTrainings() {
                       </div>
                       <div className="flex items-center gap-4">
                         <Badge variant="secondary">En progreso</Badge>
-                        <Button onClick={() => navigate(`/vendor/trainings/${training.id}`)}>
+                        <Button onClick={() => navigate(`/vendor/trainings/${training.service?.id || training.serviceId}`)}>
                           Continuar <ChevronRight className="ml-2 w-4 h-4" />
                         </Button>
                       </div>
@@ -152,7 +147,7 @@ export default function VendorTrainings() {
                       </div>
                       <div className="flex items-center gap-4">
                         <StatusBadge status="completed" label="Completada" />
-                        <Button variant="outline" size="sm" onClick={() => navigate(`/vendor/trainings/${training.id}`)}>
+                        <Button variant="outline" size="sm" onClick={() => navigate(`/vendor/trainings/${training.service?.id || training.serviceId}`)}>
                           <Eye className="mr-2 w-4 h-4" /> Ver
                         </Button>
                       </div>

@@ -153,7 +153,13 @@ export default function VendorCompanyDetail() {
             setSearchQuery={setSearchQuery}
             filteredServices={filteredServices}
             topServiceIds={topServiceIds}
-            onServiceClick={(serviceId: string) => navigate(`/vendor/company/${companyId}/service/${serviceId}`)}
+            onServiceClick={(serviceId: string, isActive: boolean) => {
+              if (isActive) {
+                navigate(`/vendor/company/${companyId}/service/${serviceId}`);
+              } else {
+                navigate(`/vendor/trainings/${serviceId}`);
+              }
+            }}
           />
         )}
 
@@ -184,7 +190,7 @@ function ServiciosTab({ searchQuery, setSearchQuery, filteredServices, topServic
   setSearchQuery: (q: string) => void;
   filteredServices: Array<any>;
   topServiceIds: string[];
-  onServiceClick: (id: string) => void;
+  onServiceClick: (id: string, isActive: boolean) => void;
 }) {
   return (
     <div className="space-y-4">
@@ -209,7 +215,7 @@ function ServiciosTab({ searchQuery, setSearchQuery, filteredServices, topServic
             return (
               <div
                 key={service.id}
-                onClick={() => onServiceClick(service.id)}
+                onClick={() => onServiceClick(service.id, service.isActive)}
                 className={`rounded-xl border border-border bg-card overflow-hidden cursor-pointer group hover:shadow-lg hover:border-primary/30 transition-all duration-300 ${
                   !service.isActive ? 'grayscale opacity-75' : ''
                 }`}

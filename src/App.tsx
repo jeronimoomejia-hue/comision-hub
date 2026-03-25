@@ -42,6 +42,7 @@ import AdminTrainings from "./pages/admin/AdminTrainings";
 import AdminSales from "./pages/admin/AdminSales";
 import AdminPayments from "./pages/admin/AdminPayments";
 import AdminSettings from "./pages/admin/AdminSettings";
+import CompanyTrainings from "./pages/company/CompanyTrainings";
 
 const queryClient = new QueryClient();
 
@@ -86,6 +87,7 @@ const App = () => (
             <Route path="/company/coupons" element={<CompanyCoupons />} />
             <Route path="/company/domain" element={<CompanyDomain />} />
             <Route path="/company/api" element={<CompanyApi />} />
+            <Route path="/company/trainings" element={<CompanyTrainings />} />
             
             {/* Admin Routes */}
             <Route path="/admin" element={<AdminDashboard />} />
