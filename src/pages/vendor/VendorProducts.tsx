@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
-  Search, Building2, Package, Crown, Zap, Lock,
+  Search, Building2, Package, Lock,
   ChevronRight, Dumbbell, Sparkles, Scissors
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -15,10 +15,10 @@ import {
 } from "@/data/mockData";
 import { industryCover } from "@/data/coverImages";
 
-const planConfig: Record<CompanyPlan, { label: string; color: string }> = {
-  freemium: { label: "Free", color: "text-muted-foreground" },
-  premium: { label: "Premium", color: "text-primary" },
-  enterprise: { label: "Enterprise", color: "text-amber-600" },
+const planConfig: Record<CompanyPlan, { label: string }> = {
+  freemium: { label: "Free" },
+  premium: { label: "Premium" },
+  enterprise: { label: "Enterprise" },
 };
 
 interface CategoryGroup {
@@ -70,7 +70,8 @@ export default function VendorProducts() {
       const q = searchQuery.toLowerCase();
       list = list.filter(c =>
         c.name.toLowerCase().includes(q) ||
-        c.industry.toLowerCase().includes(q)
+        c.industry.toLowerCase().includes(q) ||
+        (c.description || '').toLowerCase().includes(q)
       );
     }
 
@@ -91,7 +92,6 @@ export default function VendorProducts() {
     return categoryGroups
       .map(group => ({
         label: group.label,
-        icon: group.icon,
         companies: filteredCompanies.filter(c => group.industries.includes(c.industry)),
       }))
       .filter(g => g.companies.length > 0);
@@ -171,11 +171,12 @@ export default function VendorProducts() {
                       >
                         <Link
                           to={`/vendor/company/${company.id}`}
-                          className={`block rounded-2xl border border-border bg-card overflow-hidden group cursor-pointer hover:shadow-md hover:border-primary/20 transition-all duration-300 active:scale-[0.98] ${
+                          className={`block rounded-2xl border border-border bg-card overflow-hidden group cursor-pointer hover:shadow-md hover:border-primary/20 transition-all duration-300 active:scale-[0.98] h-full ${
                             !isLinked ? "grayscale-[40%] hover:grayscale-0" : ""
                           }`}
                         >
-                          <div className="relative h-32 overflow-hidden">
+                          {/* Fixed-height image */}
+                          <div className="relative h-36 overflow-hidden">
                             <img
                               src={cover}
                               alt={company.industry}
@@ -209,24 +210,28 @@ export default function VendorProducts() {
                             </div>
                           </div>
 
-                          <div className="px-4 py-3 flex items-center justify-between">
-                            <div className="flex items-center gap-3 text-[10px] text-muted-foreground min-w-0">
-                              <span className="flex items-center gap-1">
-                                <Package className="w-3 h-3" />
-                                {companyServices.length}
-                              </span>
-                              {bestCommission > 0 && (
-                                <span className="text-primary font-medium">
-                                  Hasta {bestCommission}%
+                          {/* Fixed-height info section */}
+                          <div className="px-4 py-3 flex flex-col justify-between h-[88px]">
+                            <p className="text-[11px] text-muted-foreground leading-snug line-clamp-2">
+                              {company.description || company.industry}
+                            </p>
+                            <div className="flex items-center justify-between mt-auto pt-2">
+                              <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
+                                <span className="flex items-center gap-1">
+                                  <Package className="w-3 h-3" />
+                                  {companyServices.length}
                                 </span>
-                              )}
-                              <Badge variant="outline" className="text-[8px] px-1.5 py-0 font-medium">
-                                {pc.label}
-                              </Badge>
+                                {bestCommission > 0 && (
+                                  <span className="text-primary font-medium">
+                                    Hasta {bestCommission}%
+                                  </span>
+                                )}
+                                <Badge variant="outline" className="text-[8px] px-1.5 py-0 font-medium">
+                                  {pc.label}
+                                </Badge>
+                              </div>
+                              <ChevronRight className="w-3.5 h-3.5 text-muted-foreground/30 group-hover:text-primary transition-colors flex-shrink-0" />
                             </div>
-                            <span className="text-[10px] font-medium text-primary flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
-                              {isLinked ? "Entrar" : "Ver"} <ChevronRight className="w-3 h-3" />
-                            </span>
                           </div>
                         </Link>
                       </motion.div>
