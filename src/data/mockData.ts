@@ -689,7 +689,48 @@ function generateSales(): Sale[] {
   const today = new Date();
   const activeServices = services.filter(s => s.status === 'activo');
 
-  // Vendor-001 is a new user — no sales yet
+  // Vendor-001 — a few recent sales
+  const v1Clients = ['Laura Méndez', 'Carlos Ruiz', 'Valentina Ospina', 'Santiago Torres', 'Mariana López'];
+  const v1Sales: { serviceId: string; companyId: string; client: string; daysAgo: number; status: TransactionStatus }[] = [
+    { serviceId: 'service-025', companyId: 'company-009', client: v1Clients[0], daysAgo: 2, status: 'HELD' },
+    { serviceId: 'service-025', companyId: 'company-009', client: v1Clients[1], daysAgo: 5, status: 'HELD' },
+    { serviceId: 'service-033', companyId: 'company-012', client: v1Clients[2], daysAgo: 12, status: 'RELEASED' },
+    { serviceId: 'service-028', companyId: 'company-010', client: v1Clients[3], daysAgo: 18, status: 'RELEASED' },
+    { serviceId: 'service-034', companyId: 'company-012', client: v1Clients[4], daysAgo: 22, status: 'RELEASED' },
+  ];
+  v1Sales.forEach((vs, idx) => {
+    const service = services.find(s => s.id === vs.serviceId)!;
+    const saleDate = new Date(today);
+    saleDate.setDate(saleDate.getDate() - vs.daysAgo);
+    const holdEnd = new Date(saleDate);
+    holdEnd.setDate(holdEnd.getDate() + service.refundPolicy.refundWindowDays);
+    const gross = service.priceCOP;
+    const sellerComm = Math.round(gross * (service.vendorCommissionPct / 100));
+    const mFee = Math.round(gross * ((service as any).mensualistaPct || 0) / 100);
+    salesList.push({
+      id: `sale-v1-${idx + 1}`,
+      serviceId: vs.serviceId,
+      companyId: vs.companyId,
+      vendorId: 'vendor-001',
+      clientName: vs.client,
+      clientEmail: `${vs.client.toLowerCase().replace(/\s+/g, '.')}@email.com`,
+      grossAmount: gross,
+      sellerCommissionAmount: sellerComm,
+      mensualistaFeeAmount: mFee,
+      providerNetAmount: gross - sellerComm - mFee,
+      holdStartAt: saleDate.toISOString().split('T')[0],
+      holdEndAt: holdEnd.toISOString().split('T')[0],
+      releasedAt: vs.status === 'RELEASED' ? holdEnd.toISOString().split('T')[0] : undefined,
+      status: vs.status,
+      paymentProvider: 'MercadoPago',
+      mpPaymentId: `MP-V1-${idx + 1}`,
+      isSubscription: service.type === 'suscripción',
+      subscriptionActive: vs.status !== 'REFUNDED' && service.type === 'suscripción',
+      createdAt: saleDate.toISOString().split('T')[0],
+      amountCOP: gross
+    });
+  });
+
   // Other vendors selling IronHaus
   salesList.push(...generateSalesForVendor('vendor-002', 'company-009', 18, 'v2d'));
   salesList.push(...generateSalesForVendor('vendor-003', 'company-009', 12, 'v3d'));
