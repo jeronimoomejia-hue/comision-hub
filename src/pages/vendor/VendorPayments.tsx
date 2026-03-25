@@ -162,7 +162,57 @@ export default function VendorPayments() {
           </div>
         </div>
 
-        {/* Status guide */}
+        {/* Active Subscriptions */}
+        {mySubscriptions.length > 0 && (
+          <div className="rounded-2xl border border-primary/15 bg-primary/[0.02] p-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center">
+                  <Repeat className="w-4 h-4 text-primary" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-foreground">Suscripciones activas</p>
+                  <p className="text-[10px] text-muted-foreground">Ingresos recurrentes mensuales</p>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="text-lg font-bold text-primary">{formatCOP(monthlyRecurring)}</p>
+                <p className="text-[10px] text-muted-foreground">/mes</p>
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              {mySubscriptions.map(sub => {
+                const service = allServices.find(s => s.id === sub.serviceId);
+                const company = service ? companies.find(c => c.id === service.companyId) : null;
+                const coverImg = service?.category ? categoryCovers[service.category] : null;
+                return (
+                  <div key={sub.id} className="flex items-center gap-3 p-2.5 rounded-xl bg-card border border-border/50">
+                    <div className="w-9 h-9 rounded-lg overflow-hidden bg-muted flex-shrink-0">
+                      {coverImg ? (
+                        <img src={coverImg} alt="" className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <Package className="w-4 h-4 text-muted-foreground/40" />
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-medium text-foreground truncate">{sub.clientName}</p>
+                      <p className="text-[10px] text-muted-foreground truncate">{service?.name}{company ? ` · ${company.name}` : ''}</p>
+                    </div>
+                    <div className="text-right flex-shrink-0">
+                      <p className="text-xs font-semibold text-primary">{formatCOP(sub.monthlyCommissionCOP)}</p>
+                      <p className="text-[9px] text-muted-foreground">{sub.daysActive}d activa</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+
         <div className="rounded-2xl border border-border bg-muted/20 p-4">
           <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-3">¿Cómo funciona?</p>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
