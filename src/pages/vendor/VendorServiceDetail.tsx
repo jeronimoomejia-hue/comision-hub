@@ -342,32 +342,88 @@ export default function VendorServiceDetail() {
 /* =========== Sub-components =========== */
 
 function InfoTab({ service, extended, company, isTrainingComplete }: { service: any; extended: any; company: any; isTrainingComplete: boolean }) {
+  const coverImg = categoryCovers[service.category];
+  
   return (
-    <div className="space-y-6">
-      <p className="text-sm text-muted-foreground leading-relaxed">{extended?.shortDescription || service.description}</p>
-
-      {/* Pricing */}
-      <div className="grid grid-cols-2 gap-3">
-        <div className="p-4 rounded-xl border-2 border-primary/20 bg-primary/5">
-          <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Tu comisión</p>
-          <p className="text-2xl font-semibold text-primary mt-1">{formatCOP(Math.round(service.priceCOP * service.vendorCommissionPct / 100))}</p>
-          <p className="text-[10px] text-muted-foreground mt-0.5">{service.vendorCommissionPct}% por venta</p>
+    <div className="space-y-5">
+      {/* Hero image */}
+      {coverImg && (
+        <div className="rounded-xl overflow-hidden aspect-[2.4/1]">
+          <img src={coverImg} alt={service.name} className="w-full h-full object-cover" />
         </div>
-        <div className="p-4 rounded-xl border border-border bg-card">
-          <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Precio cliente</p>
-          <p className="text-2xl font-semibold text-foreground mt-1">{formatCOP(service.priceCOP)}</p>
-          <p className="text-[10px] text-muted-foreground mt-0.5">{service.type === 'suscripción' ? 'mensual' : 'pago único'}</p>
+      )}
+
+      {/* Description */}
+      <div>
+        <p className="text-sm text-foreground leading-relaxed">{extended?.shortDescription || service.description}</p>
+        <p className="text-xs text-muted-foreground mt-2 leading-relaxed">{extended?.pitchThreeLines}</p>
+      </div>
+
+      {/* Visit service page */}
+      {extended?.websiteUrl && (
+        <a
+          href={extended.websiteUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-between p-3 rounded-xl border border-border bg-card group hover:border-primary/30 transition-colors cursor-pointer"
+        >
+          <div>
+            <p className="text-xs font-medium text-foreground">Conocer más sobre este servicio</p>
+            <p className="text-[10px] text-muted-foreground">{extended.websiteUrl}</p>
+          </div>
+          <ExternalLink className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+        </a>
+      )}
+
+      {/* Info cards grid */}
+      <div className="grid grid-cols-2 gap-2">
+        <div className="p-3 rounded-xl border border-border bg-card">
+          <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Comisión</p>
+          <p className="text-base font-semibold text-primary mt-0.5">{formatCOP(Math.round(service.priceCOP * service.vendorCommissionPct / 100))}</p>
+          <p className="text-[10px] text-muted-foreground">{service.vendorCommissionPct}% por venta</p>
+        </div>
+        <div className="p-3 rounded-xl border border-border bg-card">
+          <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Precio</p>
+          <p className="text-base font-semibold text-foreground mt-0.5">{formatCOP(service.priceCOP)}</p>
+          <p className="text-[10px] text-muted-foreground">{service.type === 'suscripción' ? 'mensual' : 'pago único'}</p>
+        </div>
+        <div className="p-3 rounded-xl border border-border bg-card">
+          <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Capacitación</p>
+          <p className="text-xs font-medium text-foreground mt-0.5">{service.trainingType === 'video' ? 'Video' : 'PDF'}</p>
+          <p className={`text-[10px] font-medium mt-0.5 ${isTrainingComplete ? 'text-emerald-600' : 'text-amber-600'}`}>
+            {isTrainingComplete ? 'Completada' : 'Pendiente'} · ~{extended?.trainingDurationMinutes || 15} min
+          </p>
+        </div>
+        <div className="p-3 rounded-xl border border-border bg-card">
+          <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Devoluciones</p>
+          <p className="text-xs font-medium text-foreground mt-0.5">{service.refundPolicy.refundWindowDays} días</p>
+          <p className="text-[10px] text-muted-foreground">{service.refundPolicy.autoRefund ? 'Automática' : 'Con aprobación'}</p>
         </div>
       </div>
 
-      {/* Key info */}
-      <div className="space-y-3">
+      {/* Features */}
+      {extended?.features && (
+        <div className="p-3 rounded-xl border border-border bg-card space-y-2">
+          <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">Qué incluye</p>
+          <div className="grid grid-cols-1 gap-1.5">
+            {extended.features.slice(0, 6).map((f: string, i: number) => (
+              <div key={i} className="flex items-start gap-2">
+                <Check className="w-3 h-3 text-primary mt-0.5 flex-shrink-0" />
+                <p className="text-xs text-foreground">{f}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Audience & Problem/Result */}
+      <div className="space-y-2">
         {[
-          { label: "Problema que resuelve", text: extended?.problemSolved || 'Procesos manuales.' },
-          { label: "Resultado prometido", text: extended?.promisedResult || 'Mayor productividad.' },
           { label: "Audiencia ideal", text: extended?.targetAudience || 'Empresas en Colombia.' },
+          { label: "Problema que resuelve", text: extended?.problemSolved || 'Procesos manuales.' },
+          { label: "Resultado", text: extended?.promisedResult || 'Mayor productividad.' },
         ].map((item, i) => (
-          <div key={i}>
+          <div key={i} className="p-3 rounded-xl border border-border bg-card">
             <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">{item.label}</p>
             <p className="text-xs text-foreground mt-0.5 leading-relaxed">{item.text}</p>
           </div>
@@ -375,58 +431,45 @@ function InfoTab({ service, extended, company, isTrainingComplete }: { service: 
       </div>
 
       {/* Pitch */}
-      <div className="border-l-2 border-primary/30 pl-4 space-y-1.5">
+      <div className="p-3 rounded-xl border border-primary/20 bg-primary/5">
         <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">Cómo venderlo</p>
-        <p className="text-sm font-medium text-foreground italic">"{extended?.pitchOneLine || `${service.name} automatiza tu negocio.`}"</p>
-        {extended?.pitchThreeLines && (
-          <p className="text-xs text-muted-foreground leading-relaxed">{extended.pitchThreeLines}</p>
-        )}
+        <p className="text-sm font-medium text-foreground mt-1 italic">"{extended?.pitchOneLine || `${service.name} automatiza tu negocio.`}"</p>
       </div>
 
       {/* Objections */}
       {extended?.objections && (
-        <div className="space-y-3">
+        <div className="space-y-2">
           <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">Objeciones comunes</p>
           {extended.objections.slice(0, 3).map((obj: any, i: number) => (
-            <div key={i} className="space-y-0.5">
+            <div key={i} className="p-3 rounded-xl border border-border bg-card">
               <p className="text-xs font-medium text-foreground">{obj.objection}</p>
-              <p className="text-xs text-muted-foreground">{obj.response}</p>
+              <p className="text-xs text-muted-foreground mt-1">{obj.response}</p>
             </div>
           ))}
         </div>
       )}
 
-      {/* Training */}
-      <div className="flex items-center justify-between py-3 border-t border-border">
-        <div>
-          <p className="text-xs font-medium text-foreground">Capacitación ({service.trainingType === 'video' ? 'Video' : 'PDF'})</p>
-          <p className="text-[10px] text-muted-foreground">~{extended?.trainingDurationMinutes || 15} min</p>
-        </div>
-        <span className={`text-[10px] font-medium ${isTrainingComplete ? 'text-emerald-600' : 'text-amber-600'}`}>
-          {isTrainingComplete ? 'Completada' : 'Pendiente'}
-        </span>
-      </div>
-
-      {/* Refund Policy */}
-      <div className="flex items-center justify-between py-3 border-t border-border">
-        <p className="text-xs font-medium text-foreground">Devoluciones</p>
-        <p className="text-xs text-muted-foreground">
-          {service.refundPolicy.autoRefund ? 'Automática' : 'Requiere aprobación'} · {service.refundPolicy.refundWindowDays} días
-        </p>
-      </div>
-
       {/* Materials */}
       {service.materials.length > 0 && (
-        <div className="space-y-2 pt-1">
+        <div className="space-y-2">
           <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">Materiales</p>
           {service.materials.map((m: any) => (
-            <div key={m.id} className="flex items-center justify-between">
+            <div key={m.id} className="flex items-center justify-between p-3 rounded-xl border border-border bg-card">
               <span className="text-xs text-foreground">{m.title}</span>
               <Button variant="ghost" size="sm" className="text-[10px] h-7 text-muted-foreground" onClick={() => toast.success(`Descargando: ${m.title}`)}>
                 Descargar
               </Button>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Contact */}
+      {extended?.contactEmail && (
+        <div className="p-3 rounded-xl border border-border bg-card">
+          <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">Contacto del servicio</p>
+          <p className="text-xs text-foreground mt-1">{extended.contactName}</p>
+          <p className="text-[10px] text-muted-foreground">{extended.contactEmail}</p>
         </div>
       )}
     </div>
