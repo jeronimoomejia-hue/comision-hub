@@ -17,26 +17,7 @@ import {
   AreaChart, Area, XAxis, Tooltip, ResponsiveContainer
 } from 'recharts';
 
-// Company cover images
-import insuranceCover from "@/assets/company-covers/insurance-ai.jpg";
-import legalCover from "@/assets/company-covers/legal-ai.jpg";
-import marketingCover from "@/assets/company-covers/marketing-ai.jpg";
-import salesCover from "@/assets/company-covers/sales-ai.jpg";
-import supportCover from "@/assets/company-covers/support-ai.jpg";
-import accountingCover from "@/assets/company-covers/accounting-ai.jpg";
-import hrCover from "@/assets/company-covers/hr-ai.jpg";
-import securityCover from "@/assets/company-covers/security-ai.jpg";
-
-const industryCover: Record<string, string> = {
-  'IA para Seguros': insuranceCover,
-  'IA Legal': legalCover,
-  'IA para Marketing': marketingCover,
-  'IA para Ventas': salesCover,
-  'IA para Atención': supportCover,
-  'IA para Contabilidad': accountingCover,
-  'IA para RRHH': hrCover,
-  'IA para Ciberseguridad': securityCover,
-};
+import { industryCover } from "@/data/coverImages";
 
 const planConfig: Record<CompanyPlan, { label: string; icon: React.ElementType }> = {
   freemium: { label: "Free", icon: Zap },
