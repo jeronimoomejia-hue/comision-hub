@@ -3,15 +3,16 @@ import { useState, useRef, useEffect } from "react";
 import VendorTabLayout from "@/components/layout/VendorTabLayout";
 import { useDemo } from "@/contexts/DemoContext";
 import { companies, services as allServices, formatCOP, CURRENT_VENDOR_ID } from "@/data/mockData";
-import { Search, Package, Star, RefreshCw, Zap, Lock, Clock, Shield, AlertTriangle, BookOpen, MessageCircle, Tag, ShoppingCart, RotateCcw, ChevronRight, Send, Copy, Percent, Info, Globe, Mail, Phone, MapPin, Building2, ExternalLink, Users } from "lucide-react";
+import { Search, Package, Star, RefreshCw, Zap, Lock, Clock, Shield, AlertTriangle, BookOpen, MessageCircle, Tag, ShoppingCart, ChevronRight, ChevronDown, Send, Copy, Percent, Info, Globe, Mail, Phone, MapPin, Building2, ExternalLink, Users } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import TransactionCard from "@/components/TransactionCard";
+import StatusGuide from "@/components/StatusGuide";
 import { categoryCovers } from "@/data/coverImages";
 
-type CompanyTab = 'acerca' | 'productos' | 'ventas' | 'devoluciones' | 'cupones' | 'chat';
+type CompanyTab = 'acerca' | 'productos' | 'ventas' | 'cupones' | 'chat';
 
 export default function VendorCompanyDetail() {
   const { companyId } = useParams<{ companyId: string }>();
@@ -33,7 +34,6 @@ export default function VendorCompanyDetail() {
 
   const companyServices = allServices.filter(s => s.status === 'activo' && s.companyId === companyId);
   const vendorSales = sales.filter(s => s.vendorId === vendorId && s.companyId === companyId);
-  const vendorRefunds = refundRequests.filter(r => r.vendorId === vendorId && r.companyId === companyId);
 
   const vendorServices = companyServices.map(service => {
     const isActive = !service.requiresTraining || getTrainingStatus(service.id);
@@ -59,7 +59,6 @@ export default function VendorCompanyDetail() {
     { id: 'acerca', label: 'Acerca de', icon: Info },
     { id: 'productos', label: 'Productos', icon: Package },
     { id: 'ventas', label: 'Ventas', icon: ShoppingCart },
-    { id: 'devoluciones', label: 'Devoluciones', icon: RotateCcw },
     { id: 'cupones', label: 'Cupones', icon: Tag, planRequired: true },
     { id: 'chat', label: 'Chat', icon: MessageCircle, planRequired: true },
   ];
@@ -153,10 +152,6 @@ export default function VendorCompanyDetail() {
           <VentasTab vendorSales={vendorSales} companyId={companyId!} />
         )}
 
-        {activeTab === 'devoluciones' && (
-          <DevolucionesTab vendorSales={vendorSales} vendorRefunds={vendorRefunds} />
-        )}
-
         {activeTab === 'cupones' && (
           <CuponesTab companyName={company.name} />
         )}
@@ -189,9 +184,11 @@ const companyDescriptions: Record<string, { tagline: string; description: string
 function AcercaTab({ company, companyServices, vendorSales }: { company: any; companyServices: Array<any>; vendorSales: Array<any> }) {
   const coverImg = categoryCovers[company.industry];
   const info = companyDescriptions[company.id] || { tagline: `Soluciones de ${company.industry}`, description: `${company.name} ofrece soluciones innovadoras en el sector de ${company.industry}.`, founded: '2023', employees: '20+', highlights: ['Tecnología de punta', 'Soporte dedicado', 'Resultados medibles'] };
+  const [showDetails, setShowDetails] = useState(false);
+  const [showContact, setShowContact] = useState(false);
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       {/* Hero image */}
       {coverImg && (
         <div className="rounded-xl overflow-hidden aspect-[2.4/1] relative">
@@ -205,47 +202,59 @@ function AcercaTab({ company, companyServices, vendorSales }: { company: any; co
       )}
 
       {/* Description */}
-      <div>
-        <p className="text-sm text-foreground leading-relaxed">{info.description}</p>
-      </div>
+      <p className="text-sm text-foreground leading-relaxed">{info.description}</p>
 
-      {/* Company details grid */}
-      <div className="grid grid-cols-2 gap-2">
-        <div className="p-3 rounded-xl border border-border bg-card">
-          <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Fundada</p>
-          <p className="text-sm font-semibold text-foreground mt-0.5">{info.founded}</p>
+      {/* Collapsible: Company details */}
+      <button
+        onClick={() => setShowDetails(!showDetails)}
+        className="w-full flex items-center justify-between p-3.5 rounded-xl border border-border bg-card hover:bg-muted/30 transition-colors"
+      >
+        <div className="flex items-center gap-2.5">
+          <Building2 className="w-4 h-4 text-muted-foreground" />
+          <span className="text-xs font-medium text-foreground">Detalles de la empresa</span>
         </div>
-        <div className="p-3 rounded-xl border border-border bg-card">
-          <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Equipo</p>
-          <p className="text-sm font-semibold text-foreground mt-0.5">{info.employees} personas</p>
+        <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${showDetails ? 'rotate-180' : ''}`} />
+      </button>
+      {showDetails && (
+        <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-200">
+          <div className="grid grid-cols-2 gap-2">
+            {[
+              { label: 'Fundada', value: info.founded },
+              { label: 'Equipo', value: `${info.employees} personas` },
+              { label: 'País', value: company.country },
+              { label: 'Plan', value: company.plan },
+            ].map(item => (
+              <div key={item.label} className="p-3 rounded-xl border border-border bg-card">
+                <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{item.label}</p>
+                <p className="text-sm font-semibold text-foreground mt-0.5 capitalize">{item.value}</p>
+              </div>
+            ))}
+          </div>
+          <div className="p-3 rounded-xl border border-border bg-card space-y-1.5">
+            <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">Lo que ofrece</p>
+            {info.highlights.map((h: string, i: number) => (
+              <div key={i} className="flex items-start gap-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
+                <p className="text-xs text-foreground">{h}</p>
+              </div>
+            ))}
+          </div>
         </div>
-        <div className="p-3 rounded-xl border border-border bg-card">
-          <p className="text-[10px] text-muted-foreground uppercase tracking-wider">País</p>
-          <p className="text-sm font-semibold text-foreground mt-0.5">{company.country}</p>
-        </div>
-        <div className="p-3 rounded-xl border border-border bg-card">
-          <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Plan</p>
-          <p className="text-sm font-semibold text-foreground mt-0.5 capitalize">{company.plan}</p>
-        </div>
-      </div>
+      )}
 
-      {/* Highlights */}
-      <div className="p-3 rounded-xl border border-border bg-card space-y-2">
-        <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">Lo que ofrece</p>
-        <div className="grid grid-cols-1 gap-1.5">
-          {info.highlights.map((h: string, i: number) => (
-            <div key={i} className="flex items-start gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
-              <p className="text-xs text-foreground">{h}</p>
-            </div>
-          ))}
+      {/* Collapsible: Contact */}
+      <button
+        onClick={() => setShowContact(!showContact)}
+        className="w-full flex items-center justify-between p-3.5 rounded-xl border border-border bg-card hover:bg-muted/30 transition-colors"
+      >
+        <div className="flex items-center gap-2.5">
+          <Mail className="w-4 h-4 text-muted-foreground" />
+          <span className="text-xs font-medium text-foreground">Contacto</span>
         </div>
-      </div>
-
-      {/* Contact info */}
-      <div className="space-y-2">
-        <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">Contacto</p>
-        <div className="space-y-1.5">
+        <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${showContact ? 'rotate-180' : ''}`} />
+      </button>
+      {showContact && (
+        <div className="space-y-1.5 animate-in fade-in slide-in-from-top-2 duration-200">
           {company.contactEmail && (
             <div className="flex items-center gap-2.5 p-2.5 rounded-xl border border-border bg-card">
               <Mail className="w-3.5 h-3.5 text-muted-foreground" />
@@ -258,26 +267,21 @@ function AcercaTab({ company, companyServices, vendorSales }: { company: any; co
               <span className="text-xs text-foreground">{company.contactPhone}</span>
             </div>
           )}
+          {company.websiteUrl && (
+            <a
+              href={company.websiteUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-between p-2.5 rounded-xl border border-border bg-card group hover:border-primary/30 transition-colors"
+            >
+              <div className="flex items-center gap-2.5">
+                <Globe className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary transition-colors" />
+                <span className="text-xs text-foreground">{company.websiteUrl}</span>
+              </div>
+              <ExternalLink className="w-3 h-3 text-muted-foreground group-hover:text-primary transition-colors" />
+            </a>
+          )}
         </div>
-      </div>
-
-      {/* Website link */}
-      {company.websiteUrl && (
-        <a
-          href={company.websiteUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center justify-between p-3 rounded-xl border border-border bg-card group hover:border-primary/30 transition-colors"
-        >
-          <div className="flex items-center gap-2.5">
-            <Globe className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
-            <div>
-              <p className="text-xs font-medium text-foreground">Visitar sitio web</p>
-              <p className="text-[10px] text-muted-foreground">{company.websiteUrl}</p>
-            </div>
-          </div>
-          <ExternalLink className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary transition-colors" />
-        </a>
       )}
     </div>
   );
@@ -303,79 +307,74 @@ function ProductosTab({ searchQuery, setSearchQuery, filteredServices, topServic
       </div>
 
       {filteredServices.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+        <div className="space-y-3">
           {filteredServices.map((service) => {
             const isPopular = topServiceIds.includes(service.id);
             const earningsPerSale = Math.round(service.priceCOP * service.vendorCommissionPct / 100);
             const coverImg = categoryCovers[service.category];
             const availableCodes = service.activationCodes.filter((c: any) => c.status === 'available').length;
+            const isRecurring = service.type === 'suscripción';
 
             return (
               <div
                 key={service.id}
                 onClick={() => onServiceClick(service.id, service.isActive)}
-                className={`rounded-xl border border-border bg-card overflow-hidden cursor-pointer group hover:shadow-lg hover:border-primary/30 transition-all duration-300 ${
+                className={`rounded-2xl border border-border bg-card overflow-hidden cursor-pointer group hover:shadow-lg hover:border-primary/20 transition-all duration-300 ${
                   !service.isActive ? 'grayscale opacity-75' : ''
                 }`}
               >
-                <div className="relative h-36 sm:h-40 overflow-hidden">
-                  <img src={coverImg} alt={service.category} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-
-                  {!service.isActive && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-                      <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full bg-black/70 text-white border border-white/20">
-                        <Lock className="w-3.5 h-3.5" /> Sin activar
-                      </span>
-                    </div>
-                  )}
-
-                  <div className="absolute top-3 left-3 flex items-center gap-1.5 flex-wrap">
+                <div className="flex gap-0">
+                  {/* Image */}
+                  <div className="relative w-28 sm:w-36 flex-shrink-0">
+                    <img src={coverImg} alt={service.category} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                    {!service.isActive && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                        <Lock className="w-4 h-4 text-white" />
+                      </div>
+                    )}
                     {isPopular && (
-                      <span className="inline-flex items-center gap-0.5 text-[9px] font-semibold px-2 py-0.5 rounded-full bg-amber-500 text-white shadow-sm">
-                        <Star className="w-2.5 h-2.5" fill="currentColor" /> Top
-                      </span>
-                    )}
-                    <span className={`inline-flex items-center gap-0.5 text-[9px] font-medium px-2 py-0.5 rounded-full shadow-sm ${
-                      service.type === 'suscripción' ? 'bg-blue-500/90 text-white' : 'bg-purple-500/90 text-white'
-                    }`}>
-                      {service.type === 'suscripción' ? <><RefreshCw className="w-2.5 h-2.5" /> Recurrente</> : <><Zap className="w-2.5 h-2.5" /> Puntual</>}
-                    </span>
-                    {availableCodes === 0 && (
-                      <span className="inline-flex items-center gap-0.5 text-[9px] font-medium px-2 py-0.5 rounded-full bg-destructive text-destructive-foreground shadow-sm">
-                        <AlertTriangle className="w-2.5 h-2.5" /> Agotado
-                      </span>
+                      <div className="absolute top-2 left-2">
+                        <span className="inline-flex items-center gap-0.5 text-[8px] font-semibold px-1.5 py-0.5 rounded-full bg-amber-500 text-white">
+                          <Star className="w-2 h-2" fill="currentColor" /> Top
+                        </span>
+                      </div>
                     )}
                   </div>
 
-                  <div className="absolute bottom-3 right-3 text-right">
-                    <p className="text-[9px] text-white/70 uppercase tracking-wider">Tu comisión</p>
-                    <p className="text-sm font-bold text-white drop-shadow-md">{formatCOP(earningsPerSale)}</p>
-                  </div>
-                </div>
-
-                <div className="p-3 space-y-2">
-                  <div className="flex items-center gap-2">
-                    <h3 className="font-semibold text-sm text-foreground leading-snug line-clamp-1 group-hover:text-primary transition-colors flex-1">
-                      {service.name}
-                    </h3>
-                    {service.salesCount > 0 && (
-                      <span className="text-[10px] text-muted-foreground flex-shrink-0">
-                        {service.salesCount} venta{service.salesCount !== 1 ? 's' : ''}
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-[11px] text-muted-foreground leading-relaxed line-clamp-2">{service.description}</p>
-                  <div className="border-t border-border pt-2 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="inline-flex items-center gap-1 text-[9px] text-muted-foreground">
-                        <Clock className="w-2.5 h-2.5" /> {service.refundPolicy.refundWindowDays}d
-                      </span>
-                      <span className="inline-flex items-center gap-1 text-[9px] text-muted-foreground">
-                        <Shield className="w-2.5 h-2.5" /> {service.refundPolicy.autoRefund ? 'Auto' : 'Aprob.'}
-                      </span>
+                  {/* Content */}
+                  <div className="flex-1 p-3.5 flex flex-col justify-between min-w-0">
+                    <div>
+                      <div className="flex items-start justify-between gap-2">
+                        <h3 className="font-semibold text-sm text-foreground leading-snug line-clamp-1 group-hover:text-primary transition-colors">
+                          {service.name}
+                        </h3>
+                        {availableCodes === 0 && (
+                          <Badge variant="destructive" className="text-[8px] px-1.5 h-4 flex-shrink-0">Agotado</Badge>
+                        )}
+                      </div>
+                      <p className="text-[11px] text-muted-foreground leading-relaxed line-clamp-2 mt-1">{service.description}</p>
                     </div>
-                    <p className="text-xs font-medium text-muted-foreground">{formatCOP(service.priceCOP)}</p>
+
+                    <div className="flex items-center justify-between mt-2.5 pt-2.5 border-t border-border/50">
+                      <div className="flex items-center gap-2">
+                        {isRecurring ? (
+                          <span className="inline-flex items-center gap-1 text-[10px] font-medium text-blue-600 bg-blue-500/10 px-2 py-0.5 rounded-full">
+                            <RefreshCw className="w-2.5 h-2.5" /> Mensual
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 text-[10px] font-medium text-muted-foreground">
+                            <Zap className="w-2.5 h-2.5" /> Pago único
+                          </span>
+                        )}
+                        {service.salesCount > 0 && (
+                          <span className="text-[10px] text-muted-foreground">{service.salesCount} venta{service.salesCount !== 1 ? 's' : ''}</span>
+                        )}
+                      </div>
+                      <div className="text-right">
+                        <p className="text-xs font-bold text-primary">{formatCOP(earningsPerSale)}</p>
+                        <p className="text-[9px] text-muted-foreground">{formatCOP(service.priceCOP)}{isRecurring ? '/mes' : ''}</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -398,6 +397,7 @@ function VentasTab({ vendorSales, companyId }: { vendorSales: Array<any>; compan
 
   return (
     <div className="space-y-3">
+      <StatusGuide />
       <p className="text-xs text-muted-foreground">{activeSales.length} venta{activeSales.length !== 1 ? 's' : ''} activa{activeSales.length !== 1 ? 's' : ''}</p>
       {vendorSales.length > 0 ? (
         <div className="space-y-2">
@@ -433,46 +433,6 @@ function VentasTab({ vendorSales, companyId }: { vendorSales: Array<any>; compan
           <ShoppingCart className="w-8 h-8 text-muted-foreground/30 mx-auto mb-3" />
           <p className="text-sm font-medium text-foreground mb-1">Sin ventas aún</p>
           <p className="text-xs text-muted-foreground">Tus ventas para esta empresa aparecerán aquí</p>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function DevolucionesTab({ vendorSales, vendorRefunds }: { vendorSales: Array<any>; vendorRefunds: Array<any> }) {
-  return (
-    <div className="space-y-3">
-      <p className="text-xs text-muted-foreground">{vendorRefunds.length} devolución{vendorRefunds.length !== 1 ? 'es' : ''}</p>
-      {vendorRefunds.length > 0 ? (
-        <div className="space-y-2">
-          {vendorRefunds.map(refund => {
-            const sale = vendorSales.find(s => s.id === refund.saleId);
-            const svc = sale ? allServices.find(s => s.id === sale.serviceId) : null;
-            return (
-              <TransactionCard
-                key={refund.id}
-                id={refund.id}
-                clientName={sale?.clientName || 'Cliente'}
-                clientEmail={sale?.clientEmail}
-                serviceName={svc?.name}
-                serviceCategory={svc?.category}
-                amount={sale?.grossAmount || 0}
-                commission={sale?.sellerCommissionAmount}
-                status={refund.status}
-                statusType="refund"
-                date={refund.createdAt}
-                refundReason={refund.reason}
-                refundDecision={refund.decisionBy === 'sistema' ? 'Automática' : refund.decisionBy === 'empresa' ? 'Empresa' : undefined}
-                role="vendor"
-              />
-            );
-          })}
-        </div>
-      ) : (
-        <div className="text-center py-12 rounded-xl border border-border bg-card">
-          <RotateCcw className="w-8 h-8 text-muted-foreground/30 mx-auto mb-3" />
-          <p className="text-sm font-medium text-foreground mb-1">Sin devoluciones</p>
-          <p className="text-xs text-muted-foreground">No tienes devoluciones en esta empresa</p>
         </div>
       )}
     </div>
@@ -545,7 +505,6 @@ function ChatTab({ companyName }: { companyName: string }) {
     }]);
     setMessage("");
 
-    // Simulate response
     setTimeout(() => {
       setMessages(prev => [...prev, {
         id: (Date.now() + 1).toString(),
@@ -558,7 +517,6 @@ function ChatTab({ companyName }: { companyName: string }) {
 
   return (
     <div className="rounded-xl border border-border bg-card overflow-hidden flex flex-col" style={{ height: '420px' }}>
-      {/* Messages */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-3">
         {messages.map(msg => (
           <div key={msg.id} className={`flex ${msg.from === 'vendor' ? 'justify-end' : 'justify-start'}`}>
@@ -573,8 +531,6 @@ function ChatTab({ companyName }: { companyName: string }) {
           </div>
         ))}
       </div>
-
-      {/* Input */}
       <div className="border-t border-border p-3 flex items-center gap-2">
         <Input
           value={message}

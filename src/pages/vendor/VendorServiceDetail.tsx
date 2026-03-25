@@ -7,14 +7,15 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import {
-  ShoppingCart, RotateCcw, Clock, DollarSign, Plus, User, Mail,
+  ShoppingCart, RotateCcw, Clock, DollarSign, Plus, User, Mail, Phone, Tag,
   RefreshCw, Zap, Lock, Check, BookOpen, FileText, Download,
   Lightbulb, HelpCircle, AlertCircle, Target, Users, Package,
-  Shield, MessageSquare, ChevronRight, Star, Play, Info, ExternalLink
+  Shield, MessageSquare, ChevronRight, ChevronDown, Star, Play, Info, ExternalLink
 } from "lucide-react";
 import { useDemo } from "@/contexts/DemoContext";
 import { formatCOP, formatDate, CURRENT_VENDOR_ID, services as allServices } from "@/data/mockData";
 import TransactionCard from "@/components/TransactionCard";
+import StatusGuide from "@/components/StatusGuide";
 import { extendedServiceDetails } from "@/data/extendedServiceData";
 import {
   Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
@@ -32,7 +33,7 @@ const refundReasons = [
   { value: "otro", label: "Otro" }
 ];
 
-type ServiceTab = 'info' | 'ventas' | 'devoluciones';
+type ServiceTab = 'info' | 'ventas';
 
 export default function VendorServiceDetail() {
   const { serviceId, companyId } = useParams<{ serviceId: string; companyId?: string }>();
@@ -45,7 +46,7 @@ export default function VendorServiceDetail() {
   const [activeTab, setActiveTab] = useState<ServiceTab>('info');
   const [saleDialogOpen, setSaleDialogOpen] = useState(false);
   const [saleLoading, setSaleLoading] = useState(false);
-  const [saleForm, setSaleForm] = useState({ clientName: "", clientEmail: "" });
+  const [saleForm, setSaleForm] = useState({ clientName: "", clientEmail: "", clientPhone: "" });
   const [refundDialogOpen, setRefundDialogOpen] = useState(false);
   const [selectedSale, setSelectedSale] = useState<typeof sales[0] | null>(null);
   const [refundReason, setRefundReason] = useState("");
@@ -73,18 +74,16 @@ export default function VendorServiceDetail() {
   const vendorTraining = trainingProgress.find(tp => tp.vendorId === vendorId && tp.serviceId === serviceId);
   const isTrainingComplete = vendorTraining?.status === 'declared_completed';
   const backPath = companyId ? `/vendor/company/${companyId}` : "/vendor";
+  const isRecurring = service.type === 'suscripción';
 
-  // Sales data
   const serviceSales = sales.filter(s => s.serviceId === serviceId && s.vendorId === vendorId);
   const activeSales = serviceSales.filter(s => s.status !== 'REFUNDED');
-  const refundedSales = serviceSales.filter(s => s.status === 'REFUNDED');
   const totalCommissions = commissions
     .filter(c => { const s = sales.find(sl => sl.id === c.saleId); return s?.serviceId === serviceId && s?.vendorId === vendorId && c.status !== 'REFUNDED'; })
     .reduce((a, c) => a + c.amountCOP, 0);
 
   const availableCodes = service.activationCodes.filter(c => c.status === 'available').length;
 
-  // Refund helpers
   const isEligibleForRefund = (sale: typeof sales[0]) => {
     if (sale.status === 'REFUNDED') return false;
     if (refundRequests.find(r => r.saleId === sale.id)) return false;
@@ -107,14 +106,14 @@ export default function VendorServiceDetail() {
     const providerNetAmount = grossAmount - sellerCommissionAmount - mensualistaFeeAmount;
     addSale({
       serviceId: service.id, vendorId, companyId: service.companyId,
-      clientName: saleForm.clientName, clientEmail: saleForm.clientEmail,
+      clientName: saleForm.clientName, clientEmail: saleForm.clientEmail, clientPhone: saleForm.clientPhone || undefined,
       grossAmount, sellerCommissionAmount, mensualistaFeeAmount, providerNetAmount,
-      status: 'HELD', isSubscription: service.type === 'suscripción', subscriptionActive: service.type === 'suscripción',
+      status: 'HELD', isSubscription: isRecurring, subscriptionActive: isRecurring,
       amountCOP: grossAmount, holdStartAt: new Date().toISOString(), holdEndAt: new Date(Date.now() + service.refundPolicy.refundWindowDays * 24 * 60 * 60 * 1000).toISOString(),
       paymentProvider: 'MercadoPago', mpPaymentId: `MP-${Date.now()}`
     });
-    toast.success("¡Venta registrada!", { description: `Comisión de ${formatCOP(sellerCommissionAmount)} en retención ${service.refundPolicy.refundWindowDays} días.` });
-    setSaleForm({ clientName: "", clientEmail: "" });
+    toast.success("Venta registrada", { description: `Comisión de ${formatCOP(sellerCommissionAmount)} en retención ${service.refundPolicy.refundWindowDays} días.` });
+    setSaleForm({ clientName: "", clientEmail: "", clientPhone: "" });
     setSaleLoading(false);
     setSaleDialogOpen(false);
   };
@@ -138,52 +137,50 @@ export default function VendorServiceDetail() {
     setSelectedSale(null);
   };
 
-  const getStatusConfig = (status: string) => {
-    const map: Record<string, { cls: string; label: string }> = {
-      'HELD': { cls: "bg-amber-50 text-amber-600", label: "Retenida" },
-      'COMPLETED': { cls: "bg-emerald-50 text-emerald-600", label: "Liberada" },
-      'REFUNDED': { cls: "bg-red-50 text-red-600", label: "Devuelta" },
-    };
-    return map[status] || { cls: "bg-muted text-muted-foreground", label: status };
-  };
-
   const tabs: { id: ServiceTab; label: string; icon: React.ElementType }[] = [
     { id: 'info', label: 'Información', icon: Info },
     { id: 'ventas', label: 'Ventas', icon: ShoppingCart },
-    { id: 'devoluciones', label: 'Devoluciones', icon: RotateCcw },
   ];
 
   return (
     <VendorTabLayout backTo={backPath} backLabel={company.name}>
       <div className="space-y-5">
-        {/* Service Header */}
-        <div className="flex items-start gap-4">
-          <div className="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0">
-            <img src={coverImg} alt={service.category} className="w-full h-full object-cover" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <h1 className="text-xl font-semibold text-foreground leading-tight">{service.name}</h1>
-            <p className="text-xs text-muted-foreground mt-0.5">{company.name} · {service.category}</p>
-            <div className="flex items-center gap-2 mt-2">
-              <Badge variant="outline" className="text-[9px]">
-                {service.type === 'suscripción' ? <><RefreshCw className="w-2.5 h-2.5 mr-0.5" /> Recurrente</> : <><Zap className="w-2.5 h-2.5 mr-0.5" /> Puntual</>}
-              </Badge>
-              {isTrainingComplete ? (
-                <Badge className="bg-emerald-500/10 text-emerald-600 border-0 text-[9px]"><Check className="w-2.5 h-2.5 mr-0.5" /> Activo</Badge>
-              ) : (
-                <Badge variant="outline" className="text-[9px] text-muted-foreground"><Lock className="w-2.5 h-2.5 mr-0.5" /> Sin activar</Badge>
-              )}
+        {/* Service Header - Redesigned */}
+        <div className="rounded-2xl border border-border bg-card overflow-hidden">
+          <div className="flex gap-0">
+            <div className="relative w-24 sm:w-32 flex-shrink-0">
+              <img src={coverImg} alt={service.category} className="w-full h-full object-cover" />
+            </div>
+            <div className="flex-1 p-4 min-w-0">
+              <h1 className="text-lg font-semibold text-foreground leading-tight">{service.name}</h1>
+              <p className="text-xs text-muted-foreground mt-0.5">{company.name}</p>
+              <div className="flex items-center gap-2 mt-2">
+                {isRecurring ? (
+                  <span className="inline-flex items-center gap-1 text-[10px] font-medium text-blue-600 bg-blue-500/10 px-2 py-0.5 rounded-full">
+                    <RefreshCw className="w-2.5 h-2.5" /> Mensual
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1 text-[10px] font-medium text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
+                    <Zap className="w-2.5 h-2.5" /> Pago único
+                  </span>
+                )}
+                {isTrainingComplete ? (
+                  <Badge className="bg-emerald-500/10 text-emerald-600 border-0 text-[9px]"><Check className="w-2.5 h-2.5 mr-0.5" /> Activo</Badge>
+                ) : (
+                  <Badge variant="outline" className="text-[9px] text-muted-foreground"><Lock className="w-2.5 h-2.5 mr-0.5" /> Sin activar</Badge>
+                )}
+              </div>
+              <div className="flex items-baseline gap-2 mt-2">
+                <span className="text-lg font-bold text-primary">{formatCOP(estimatedCommission)}</span>
+                <span className="text-[10px] text-muted-foreground line-through">{formatCOP(service.priceCOP)}</span>
+                <span className="text-[10px] text-muted-foreground">{isRecurring ? '/mes' : ''}</span>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Quick Stats */}
-        <div className="grid grid-cols-3 gap-3">
-          <div className="rounded-xl border border-border bg-card p-3 text-center">
-            <p className="text-[10px] text-muted-foreground uppercase tracking-wide">Comisión</p>
-            <p className="text-lg font-semibold text-primary">{formatCOP(estimatedCommission)}</p>
-            <p className="text-[9px] text-muted-foreground">{service.vendorCommissionPct}% por venta</p>
-          </div>
+        <div className="grid grid-cols-2 gap-3">
           <div className="rounded-xl border border-border bg-card p-3 text-center">
             <p className="text-[10px] text-muted-foreground uppercase tracking-wide">Mis ventas</p>
             <p className="text-lg font-semibold text-foreground">{activeSales.length}</p>
@@ -196,11 +193,9 @@ export default function VendorServiceDetail() {
 
         {/* Action buttons */}
         {!isTrainingComplete && (
-          <div className="flex gap-2">
-            <Button size="sm" variant="outline" className="flex-1 border-amber-400 text-amber-700" onClick={() => navigate(`/vendor/trainings/${serviceId}`)}>
-              <BookOpen className="w-3.5 h-3.5 mr-1.5" /> Capacitarme primero
-            </Button>
-          </div>
+          <Button size="sm" variant="outline" className="w-full border-amber-400 text-amber-700" onClick={() => navigate(`/vendor/trainings/${serviceId}`)}>
+            <BookOpen className="w-3.5 h-3.5 mr-1.5" /> Capacitarme primero
+          </Button>
         )}
 
         {/* Internal Tabs */}
@@ -229,7 +224,6 @@ export default function VendorServiceDetail() {
         {activeTab === 'ventas' && (
           <VentasTab 
             serviceSales={serviceSales} 
-            getStatusConfig={getStatusConfig} 
             commissions={commissions}
             isEligibleForRefund={isEligibleForRefund}
             getDaysRemaining={getDaysRemaining}
@@ -239,41 +233,44 @@ export default function VendorServiceDetail() {
             isTrainingComplete={isTrainingComplete}
           />
         )}
-
-        {activeTab === 'devoluciones' && (
-          <DevolucionesTab serviceSales={serviceSales} refundRequests={refundRequests} />
-        )}
       </div>
 
       {/* Sale Dialog */}
       <Dialog open={saleDialogOpen} onOpenChange={setSaleDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Registrar venta</DialogTitle>
-            <DialogDescription>{service.name} — {formatCOP(service.priceCOP)}</DialogDescription>
+            <DialogTitle className="text-base">Registrar venta</DialogTitle>
+            <DialogDescription className="text-xs">{service.name} — {formatCOP(service.priceCOP)}{isRecurring ? '/mes' : ''}</DialogDescription>
           </DialogHeader>
-          <form onSubmit={handleSubmitSale} className="space-y-4">
-            <div className="space-y-2">
-              <Label>Nombre del cliente</Label>
+          <form onSubmit={handleSubmitSale} className="space-y-3">
+            <div className="space-y-1.5">
+              <Label className="text-xs">Nombre del cliente</Label>
               <div className="relative">
-                <Input className="pl-10" placeholder="Juan García" value={saleForm.clientName} onChange={(e) => setSaleForm({...saleForm, clientName: e.target.value})} required />
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input className="pl-9 h-9 text-sm" placeholder="Juan García" value={saleForm.clientName} onChange={(e) => setSaleForm({...saleForm, clientName: e.target.value})} required />
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
               </div>
             </div>
-            <div className="space-y-2">
-              <Label>Email del cliente</Label>
+            <div className="space-y-1.5">
+              <Label className="text-xs">Email del cliente</Label>
               <div className="relative">
-                <Input className="pl-10" type="email" placeholder="cliente@email.com" value={saleForm.clientEmail} onChange={(e) => setSaleForm({...saleForm, clientEmail: e.target.value})} required />
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input className="pl-9 h-9 text-sm" type="email" placeholder="cliente@email.com" value={saleForm.clientEmail} onChange={(e) => setSaleForm({...saleForm, clientEmail: e.target.value})} required />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
               </div>
             </div>
-            <div className="p-3 bg-muted/50 rounded-lg text-sm space-y-1">
-              <div className="flex justify-between"><span className="text-muted-foreground">Precio:</span><span className="font-medium">{formatCOP(service.priceCOP)}</span></div>
-              <div className="flex justify-between"><span className="text-muted-foreground">Tu comisión ({service.vendorCommissionPct}%):</span><span className="font-medium text-primary">{formatCOP(estimatedCommission)}</span></div>
+            <div className="space-y-1.5">
+              <Label className="text-xs">Teléfono <span className="text-muted-foreground">(opcional)</span></Label>
+              <div className="relative">
+                <Input className="pl-9 h-9 text-sm" placeholder="+57 300 123 4567" value={saleForm.clientPhone} onChange={(e) => setSaleForm({...saleForm, clientPhone: e.target.value})} />
+                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+              </div>
+            </div>
+            <div className="p-3 bg-muted/30 rounded-xl text-xs space-y-1">
+              <div className="flex justify-between"><span className="text-muted-foreground">Precio</span><span className="font-medium">{formatCOP(service.priceCOP)}</span></div>
+              <div className="flex justify-between"><span className="text-muted-foreground">Tu comisión ({service.vendorCommissionPct}%)</span><span className="font-medium text-primary">{formatCOP(estimatedCommission)}</span></div>
             </div>
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setSaleDialogOpen(false)}>Cancelar</Button>
-              <Button type="submit" disabled={saleLoading}>{saleLoading ? "Registrando..." : "Registrar venta"}</Button>
+              <Button type="button" variant="outline" size="sm" onClick={() => setSaleDialogOpen(false)}>Cancelar</Button>
+              <Button type="submit" size="sm" disabled={saleLoading}>{saleLoading ? "Registrando..." : "Registrar venta"}</Button>
             </DialogFooter>
           </form>
         </DialogContent>
@@ -283,32 +280,32 @@ export default function VendorServiceDetail() {
       <Dialog open={refundDialogOpen} onOpenChange={setRefundDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Solicitar devolución</DialogTitle>
-            <DialogDescription>{service.refundPolicy.autoRefund ? "Procesamiento automático." : "La empresa revisará tu solicitud."}</DialogDescription>
+            <DialogTitle className="text-base">Solicitar devolución</DialogTitle>
+            <DialogDescription className="text-xs">{service.refundPolicy.autoRefund ? "Procesamiento automático." : "La empresa revisará tu solicitud."}</DialogDescription>
           </DialogHeader>
           {selectedSale && (
-            <div className="space-y-4">
-              <div className="p-3 bg-muted/50 rounded-lg text-sm space-y-1">
-                <div className="flex justify-between"><span className="text-muted-foreground">Cliente:</span><span className="font-medium">{selectedSale.clientName}</span></div>
-                <div className="flex justify-between"><span className="text-muted-foreground">Monto:</span><span className="font-medium">{formatCOP(selectedSale.amountCOP)}</span></div>
-                <div className="flex justify-between"><span className="text-muted-foreground">Días restantes:</span><span className="font-medium">{getDaysRemaining(selectedSale)}d</span></div>
+            <div className="space-y-3">
+              <div className="p-3 bg-muted/30 rounded-xl text-xs space-y-1">
+                <div className="flex justify-between"><span className="text-muted-foreground">Cliente</span><span className="font-medium">{selectedSale.clientName}</span></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">Monto</span><span className="font-medium">{formatCOP(selectedSale.amountCOP)}</span></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">Días restantes</span><span className="font-medium">{getDaysRemaining(selectedSale)}d</span></div>
               </div>
-              <div className="space-y-2">
-                <Label>Motivo *</Label>
+              <div className="space-y-1.5">
+                <Label className="text-xs">Motivo</Label>
                 <Select value={refundReason} onValueChange={setRefundReason}>
-                  <SelectTrigger><SelectValue placeholder="Selecciona un motivo" /></SelectTrigger>
+                  <SelectTrigger className="h-9 text-sm"><SelectValue placeholder="Selecciona un motivo" /></SelectTrigger>
                   <SelectContent>{refundReasons.map(r => <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
-              <div className="space-y-2">
-                <Label>Notas (opcional)</Label>
-                <Textarea placeholder="Detalles adicionales..." value={refundNotes} onChange={(e) => setRefundNotes(e.target.value)} rows={2} />
+              <div className="space-y-1.5">
+                <Label className="text-xs">Notas <span className="text-muted-foreground">(opcional)</span></Label>
+                <Textarea placeholder="Detalles adicionales..." value={refundNotes} onChange={(e) => setRefundNotes(e.target.value)} rows={2} className="text-sm" />
               </div>
             </div>
           )}
           <DialogFooter>
-            <Button variant="outline" onClick={() => setRefundDialogOpen(false)} disabled={isSubmitting}>Cancelar</Button>
-            <Button onClick={handleSubmitRefund} disabled={!refundReason || isSubmitting}>{isSubmitting ? "Enviando..." : "Solicitar devolución"}</Button>
+            <Button variant="outline" size="sm" onClick={() => setRefundDialogOpen(false)} disabled={isSubmitting}>Cancelar</Button>
+            <Button size="sm" onClick={handleSubmitRefund} disabled={!refundReason || isSubmitting}>{isSubmitting ? "Enviando..." : "Solicitar devolución"}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -321,15 +318,16 @@ export default function VendorServiceDetail() {
 function InfoTab({ service, extended, company, isTrainingComplete }: { service: any; extended: any; company: any; isTrainingComplete: boolean }) {
   const navigate = useNavigate();
   const coverImg = categoryCovers[service.category];
+  const [showFeatures, setShowFeatures] = useState(false);
+  const [showObjections, setShowObjections] = useState(false);
 
-  // Mock coupons for demo
   const activeCoupons = [
     { code: 'NUEVO20', discount: '20%', expires: '2026-04-30', description: 'Descuento para nuevos clientes' },
     { code: 'PROMO10', discount: '10%', expires: '2026-05-15', description: 'Promoción de temporada' },
   ];
   
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       {/* Hero image */}
       {coverImg && (
         <div className="rounded-xl overflow-hidden aspect-[2.4/1]">
@@ -337,7 +335,7 @@ function InfoTab({ service, extended, company, isTrainingComplete }: { service: 
         </div>
       )}
 
-      {/* Review training (when active) */}
+      {/* Review training */}
       {isTrainingComplete && (
         <button
           onClick={() => navigate(`/vendor/trainings/${service.id}`)}
@@ -357,19 +355,15 @@ function InfoTab({ service, extended, company, isTrainingComplete }: { service: 
       )}
 
       {/* Description */}
-      <div>
-        <p className="text-sm text-foreground leading-relaxed">{extended?.shortDescription || service.description}</p>
-        <p className="text-xs text-muted-foreground mt-2 leading-relaxed">{extended?.pitchThreeLines}</p>
-      </div>
+      <p className="text-sm text-foreground leading-relaxed">{extended?.shortDescription || service.description}</p>
+      {extended?.pitchThreeLines && (
+        <p className="text-xs text-muted-foreground leading-relaxed">{extended.pitchThreeLines}</p>
+      )}
 
       {/* Visit service page */}
       {extended?.websiteUrl && (
-        <a
-          href={extended.websiteUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center justify-between p-3 rounded-xl border border-border bg-card group hover:border-primary/30 transition-colors cursor-pointer"
-        >
+        <a href={extended.websiteUrl} target="_blank" rel="noopener noreferrer"
+          className="flex items-center justify-between p-3 rounded-xl border border-border bg-card group hover:border-primary/30 transition-colors cursor-pointer">
           <div>
             <p className="text-xs font-medium text-foreground">Conocer más sobre este producto</p>
             <p className="text-[10px] text-muted-foreground">{extended.websiteUrl}</p>
@@ -378,18 +372,8 @@ function InfoTab({ service, extended, company, isTrainingComplete }: { service: 
         </a>
       )}
 
-      {/* Info cards grid */}
+      {/* Key info grid */}
       <div className="grid grid-cols-2 gap-2">
-        <div className="p-3 rounded-xl border border-border bg-card">
-          <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Comisión</p>
-          <p className="text-base font-semibold text-primary mt-0.5">{formatCOP(Math.round(service.priceCOP * service.vendorCommissionPct / 100))}</p>
-          <p className="text-[10px] text-muted-foreground">{service.vendorCommissionPct}% por venta</p>
-        </div>
-        <div className="p-3 rounded-xl border border-border bg-card">
-          <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Precio</p>
-          <p className="text-base font-semibold text-foreground mt-0.5">{formatCOP(service.priceCOP)}</p>
-          <p className="text-[10px] text-muted-foreground">{service.type === 'suscripción' ? 'mensual' : 'pago único'}</p>
-        </div>
         <div className="p-3 rounded-xl border border-border bg-card">
           <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Entrenamiento</p>
           <p className="text-xs font-medium text-foreground mt-0.5">{service.trainingType === 'video' ? 'Video' : 'PDF'}</p>
@@ -404,22 +388,28 @@ function InfoTab({ service, extended, company, isTrainingComplete }: { service: 
         </div>
       </div>
 
-      {/* Features */}
+      {/* Collapsible: Features */}
       {extended?.features && (
-        <div className="p-3 rounded-xl border border-border bg-card space-y-2">
-          <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">Qué incluye</p>
-          <div className="grid grid-cols-1 gap-1.5">
-            {extended.features.slice(0, 6).map((f: string, i: number) => (
-              <div key={i} className="flex items-start gap-2">
-                <Check className="w-3 h-3 text-primary mt-0.5 flex-shrink-0" />
-                <p className="text-xs text-foreground">{f}</p>
-              </div>
-            ))}
-          </div>
-        </div>
+        <>
+          <button onClick={() => setShowFeatures(!showFeatures)}
+            className="w-full flex items-center justify-between p-3.5 rounded-xl border border-border bg-card hover:bg-muted/30 transition-colors">
+            <span className="text-xs font-medium text-foreground">Qué incluye</span>
+            <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${showFeatures ? 'rotate-180' : ''}`} />
+          </button>
+          {showFeatures && (
+            <div className="p-3 rounded-xl border border-border bg-card space-y-1.5 animate-in fade-in slide-in-from-top-2 duration-200">
+              {extended.features.slice(0, 6).map((f: string, i: number) => (
+                <div key={i} className="flex items-start gap-2">
+                  <Check className="w-3 h-3 text-primary mt-0.5 flex-shrink-0" />
+                  <p className="text-xs text-foreground">{f}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </>
       )}
 
-      {/* Audience & Problem/Result */}
+      {/* Audience & Problem/Result - collapsible style */}
       <div className="space-y-2">
         {[
           { label: "Audiencia ideal", text: extended?.targetAudience || 'Empresas en Colombia.' },
@@ -439,17 +429,25 @@ function InfoTab({ service, extended, company, isTrainingComplete }: { service: 
         <p className="text-sm font-medium text-foreground mt-1 italic">"{extended?.pitchOneLine || `${service.name} automatiza tu negocio.`}"</p>
       </div>
 
-      {/* Objections */}
+      {/* Collapsible: Objections */}
       {extended?.objections && (
-        <div className="space-y-2">
-          <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">Objeciones comunes</p>
-          {extended.objections.slice(0, 3).map((obj: any, i: number) => (
-            <div key={i} className="p-3 rounded-xl border border-border bg-card">
-              <p className="text-xs font-medium text-foreground">{obj.objection}</p>
-              <p className="text-xs text-muted-foreground mt-1">{obj.response}</p>
+        <>
+          <button onClick={() => setShowObjections(!showObjections)}
+            className="w-full flex items-center justify-between p-3.5 rounded-xl border border-border bg-card hover:bg-muted/30 transition-colors">
+            <span className="text-xs font-medium text-foreground">Objeciones comunes</span>
+            <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${showObjections ? 'rotate-180' : ''}`} />
+          </button>
+          {showObjections && (
+            <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-200">
+              {extended.objections.slice(0, 3).map((obj: any, i: number) => (
+                <div key={i} className="p-3 rounded-xl border border-border bg-card">
+                  <p className="text-xs font-medium text-foreground">{obj.objection}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{obj.response}</p>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          )}
+        </>
       )}
 
       {/* Materials */}
@@ -475,7 +473,7 @@ function InfoTab({ service, extended, company, isTrainingComplete }: { service: 
             <div key={i} className="flex items-center justify-between p-3 rounded-xl border border-primary/15 bg-primary/5">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <Zap className="w-3.5 h-3.5 text-primary" />
+                  <Tag className="w-3.5 h-3.5 text-primary" />
                 </div>
                 <div>
                   <p className="text-xs font-medium text-foreground">{coupon.description}</p>
@@ -503,9 +501,8 @@ function InfoTab({ service, extended, company, isTrainingComplete }: { service: 
   );
 }
 
-function VentasTab({ serviceSales, getStatusConfig, commissions, isEligibleForRefund, getDaysRemaining, refundRequests, onRefundClick, onNewSale, isTrainingComplete }: {
+function VentasTab({ serviceSales, commissions, isEligibleForRefund, getDaysRemaining, refundRequests, onRefundClick, onNewSale, isTrainingComplete }: {
   serviceSales: Array<any>;
-  getStatusConfig: (status: string) => { cls: string; label: string };
   commissions: Array<any>;
   isEligibleForRefund: (sale: any) => boolean;
   getDaysRemaining: (sale: any) => number;
@@ -524,6 +521,8 @@ function VentasTab({ serviceSales, getStatusConfig, commissions, isEligibleForRe
         </Button>
       )}
 
+      <StatusGuide />
+
       <p className="text-xs text-muted-foreground">{activeSales.length} venta{activeSales.length !== 1 ? 's' : ''} activa{activeSales.length !== 1 ? 's' : ''}</p>
 
       {serviceSales.length > 0 ? (
@@ -539,6 +538,7 @@ function VentasTab({ serviceSales, getStatusConfig, commissions, isEligibleForRe
                 id={sale.id}
                 clientName={sale.clientName}
                 clientEmail={sale.clientEmail}
+                clientPhone={sale.clientPhone}
                 serviceName={service?.name}
                 serviceCategory={service?.category}
                 amount={sale.grossAmount}
@@ -567,48 +567,6 @@ function VentasTab({ serviceSales, getStatusConfig, commissions, isEligibleForRe
           <ShoppingCart className="w-8 h-8 text-muted-foreground/30 mx-auto mb-3" />
           <p className="text-sm font-medium text-foreground mb-1">Sin ventas aún</p>
           <p className="text-xs text-muted-foreground">Registra tu primera venta de este producto</p>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function DevolucionesTab({ serviceSales, refundRequests }: { serviceSales: Array<any>; refundRequests: Array<any> }) {
-  const serviceRefunds = refundRequests.filter((r: any) => serviceSales.some((s: any) => s.id === r.saleId));
-
-  return (
-    <div className="space-y-3">
-      {serviceRefunds.length > 0 ? (
-        <div className="space-y-2">
-          {serviceRefunds.map((refund: any) => {
-            const sale = serviceSales.find((s: any) => s.id === refund.saleId);
-            const service = sale ? allServices.find((s: any) => s.id === sale.serviceId) : null;
-
-            return (
-              <TransactionCard
-                key={refund.id}
-                id={refund.id}
-                clientName={sale?.clientName || 'Cliente'}
-                clientEmail={sale?.clientEmail}
-                serviceName={service?.name}
-                serviceCategory={service?.category}
-                amount={sale?.grossAmount || 0}
-                commission={sale?.sellerCommissionAmount}
-                status={refund.status}
-                statusType="refund"
-                date={refund.createdAt}
-                refundReason={refund.reason}
-                refundDecision={refund.decisionBy === 'sistema' ? 'Sistema (Auto)' : refund.decisionBy === 'empresa' ? 'Empresa' : undefined}
-                role="vendor"
-              />
-            );
-          })}
-        </div>
-      ) : (
-        <div className="text-center py-12 rounded-xl border border-border bg-card">
-          <RotateCcw className="w-8 h-8 text-muted-foreground/30 mx-auto mb-3" />
-          <p className="text-sm font-medium text-foreground mb-1">Sin devoluciones</p>
-          <p className="text-xs text-muted-foreground">No hay solicitudes de devolución para este producto</p>
         </div>
       )}
     </div>

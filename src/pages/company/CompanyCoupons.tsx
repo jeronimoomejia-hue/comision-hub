@@ -1,6 +1,6 @@
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { useState } from "react";
-import { Tag, Plus, Trash2, Copy, Lock, Percent, Calendar, Users } from "lucide-react";
+import { Tag, Plus, Trash2, Copy, Lock, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -42,11 +42,9 @@ export default function CompanyCoupons() {
     return (
       <DashboardLayout role="company" userName={company?.name}>
         <div className="flex flex-col items-center justify-center py-20 text-center">
-          <Lock className="w-12 h-12 text-muted-foreground/30 mb-4" />
-          <h2 className="text-lg font-semibold mb-2">Cupones no disponibles</h2>
-          <p className="text-sm text-muted-foreground max-w-md">
-            Los cupones de descuento no están disponibles en el plan Freemium. Mejora a Premium para habilitarlos.
-          </p>
+          <Lock className="w-10 h-10 text-muted-foreground/20 mb-4" />
+          <h2 className="text-base font-semibold mb-1">Cupones no disponibles</h2>
+          <p className="text-xs text-muted-foreground max-w-xs">Mejora a Premium para crear cupones de descuento.</p>
         </div>
       </DashboardLayout>
     );
@@ -66,7 +64,7 @@ export default function CompanyCoupons() {
     }]);
     setShowCreate(false);
     setNewCoupon({ code: '', discountPct: 10, maxUses: 50, expiresAt: '2026-12-31', serviceId: 'all' });
-    toast.success("Cupón creado correctamente");
+    toast.success("Cupón creado");
   };
 
   const toggleCoupon = (id: string) => {
@@ -83,113 +81,130 @@ export default function CompanyCoupons() {
     toast.success("Código copiado");
   };
 
+  const activeCoupons = coupons.filter(c => c.isActive);
+  const totalUses = coupons.reduce((s, c) => s + c.usedCount, 0);
+
   return (
     <DashboardLayout role="company" userName={company?.name}>
-      <div className="space-y-4">
+      <div className="space-y-5">
+        {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-bold">Cupones de descuento</h1>
-            <p className="text-xs text-muted-foreground">{coupons.filter(c => c.isActive).length} cupones activos</p>
+            <h1 className="text-lg font-semibold text-foreground">Cupones</h1>
+            <p className="text-xs text-muted-foreground">{activeCoupons.length} activos · {totalUses} usos totales</p>
           </div>
-          <Button size="sm" className="h-8 text-xs" onClick={() => setShowCreate(true)}>
-            <Plus className="w-3.5 h-3.5 mr-1" />
-            Nuevo cupón
+          <Button size="sm" className="h-8 text-xs rounded-full" onClick={() => setShowCreate(true)}>
+            <Plus className="w-3.5 h-3.5 mr-1" /> Nuevo
           </Button>
         </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-3 gap-3">
-          <div className="rounded-xl border border-border bg-card p-3 text-center">
-            <Tag className="w-5 h-5 mx-auto mb-1 text-primary" />
-            <p className="text-lg font-bold">{coupons.length}</p>
-            <p className="text-[10px] text-muted-foreground">Total cupones</p>
-          </div>
-          <div className="rounded-xl border border-border bg-card p-3 text-center">
-            <Percent className="w-5 h-5 mx-auto mb-1 text-emerald-500" />
-            <p className="text-lg font-bold">{coupons.filter(c => c.isActive).length}</p>
-            <p className="text-[10px] text-muted-foreground">Activos</p>
-          </div>
-          <div className="rounded-xl border border-border bg-card p-3 text-center">
-            <Users className="w-5 h-5 mx-auto mb-1 text-amber-500" />
-            <p className="text-lg font-bold">{coupons.reduce((s, c) => s + c.usedCount, 0)}</p>
-            <p className="text-[10px] text-muted-foreground">Usos totales</p>
-          </div>
-        </div>
-
         {/* Coupons list */}
-        <div className="rounded-xl border border-border bg-card divide-y divide-border/50">
-          {coupons.map(coupon => (
-            <div key={coupon.id} className="flex items-center justify-between px-4 py-3 gap-3">
-              <div className="flex items-center gap-3 min-w-0">
-                <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${coupon.isActive ? 'bg-primary/10' : 'bg-muted'}`}>
-                  <Tag className={`w-5 h-5 ${coupon.isActive ? 'text-primary' : 'text-muted-foreground'}`} />
-                </div>
-                <div className="min-w-0">
-                  <div className="flex items-center gap-2">
-                    <p className="text-sm font-mono font-bold">{coupon.code}</p>
-                    <Badge variant={coupon.isActive ? "default" : "secondary"} className="text-[9px]">
-                      {coupon.isActive ? 'Activo' : 'Inactivo'}
-                    </Badge>
+        {coupons.length > 0 ? (
+          <div className="space-y-2">
+            {coupons.map(coupon => {
+              const linkedService = coupon.serviceId ? companyServices.find(s => s.id === coupon.serviceId) : null;
+              const isExpired = new Date(coupon.expiresAt) < new Date();
+              const usagePercent = Math.round((coupon.usedCount / coupon.maxUses) * 100);
+
+              return (
+                <div
+                  key={coupon.id}
+                  className={`rounded-2xl border bg-card p-4 transition-all ${
+                    coupon.isActive && !isExpired ? 'border-border' : 'border-border/50 opacity-60'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2.5">
+                      <code className="text-sm font-mono font-bold text-foreground tracking-wide">{coupon.code}</code>
+                      <span className="text-xs font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded-full">
+                        {coupon.discountPct}% off
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <button onClick={() => copyCouponCode(coupon.code)} className="p-1.5 rounded-lg hover:bg-muted transition-colors">
+                        <Copy className="w-3.5 h-3.5 text-muted-foreground" />
+                      </button>
+                      <Switch checked={coupon.isActive} onCheckedChange={() => toggleCoupon(coupon.id)} />
+                      <button onClick={() => deleteCoupon(coupon.id)} className="p-1.5 rounded-lg hover:bg-destructive/10 transition-colors">
+                        <Trash2 className="w-3.5 h-3.5 text-muted-foreground hover:text-destructive" />
+                      </button>
+                    </div>
                   </div>
-                  <p className="text-[10px] text-muted-foreground">
-                    {coupon.discountPct}% descuento · {coupon.usedCount}/{coupon.maxUses} usos · Vence {coupon.expiresAt}
-                  </p>
+
+                  {/* Progress bar */}
+                  <div className="mb-2.5">
+                    <div className="flex items-center justify-between text-[10px] text-muted-foreground mb-1">
+                      <span>{coupon.usedCount} de {coupon.maxUses} usos</span>
+                      <span>Vence {new Date(coupon.expiresAt).toLocaleDateString('es-CO', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                    </div>
+                    <div className="w-full h-1 rounded-full bg-muted overflow-hidden">
+                      <div className="h-full rounded-full bg-primary/60 transition-all" style={{ width: `${Math.min(usagePercent, 100)}%` }} />
+                    </div>
+                  </div>
+
+                  {linkedService && (
+                    <p className="text-[10px] text-muted-foreground">Aplica a: {linkedService.name}</p>
+                  )}
+
+                  {/* Quick action: register sale with this coupon */}
+                  {coupon.isActive && !isExpired && (
+                    <button
+                      onClick={() => toast.success(`Registrar venta con cupón ${coupon.code}`, { description: 'Funcionalidad disponible en cada producto' })}
+                      className="mt-3 w-full flex items-center justify-center gap-1.5 py-2 rounded-xl border border-dashed border-border text-xs text-muted-foreground hover:text-foreground hover:border-primary/30 transition-colors"
+                    >
+                      <ShoppingCart className="w-3 h-3" /> Registrar venta con este cupón
+                    </button>
+                  )}
                 </div>
-              </div>
-              <div className="flex items-center gap-1.5 flex-shrink-0">
-                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => copyCouponCode(coupon.code)}>
-                  <Copy className="w-3.5 h-3.5" />
-                </Button>
-                <Switch checked={coupon.isActive} onCheckedChange={() => toggleCoupon(coupon.id)} />
-                <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => deleteCoupon(coupon.id)}>
-                  <Trash2 className="w-3.5 h-3.5" />
-                </Button>
-              </div>
-            </div>
-          ))}
-          {coupons.length === 0 && (
-            <p className="text-xs text-muted-foreground text-center py-8">Sin cupones. Crea el primero.</p>
-          )}
-        </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="text-center py-16 rounded-2xl border border-border bg-card">
+            <Tag className="w-8 h-8 text-muted-foreground/20 mx-auto mb-3" />
+            <p className="text-sm font-medium text-foreground mb-1">Sin cupones</p>
+            <p className="text-xs text-muted-foreground">Crea tu primer cupón de descuento</p>
+          </div>
+        )}
 
         {/* Create modal */}
         <Dialog open={showCreate} onOpenChange={setShowCreate}>
-          <DialogContent className="max-w-md">
-            <DialogHeader><DialogTitle className="text-base">Crear cupón</DialogTitle></DialogHeader>
+          <DialogContent className="max-w-sm">
+            <DialogHeader><DialogTitle className="text-base">Nuevo cupón</DialogTitle></DialogHeader>
             <div className="space-y-3">
-              <div>
+              <div className="space-y-1.5">
                 <Label className="text-xs">Código</Label>
                 <Input
-                  className="h-8 text-sm mt-1 font-mono uppercase"
+                  className="h-9 text-sm font-mono uppercase"
                   placeholder="PROMO20"
                   value={newCoupon.code}
                   onChange={e => setNewCoupon({ ...newCoupon, code: e.target.value })}
                 />
               </div>
               <div className="grid grid-cols-2 gap-3">
-                <div>
+                <div className="space-y-1.5">
                   <Label className="text-xs">Descuento %</Label>
-                  <Input type="number" className="h-8 text-sm mt-1" value={newCoupon.discountPct}
+                  <Input type="number" className="h-9 text-sm" value={newCoupon.discountPct}
                     onChange={e => setNewCoupon({ ...newCoupon, discountPct: Number(e.target.value) })} />
                 </div>
-                <div>
+                <div className="space-y-1.5">
                   <Label className="text-xs">Máx. usos</Label>
-                  <Input type="number" className="h-8 text-sm mt-1" value={newCoupon.maxUses}
+                  <Input type="number" className="h-9 text-sm" value={newCoupon.maxUses}
                     onChange={e => setNewCoupon({ ...newCoupon, maxUses: Number(e.target.value) })} />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <Label className="text-xs">Fecha de expiración</Label>
-                  <Input type="date" className="h-8 text-sm mt-1" value={newCoupon.expiresAt}
+                <div className="space-y-1.5">
+                  <Label className="text-xs">Expira</Label>
+                  <Input type="date" className="h-9 text-sm" value={newCoupon.expiresAt}
                     onChange={e => setNewCoupon({ ...newCoupon, expiresAt: e.target.value })} />
                 </div>
-                <div>
-                  <Label className="text-xs">Gig</Label>
+                <div className="space-y-1.5">
+                  <Label className="text-xs">Producto</Label>
                   <Select value={newCoupon.serviceId} onValueChange={v => setNewCoupon({ ...newCoupon, serviceId: v })}>
-                    <SelectTrigger className="h-8 text-xs mt-1"><SelectValue /></SelectTrigger>
+                    <SelectTrigger className="h-9 text-xs"><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">Todos los productos</SelectItem>
+                      <SelectItem value="all">Todos</SelectItem>
                       {companyServices.map(s => (
                         <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
                       ))}
@@ -199,6 +214,7 @@ export default function CompanyCoupons() {
               </div>
             </div>
             <DialogFooter>
+              <Button variant="outline" size="sm" className="text-xs" onClick={() => setShowCreate(false)}>Cancelar</Button>
               <Button size="sm" className="text-xs" onClick={handleCreate}>Crear cupón</Button>
             </DialogFooter>
           </DialogContent>
