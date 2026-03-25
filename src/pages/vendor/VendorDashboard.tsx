@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { 
   Building2, ChevronRight, Plus, Search, TrendingUp,
   Crown, Zap, Package, ArrowUpRight, ArrowDownRight,
-  Sparkles, ChevronDown, CheckCircle2, Circle, X
+  Sparkles, CheckCircle2, Circle, X, Check, Lock
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import VendorTabLayout from "@/components/layout/VendorTabLayout";
@@ -208,7 +208,7 @@ export default function VendorDashboard() {
           </ResponsiveContainer>
         </motion.div>
 
-        {/* Featured Offer */}
+        {/* Featured Offer — detailed */}
         {featuredService && (
           <motion.div
             initial={{ opacity: 0, y: 8 }}
@@ -223,7 +223,7 @@ export default function VendorDashboard() {
               to={`/vendor/company/${featuredService.companyId}`}
               className="block rounded-2xl border border-border bg-card overflow-hidden group hover:shadow-md transition-all duration-300"
             >
-              <div className="relative h-40 overflow-hidden">
+              <div className="relative h-44 sm:h-48 overflow-hidden">
                 <img 
                   src={industryCover[featuredService.companyIndustry]}
                   alt={featuredService.name}
@@ -232,16 +232,39 @@ export default function VendorDashboard() {
                   width={800}
                   height={512}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
                 <div className="absolute bottom-4 left-4 right-4">
-                  <p className="text-white/60 text-[10px] uppercase tracking-widest">{featuredService.companyName}</p>
-                  <h3 className="text-white font-semibold text-base mt-0.5 leading-snug">{featuredService.name}</h3>
-                  <div className="flex items-center gap-3 mt-2">
-                    <span className="text-white/90 text-xs font-medium">
-                      Comisión: {formatCOP(Math.round(featuredService.priceCOP * featuredService.vendorCommissionPct / 100))}
-                    </span>
-                    <span className="text-white/50 text-xs">por venta</span>
-                  </div>
+                  <p className="text-white/50 text-[10px] uppercase tracking-widest">{featuredService.companyName}</p>
+                  <h3 className="text-white font-semibold text-base sm:text-lg mt-0.5 leading-snug">{featuredService.name}</h3>
+                  <p className="text-white/60 text-[11px] mt-1.5 leading-relaxed line-clamp-2">
+                    {featuredService.description}
+                  </p>
+                </div>
+              </div>
+              <div className="px-4 py-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-lg font-semibold text-primary">
+                    {formatCOP(Math.round(featuredService.priceCOP * featuredService.vendorCommissionPct / 100))}
+                  </span>
+                  <span className="text-[10px] text-muted-foreground">comisión por venta</span>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    "Fácil de explicar al cliente",
+                    "Alta demanda en el mercado",
+                    "Material de venta incluido",
+                    "Soporte de la empresa",
+                  ].map((point, idx) => (
+                    <div key={idx} className="flex items-start gap-1.5">
+                      <Check className="w-3 h-3 text-primary mt-0.5 flex-shrink-0" />
+                      <span className="text-[10px] text-muted-foreground leading-tight">{point}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="flex items-center gap-2 pt-1">
+                  <span className="text-[10px] text-muted-foreground">
+                    Precio cliente: {formatCOP(featuredService.priceCOP)} · {featuredService.type === 'suscripción' ? 'Recurrente' : 'Pago único'} · {featuredService.vendorCommissionPct}% comisión
+                  </span>
                 </div>
               </div>
             </Link>
@@ -369,7 +392,7 @@ export default function VendorDashboard() {
           </div>
         </motion.div>
 
-        {/* Discover — minimal */}
+        {/* Discover — greyed-out gig cards */}
         {otherCompanies.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 8 }}
@@ -377,29 +400,71 @@ export default function VendorDashboard() {
             transition={{ delay: 0.4 }}
           >
             <p className="text-sm font-medium text-foreground mb-4">Descubre más empresas</p>
-            <div className="space-y-2">
-              {otherCompanies.map(company => {
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+              {otherCompanies.map((company, i) => {
                 const companyServices = allServices.filter(s => s.companyId === company.id && s.status === 'activo');
                 const pc = planConfig[company.plan];
+                const cover = industryCover[company.industry];
+
                 return (
-                  <div
+                  <motion.div
                     key={company.id}
-                    className="flex items-center gap-3 px-4 py-3 rounded-xl border border-border bg-card hover:border-primary/20 transition-all"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.42 + 0.04 * i }}
                   >
-                    <div
-                      className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0"
-                      style={{ backgroundColor: company.primaryColor || 'hsl(var(--primary))' }}
+                    <Link
+                      to={`/vendor/company/${company.id}`}
+                      className="block rounded-2xl border border-border bg-card overflow-hidden group hover:shadow-md transition-all duration-300 grayscale hover:grayscale-0"
                     >
-                      <span className="text-white font-semibold text-sm">{company.name[0]}</span>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-foreground truncate">{company.name}</p>
-                      <p className="text-[10px] text-muted-foreground">{company.industry} · {companyServices.length} servicios</p>
-                    </div>
-                    <button className="text-[10px] font-medium text-primary hover:underline flex-shrink-0">
-                      Unirte
-                    </button>
-                  </div>
+                      <div className="relative h-28 sm:h-32 overflow-hidden">
+                        <img 
+                          src={cover} 
+                          alt={company.industry} 
+                          className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-700 opacity-60 group-hover:opacity-100"
+                          loading="lazy"
+                          width={800}
+                          height={512}
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+                        
+                        {/* Lock overlay */}
+                        <div className="absolute inset-0 flex items-center justify-center opacity-100 group-hover:opacity-0 transition-opacity duration-300">
+                          <span className="inline-flex items-center gap-1.5 text-[10px] font-medium px-3 py-1.5 rounded-full bg-black/50 text-white/80 backdrop-blur-sm border border-white/10">
+                            <Lock className="w-3 h-3" />
+                            Unirte para acceder
+                          </span>
+                        </div>
+
+                        <div className="absolute bottom-3 left-3 right-3">
+                          <div className="flex items-center gap-2">
+                            <div
+                              className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 border border-white/20"
+                              style={{ backgroundColor: company.primaryColor || 'hsl(var(--primary))' }}
+                            >
+                              <span className="text-white font-semibold text-sm">{company.name[0]}</span>
+                            </div>
+                            <div className="min-w-0">
+                              <h3 className="text-white font-semibold text-sm truncate">{company.name}</h3>
+                              <p className="text-white/50 text-[10px]">{company.industry}</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="px-4 py-3 flex items-center justify-between">
+                        <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
+                          <span>{companyServices.length} servicios</span>
+                          <Badge variant="outline" className="text-[8px] px-1.5 py-0 gap-0.5 font-medium">
+                            <pc.icon className="w-2.5 h-2.5" />
+                            {pc.label}
+                          </Badge>
+                        </div>
+                        <span className="text-[10px] font-medium text-primary group-hover:underline">
+                          Unirte →
+                        </span>
+                      </div>
+                    </Link>
+                  </motion.div>
                 );
               })}
             </div>
