@@ -370,6 +370,11 @@ export default function TransactionCard({
                     Devolución: {refundStatus}
                   </Badge>
                 )}
+                {onViewReceipt && (
+                  <Button variant="outline" size="sm" className="flex-1 h-8 text-xs rounded-xl" onClick={onViewReceipt}>
+                    <FileText className="w-3 h-3 mr-1.5" /> Ver comprobante
+                  </Button>
+                )}
               </div>
             </div>
           </motion.div>
