@@ -347,6 +347,29 @@ export const CURRENT_VENDOR_ID = 'vendor-001';
 export const CURRENT_COMPANY_ID = 'company-001';
 
 // =============================================================================
+// VENDOR ↔ COMPANY LINKS (multi-empresa)
+// =============================================================================
+
+export interface VendorCompanyLink {
+  vendorId: string;
+  companyId: string;
+  joinedAt: string;
+  status: 'active' | 'invited' | 'paused';
+}
+
+export const vendorCompanyLinks: VendorCompanyLink[] = [
+  // vendor-001 linked to 3 companies
+  { vendorId: 'vendor-001', companyId: 'company-001', joinedAt: '2024-06-01', status: 'active' },
+  { vendorId: 'vendor-001', companyId: 'company-002', joinedAt: '2024-08-15', status: 'active' },
+  { vendorId: 'vendor-001', companyId: 'company-005', joinedAt: '2024-10-01', status: 'active' },
+  // other vendors
+  { vendorId: 'vendor-002', companyId: 'company-001', joinedAt: '2024-07-01', status: 'active' },
+  { vendorId: 'vendor-003', companyId: 'company-003', joinedAt: '2024-08-01', status: 'active' },
+  { vendorId: 'vendor-004', companyId: 'company-004', joinedAt: '2024-09-01', status: 'active' },
+  { vendorId: 'vendor-005', companyId: 'company-005', joinedAt: '2024-10-01', status: 'active' },
+];
+
+// =============================================================================
 // DEMO DATA - EMPRESAS DE IA / SAAS
 // =============================================================================
 
