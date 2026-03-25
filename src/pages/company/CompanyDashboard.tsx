@@ -150,7 +150,7 @@ export default function CompanyDashboard() {
               const service = services.find(s => s.id === sale.serviceId);
               const sc = sale.status === 'HELD' 
                 ? { cls: "text-amber-600 bg-amber-500/10", label: "Retenida" }
-                : sale.status === 'RELEASED' 
+                : sale.status === 'COMPLETED' 
                   ? { cls: "text-emerald-600 bg-emerald-500/10", label: "Liberada" }
                   : { cls: "text-red-600 bg-red-500/10", label: "Devuelta" };
               return (

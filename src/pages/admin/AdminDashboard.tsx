@@ -24,7 +24,7 @@ export default function AdminDashboard() {
   const activeServices = services.filter(s => s.status === 'activo').length;
   
   const heldAmount = sales.filter(s => s.status === 'HELD').reduce((a, s) => a + (s.amountCOP || 0), 0);
-  const releasedAmount = sales.filter(s => s.status === 'RELEASED').reduce((a, s) => a + (s.amountCOP || 0), 0);
+  const releasedAmount = sales.filter(s => s.status === 'COMPLETED').reduce((a, s) => a + (s.amountCOP || 0), 0);
   const refundedCount = sales.filter(s => s.status === 'REFUNDED').length;
   
   const failedPayments = vendorPayments.filter(p => p.status === 'falló').length +
@@ -46,7 +46,7 @@ export default function AdminDashboard() {
   const getStatusConfig = (status: string) => {
     const map: Record<string, { cls: string; label: string }> = {
       'HELD': { cls: "text-amber-600 bg-amber-50", label: "Retenida" },
-      'RELEASED': { cls: "text-emerald-600 bg-emerald-50", label: "Liberada" },
+      'COMPLETED': { cls: "text-emerald-600 bg-emerald-50", label: "Liberada" },
       'REFUNDED': { cls: "text-red-600 bg-red-50", label: "Devuelta" },
     };
     return map[status] || { cls: "text-muted-foreground bg-muted", label: status };

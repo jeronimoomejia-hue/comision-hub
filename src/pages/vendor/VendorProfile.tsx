@@ -60,7 +60,7 @@ export default function VendorProfile() {
       const date = new Date(c.createdAt);
       return date.getMonth() === thisMonth.getMonth() && 
              date.getFullYear() === thisMonth.getFullYear() &&
-             c.status === 'RELEASED';
+             c.status === 'COMPLETED';
     })
     .reduce((sum, c) => sum + c.amountCOP, 0);
 

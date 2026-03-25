@@ -27,7 +27,7 @@ export default function AdminVendors() {
     return {
       totalSales: vs.length,
       totalGMV: vs.reduce((a, s) => a + (s.amountCOP || 0), 0),
-      released: vc.filter(c => c.status === 'RELEASED').reduce((a, c) => a + c.amountCOP, 0),
+      released: vc.filter(c => c.status === 'COMPLETED').reduce((a, c) => a + c.amountCOP, 0),
       held: vc.filter(c => c.status === 'HELD').reduce((a, c) => a + c.amountCOP, 0),
     };
   };

@@ -66,7 +66,7 @@ export default function ServiceEditModal({ service, sales, onClose, onSave }: Se
     const salesLastMonth = serviceSales.filter(s => s.createdAt.startsWith(lastMonth));
     const gmvThisMonth = salesThisMonth.reduce((sum, s) => sum + (s.amountCOP || s.grossAmount), 0);
     const heldSales = serviceSales.filter(s => s.status === 'HELD');
-    const releasedSales = serviceSales.filter(s => s.status === 'RELEASED');
+    const releasedSales = serviceSales.filter(s => s.status === 'COMPLETED');
 
     const weeklyData: { week: string; ventas: number }[] = [];
     for (let i = 7; i >= 0; i--) {
@@ -487,8 +487,8 @@ export default function ServiceEditModal({ service, sales, onClose, onSave }: Se
                       </div>
                       <div className="text-right">
                         <p className="font-medium">{formatCOP(sale.amountCOP || sale.grossAmount)}</p>
-                        <Badge className={`text-[9px] ${sale.status === 'RELEASED' ? 'bg-green-500/10 text-green-600' : sale.status === 'HELD' ? 'bg-yellow-500/10 text-yellow-600' : 'bg-purple-500/10 text-purple-600'}`}>
-                          {sale.status === 'RELEASED' ? 'Liberada' : sale.status === 'HELD' ? 'Retenida' : 'Devuelta'}
+                        <Badge className={`text-[9px] ${sale.status === 'COMPLETED' ? 'bg-green-500/10 text-green-600' : sale.status === 'HELD' ? 'bg-yellow-500/10 text-yellow-600' : 'bg-purple-500/10 text-purple-600'}`}>
+                          {sale.status === 'COMPLETED' ? 'Liberada' : sale.status === 'HELD' ? 'Retenida' : 'Devuelta'}
                         </Badge>
                       </div>
                     </div>

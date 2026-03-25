@@ -10,13 +10,13 @@ export default function CompanySales() {
   const { sales, services, currentCompanyPlan } = useDemo();
   const company = companies.find(c => c.id === CURRENT_COMPANY_ID);
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeTab, setActiveTab] = useState<'all' | 'HELD' | 'RELEASED' | 'REFUNDED'>("all");
+  const [activeTab, setActiveTab] = useState<'all' | 'HELD' | 'COMPLETED' | 'REFUNDED'>("all");
 
   const companySales = sales.filter(s => s.companyId === CURRENT_COMPANY_ID)
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
   const heldCount = companySales.filter(s => s.status === 'HELD').length;
-  const releasedCount = companySales.filter(s => s.status === 'RELEASED').length;
+  const releasedCount = companySales.filter(s => s.status === 'COMPLETED').length;
   const refundedCount = companySales.filter(s => s.status === 'REFUNDED').length;
   const totalGMV = companySales.reduce((s, sale) => s + (sale.amountCOP || sale.grossAmount), 0);
   const totalNet = companySales
@@ -37,7 +37,7 @@ export default function CompanySales() {
   const statusTabs = [
     { key: 'all' as const, label: 'Todas', count: companySales.length },
     { key: 'HELD' as const, label: 'Retenidas', count: heldCount },
-    { key: 'RELEASED' as const, label: 'Liberadas', count: releasedCount },
+    { key: 'COMPLETED' as const, label: 'Liberadas', count: releasedCount },
     { key: 'REFUNDED' as const, label: 'Devueltas', count: refundedCount },
   ];
 

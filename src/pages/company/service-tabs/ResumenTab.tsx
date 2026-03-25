@@ -51,7 +51,7 @@ export default function ResumenTab({ service, sales, activeSubscriptions, vendor
     const salesThisMonth = sales.filter((s: any) => s.createdAt.startsWith(thisMonth));
     const gmv = salesThisMonth.reduce((a: number, s: any) => a + (s.amountCOP || s.grossAmount), 0);
     const held = sales.filter((s: any) => s.status === 'HELD').length;
-    const released = sales.filter((s: any) => s.status === 'RELEASED').length;
+    const released = sales.filter((s: any) => s.status === 'COMPLETED').length;
     const weeklyData: { week: string; ventas: number }[] = [];
     for (let i = 7; i >= 0; i--) {
       const ws = new Date(now); ws.setDate(ws.getDate() - i * 7);

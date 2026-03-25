@@ -3,30 +3,33 @@ import VendorTabLayout from "@/components/layout/VendorTabLayout";
 import TransactionCard from "@/components/TransactionCard";
 import { 
   DollarSign, CheckCircle2, Clock, Search,
-  RotateCcw, ShieldAlert, CreditCard, TrendingUp, Filter
+  ShieldAlert, CreditCard, TrendingUp, Send, XCircle, RotateCcw, Package
 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
-import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from "@/components/ui/select";
 import { useDemo } from "@/contexts/DemoContext";
 import { vendors, CURRENT_VENDOR_ID, formatCOP, formatDate, services as allServices, companies } from "@/data/mockData";
 import type { Sale } from "@/data/mockData";
 import { toast } from "sonner";
 
+const STATUS_TABS = [
+  { key: 'all' as const,       label: 'Todas',           icon: Package },
+  { key: 'PENDING' as const,   label: 'Pendientes',      icon: Send },
+  { key: 'HELD' as const,      label: 'En retención',    icon: Clock },
+  { key: 'COMPLETED' as const, label: 'Completadas',     icon: CheckCircle2 },
+  { key: 'REFUNDED' as const,  label: 'Devueltas',       icon: RotateCcw },
+  { key: 'CANCELLED' as const, label: 'Canceladas',      icon: XCircle },
+];
+
 export default function VendorPayments() {
-  const { sales, commissions, vendorPayments, refundRequests, addRefundRequest, currentVendorId } = useDemo();
-  const vendor = vendors.find(v => v.id === CURRENT_VENDOR_ID);
+  const { sales, commissions, refundRequests, addRefundRequest, currentVendorId } = useDemo();
   
   const [refundSale, setRefundSale] = useState<Sale | null>(null);
   const [refundReason, setRefundReason] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [activeTab, setActiveTab] = useState<'all' | 'HELD' | 'RELEASED' | 'REFUNDED'>("all");
+  const [activeTab, setActiveTab] = useState<'all' | 'PENDING' | 'HELD' | 'COMPLETED' | 'REFUNDED' | 'CANCELLED'>("all");
 
   const mySales = useMemo(() => 
     sales.filter(s => s.vendorId === currentVendorId)
@@ -34,20 +37,22 @@ export default function VendorPayments() {
     [sales, currentVendorId]
   );
 
-  const vendorCommissions = commissions.filter(c => c.vendorId === currentVendorId);
-  const thisMonth = new Date().toISOString().slice(0, 7);
-  const releasedThisMonth = vendorCommissions.filter(c => c.status === 'RELEASED' && c.createdAt.startsWith(thisMonth));
-  const totalReleasedThisMonth = releasedThisMonth.reduce((acc, c) => acc + c.amountCOP, 0);
-  
+  // KPIs
+  const pendingSales = mySales.filter(s => s.status === 'PENDING');
   const heldSales = mySales.filter(s => s.status === 'HELD');
-  const releasedSales = mySales.filter(s => s.status === 'RELEASED');
+  const completedSales = mySales.filter(s => s.status === 'COMPLETED');
   const refundedSales = mySales.filter(s => s.status === 'REFUNDED');
-  const totalHeld = heldSales.reduce((acc, s) => acc + s.sellerCommissionAmount, 0);
-  const totalReleased = releasedSales.reduce((acc, s) => acc + s.sellerCommissionAmount, 0);
+  const cancelledSales = mySales.filter(s => s.status === 'CANCELLED');
 
+  const totalCompleted = completedSales.reduce((acc, s) => acc + s.sellerCommissionAmount, 0);
+  const totalHeld = heldSales.reduce((acc, s) => acc + s.sellerCommissionAmount, 0);
+  const totalPending = pendingSales.reduce((acc, s) => acc + s.sellerCommissionAmount, 0);
+
+  // Filtering
   const filteredSales = mySales.filter(sale => {
     const service = allServices.find(s => s.id === sale.serviceId);
-    const matchesSearch = sale.clientName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    const matchesSearch = !searchQuery || 
+      sale.clientName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (service?.name || '').toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = activeTab === "all" || sale.status === activeTab;
     return matchesSearch && matchesStatus;
@@ -56,7 +61,7 @@ export default function VendorPayments() {
   const canRequestRefund = (sale: Sale) => {
     if (sale.status !== 'HELD') return false;
     const service = allServices.find(s => s.id === sale.serviceId);
-    if (!service) return false;
+    if (!service || service.refundPolicy.refundWindowDays === 0) return false;
     const existingRefund = refundRequests.find(r => r.saleId === sale.id);
     if (existingRefund) return false;
     const saleDate = new Date(sale.createdAt);
@@ -101,109 +106,114 @@ export default function VendorPayments() {
 
   const handleSupport = (sale: Sale) => {
     const service = allServices.find(s => s.id === sale.serviceId);
-    const message = `Hola, necesito ayuda con una venta:\n\n` +
-      `Producto: ${service?.name || 'N/A'}\n` +
-      `Cliente: ${sale.clientName}\n` +
-      `Monto: ${formatCOP(sale.grossAmount)}\n` +
-      `Fecha: ${formatDate(sale.createdAt)}\n` +
-      `Estado: ${sale.status}`;
+    const message = `Hola, necesito ayuda con un pedido:\n\nProducto: ${service?.name || 'N/A'}\nCliente: ${sale.clientName}\nMonto: ${formatCOP(sale.grossAmount)}\nFecha: ${formatDate(sale.createdAt)}\nEstado: ${sale.status}`;
     window.open(`https://wa.me/573001234567?text=${encodeURIComponent(message)}`, '_blank');
   };
 
-  const statusTabs = [
-    { key: 'all' as const, label: 'Todas', count: mySales.length },
-    { key: 'HELD' as const, label: 'Retenidas', count: heldSales.length },
-    { key: 'RELEASED' as const, label: 'Liberadas', count: releasedSales.length },
-    { key: 'REFUNDED' as const, label: 'Devueltas', count: refundedSales.length },
-  ];
+  const activeTabData = STATUS_TABS.find(t => t.key === activeTab);
 
   return (
     <VendorTabLayout>
-      <div className="space-y-6">
+      <div className="space-y-5">
         {/* Header */}
         <div>
-          <h1 className="text-xl font-bold text-foreground">Pagos</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">Tus ventas, retenciones y comisiones</p>
+          <h1 className="text-xl font-bold text-foreground">Mis pedidos</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">Historial y estado de tus ventas</p>
         </div>
 
-        {/* KPIs */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          {/* Main KPI */}
-          <div className="sm:col-span-1 rounded-xl border border-border bg-card p-5">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-xs text-muted-foreground uppercase tracking-wide">Liberado este mes</span>
-              <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                <DollarSign className="w-4 h-4 text-primary" />
+        {/* KPI Cards */}
+        <div className="grid grid-cols-3 gap-3">
+          <div className="rounded-2xl border border-border bg-card p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-7 h-7 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
               </div>
             </div>
-            <p className="text-2xl font-bold text-foreground">{formatCOP(totalReleasedThisMonth)}</p>
-            <div className="flex items-center gap-1.5 mt-2">
-              <TrendingUp className="w-3 h-3 text-primary" />
-              <span className="text-[11px] text-primary font-medium">{releasedThisMonth.length} transacciones</span>
-            </div>
+            <p className="text-lg font-bold text-foreground">{formatCOP(totalCompleted)}</p>
+            <p className="text-[10px] text-muted-foreground mt-0.5">Cobrado · {completedSales.length}</p>
           </div>
 
-          {/* Held */}
-          <div className="rounded-xl border border-border bg-card p-5">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-xs text-muted-foreground uppercase tracking-wide">En retención</span>
-              <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center">
-                <Clock className="w-4 h-4 text-amber-500" />
+          <div className="rounded-2xl border border-border bg-card p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-7 h-7 rounded-lg bg-amber-50 dark:bg-amber-500/10 flex items-center justify-center">
+                <Clock className="w-3.5 h-3.5 text-amber-600" />
               </div>
             </div>
-            <p className="text-2xl font-bold text-foreground">{formatCOP(totalHeld)}</p>
-            <span className="text-[11px] text-muted-foreground">{heldSales.length} ventas pendientes</span>
+            <p className="text-lg font-bold text-foreground">{formatCOP(totalHeld)}</p>
+            <p className="text-[10px] text-muted-foreground mt-0.5">Retenido · {heldSales.length}</p>
           </div>
 
-          {/* Released total */}
-          <div className="rounded-xl border border-border bg-card p-5">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-xs text-muted-foreground uppercase tracking-wide">Total cobrado</span>
-              <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center">
-                <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+          <div className="rounded-2xl border border-border bg-card p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-7 h-7 rounded-lg bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center">
+                <Send className="w-3.5 h-3.5 text-blue-600" />
               </div>
             </div>
-            <p className="text-2xl font-bold text-foreground">{formatCOP(totalReleased)}</p>
-            <span className="text-[11px] text-muted-foreground">{releasedSales.length} ventas cobradas</span>
+            <p className="text-lg font-bold text-foreground">{formatCOP(totalPending)}</p>
+            <p className="text-[10px] text-muted-foreground mt-0.5">Pendiente · {pendingSales.length}</p>
           </div>
         </div>
 
-        {/* How it works */}
-        <div className="flex items-start gap-3 p-3.5 rounded-xl bg-muted/30 border border-border">
-          <CreditCard className="w-4 h-4 text-muted-foreground mt-0.5 flex-shrink-0" />
-          <p className="text-xs text-muted-foreground leading-relaxed">
-            Cada venta pasa por un <strong className="text-foreground">periodo de retención</strong> definido por la empresa (7, 14 o 30 días según el producto). Al liberarse, tu comisión se transfiere automáticamente.
-          </p>
+        {/* Status guide */}
+        <div className="rounded-2xl border border-border bg-muted/20 p-4">
+          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-3">¿Cómo funciona?</p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+            {[
+              { icon: Send, label: 'Pendiente', desc: 'Link enviado, esperando pago', color: 'text-blue-600' },
+              { icon: Clock, label: 'Retención', desc: 'Pagado, dentro de ventana', color: 'text-amber-600' },
+              { icon: CheckCircle2, label: 'Completada', desc: 'Dinero liberado a tu cuenta', color: 'text-emerald-600' },
+              { icon: RotateCcw, label: 'Devuelta', desc: 'Reembolso al cliente', color: 'text-red-500' },
+              { icon: XCircle, label: 'Cancelada', desc: 'Link expirado o rechazado', color: 'text-gray-500' },
+            ].map(item => (
+              <div key={item.label} className="flex items-start gap-2 p-2 rounded-xl bg-card border border-border/50">
+                <item.icon className={`w-3.5 h-3.5 ${item.color} mt-0.5 flex-shrink-0`} />
+                <div>
+                  <p className="text-[11px] font-medium text-foreground">{item.label}</p>
+                  <p className="text-[9px] text-muted-foreground leading-tight mt-0.5">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Status tabs */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
-          {statusTabs.map(tab => (
-            <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
-              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-medium transition-colors whitespace-nowrap ${
-                activeTab === tab.key
-                  ? 'bg-foreground text-background'
-                  : 'bg-muted/50 text-muted-foreground hover:bg-muted'
-              }`}
-            >
-              {tab.label}
-              <span className={`text-[10px] ${activeTab === tab.key ? 'text-background/70' : 'text-muted-foreground/60'}`}>
-                {tab.count}
-              </span>
-            </button>
-          ))}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 -mx-1 px-1">
+          {STATUS_TABS.map(tab => {
+            const count = tab.key === 'all' ? mySales.length 
+              : tab.key === 'PENDING' ? pendingSales.length 
+              : tab.key === 'HELD' ? heldSales.length
+              : tab.key === 'COMPLETED' ? completedSales.length
+              : tab.key === 'REFUNDED' ? refundedSales.length
+              : cancelledSales.length;
+            if (tab.key !== 'all' && count === 0) return null;
+            return (
+              <button
+                key={tab.key}
+                onClick={() => setActiveTab(tab.key)}
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-medium transition-all whitespace-nowrap ${
+                  activeTab === tab.key
+                    ? 'bg-foreground text-background shadow-sm'
+                    : 'bg-muted/40 text-muted-foreground hover:bg-muted'
+                }`}
+              >
+                <tab.icon className="w-3 h-3" />
+                {tab.label}
+                <span className={`text-[10px] ${activeTab === tab.key ? 'text-background/60' : 'text-muted-foreground/50'}`}>
+                  {count}
+                </span>
+              </button>
+            );
+          })}
         </div>
 
         {/* Search */}
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
           <Input
             placeholder="Buscar por cliente o producto..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9 h-9 bg-card border-border rounded-xl text-xs"
+            className="pl-10 h-10 bg-card border-border rounded-2xl text-xs"
           />
         </div>
 
@@ -249,9 +259,11 @@ export default function VendorPayments() {
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center py-16 text-center">
-            <DollarSign className="w-10 h-10 text-muted-foreground/20 mb-3" />
-            <p className="text-sm font-medium text-foreground mb-1">Sin resultados</p>
-            <p className="text-xs text-muted-foreground">No se encontraron ventas con esos filtros</p>
+            {activeTabData && <activeTabData.icon className="w-10 h-10 text-muted-foreground/15 mb-3" />}
+            <p className="text-sm font-medium text-foreground mb-1">Sin pedidos</p>
+            <p className="text-xs text-muted-foreground">
+              {searchQuery ? 'No se encontraron pedidos con esa búsqueda' : 'No tienes pedidos en esta categoría'}
+            </p>
           </div>
         )}
       </div>
@@ -300,16 +312,17 @@ export default function VendorPayments() {
                   value={refundReason}
                   onChange={(e) => setRefundReason(e.target.value)}
                   rows={3}
-                  className="text-sm"
+                  className="text-sm rounded-xl"
                 />
               </div>
 
               <DialogFooter>
-                <Button variant="outline" size="sm" onClick={() => { setRefundSale(null); setRefundReason(""); }}>
+                <Button variant="outline" size="sm" className="rounded-xl" onClick={() => { setRefundSale(null); setRefundReason(""); }}>
                   Cancelar
                 </Button>
                 <Button 
                   size="sm"
+                  className="rounded-xl"
                   onClick={handleRefundRequest}
                   disabled={!refundReason.trim()}
                   variant="destructive"

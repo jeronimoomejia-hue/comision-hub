@@ -141,7 +141,7 @@ export default function VendorServiceDetail() {
   const getStatusConfig = (status: string) => {
     const map: Record<string, { cls: string; label: string }> = {
       'HELD': { cls: "bg-amber-50 text-amber-600", label: "Retenida" },
-      'RELEASED': { cls: "bg-emerald-50 text-emerald-600", label: "Liberada" },
+      'COMPLETED': { cls: "bg-emerald-50 text-emerald-600", label: "Liberada" },
       'REFUNDED': { cls: "bg-red-50 text-red-600", label: "Devuelta" },
     };
     return map[status] || { cls: "bg-muted text-muted-foreground", label: status };

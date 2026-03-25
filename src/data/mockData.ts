@@ -118,7 +118,7 @@ export interface ServiceRequest {
 }
 
 // VENTA/TRANSACCIÓN - Modelo Mercado Pago con SPLIT y RETENCIÓN
-export type TransactionStatus = 'HELD' | 'RELEASED' | 'REFUNDED';
+export type TransactionStatus = 'PENDING' | 'HELD' | 'COMPLETED' | 'REFUNDED' | 'CANCELLED';
 
 export interface Sale {
   id: string;
@@ -182,7 +182,7 @@ export interface Commission {
   saleId: string;
   vendorId: string;
   amountCOP: number;
-  status: 'HELD' | 'RELEASED' | 'REFUNDED';
+  status: 'HELD' | 'COMPLETED' | 'REFUNDED' | 'CANCELLED';
   paymentDate?: string;
   createdAt: string;
 }
@@ -324,18 +324,22 @@ export function formatCurrency(amount: number, currency: string = 'COP'): string
 // Status labels for display
 export function getStatusLabel(status: TransactionStatus): string {
   const labels: Record<TransactionStatus, string> = {
+    'PENDING': 'Pendiente de pago',
     'HELD': 'En retención',
-    'RELEASED': 'Liberado',
-    'REFUNDED': 'Devuelto'
+    'COMPLETED': 'Completada',
+    'REFUNDED': 'Devuelta',
+    'CANCELLED': 'Cancelada'
   };
   return labels[status];
 }
 
 export function getStatusColor(status: TransactionStatus): string {
   const colors: Record<TransactionStatus, string> = {
+    'PENDING': 'bg-blue-500/10 text-blue-600',
     'HELD': 'bg-yellow-500/10 text-yellow-600',
-    'RELEASED': 'bg-green-500/10 text-green-600',
-    'REFUNDED': 'bg-red-500/10 text-red-600'
+    'COMPLETED': 'bg-green-500/10 text-green-600',
+    'REFUNDED': 'bg-red-500/10 text-red-600',
+    'CANCELLED': 'bg-gray-500/10 text-gray-500'
   };
   return colors[status];
 }
@@ -636,7 +640,7 @@ function generateSalesForVendor(vendorId: string, companyId: string, count: numb
   const held = Math.floor(count * 0.3);
   const refunded = count - released - held;
   const statusDistribution: TransactionStatus[] = [
-    ...Array(released).fill('RELEASED'),
+    ...Array(released).fill('COMPLETED'),
     ...Array(held).fill('HELD'),
     ...Array(refunded).fill('REFUNDED')
   ];
@@ -670,7 +674,7 @@ function generateSalesForVendor(vendorId: string, companyId: string, count: numb
       providerNetAmount,
       holdStartAt: saleDate.toISOString().split('T')[0],
       holdEndAt: holdEndDate.toISOString().split('T')[0],
-      releasedAt: status === 'RELEASED' ? holdEndDate.toISOString().split('T')[0] : undefined,
+      releasedAt: status === 'COMPLETED' ? holdEndDate.toISOString().split('T')[0] : undefined,
       refundedAt: status === 'REFUNDED' ? saleDate.toISOString().split('T')[0] : undefined,
       status,
       paymentProvider: 'MercadoPago',
@@ -690,13 +694,16 @@ function generateSales(): Sale[] {
   const activeServices = services.filter(s => s.status === 'activo');
 
   // Vendor-001 — a few recent sales
-  const v1Clients = ['Laura Méndez', 'Carlos Ruiz', 'Valentina Ospina', 'Santiago Torres', 'Mariana López'];
+  const v1Clients = ['Laura Méndez', 'Carlos Ruiz', 'Valentina Ospina', 'Santiago Torres', 'Mariana López', 'Andrés Gómez', 'Camila Restrepo', 'Felipe Vargas'];
   const v1Sales: { serviceId: string; companyId: string; client: string; daysAgo: number; status: TransactionStatus }[] = [
+    { serviceId: 'service-026', companyId: 'company-009', client: v1Clients[5], daysAgo: 0, status: 'PENDING' },
     { serviceId: 'service-025', companyId: 'company-009', client: v1Clients[0], daysAgo: 2, status: 'HELD' },
     { serviceId: 'service-025', companyId: 'company-009', client: v1Clients[1], daysAgo: 5, status: 'HELD' },
-    { serviceId: 'service-033', companyId: 'company-012', client: v1Clients[2], daysAgo: 12, status: 'RELEASED' },
-    { serviceId: 'service-028', companyId: 'company-010', client: v1Clients[3], daysAgo: 18, status: 'RELEASED' },
-    { serviceId: 'service-034', companyId: 'company-012', client: v1Clients[4], daysAgo: 22, status: 'RELEASED' },
+    { serviceId: 'service-033', companyId: 'company-012', client: v1Clients[2], daysAgo: 12, status: 'COMPLETED' },
+    { serviceId: 'service-028', companyId: 'company-010', client: v1Clients[3], daysAgo: 18, status: 'COMPLETED' },
+    { serviceId: 'service-034', companyId: 'company-012', client: v1Clients[4], daysAgo: 22, status: 'COMPLETED' },
+    { serviceId: 'service-025', companyId: 'company-009', client: v1Clients[6], daysAgo: 25, status: 'CANCELLED' },
+    { serviceId: 'service-029', companyId: 'company-010', client: v1Clients[7], daysAgo: 30, status: 'REFUNDED' },
   ];
   v1Sales.forEach((vs, idx) => {
     const service = services.find(s => s.id === vs.serviceId)!;
@@ -720,7 +727,7 @@ function generateSales(): Sale[] {
       providerNetAmount: gross - sellerComm - mFee,
       holdStartAt: saleDate.toISOString().split('T')[0],
       holdEndAt: holdEnd.toISOString().split('T')[0],
-      releasedAt: vs.status === 'RELEASED' ? holdEnd.toISOString().split('T')[0] : undefined,
+      releasedAt: vs.status === 'COMPLETED' ? holdEnd.toISOString().split('T')[0] : undefined,
       status: vs.status,
       paymentProvider: 'MercadoPago',
       mpPaymentId: `MP-V1-${idx + 1}`,
@@ -739,7 +746,7 @@ function generateSales(): Sale[] {
   
   // Generar 70 ventas adicionales para otros vendedores
   const otherStatusDistribution: TransactionStatus[] = [
-    ...Array(45).fill('RELEASED'),
+    ...Array(45).fill('COMPLETED'),
     ...Array(20).fill('HELD'),
     ...Array(5).fill('REFUNDED')
   ];
@@ -775,7 +782,7 @@ function generateSales(): Sale[] {
       providerNetAmount,
       holdStartAt: saleDate.toISOString().split('T')[0],
       holdEndAt: holdEndDate.toISOString().split('T')[0],
-      releasedAt: status === 'RELEASED' ? holdEndDate.toISOString().split('T')[0] : undefined,
+      releasedAt: status === 'COMPLETED' ? holdEndDate.toISOString().split('T')[0] : undefined,
       refundedAt: status === 'REFUNDED' ? saleDate.toISOString().split('T')[0] : undefined,
       status,
       paymentProvider: 'MercadoPago',
@@ -797,13 +804,15 @@ export const sales: Sale[] = generateSales();
 // =============================================================================
 
 function generateCommissions(): Commission[] {
-  return sales.map((sale, i) => ({
+  return sales
+    .filter(sale => sale.status !== 'PENDING' && sale.status !== 'CANCELLED')
+    .map((sale, i) => ({
     id: `comm-${String(i + 1).padStart(3, '0')}`,
     saleId: sale.id,
     vendorId: sale.vendorId,
     amountCOP: sale.sellerCommissionAmount,
-    status: sale.status, // HELD, RELEASED, or REFUNDED
-    paymentDate: sale.status === 'RELEASED' ? sale.releasedAt : undefined,
+    status: sale.status as Commission['status'],
+    paymentDate: sale.status === 'COMPLETED' ? sale.releasedAt : undefined,
     createdAt: sale.createdAt
   }));
 }
@@ -818,7 +827,7 @@ function generateVendorPayments(): VendorPayment[] {
   const payments: VendorPayment[] = [];
   
   // Cada venta RELEASED genera un pago al vendedor (su comisión)
-  const releasedSales = sales.filter(s => s.status === 'RELEASED');
+  const releasedSales = sales.filter(s => s.status === 'COMPLETED');
   
   releasedSales.forEach((sale, i) => {
     const service = services.find(s => s.id === sale.serviceId);
@@ -896,7 +905,7 @@ function generateCompanyPayments(): CompanyPayment[] {
   const payments: CompanyPayment[] = [];
   
   // Cada venta RELEASED genera un pago a la empresa (su neto)
-  const releasedSales = sales.filter(s => s.status === 'RELEASED');
+  const releasedSales = sales.filter(s => s.status === 'COMPLETED');
   
   releasedSales.forEach((sale, i) => {
     const scheduledDate = new Date(sale.releasedAt || sale.holdEndAt);
@@ -1124,13 +1133,13 @@ export function calculateVendorKPIs(vendorId: string) {
   
   return {
     heldCount: vendorSales.filter(s => s.status === 'HELD').length,
-    releasedCount: vendorSales.filter(s => s.status === 'RELEASED').length,
+    releasedCount: vendorSales.filter(s => s.status === 'COMPLETED').length,
     refundedCount: vendorSales.filter(s => s.status === 'REFUNDED').length,
     heldGross: vendorSales.filter(s => s.status === 'HELD').reduce((sum, s) => sum + s.grossAmount, 0),
-    releasedGross: vendorSales.filter(s => s.status === 'RELEASED').reduce((sum, s) => sum + s.grossAmount, 0),
+    releasedGross: vendorSales.filter(s => s.status === 'COMPLETED').reduce((sum, s) => sum + s.grossAmount, 0),
     refundedGross: vendorSales.filter(s => s.status === 'REFUNDED').reduce((sum, s) => sum + s.grossAmount, 0),
     commissionHeld: vendorSales.filter(s => s.status === 'HELD').reduce((sum, s) => sum + s.sellerCommissionAmount, 0),
-    commissionReleased: vendorSales.filter(s => s.status === 'RELEASED').reduce((sum, s) => sum + s.sellerCommissionAmount, 0),
+    commissionReleased: vendorSales.filter(s => s.status === 'COMPLETED').reduce((sum, s) => sum + s.sellerCommissionAmount, 0),
     commissionRefunded: vendorSales.filter(s => s.status === 'REFUNDED').reduce((sum, s) => sum + s.sellerCommissionAmount, 0),
     activeSubscriptions: vendorSales.filter(s => s.isSubscription && s.subscriptionActive && s.status !== 'REFUNDED').length
   };
@@ -1141,13 +1150,13 @@ export function calculateCompanyKPIs(companyId: string) {
   
   return {
     heldCount: companySales.filter(s => s.status === 'HELD').length,
-    releasedCount: companySales.filter(s => s.status === 'RELEASED').length,
+    releasedCount: companySales.filter(s => s.status === 'COMPLETED').length,
     refundedCount: companySales.filter(s => s.status === 'REFUNDED').length,
     heldGross: companySales.filter(s => s.status === 'HELD').reduce((sum, s) => sum + s.grossAmount, 0),
-    releasedGross: companySales.filter(s => s.status === 'RELEASED').reduce((sum, s) => sum + s.grossAmount, 0),
+    releasedGross: companySales.filter(s => s.status === 'COMPLETED').reduce((sum, s) => sum + s.grossAmount, 0),
     refundedGross: companySales.filter(s => s.status === 'REFUNDED').reduce((sum, s) => sum + s.grossAmount, 0),
     providerHeld: companySales.filter(s => s.status === 'HELD').reduce((sum, s) => sum + s.providerNetAmount, 0),
-    providerReleased: companySales.filter(s => s.status === 'RELEASED').reduce((sum, s) => sum + s.providerNetAmount, 0),
+    providerReleased: companySales.filter(s => s.status === 'COMPLETED').reduce((sum, s) => sum + s.providerNetAmount, 0),
     activeSubscriptions: companySales.filter(s => s.isSubscription && s.subscriptionActive && s.status !== 'REFUNDED').length
   };
 }
@@ -1156,10 +1165,10 @@ export function calculateAdminKPIs() {
   return {
     totalTransactions: sales.length,
     heldCount: sales.filter(s => s.status === 'HELD').length,
-    releasedCount: sales.filter(s => s.status === 'RELEASED').length,
+    releasedCount: sales.filter(s => s.status === 'COMPLETED').length,
     refundedCount: sales.filter(s => s.status === 'REFUNDED').length,
     feeHeld: sales.filter(s => s.status === 'HELD').reduce((sum, s) => sum + s.mensualistaFeeAmount, 0),
-    feeReleased: sales.filter(s => s.status === 'RELEASED').reduce((sum, s) => sum + s.mensualistaFeeAmount, 0),
+    feeReleased: sales.filter(s => s.status === 'COMPLETED').reduce((sum, s) => sum + s.mensualistaFeeAmount, 0),
     feeRefunded: sales.filter(s => s.status === 'REFUNDED').reduce((sum, s) => sum + s.mensualistaFeeAmount, 0),
     totalActiveSubscriptions: sales.filter(s => s.isSubscription && s.subscriptionActive && s.status !== 'REFUNDED').length
   };
