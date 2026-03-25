@@ -118,7 +118,7 @@ export interface ServiceRequest {
 }
 
 // VENTA/TRANSACCIÓN - Modelo Mercado Pago con SPLIT y RETENCIÓN
-export type TransactionStatus = 'HELD' | 'RELEASED' | 'REFUNDED';
+export type TransactionStatus = 'PENDING' | 'HELD' | 'COMPLETED' | 'REFUNDED' | 'CANCELLED';
 
 export interface Sale {
   id: string;
