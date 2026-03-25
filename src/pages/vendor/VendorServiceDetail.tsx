@@ -13,7 +13,8 @@ import {
   Shield, MessageSquare, ChevronRight, Star, Play, Info
 } from "lucide-react";
 import { useDemo } from "@/contexts/DemoContext";
-import { formatCOP, formatDate, CURRENT_VENDOR_ID } from "@/data/mockData";
+import { formatCOP, formatDate, CURRENT_VENDOR_ID, services as allServices } from "@/data/mockData";
+import TransactionCard from "@/components/TransactionCard";
 import { extendedServiceDetails } from "@/data/extendedServiceData";
 import {
   Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
