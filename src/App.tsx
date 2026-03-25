@@ -20,6 +20,7 @@ import VendorRefunds from "./pages/vendor/VendorRefunds";
 import VendorMaterials from "./pages/vendor/VendorMaterials";
 import VendorSupport from "./pages/vendor/VendorSupport";
 import VendorProfile from "./pages/vendor/VendorProfile";
+import VendorCompanyDetail from "./pages/vendor/VendorCompanyDetail";
 import CompanyDashboard from "./pages/company/CompanyDashboard";
 import CompanyServices from "./pages/company/CompanyServices";
 import CompanySales from "./pages/company/CompanySales";
@@ -59,6 +60,7 @@ const App = () => (
             {/* Vendor Routes */}
             <Route path="/vendor/home" element={<VendorHome />} />
             <Route path="/vendor" element={<VendorDashboard />} />
+            <Route path="/vendor/company/:companyId" element={<VendorCompanyDetail />} />
             <Route path="/vendor/services" element={<VendorServices />} />
             <Route path="/vendor/services/:serviceId" element={<VendorServiceDetail />} />
             <Route path="/vendor/trainings" element={<VendorTrainings />} />
