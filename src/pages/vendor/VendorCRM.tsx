@@ -140,6 +140,8 @@ export default function VendorCRM() {
         const gross = service.priceCOP;
         const comm = Math.round(gross * service.vendorCommissionPct / 100);
         const mFee = Math.round(gross * (service.mensualistaPct || 0) / 100);
+        const holdEnd = new Date();
+        holdEnd.setDate(holdEnd.getDate() + service.refundPolicy.refundWindowDays);
         addSale({
           serviceId: newService,
           companyId: service.companyId,
@@ -151,13 +153,12 @@ export default function VendorCRM() {
           mensualistaFeeAmount: mFee,
           providerNetAmount: gross - comm - mFee,
           holdStartAt: new Date().toISOString().split('T')[0],
-          holdEndAt: (() => { const d = new Date(); d.setDate(d.getDate() + service.refundPolicy.refundWindowDays); return d.toISOString().split('T')[0]; })(),
+          holdEndAt: holdEnd.toISOString().split('T')[0],
           status: service.refundPolicy.refundWindowDays === 0 ? 'COMPLETED' : 'HELD',
           paymentProvider: 'MercadoPago',
           mpPaymentId: `MP-QS-${Date.now()}`,
           isSubscription: service.type === 'suscripción',
           subscriptionActive: service.type === 'suscripción',
-          createdAt: new Date().toISOString().split('T')[0],
           amountCOP: gross,
         });
         toast.success(`¡Venta registrada! Comisión: ${formatCOP(comm)}`);
