@@ -133,11 +133,11 @@ export default function VendorCompanyDetail() {
           </div>
         </div>
 
-        {/* Pending trainings alert */}
-        {pendingTrainings > 0 && (
+        {/* In-progress trainings alert */}
+        {inProgressTrainings > 0 && (
           <Link to="/vendor/trainings" className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500/10 text-amber-600 text-xs font-medium border border-amber-500/20">
             <BookOpen className="w-4 h-4" />
-            {pendingTrainings} capacitación{pendingTrainings !== 1 ? 'es' : ''} pendiente{pendingTrainings !== 1 ? 's' : ''}
+            {inProgressTrainings} capacitación{inProgressTrainings !== 1 ? 'es' : ''} en curso
           </Link>
         )}
 
@@ -166,7 +166,7 @@ export default function VendorCompanyDetail() {
             setSearchQuery={setSearchQuery}
             filteredServices={filteredServices}
             topServiceIds={topServiceIds}
-            setSelectedServiceId={setSelectedServiceId}
+            onServiceClick={(serviceId: string) => navigate(`/vendor/company/${companyId}/service/${serviceId}`)}
             companyIndustry={company.industry}
           />
         )}
@@ -196,25 +196,18 @@ export default function VendorCompanyDetail() {
         )}
       </div>
 
-      {selectedServiceId && (
-        <ServiceDetailsModal
-          serviceId={selectedServiceId}
-          isOpen={!!selectedServiceId}
-          onClose={() => setSelectedServiceId(null)}
-        />
-      )}
     </VendorTabLayout>
   );
 }
 
 /* =========== Sub-components =========== */
 
-function ServiciosTab({ searchQuery, setSearchQuery, filteredServices, topServiceIds, setSelectedServiceId, companyIndustry }: {
+function ServiciosTab({ searchQuery, setSearchQuery, filteredServices, topServiceIds, onServiceClick, companyIndustry }: {
   searchQuery: string;
   setSearchQuery: (q: string) => void;
   filteredServices: Array<any>;
   topServiceIds: string[];
-  setSelectedServiceId: (id: string) => void;
+  onServiceClick: (id: string) => void;
   companyIndustry: string;
 }) {
   return (
@@ -240,7 +233,7 @@ function ServiciosTab({ searchQuery, setSearchQuery, filteredServices, topServic
             return (
               <div
                 key={service.id}
-                onClick={() => setSelectedServiceId(service.id)}
+                onClick={() => onServiceClick(service.id)}
                 className={`rounded-xl border border-border bg-card overflow-hidden cursor-pointer group hover:shadow-lg hover:border-primary/30 transition-all duration-300 ${
                   !service.isActive ? 'grayscale opacity-75' : ''
                 }`}
