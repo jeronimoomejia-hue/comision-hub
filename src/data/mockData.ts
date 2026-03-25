@@ -1149,14 +1149,14 @@ function generateSales(): Sale[] {
   
   for (let i = 0; i < 70; i++) {
     const status = otherStatusDistribution[i];
-    const daysAgo = status === 'HELD' ? Math.floor(Math.random() * 7) : Math.floor(Math.random() * 30) + 7;
+    const service = activeServices[Math.floor(Math.random() * activeServices.length)];
+    const daysAgo = status === 'HELD' ? Math.floor(Math.random() * service.refundPolicy.refundWindowDays) : Math.floor(Math.random() * 30) + service.refundPolicy.refundWindowDays;
     const saleDate = new Date(today);
     saleDate.setDate(saleDate.getDate() - daysAgo);
     
     const holdEndDate = new Date(saleDate);
-    holdEndDate.setDate(holdEndDate.getDate() + 7);
+    holdEndDate.setDate(holdEndDate.getDate() + service.refundPolicy.refundWindowDays);
     
-    const service = activeServices[Math.floor(Math.random() * activeServices.length)];
     const vendor = vendors[Math.floor(Math.random() * 20) + 1];
     const client = clientNames[Math.floor(Math.random() * clientNames.length)];
     
