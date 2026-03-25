@@ -33,6 +33,8 @@ export default function VentasTab({ service, serviceSales, commissions, refundRe
 
       <p className="text-xs text-muted-foreground">{filtered.length} venta{filtered.length !== 1 ? 's' : ''}</p>
 
+      <StatusGuide />
+
       {filtered.length > 0 ? (
         <div className="space-y-2">
           {filtered.map((sale: any) => {

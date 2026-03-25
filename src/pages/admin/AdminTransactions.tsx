@@ -52,6 +52,8 @@ export default function AdminTransactions() {
           <span className="text-[10px] text-muted-foreground ml-auto">{filtered.length} transacciones</span>
         </div>
 
+        <StatusGuide />
+
         <div className="space-y-2">
           {filtered.slice(0, 30).map(sale => {
             const service = getServiceById(sale.serviceId);

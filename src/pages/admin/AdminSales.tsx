@@ -39,6 +39,8 @@ export default function AdminSales() {
           <span className="text-xs text-muted-foreground self-center ml-auto">{filtered.length} resultados</span>
         </div>
 
+        <StatusGuide />
+
         <div className="space-y-2">
           {filtered.length === 0 && <p className="text-xs text-muted-foreground text-center py-8">Sin ventas</p>}
           {filtered.slice(0, 40).map(sale => {
