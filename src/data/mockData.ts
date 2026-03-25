@@ -358,15 +358,10 @@ export interface VendorCompanyLink {
 }
 
 export const vendorCompanyLinks: VendorCompanyLink[] = [
-  // vendor-001 linked to 8 companies (enterprise, premium, freemium mix)
-  { vendorId: 'vendor-001', companyId: 'company-001', joinedAt: '2024-06-01', status: 'active' },
-  { vendorId: 'vendor-001', companyId: 'company-002', joinedAt: '2024-08-15', status: 'active' },
-  { vendorId: 'vendor-001', companyId: 'company-005', joinedAt: '2024-10-01', status: 'active' },
-  { vendorId: 'vendor-001', companyId: 'company-004', joinedAt: '2024-11-01', status: 'active' },
-  { vendorId: 'vendor-001', companyId: 'company-006', joinedAt: '2024-12-01', status: 'active' },
-  { vendorId: 'vendor-001', companyId: 'company-009', joinedAt: '2025-01-10', status: 'active' },
-  { vendorId: 'vendor-001', companyId: 'company-010', joinedAt: '2025-01-15', status: 'active' },
-  { vendorId: 'vendor-001', companyId: 'company-012', joinedAt: '2025-02-01', status: 'active' },
+  // vendor-001 linked to 3 companies only (new user)
+  { vendorId: 'vendor-001', companyId: 'company-009', joinedAt: '2025-03-20', status: 'active' },
+  { vendorId: 'vendor-001', companyId: 'company-010', joinedAt: '2025-03-22', status: 'active' },
+  { vendorId: 'vendor-001', companyId: 'company-012', joinedAt: '2025-03-24', status: 'active' },
   // other vendors
   { vendorId: 'vendor-002', companyId: 'company-001', joinedAt: '2024-07-01', status: 'active' },
   { vendorId: 'vendor-002', companyId: 'company-009', joinedAt: '2025-01-05', status: 'active' },
@@ -1139,11 +1134,7 @@ function generateSales(): Sale[] {
   const today = new Date();
   const activeServices = services.filter(s => s.status === 'activo');
 
-  // Vendor-001 sales across companies
-  salesList.push(...generateSalesForVendor('vendor-001', 'company-001', 30, 'v1a'));
-  salesList.push(...generateSalesForVendor('vendor-001', 'company-002', 12, 'v1b'));
-  salesList.push(...generateSalesForVendor('vendor-001', 'company-005', 8, 'v1c'));
-  salesList.push(...generateSalesForVendor('vendor-001', 'company-009', 25, 'v1d'));
+  // Vendor-001 is a new user — no sales yet
   // Other vendors selling IronHaus
   salesList.push(...generateSalesForVendor('vendor-002', 'company-009', 18, 'v2d'));
   salesList.push(...generateSalesForVendor('vendor-003', 'company-009', 12, 'v3d'));
@@ -1384,9 +1375,7 @@ export const companyPayouts: CompanyPayout[] = companyPayments.map(p => ({
 // =============================================================================
 
 export const refundRequests: RefundRequest[] = [
-  { id: 'refund-v1-001', saleId: 'sale-v1-028', vendorId: 'vendor-001', companyId: 'company-001', serviceId: 'service-002', reason: 'Cliente no quedó satisfecho', createdAt: '2025-01-10', status: 'automático', decisionBy: 'sistema', decidedAt: '2025-01-10' },
-  { id: 'refund-v1-002', saleId: 'sale-v1-029', vendorId: 'vendor-001', companyId: 'company-001', serviceId: 'service-001', reason: 'El cliente cambió de proveedor', createdAt: '2025-01-12', status: 'aprobado', decisionBy: 'empresa', decidedAt: '2025-01-14' },
-  { id: 'refund-v1-003', saleId: 'sale-v1-030', vendorId: 'vendor-001', companyId: 'company-001', serviceId: 'service-020', reason: 'Error en la compra', createdAt: '2025-01-14', status: 'aprobado', decisionBy: 'empresa', decidedAt: '2025-01-15' },
+  // Vendor-001 has no refunds (new user)
   { id: 'refund-002', saleId: 'sale-068', vendorId: 'vendor-002', companyId: 'company-002', serviceId: 'service-003', reason: 'No le gustó el servicio', createdAt: '2025-01-05', status: 'aprobado', decisionBy: 'empresa', decidedAt: '2025-01-06' },
   { id: 'refund-003', saleId: 'sale-069', vendorId: 'vendor-003', companyId: 'company-003', serviceId: 'service-005', reason: 'Problema técnico', createdAt: '2025-01-03', status: 'automático', decisionBy: 'sistema', decidedAt: '2025-01-03' },
   { id: 'refund-004', saleId: 'sale-070', vendorId: 'vendor-004', companyId: 'company-004', serviceId: 'service-007', reason: 'Cliente duplicó compra', createdAt: '2025-01-08', status: 'aprobado', decisionBy: 'empresa', decidedAt: '2025-01-09' }
@@ -1397,15 +1386,7 @@ export const refundRequests: RefundRequest[] = [
 // =============================================================================
 
 export const trainingProgress: TrainingProgress[] = [
-  // Vendor-001 completó varios servicios de Poliza.ai
-  { id: 'tp-001', vendorId: 'vendor-001', serviceId: 'service-001', status: 'declared_completed', lastAccessedAt: '2024-12-01', completedAt: '2024-12-01' },
-  { id: 'tp-002', vendorId: 'vendor-001', serviceId: 'service-002', status: 'declared_completed', lastAccessedAt: '2024-12-05', completedAt: '2024-12-05' },
-  { id: 'tp-003', vendorId: 'vendor-001', serviceId: 'service-020', status: 'declared_completed', lastAccessedAt: '2024-12-10', completedAt: '2024-12-10' },
-  // Capacitaciones en progreso para vendor-001
-  { id: 'tp-004', vendorId: 'vendor-001', serviceId: 'service-003', status: 'in_progress', lastAccessedAt: '2025-01-15' },
-  { id: 'tp-005', vendorId: 'vendor-001', serviceId: 'service-005', status: 'in_progress', lastAccessedAt: '2025-01-14' },
-  { id: 'tp-006', vendorId: 'vendor-001', serviceId: 'service-007', status: 'not_started', lastAccessedAt: '2025-01-10' },
-  { id: 'tp-007', vendorId: 'vendor-001', serviceId: 'service-009', status: 'not_started', lastAccessedAt: '2025-01-08' },
+  // Vendor-001 is a new user — no training progress yet
   // Otros vendedores
   { id: 'tp-008', vendorId: 'vendor-002', serviceId: 'service-003', status: 'declared_completed', lastAccessedAt: '2024-11-20', completedAt: '2024-11-20' },
   { id: 'tp-009', vendorId: 'vendor-002', serviceId: 'service-005', status: 'in_progress', lastAccessedAt: '2025-01-12' },

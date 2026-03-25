@@ -11,6 +11,7 @@ import VendorLanding from "./pages/VendorLanding";
 import VendorHome from "./pages/vendor/VendorHome";
 import VendorDashboard from "./pages/vendor/VendorDashboard";
 import VendorServices from "./pages/vendor/VendorServices";
+import VendorProducts from "./pages/vendor/VendorProducts";
 import VendorServiceDetail from "./pages/vendor/VendorServiceDetail";
 import VendorTrainings from "./pages/vendor/VendorTrainings";
 import VendorTrainingDetail from "./pages/vendor/VendorTrainingDetail";
@@ -64,6 +65,7 @@ const App = () => (
             <Route path="/vendor" element={<VendorDashboard />} />
             <Route path="/vendor/company/:companyId" element={<VendorCompanyDetail />} />
             <Route path="/vendor/company/:companyId/service/:serviceId" element={<VendorServiceDetail />} />
+            <Route path="/vendor/products" element={<VendorProducts />} />
             <Route path="/vendor/services" element={<VendorServices />} />
             <Route path="/vendor/services/:serviceId" element={<VendorServiceDetail />} />
             <Route path="/vendor/trainings" element={<VendorTrainings />} />
