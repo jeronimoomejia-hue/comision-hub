@@ -103,8 +103,8 @@ function getTimeline(
   // Has refund window?
   if (refundWindowDays && refundWindowDays > 0) {
     if (saleStatus === 'HELD') {
-      steps.push({ label: `En retención (${refundWindowDays}d)`, date: holdEndDate ? `hasta ${new Date(holdEndDate).toLocaleDateString('es-CO', { day: 'numeric', month: 'short' })}` : undefined, icon: Clock, status: 'active' });
-      steps.push({ label: 'Dinero liberado', icon: CheckCircle2, status: 'upcoming' });
+      steps.push({ label: `Periodo de devolución (${refundWindowDays} días)`, date: holdEndDate ? `El cliente puede pedir devolución hasta el ${new Date(holdEndDate).toLocaleDateString('es-CO', { day: 'numeric', month: 'short' })}` : undefined, icon: Clock, status: 'active' });
+      steps.push({ label: 'Dinero liberado a tu cuenta', icon: CheckCircle2, status: 'upcoming' });
     } else {
       steps.push({ label: `Retención completada`, icon: Clock, status: 'done' });
       steps.push({ label: 'Dinero liberado', date: releasedDate, icon: CheckCircle2, status: 'done' });

@@ -160,7 +160,7 @@ export default function VendorPayments() {
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
             {[
               { icon: Send, label: 'Pendiente', desc: 'Link enviado, esperando pago', color: 'text-blue-600' },
-              { icon: Clock, label: 'Retención', desc: 'Pagado, dentro de ventana', color: 'text-amber-600' },
+              { icon: Clock, label: 'En retención', desc: 'Pagado. El cliente puede pedir devolución durante este periodo', color: 'text-amber-600' },
               { icon: CheckCircle2, label: 'Completada', desc: 'Dinero liberado a tu cuenta', color: 'text-emerald-600' },
               { icon: RotateCcw, label: 'Devuelta', desc: 'Reembolso al cliente', color: 'text-red-500' },
               { icon: XCircle, label: 'Cancelada', desc: 'Link expirado o rechazado', color: 'text-gray-500' },
