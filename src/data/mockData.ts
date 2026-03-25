@@ -324,18 +324,22 @@ export function formatCurrency(amount: number, currency: string = 'COP'): string
 // Status labels for display
 export function getStatusLabel(status: TransactionStatus): string {
   const labels: Record<TransactionStatus, string> = {
+    'PENDING': 'Pendiente de pago',
     'HELD': 'En retención',
-    'COMPLETED': 'Liberado',
-    'REFUNDED': 'Devuelto'
+    'COMPLETED': 'Completada',
+    'REFUNDED': 'Devuelta',
+    'CANCELLED': 'Cancelada'
   };
   return labels[status];
 }
 
 export function getStatusColor(status: TransactionStatus): string {
   const colors: Record<TransactionStatus, string> = {
+    'PENDING': 'bg-blue-500/10 text-blue-600',
     'HELD': 'bg-yellow-500/10 text-yellow-600',
     'COMPLETED': 'bg-green-500/10 text-green-600',
-    'REFUNDED': 'bg-red-500/10 text-red-600'
+    'REFUNDED': 'bg-red-500/10 text-red-600',
+    'CANCELLED': 'bg-gray-500/10 text-gray-500'
   };
   return colors[status];
 }
