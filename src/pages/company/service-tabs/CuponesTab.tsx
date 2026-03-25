@@ -22,7 +22,7 @@ export default function CuponesTab({ service, currentPlan }: any) {
 
   if (currentPlan === 'freemium') {
     return (
-      <div className="text-center py-12 rounded-2xl border border-border bg-card">
+      <div className="text-center py-12 rounded-xl border border-border bg-card">
         <Lock className="w-8 h-8 text-muted-foreground/20 mx-auto mb-3" />
         <p className="text-sm font-medium mb-1">Cupones no disponibles</p>
         <p className="text-xs text-muted-foreground">Mejora a Premium o Enterprise para crear cupones.</p>
@@ -71,14 +71,15 @@ export default function CuponesTab({ service, currentPlan }: any) {
             return (
               <div
                 key={coupon.id}
-                className={`rounded-2xl border bg-card p-4 transition-all ${
+                className={`rounded-xl border bg-card p-4 transition-all space-y-3 ${
                   coupon.active && !isExpired ? 'border-border' : 'border-border/50 opacity-60'
                 }`}
               >
-                <div className="flex items-center justify-between mb-3">
+                {/* Top row */}
+                <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
                     <code className="text-sm font-mono font-bold text-foreground tracking-wide">{coupon.code}</code>
-                    <span className="text-xs font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded-full">
+                    <span className="text-[10px] font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded-full">
                       {discountLabel} off
                     </span>
                   </div>
@@ -96,14 +97,14 @@ export default function CuponesTab({ service, currentPlan }: any) {
                   </div>
                 </div>
 
-                {/* Progress bar */}
-                <div className="mb-2.5">
+                {/* Usage bar */}
+                <div>
                   <div className="flex items-center justify-between text-[10px] text-muted-foreground mb-1">
                     <span>{coupon.uses}/{coupon.maxUses} usos</span>
                     <span>Vence {new Date(coupon.expires).toLocaleDateString('es-CO', { day: 'numeric', month: 'short' })}</span>
                   </div>
                   <div className="w-full h-1 rounded-full bg-muted overflow-hidden">
-                    <div className="h-full rounded-full bg-primary/60 transition-all" style={{ width: `${Math.min(usagePercent, 100)}%` }} />
+                    <div className="h-full rounded-full bg-primary/50 transition-all" style={{ width: `${Math.min(usagePercent, 100)}%` }} />
                   </div>
                 </div>
 
@@ -118,7 +119,7 @@ export default function CuponesTab({ service, currentPlan }: any) {
                 {coupon.active && !isExpired && (
                   <button
                     onClick={() => toast.success(`Registrar venta con cupón ${coupon.code}`, { description: 'Funcionalidad disponible para vendedores' })}
-                    className="mt-3 w-full flex items-center justify-center gap-1.5 py-2 rounded-xl border border-dashed border-border text-xs text-muted-foreground hover:text-foreground hover:border-primary/30 transition-colors"
+                    className="w-full flex items-center justify-center gap-1.5 py-2 rounded-lg border border-dashed border-border text-xs text-muted-foreground hover:text-foreground hover:border-primary/30 transition-colors"
                   >
                     <ShoppingCart className="w-3 h-3" /> Registrar venta con este cupón
                   </button>
@@ -128,7 +129,7 @@ export default function CuponesTab({ service, currentPlan }: any) {
           })}
         </div>
       ) : (
-        <div className="text-center py-12 rounded-2xl border border-border bg-card">
+        <div className="text-center py-12 rounded-xl border border-border bg-card">
           <Tag className="w-8 h-8 text-muted-foreground/20 mx-auto mb-3" />
           <p className="text-sm font-medium mb-1">Sin cupones</p>
           <p className="text-xs text-muted-foreground">Crea tu primer cupón para este producto</p>

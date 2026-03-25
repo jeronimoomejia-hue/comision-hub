@@ -145,7 +145,7 @@ export default function VendorServiceDetail() {
   return (
     <VendorTabLayout backTo={backPath} backLabel={company.name}>
       <div className="space-y-5">
-        {/* Service Header - Redesigned */}
+        {/* Service Header */}
         <div className="rounded-2xl border border-border bg-card overflow-hidden">
           <div className="flex gap-0">
             <div className="relative w-24 sm:w-32 flex-shrink-0">
@@ -317,25 +317,23 @@ export default function VendorServiceDetail() {
 
 function InfoTab({ service, extended, company, isTrainingComplete }: { service: any; extended: any; company: any; isTrainingComplete: boolean }) {
   const navigate = useNavigate();
-  const coverImg = categoryCovers[service.category];
-  const [showFeatures, setShowFeatures] = useState(false);
-  const [showObjections, setShowObjections] = useState(false);
+  const [expandedSection, setExpandedSection] = useState<string | null>(null);
+
+  const toggleSection = (id: string) => setExpandedSection(prev => prev === id ? null : id);
 
   const activeCoupons = [
     { code: 'NUEVO20', discount: '20%', expires: '2026-04-30', description: 'Descuento para nuevos clientes' },
     { code: 'PROMO10', discount: '10%', expires: '2026-05-15', description: 'Promoción de temporada' },
   ];
+
+  const estimatedCommission = Math.round(service.priceCOP * service.vendorCommissionPct / 100);
+  const mensualistaFee = Math.round(service.priceCOP * service.mensualistaPct / 100);
+  const providerNet = service.priceCOP - estimatedCommission - mensualistaFee;
+  const isRecurring = service.type === 'suscripción';
   
   return (
-    <div className="space-y-4">
-      {/* Hero image */}
-      {coverImg && (
-        <div className="rounded-xl overflow-hidden aspect-[2.4/1]">
-          <img src={coverImg} alt={service.name} className="w-full h-full object-cover" />
-        </div>
-      )}
-
-      {/* Review training */}
+    <div className="space-y-3">
+      {/* Review training link */}
       {isTrainingComplete && (
         <button
           onClick={() => navigate(`/vendor/trainings/${service.id}`)}
@@ -354,23 +352,42 @@ function InfoTab({ service, extended, company, isTrainingComplete }: { service: 
         </button>
       )}
 
-      {/* Description */}
-      <p className="text-sm text-foreground leading-relaxed">{extended?.shortDescription || service.description}</p>
-      {extended?.pitchThreeLines && (
-        <p className="text-xs text-muted-foreground leading-relaxed">{extended.pitchThreeLines}</p>
-      )}
+      {/* Description - compact, no hero image */}
+      <div className="rounded-xl border border-border bg-card p-4">
+        <p className="text-sm text-foreground leading-relaxed">{extended?.shortDescription || service.description}</p>
+        {extended?.pitchThreeLines && (
+          <p className="text-xs text-muted-foreground leading-relaxed mt-2">{extended.pitchThreeLines}</p>
+        )}
+      </div>
 
-      {/* Visit service page */}
-      {extended?.websiteUrl && (
-        <a href={extended.websiteUrl} target="_blank" rel="noopener noreferrer"
-          className="flex items-center justify-between p-3 rounded-xl border border-border bg-card group hover:border-primary/30 transition-colors cursor-pointer">
-          <div>
-            <p className="text-xs font-medium text-foreground">Conocer más sobre este producto</p>
-            <p className="text-[10px] text-muted-foreground">{extended.websiteUrl}</p>
+      {/* Price breakdown card */}
+      <div className="rounded-xl border border-border bg-card p-4 space-y-2.5">
+        <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">Desglose de la venta</p>
+        <div className="space-y-1.5">
+          <div className="flex justify-between text-xs">
+            <span className="text-muted-foreground">Precio del producto</span>
+            <span className="font-medium text-foreground">{formatCOP(service.priceCOP)}{isRecurring ? '/mes' : ''}</span>
           </div>
-          <ExternalLink className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
-        </a>
-      )}
+          <div className="h-px bg-border" />
+          <div className="flex justify-between text-xs">
+            <span className="text-muted-foreground">Tu comisión ({service.vendorCommissionPct}%)</span>
+            <span className="font-semibold text-primary">{formatCOP(estimatedCommission)}</span>
+          </div>
+          <div className="flex justify-between text-xs">
+            <span className="text-muted-foreground">Fee plataforma ({service.mensualistaPct}%)</span>
+            <span className="text-muted-foreground">{formatCOP(mensualistaFee)}</span>
+          </div>
+          <div className="flex justify-between text-xs">
+            <span className="text-muted-foreground">Neto empresa</span>
+            <span className="text-muted-foreground">{formatCOP(providerNet)}</span>
+          </div>
+        </div>
+        {isRecurring && (
+          <p className="text-[10px] text-blue-600 bg-blue-500/5 px-2 py-1 rounded-lg">
+            Cobro recurrente mensual. Recibes comisión cada mes mientras el cliente mantenga su suscripción.
+          </p>
+        )}
+      </div>
 
       {/* Key info grid */}
       <div className="grid grid-cols-2 gap-2">
@@ -388,15 +405,27 @@ function InfoTab({ service, extended, company, isTrainingComplete }: { service: 
         </div>
       </div>
 
-      {/* Collapsible: Features */}
+      {/* Visit service page */}
+      {extended?.websiteUrl && (
+        <a href={extended.websiteUrl} target="_blank" rel="noopener noreferrer"
+          className="flex items-center justify-between p-3 rounded-xl border border-border bg-card group hover:border-primary/30 transition-colors cursor-pointer">
+          <div>
+            <p className="text-xs font-medium text-foreground">Conocer más sobre este producto</p>
+            <p className="text-[10px] text-muted-foreground">{extended.websiteUrl}</p>
+          </div>
+          <ExternalLink className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+        </a>
+      )}
+
+      {/* Collapsible sections */}
       {extended?.features && (
         <>
-          <button onClick={() => setShowFeatures(!showFeatures)}
+          <button onClick={() => toggleSection('features')}
             className="w-full flex items-center justify-between p-3.5 rounded-xl border border-border bg-card hover:bg-muted/30 transition-colors">
             <span className="text-xs font-medium text-foreground">Qué incluye</span>
-            <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${showFeatures ? 'rotate-180' : ''}`} />
+            <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${expandedSection === 'features' ? 'rotate-180' : ''}`} />
           </button>
-          {showFeatures && (
+          {expandedSection === 'features' && (
             <div className="p-3 rounded-xl border border-border bg-card space-y-1.5 animate-in fade-in slide-in-from-top-2 duration-200">
               {extended.features.slice(0, 6).map((f: string, i: number) => (
                 <div key={i} className="flex items-start gap-2">
@@ -409,19 +438,26 @@ function InfoTab({ service, extended, company, isTrainingComplete }: { service: 
         </>
       )}
 
-      {/* Audience & Problem/Result - collapsible style */}
-      <div className="space-y-2">
-        {[
-          { label: "Audiencia ideal", text: extended?.targetAudience || 'Empresas en Colombia.' },
-          { label: "Problema que resuelve", text: extended?.problemSolved || 'Procesos manuales.' },
-          { label: "Resultado", text: extended?.promisedResult || 'Mayor productividad.' },
-        ].map((item, i) => (
-          <div key={i} className="p-3 rounded-xl border border-border bg-card">
-            <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">{item.label}</p>
-            <p className="text-xs text-foreground mt-0.5 leading-relaxed">{item.text}</p>
-          </div>
-        ))}
-      </div>
+      {/* Audience, Problem, Result */}
+      <button onClick={() => toggleSection('audience')}
+        className="w-full flex items-center justify-between p-3.5 rounded-xl border border-border bg-card hover:bg-muted/30 transition-colors">
+        <span className="text-xs font-medium text-foreground">Audiencia y problema</span>
+        <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${expandedSection === 'audience' ? 'rotate-180' : ''}`} />
+      </button>
+      {expandedSection === 'audience' && (
+        <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-200">
+          {[
+            { label: "Audiencia ideal", text: extended?.targetAudience || 'Empresas en Colombia.' },
+            { label: "Problema que resuelve", text: extended?.problemSolved || 'Procesos manuales.' },
+            { label: "Resultado", text: extended?.promisedResult || 'Mayor productividad.' },
+          ].map((item, i) => (
+            <div key={i} className="p-3 rounded-xl border border-border bg-card">
+              <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">{item.label}</p>
+              <p className="text-xs text-foreground mt-0.5 leading-relaxed">{item.text}</p>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Pitch */}
       <div className="p-3 rounded-xl border border-primary/20 bg-primary/5">
@@ -429,15 +465,15 @@ function InfoTab({ service, extended, company, isTrainingComplete }: { service: 
         <p className="text-sm font-medium text-foreground mt-1 italic">"{extended?.pitchOneLine || `${service.name} automatiza tu negocio.`}"</p>
       </div>
 
-      {/* Collapsible: Objections */}
+      {/* Objections */}
       {extended?.objections && (
         <>
-          <button onClick={() => setShowObjections(!showObjections)}
+          <button onClick={() => toggleSection('objections')}
             className="w-full flex items-center justify-between p-3.5 rounded-xl border border-border bg-card hover:bg-muted/30 transition-colors">
             <span className="text-xs font-medium text-foreground">Objeciones comunes</span>
-            <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${showObjections ? 'rotate-180' : ''}`} />
+            <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${expandedSection === 'objections' ? 'rotate-180' : ''}`} />
           </button>
-          {showObjections && (
+          {expandedSection === 'objections' && (
             <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-200">
               {extended.objections.slice(0, 3).map((obj: any, i: number) => (
                 <div key={i} className="p-3 rounded-xl border border-border bg-card">
@@ -452,17 +488,25 @@ function InfoTab({ service, extended, company, isTrainingComplete }: { service: 
 
       {/* Materials */}
       {service.materials.length > 0 && (
-        <div className="space-y-2">
-          <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">Materiales</p>
-          {service.materials.map((m: any) => (
-            <div key={m.id} className="flex items-center justify-between p-3 rounded-xl border border-border bg-card">
-              <span className="text-xs text-foreground">{m.title}</span>
-              <Button variant="ghost" size="sm" className="text-[10px] h-7 text-muted-foreground" onClick={() => toast.success(`Descargando: ${m.title}`)}>
-                Descargar
-              </Button>
+        <>
+          <button onClick={() => toggleSection('materials')}
+            className="w-full flex items-center justify-between p-3.5 rounded-xl border border-border bg-card hover:bg-muted/30 transition-colors">
+            <span className="text-xs font-medium text-foreground">Materiales de venta</span>
+            <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${expandedSection === 'materials' ? 'rotate-180' : ''}`} />
+          </button>
+          {expandedSection === 'materials' && (
+            <div className="space-y-1.5 animate-in fade-in slide-in-from-top-2 duration-200">
+              {service.materials.map((m: any) => (
+                <div key={m.id} className="flex items-center justify-between p-3 rounded-xl border border-border bg-card">
+                  <span className="text-xs text-foreground">{m.title}</span>
+                  <Button variant="ghost" size="sm" className="text-[10px] h-7 text-muted-foreground" onClick={() => toast.success(`Descargando: ${m.title}`)}>
+                    <Download className="w-3 h-3 mr-1" /> Descargar
+                  </Button>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          )}
+        </>
       )}
 
       {/* Active Coupons */}

@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import VendorTabLayout from "@/components/layout/VendorTabLayout";
 import { useDemo } from "@/contexts/DemoContext";
 import { companies, services as allServices, formatCOP, CURRENT_VENDOR_ID } from "@/data/mockData";
-import { Search, Package, Star, RefreshCw, Zap, Lock, Clock, Shield, AlertTriangle, BookOpen, MessageCircle, Tag, ShoppingCart, ChevronRight, ChevronDown, Send, Copy, Percent, Info, Globe, Mail, Phone, MapPin, Building2, ExternalLink, Users } from "lucide-react";
+import { Search, Package, Star, RefreshCw, Zap, Lock, Clock, Shield, AlertTriangle, BookOpen, MessageCircle, Tag, ShoppingCart, ChevronRight, ChevronDown, Send, Copy, Info, Globe, Mail, Phone, Building2, ExternalLink, Users } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -105,7 +105,7 @@ export default function VendorCompanyDetail() {
         {inProgressTrainings > 0 && (
           <Link to="/vendor/trainings" className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500/10 text-amber-600 text-xs font-medium border border-amber-500/20">
             <BookOpen className="w-4 h-4" />
-            {inProgressTrainings} entrenamiento{inProgressTrainings !== 1 ? 'es' : ''} en curso
+            {inProgressTrainings} entrenamiento{inProgressTrainings !== 1 ? 's' : ''} en curso
           </Link>
         )}
 
@@ -153,7 +153,7 @@ export default function VendorCompanyDetail() {
         )}
 
         {activeTab === 'cupones' && (
-          <CuponesTab companyName={company.name} />
+          <CuponesTab companyName={company.name} companyServices={companyServices} />
         )}
 
         {activeTab === 'chat' && (
@@ -182,40 +182,32 @@ const companyDescriptions: Record<string, { tagline: string; description: string
 };
 
 function AcercaTab({ company, companyServices, vendorSales }: { company: any; companyServices: Array<any>; vendorSales: Array<any> }) {
-  const coverImg = categoryCovers[company.industry];
   const info = companyDescriptions[company.id] || { tagline: `Soluciones de ${company.industry}`, description: `${company.name} ofrece soluciones innovadoras en el sector de ${company.industry}.`, founded: '2023', employees: '20+', highlights: ['Tecnología de punta', 'Soporte dedicado', 'Resultados medibles'] };
-  const [showDetails, setShowDetails] = useState(false);
-  const [showContact, setShowContact] = useState(false);
+  const [expandedSection, setExpandedSection] = useState<string | null>(null);
+
+  const toggleSection = (id: string) => setExpandedSection(prev => prev === id ? null : id);
 
   return (
-    <div className="space-y-4">
-      {/* Hero image */}
-      {coverImg && (
-        <div className="rounded-xl overflow-hidden aspect-[2.4/1] relative">
-          <img src={coverImg} alt={company.name} className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-          <div className="absolute bottom-4 left-4">
-            <p className="text-white/80 text-xs font-medium">{company.industry}</p>
-            <p className="text-white text-lg font-bold leading-tight mt-0.5">{info.tagline}</p>
-          </div>
-        </div>
-      )}
+    <div className="space-y-3">
+      {/* Tagline + Description */}
+      <div className="rounded-xl border border-border bg-card p-4">
+        <p className="text-xs font-semibold text-primary uppercase tracking-wider">{company.industry}</p>
+        <p className="text-sm font-medium text-foreground mt-1">{info.tagline}</p>
+        <p className="text-xs text-muted-foreground leading-relaxed mt-2">{info.description}</p>
+      </div>
 
-      {/* Description */}
-      <p className="text-sm text-foreground leading-relaxed">{info.description}</p>
-
-      {/* Collapsible: Company details */}
+      {/* Company details - collapsible */}
       <button
-        onClick={() => setShowDetails(!showDetails)}
+        onClick={() => toggleSection('details')}
         className="w-full flex items-center justify-between p-3.5 rounded-xl border border-border bg-card hover:bg-muted/30 transition-colors"
       >
         <div className="flex items-center gap-2.5">
           <Building2 className="w-4 h-4 text-muted-foreground" />
           <span className="text-xs font-medium text-foreground">Detalles de la empresa</span>
         </div>
-        <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${showDetails ? 'rotate-180' : ''}`} />
+        <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${expandedSection === 'details' ? 'rotate-180' : ''}`} />
       </button>
-      {showDetails && (
+      {expandedSection === 'details' && (
         <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-200">
           <div className="grid grid-cols-2 gap-2">
             {[
@@ -242,18 +234,18 @@ function AcercaTab({ company, companyServices, vendorSales }: { company: any; co
         </div>
       )}
 
-      {/* Collapsible: Contact */}
+      {/* Contact - collapsible */}
       <button
-        onClick={() => setShowContact(!showContact)}
+        onClick={() => toggleSection('contact')}
         className="w-full flex items-center justify-between p-3.5 rounded-xl border border-border bg-card hover:bg-muted/30 transition-colors"
       >
         <div className="flex items-center gap-2.5">
           <Mail className="w-4 h-4 text-muted-foreground" />
           <span className="text-xs font-medium text-foreground">Contacto</span>
         </div>
-        <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${showContact ? 'rotate-180' : ''}`} />
+        <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${expandedSection === 'contact' ? 'rotate-180' : ''}`} />
       </button>
-      {showContact && (
+      {expandedSection === 'contact' && (
         <div className="space-y-1.5 animate-in fade-in slide-in-from-top-2 duration-200">
           {company.contactEmail && (
             <div className="flex items-center gap-2.5 p-2.5 rounded-xl border border-border bg-card">
@@ -307,7 +299,7 @@ function ProductosTab({ searchQuery, setSearchQuery, filteredServices, topServic
       </div>
 
       {filteredServices.length > 0 ? (
-        <div className="space-y-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {filteredServices.map((service) => {
             const isPopular = topServiceIds.includes(service.id);
             const earningsPerSale = Math.round(service.priceCOP * service.vendorCommissionPct / 100);
@@ -319,62 +311,66 @@ function ProductosTab({ searchQuery, setSearchQuery, filteredServices, topServic
               <div
                 key={service.id}
                 onClick={() => onServiceClick(service.id, service.isActive)}
-                className={`rounded-2xl border border-border bg-card overflow-hidden cursor-pointer group hover:shadow-lg hover:border-primary/20 transition-all duration-300 ${
+                className={`rounded-2xl border border-border bg-card overflow-hidden cursor-pointer group hover:shadow-md hover:border-primary/20 transition-all duration-300 ${
                   !service.isActive ? 'grayscale opacity-75' : ''
                 }`}
               >
-                <div className="flex gap-0">
-                  {/* Image */}
-                  <div className="relative w-28 sm:w-36 flex-shrink-0">
-                    <img src={coverImg} alt={service.category} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
-                    {!service.isActive && (
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-                        <Lock className="w-4 h-4 text-white" />
-                      </div>
-                    )}
+                {/* Cover image */}
+                <div className="relative h-32 overflow-hidden">
+                  <img src={coverImg} alt={service.category} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                  
+                  {!service.isActive && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                      <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2.5 py-1 rounded-full bg-black/70 text-white border border-white/20">
+                        <Lock className="w-3 h-3" /> Sin activar
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Top badges */}
+                  <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
                     {isPopular && (
-                      <div className="absolute top-2 left-2">
-                        <span className="inline-flex items-center gap-0.5 text-[8px] font-semibold px-1.5 py-0.5 rounded-full bg-amber-500 text-white">
-                          <Star className="w-2 h-2" fill="currentColor" /> Top
-                        </span>
-                      </div>
+                      <span className="inline-flex items-center gap-0.5 text-[9px] font-semibold px-1.5 py-0.5 rounded-full bg-amber-500 text-white">
+                        <Star className="w-2 h-2" fill="currentColor" /> Top
+                      </span>
+                    )}
+                    {isRecurring ? (
+                      <span className="inline-flex items-center gap-0.5 text-[9px] font-medium px-1.5 py-0.5 rounded-full bg-blue-500/90 text-white">
+                        <RefreshCw className="w-2 h-2" /> Mensual
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-0.5 text-[9px] font-medium px-1.5 py-0.5 rounded-full bg-white/20 text-white backdrop-blur-sm">
+                        <Zap className="w-2 h-2" /> Único
+                      </span>
                     )}
                   </div>
 
-                  {/* Content */}
-                  <div className="flex-1 p-3.5 flex flex-col justify-between min-w-0">
-                    <div>
-                      <div className="flex items-start justify-between gap-2">
-                        <h3 className="font-semibold text-sm text-foreground leading-snug line-clamp-1 group-hover:text-primary transition-colors">
-                          {service.name}
-                        </h3>
-                        {availableCodes === 0 && (
-                          <Badge variant="destructive" className="text-[8px] px-1.5 h-4 flex-shrink-0">Agotado</Badge>
-                        )}
-                      </div>
-                      <p className="text-[11px] text-muted-foreground leading-relaxed line-clamp-2 mt-1">{service.description}</p>
+                  {availableCodes === 0 && (
+                    <div className="absolute top-2.5 right-2.5">
+                      <span className="text-[9px] font-medium px-1.5 py-0.5 rounded-full bg-destructive text-destructive-foreground">Agotado</span>
                     </div>
+                  )}
 
-                    <div className="flex items-center justify-between mt-2.5 pt-2.5 border-t border-border/50">
-                      <div className="flex items-center gap-2">
-                        {isRecurring ? (
-                          <span className="inline-flex items-center gap-1 text-[10px] font-medium text-blue-600 bg-blue-500/10 px-2 py-0.5 rounded-full">
-                            <RefreshCw className="w-2.5 h-2.5" /> Mensual
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center gap-1 text-[10px] font-medium text-muted-foreground">
-                            <Zap className="w-2.5 h-2.5" /> Pago único
-                          </span>
-                        )}
-                        {service.salesCount > 0 && (
-                          <span className="text-[10px] text-muted-foreground">{service.salesCount} venta{service.salesCount !== 1 ? 's' : ''}</span>
-                        )}
-                      </div>
-                      <div className="text-right">
-                        <p className="text-xs font-bold text-primary">{formatCOP(earningsPerSale)}</p>
-                        <p className="text-[9px] text-muted-foreground">{formatCOP(service.priceCOP)}{isRecurring ? '/mes' : ''}</p>
-                      </div>
+                  {/* Commission on bottom */}
+                  <div className="absolute bottom-2.5 right-2.5 text-right">
+                    <p className="text-sm font-bold text-white drop-shadow-md">{formatCOP(earningsPerSale)}</p>
+                  </div>
+                </div>
+
+                {/* Body */}
+                <div className="p-3 space-y-1.5">
+                  <h3 className="font-semibold text-sm text-foreground leading-snug line-clamp-1 group-hover:text-primary transition-colors">
+                    {service.name}
+                  </h3>
+                  <p className="text-[11px] text-muted-foreground leading-relaxed line-clamp-2">{service.description}</p>
+                  <div className="flex items-center justify-between pt-1.5 border-t border-border/50">
+                    <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+                      <span className="flex items-center gap-0.5"><Clock className="w-2.5 h-2.5" /> {service.refundPolicy.refundWindowDays}d</span>
+                      <span className="flex items-center gap-0.5"><Shield className="w-2.5 h-2.5" /> {service.refundPolicy.autoRefund ? 'Auto' : 'Aprob.'}</span>
+                      {service.salesCount > 0 && <span>{service.salesCount} venta{service.salesCount !== 1 ? 's' : ''}</span>}
                     </div>
+                    <p className="text-[10px] text-muted-foreground">{formatCOP(service.priceCOP)}{isRecurring ? '/mes' : ''}</p>
                   </div>
                 </div>
               </div>
@@ -439,44 +435,67 @@ function VentasTab({ vendorSales, companyId }: { vendorSales: Array<any>; compan
   );
 }
 
-function CuponesTab({ companyName }: { companyName: string }) {
+function CuponesTab({ companyName, companyServices }: { companyName: string; companyServices: Array<any> }) {
   const mockCoupons = [
-    { id: '1', code: 'NUEVO20', discount: 20, type: 'percent' as const, description: 'Para clientes nuevos', validUntil: '2026-04-30', usesLeft: 15 },
-    { id: '2', code: 'PROMO50K', discount: 50000, type: 'fixed' as const, description: 'Descuento en plan anual', validUntil: '2026-05-15', usesLeft: 5 },
-    { id: '3', code: 'LANZAMIENTO', discount: 10, type: 'percent' as const, description: 'Promoción de lanzamiento', validUntil: '2026-06-01', usesLeft: 50 },
+    { id: '1', code: 'NUEVO20', discount: 20, type: 'percent' as const, validUntil: '2026-04-30', usesLeft: 15, maxUses: 50, serviceId: companyServices[0]?.id },
+    { id: '2', code: 'PROMO50K', discount: 50000, type: 'fixed' as const, validUntil: '2026-05-15', usesLeft: 5, maxUses: 10, serviceId: companyServices[1]?.id },
+    { id: '3', code: 'LANZAMIENTO', discount: 10, type: 'percent' as const, validUntil: '2026-06-01', usesLeft: 50, maxUses: 100 },
   ];
 
   const copyCoupon = (code: string) => {
     navigator.clipboard.writeText(code);
-    toast.success(`Cupón ${code} copiado`);
+    toast.success(`Código copiado`);
   };
 
   return (
     <div className="space-y-3">
-      <p className="text-xs text-muted-foreground">{mockCoupons.length} cupones disponibles</p>
+      <p className="text-xs text-muted-foreground">{mockCoupons.length} cupones disponibles de {companyName}</p>
       <div className="space-y-2">
-        {mockCoupons.map(coupon => (
-          <div key={coupon.id} className="rounded-xl border border-border bg-card p-3.5 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-              <Percent className="w-4.5 h-4.5 text-primary" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2">
-                <code className="text-sm font-semibold font-mono text-foreground">{coupon.code}</code>
-                <Badge variant="outline" className="text-[9px] px-1.5 h-4">
-                  {coupon.type === 'percent' ? `${coupon.discount}%` : formatCOP(coupon.discount)}
-                </Badge>
+        {mockCoupons.map(coupon => {
+          const linkedService = coupon.serviceId ? companyServices.find((s: any) => s.id === coupon.serviceId) : null;
+          const usagePercent = Math.round(((coupon.maxUses - coupon.usesLeft) / coupon.maxUses) * 100);
+          const discountLabel = coupon.type === 'percent' ? `${coupon.discount}%` : formatCOP(coupon.discount);
+
+          return (
+            <div key={coupon.id} className="rounded-xl border border-border bg-card p-4 space-y-3">
+              {/* Header */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <code className="text-sm font-mono font-bold text-foreground tracking-wide">{coupon.code}</code>
+                  <span className="text-[10px] font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded-full">
+                    {discountLabel} off
+                  </span>
+                </div>
+                <button onClick={() => copyCoupon(coupon.code)} className="p-1.5 rounded-lg hover:bg-muted transition-colors">
+                  <Copy className="w-3.5 h-3.5 text-muted-foreground" />
+                </button>
               </div>
-              <p className="text-[11px] text-muted-foreground mt-0.5">{coupon.description}</p>
-              <p className="text-[10px] text-muted-foreground mt-0.5">
-                Válido hasta {new Date(coupon.validUntil).toLocaleDateString('es-CO', { day: 'numeric', month: 'short' })} · {coupon.usesLeft} usos
-              </p>
+
+              {/* Usage bar */}
+              <div>
+                <div className="flex items-center justify-between text-[10px] text-muted-foreground mb-1">
+                  <span>{coupon.maxUses - coupon.usesLeft}/{coupon.maxUses} usos</span>
+                  <span>Hasta {new Date(coupon.validUntil).toLocaleDateString('es-CO', { day: 'numeric', month: 'short' })}</span>
+                </div>
+                <div className="w-full h-1 rounded-full bg-muted overflow-hidden">
+                  <div className="h-full rounded-full bg-primary/50 transition-all" style={{ width: `${usagePercent}%` }} />
+                </div>
+              </div>
+
+              {linkedService && (
+                <p className="text-[10px] text-muted-foreground">Aplica a: {linkedService.name}</p>
+              )}
+
+              {/* Register sale with coupon */}
+              <button
+                onClick={() => toast.success(`Venta con cupón ${coupon.code}`, { description: 'Dirígete al producto para registrar la venta' })}
+                className="w-full flex items-center justify-center gap-1.5 py-2 rounded-lg border border-dashed border-border text-xs text-muted-foreground hover:text-foreground hover:border-primary/30 transition-colors"
+              >
+                <ShoppingCart className="w-3 h-3" /> Registrar venta con este cupón
+              </button>
             </div>
-            <Button variant="ghost" size="sm" className="h-8 text-xs text-muted-foreground flex-shrink-0" onClick={() => copyCoupon(coupon.code)}>
-              <Copy className="w-3.5 h-3.5 mr-1" /> Copiar
-            </Button>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
@@ -485,7 +504,7 @@ function CuponesTab({ companyName }: { companyName: string }) {
 function ChatTab({ companyName }: { companyName: string }) {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([
-    { id: '1', from: 'company', text: `¡Hola! Bienvenido al equipo de ${companyName}. ¿En qué podemos ayudarte?`, time: '10:30' },
+    { id: '1', from: 'company', text: `Bienvenido al equipo de ${companyName}. ¿En qué podemos ayudarte?`, time: '10:30' },
     { id: '2', from: 'vendor', text: 'Hola, tengo una duda sobre el producto de cotizaciones.', time: '10:32' },
     { id: '3', from: 'company', text: 'Claro, cuéntame. Estoy aquí para ayudarte con lo que necesites.', time: '10:33' },
   ]);
