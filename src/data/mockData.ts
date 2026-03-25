@@ -694,13 +694,16 @@ function generateSales(): Sale[] {
   const activeServices = services.filter(s => s.status === 'activo');
 
   // Vendor-001 — a few recent sales
-  const v1Clients = ['Laura Méndez', 'Carlos Ruiz', 'Valentina Ospina', 'Santiago Torres', 'Mariana López'];
+  const v1Clients = ['Laura Méndez', 'Carlos Ruiz', 'Valentina Ospina', 'Santiago Torres', 'Mariana López', 'Andrés Gómez', 'Camila Restrepo', 'Felipe Vargas'];
   const v1Sales: { serviceId: string; companyId: string; client: string; daysAgo: number; status: TransactionStatus }[] = [
+    { serviceId: 'service-026', companyId: 'company-009', client: v1Clients[5], daysAgo: 0, status: 'PENDING' },
     { serviceId: 'service-025', companyId: 'company-009', client: v1Clients[0], daysAgo: 2, status: 'HELD' },
     { serviceId: 'service-025', companyId: 'company-009', client: v1Clients[1], daysAgo: 5, status: 'HELD' },
     { serviceId: 'service-033', companyId: 'company-012', client: v1Clients[2], daysAgo: 12, status: 'COMPLETED' },
     { serviceId: 'service-028', companyId: 'company-010', client: v1Clients[3], daysAgo: 18, status: 'COMPLETED' },
     { serviceId: 'service-034', companyId: 'company-012', client: v1Clients[4], daysAgo: 22, status: 'COMPLETED' },
+    { serviceId: 'service-025', companyId: 'company-009', client: v1Clients[6], daysAgo: 25, status: 'CANCELLED' },
+    { serviceId: 'service-029', companyId: 'company-010', client: v1Clients[7], daysAgo: 30, status: 'REFUNDED' },
   ];
   v1Sales.forEach((vs, idx) => {
     const service = services.find(s => s.id === vs.serviceId)!;
