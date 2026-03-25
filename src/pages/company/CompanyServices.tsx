@@ -1,8 +1,8 @@
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Plus, Search, Key, Zap, Package, AlertTriangle, Upload, RefreshCw, Star, Lock, Clock, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
@@ -13,15 +13,12 @@ import { toast } from "sonner";
 import { formatCOP, CURRENT_COMPANY_ID, companies, type Service } from "@/data/mockData";
 import { useDemo } from "@/contexts/DemoContext";
 import { categoryCovers } from "@/data/coverImages";
-import ServiceEditModal from "@/components/company/ServiceEditModal";
 
 export default function CompanyServices() {
-  const { sales: demoSales, services, currentCompanyPlan, addService, updateService, addActivationCodes } = useDemo();
+  const navigate = useNavigate();
+  const { sales: demoSales, services, currentCompanyPlan, addService } = useDemo();
   const company = companies.find(c => c.id === CURRENT_COMPANY_ID);
-  const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [showNewService, setShowNewService] = useState(false);
-  const [showAddCodes, setShowAddCodes] = useState<Service | null>(null);
-  const [newCodes, setNewCodes] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [newForm, setNewForm] = useState({
     name: '', description: '', category: 'seguros', type: 'suscripción' as 'suscripción' | 'puntual',
@@ -51,11 +48,6 @@ export default function CompanyServices() {
     return { total, available, isEmpty: available === 0, isLow: available < 5 };
   };
 
-  const handleSaveService = (updatedService: Partial<Service>) => {
-    if (selectedService) updateService(selectedService.id, updatedService);
-    toast.success("Cambios guardados");
-  };
-
   const handleCreateService = () => {
     if (!newForm.name.trim()) { toast.error("Ingresa un nombre"); return; }
     const codeLines = newForm.initialCodes.split('\n').map(c => c.trim()).filter(Boolean);
@@ -76,15 +68,6 @@ export default function CompanyServices() {
     setShowNewService(false);
     setNewForm({ name: '', description: '', category: 'seguros', type: 'suscripción', priceCOP: 150000, vendorCommissionPct: 20, requiresTraining: true, trainingType: 'pdf', refundWindowDays: 14, autoRefund: false, initialCodes: '' });
     toast.success("Servicio creado con " + codeLines.length + " códigos");
-  };
-
-  const handleAddCodes = () => {
-    if (!showAddCodes) return;
-    const codeLines = newCodes.split('\n').map(c => c.trim()).filter(Boolean);
-    if (codeLines.length === 0) { toast.error("Ingresa al menos un código"); return; }
-    addActivationCodes(showAddCodes.id, codeLines);
-    toast.success(`${codeLines.length} códigos agregados`);
-    setShowAddCodes(null); setNewCodes("");
   };
 
   return (
@@ -137,7 +120,7 @@ export default function CompanyServices() {
           )}
         </div>
 
-        {/* Services Grid (Fiverr style) */}
+        {/* Services Grid */}
         {filteredServices.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
             {filteredServices.map(service => {
@@ -148,7 +131,7 @@ export default function CompanyServices() {
               return (
                 <div
                   key={service.id}
-                  onClick={() => setSelectedService(service)}
+                  onClick={() => navigate(`/company/services/${service.id}`)}
                   className={`rounded-xl border border-border bg-card overflow-hidden cursor-pointer group hover:shadow-lg hover:border-primary/30 transition-all duration-300 ${
                     service.status === 'pausado' ? 'grayscale opacity-75' : ''
                   }`}
@@ -185,7 +168,7 @@ export default function CompanyServices() {
                       )}
                     </div>
 
-                    {/* Stats on bottom-right */}
+                    {/* Stats */}
                     <div className="absolute bottom-3 right-3 text-right">
                       <p className="text-[9px] text-white/70 uppercase tracking-wider">Ventas/mes</p>
                       <p className="text-sm sm:text-base font-bold text-white drop-shadow-md">{stats.salesMonth}</p>
@@ -234,38 +217,6 @@ export default function CompanyServices() {
           </div>
         )}
       </div>
-
-      {/* Service Detail/Edit Modal */}
-      <ServiceEditModal
-        service={selectedService}
-        sales={companySales}
-        onClose={() => setSelectedService(null)}
-        onSave={handleSaveService}
-      />
-
-      {/* Add codes dialog */}
-      <Dialog open={!!showAddCodes} onOpenChange={() => setShowAddCodes(null)}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-base">Agregar códigos de activación</DialogTitle>
-            <p className="text-xs text-muted-foreground mt-1">
-              {showAddCodes?.name} — {showAddCodes && getCodeStats(showAddCodes).available} códigos disponibles
-            </p>
-          </DialogHeader>
-          <div className="space-y-3">
-            <div>
-              <Label className="text-xs">Códigos (uno por línea)</Label>
-              <Textarea className="text-sm mt-1 font-mono" rows={8} placeholder={"CODIGO-001\nCODIGO-002\n..."} value={newCodes} onChange={e => setNewCodes(e.target.value)} />
-              <p className="text-[10px] text-muted-foreground mt-1">{newCodes.split('\n').filter(c => c.trim()).length} códigos</p>
-            </div>
-          </div>
-          <DialogFooter>
-            <Button size="sm" className="text-xs" onClick={handleAddCodes}>
-              <Upload className="w-3.5 h-3.5 mr-1" /> Agregar códigos
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
 
       {/* Create dialog */}
       <Dialog open={showNewService} onOpenChange={setShowNewService}>
