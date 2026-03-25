@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Home, DollarSign, User, Bell, LogOut, ChevronLeft, ShoppingBag } from "lucide-react";
+import { Home, DollarSign, User, Bell, LogOut, ChevronLeft, ShoppingBag, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useDemo } from "@/contexts/DemoContext";
 import { vendors, CURRENT_VENDOR_ID } from "@/data/mockData";
@@ -16,6 +16,7 @@ interface VendorTabLayoutProps {
 const tabs = [
   { icon: Home, label: "Inicio", href: "/vendor" },
   { icon: ShoppingBag, label: "Productos", href: "/vendor/products" },
+  { icon: Users, label: "Clientes", href: "/vendor/crm" },
   { icon: DollarSign, label: "Pagos", href: "/vendor/payments" },
   { icon: User, label: "Perfil", href: "/vendor/profile" },
 ];
