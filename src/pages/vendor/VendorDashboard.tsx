@@ -228,7 +228,7 @@ export default function VendorDashboard() {
             </div>
             <Link
               to={`/vendor/company/${featuredService.companyId}`}
-              className="block rounded-2xl border border-border bg-card overflow-hidden group hover:shadow-md transition-all duration-300"
+              className="block rounded-2xl border border-border bg-card overflow-hidden group cursor-pointer hover:shadow-md hover:border-primary/20 active:scale-[0.99] transition-all duration-300"
             >
               <div className="relative h-44 sm:h-48 overflow-hidden">
                 <img 
@@ -268,11 +268,13 @@ export default function VendorDashboard() {
                     </div>
                   ))}
                 </div>
-                <div className="flex items-center gap-2 pt-1">
+                <div className="flex items-center justify-between pt-1 border-t border-border">
                   <span className="text-[10px] text-muted-foreground">
                     Precio cliente: {formatCOP(featuredService.priceCOP)} · {featuredService.type === 'suscripción' ? 'Recurrente' : 'Pago único'} · {featuredService.vendorCommissionPct}% comisión
                   </span>
-                </div>
+                  <span className="text-[10px] font-medium text-primary flex items-center gap-1 group-hover:underline">
+                    Ver servicio <ChevronRight className="w-3 h-3" />
+                  </span>
               </div>
             </Link>
           </motion.div>
