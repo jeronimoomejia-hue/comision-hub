@@ -22,6 +22,7 @@ import VendorMaterials from "./pages/vendor/VendorMaterials";
 import VendorSupport from "./pages/vendor/VendorSupport";
 import VendorProfile from "./pages/vendor/VendorProfile";
 import VendorCompanyDetail from "./pages/vendor/VendorCompanyDetail";
+import VendorCRM from "./pages/vendor/VendorCRM";
 import CompanyDashboard from "./pages/company/CompanyDashboard";
 import CompanyServices from "./pages/company/CompanyServices";
 import CompanyServiceDetail from "./pages/company/CompanyServiceDetail";
@@ -75,6 +76,7 @@ const App = () => (
             <Route path="/vendor/refunds" element={<VendorRefunds />} />
             <Route path="/vendor/materials" element={<VendorMaterials />} />
             <Route path="/vendor/support" element={<VendorSupport />} />
+            <Route path="/vendor/crm" element={<VendorCRM />} />
             <Route path="/vendor/profile" element={<VendorProfile />} />
             
             {/* Company Routes */}
