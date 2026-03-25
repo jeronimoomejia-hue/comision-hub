@@ -358,10 +358,12 @@ export interface VendorCompanyLink {
 }
 
 export const vendorCompanyLinks: VendorCompanyLink[] = [
-  // vendor-001 linked to 3 companies
+  // vendor-001 linked to 5 companies (enterprise, premium, freemium mix)
   { vendorId: 'vendor-001', companyId: 'company-001', joinedAt: '2024-06-01', status: 'active' },
   { vendorId: 'vendor-001', companyId: 'company-002', joinedAt: '2024-08-15', status: 'active' },
   { vendorId: 'vendor-001', companyId: 'company-005', joinedAt: '2024-10-01', status: 'active' },
+  { vendorId: 'vendor-001', companyId: 'company-004', joinedAt: '2024-11-01', status: 'active' },
+  { vendorId: 'vendor-001', companyId: 'company-006', joinedAt: '2024-12-01', status: 'active' },
   // other vendors
   { vendorId: 'vendor-002', companyId: 'company-001', joinedAt: '2024-07-01', status: 'active' },
   { vendorId: 'vendor-003', companyId: 'company-003', joinedAt: '2024-08-01', status: 'active' },
