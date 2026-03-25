@@ -575,6 +575,7 @@ function VentasTab({ serviceSales, getStatusConfig, commissions, isEligibleForRe
                 refundDaysLeft={eligible ? getDaysRemaining(sale) : undefined}
                 refundStatus={existingRefund?.status}
                 onRefund={eligible && !existingRefund ? () => onRefundClick(sale) : undefined}
+                onSupport={() => toast.success("Soporte contactado", { description: `Ticket abierto para la venta ${sale.id.slice(-6)}` })}
                 role="vendor"
               />
             );
