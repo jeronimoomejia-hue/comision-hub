@@ -23,26 +23,7 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-
-import insuranceImg from "@/assets/service-covers/insurance-ai.jpg";
-import legalImg from "@/assets/service-covers/legal-ai.jpg";
-import marketingImg from "@/assets/service-covers/marketing-ai.jpg";
-import salesImg from "@/assets/service-covers/sales-ai.jpg";
-import supportImg from "@/assets/service-covers/support-ai.jpg";
-import accountingImg from "@/assets/service-covers/accounting-ai.jpg";
-import hrImg from "@/assets/service-covers/hr-ai.jpg";
-import securityImg from "@/assets/service-covers/security-ai.jpg";
-
-const categoryCovers: Record<string, string> = {
-  'IA para Seguros': insuranceImg,
-  'IA Legal': legalImg,
-  'IA para Marketing': marketingImg,
-  'IA para Ventas': salesImg,
-  'IA para Atención': supportImg,
-  'IA para Contabilidad': accountingImg,
-  'IA para RRHH': hrImg,
-  'IA para Ciberseguridad': securityImg,
-};
+import { categoryCovers } from "@/data/coverImages";
 
 const refundReasons = [
   { value: "arrepentimiento", label: "Cliente se arrepintió" },

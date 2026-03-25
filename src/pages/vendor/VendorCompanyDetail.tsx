@@ -9,26 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import TransactionCard from "@/components/TransactionCard";
-
-import insuranceImg from "@/assets/service-covers/insurance-ai.jpg";
-import legalImg from "@/assets/service-covers/legal-ai.jpg";
-import marketingImg from "@/assets/service-covers/marketing-ai.jpg";
-import salesImg from "@/assets/service-covers/sales-ai.jpg";
-import supportImg from "@/assets/service-covers/support-ai.jpg";
-import accountingImg from "@/assets/service-covers/accounting-ai.jpg";
-import hrImg from "@/assets/service-covers/hr-ai.jpg";
-import securityImg from "@/assets/service-covers/security-ai.jpg";
-
-const categoryCovers: Record<string, string> = {
-  'IA para Seguros': insuranceImg,
-  'IA Legal': legalImg,
-  'IA para Marketing': marketingImg,
-  'IA para Ventas': salesImg,
-  'IA para Atención': supportImg,
-  'IA para Contabilidad': accountingImg,
-  'IA para RRHH': hrImg,
-  'IA para Ciberseguridad': securityImg,
-};
+import { categoryCovers } from "@/data/coverImages";
 
 type CompanyTab = 'acerca' | 'servicios' | 'ventas' | 'devoluciones' | 'cupones' | 'chat';
 
@@ -199,6 +180,10 @@ const companyDescriptions: Record<string, { tagline: string; description: string
   'company-006': { tagline: 'Contabilidad inteligente para PyMEs', description: 'NumeroIA automatiza la contabilidad, facturación y reportes fiscales usando IA. Compatible con la normativa tributaria colombiana.', founded: '2023', employees: '20', highlights: ['Facturación electrónica automática', 'Reportes DIAN automatizados', 'Conciliación bancaria con IA', 'Alertas fiscales inteligentes'] },
   'company-007': { tagline: 'Reclutamiento inteligente y sin sesgos', description: 'Recruta analiza perfiles, filtra candidatos y programa entrevistas usando IA. Reduce el tiempo de contratación un 70%.', founded: '2023', employees: '25', highlights: ['Filtrado inteligente de CVs', 'Evaluaciones con IA sin sesgos', 'Programación automática de entrevistas', 'Analytics de diversidad'] },
   'company-008': { tagline: 'Ciberseguridad proactiva con IA', description: 'Blindaje detecta amenazas, analiza vulnerabilidades y responde a incidentes en tiempo real usando machine learning avanzado.', founded: '2022', employees: '38', highlights: ['Detección de amenazas en tiempo real', 'Análisis de vulnerabilidades', 'Respuesta automatizada a incidentes', 'Compliance y auditoría'] },
+  'company-009': { tagline: 'El gimnasio boutique que transforma cuerpos y mentes', description: 'IronHaus es un gimnasio premium con equipos de última generación, entrenadores certificados y programas personalizados. Más de 2,000 miembros activos en Bogotá.', founded: '2020', employees: '35', highlights: ['Equipos Technogym de última generación', 'Entrenadores certificados NSCA', 'Clases grupales: spinning, crossfit, HIIT', 'App con seguimiento de progreso'] },
+  'company-010': { tagline: 'Conecta con tu cuerpo, transforma tu vida', description: 'Prana Studio ofrece clases de yoga, meditación y bienestar en espacios diseñados para la calma. Retiros en la naturaleza y formación de profesores certificada Yoga Alliance.', founded: '2019', employees: '22', highlights: ['Clases: Vinyasa, Hatha, Yin, Meditación', 'Retiros wellness de 3 y 7 días', 'Teacher Training 200h certificado', 'Comunidad de más de 500 practicantes'] },
+  'company-011': { tagline: 'Tu santuario de bienestar y relajación', description: 'Vitalik Wellness combina terapias ancestrales con tecnología moderna. Circuitos de spa, masajes terapéuticos y programas de desintoxicación en un ambiente de lujo.', founded: '2021', employees: '28', highlights: ['Circuito spa: sauna, turco, jacuzzi', 'Masajes terapéuticos y relajantes', 'Programas de detox y nutrición', 'Membresías con beneficios exclusivos'] },
+  'company-012': { tagline: 'Belleza premium, experiencia única', description: 'Salón Élite redefine la experiencia de belleza con estilistas internacionales, productos de lujo y un ambiente exclusivo. Especialistas en novias, color y tratamientos capilares.', founded: '2018', employees: '18', highlights: ['Estilistas con formación internacional', 'Productos Wella y L\'Oréal Professionnel', 'Experiencia VIP para novias', 'Tratamientos capilares de alta gama'] },
 };
 
 function AcercaTab({ company, companyServices, vendorSales }: { company: any; companyServices: Array<any>; vendorSales: Array<any> }) {

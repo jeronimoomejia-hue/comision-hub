@@ -12,27 +12,8 @@ import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { formatCOP, CURRENT_COMPANY_ID, companies, type Service } from "@/data/mockData";
 import { useDemo } from "@/contexts/DemoContext";
+import { categoryCovers } from "@/data/coverImages";
 import ServiceEditModal from "@/components/company/ServiceEditModal";
-
-import insuranceImg from "@/assets/service-covers/insurance-ai.jpg";
-import legalImg from "@/assets/service-covers/legal-ai.jpg";
-import marketingImg from "@/assets/service-covers/marketing-ai.jpg";
-import salesImg from "@/assets/service-covers/sales-ai.jpg";
-import supportImg from "@/assets/service-covers/support-ai.jpg";
-import accountingImg from "@/assets/service-covers/accounting-ai.jpg";
-import hrImg from "@/assets/service-covers/hr-ai.jpg";
-import securityImg from "@/assets/service-covers/security-ai.jpg";
-
-const categoryCovers: Record<string, string> = {
-  'IA para Seguros': insuranceImg,
-  'IA Legal': legalImg,
-  'IA para Marketing': marketingImg,
-  'IA para Ventas': salesImg,
-  'IA para Atención': supportImg,
-  'IA para Contabilidad': accountingImg,
-  'IA para RRHH': hrImg,
-  'IA para Ciberseguridad': securityImg,
-};
 
 export default function CompanyServices() {
   const { sales: demoSales, services, currentCompanyPlan, addService, updateService, addActivationCodes } = useDemo();

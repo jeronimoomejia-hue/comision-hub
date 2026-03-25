@@ -38,7 +38,7 @@ export default function VendorHome() {
   const otherCompanies = companies.filter(c => !vendorCompanyIds.includes(c.id)).slice(0, 4);
 
   const handleSelectCompany = (companyId: string) => {
-    navigate('/vendor');
+    navigate(`/vendor/company/${companyId}`);
   };
 
   return (
