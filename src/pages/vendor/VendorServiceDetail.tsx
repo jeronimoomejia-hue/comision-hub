@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import {
-  ShoppingCart, RotateCcw, Clock, DollarSign, Plus, User, Mail, Phone,
+  ShoppingCart, RotateCcw, Clock, DollarSign, Plus, User, Mail, Phone, Tag,
   RefreshCw, Zap, Lock, Check, BookOpen, FileText, Download,
   Lightbulb, HelpCircle, AlertCircle, Target, Users, Package,
   Shield, MessageSquare, ChevronRight, ChevronDown, Star, Play, Info, ExternalLink
