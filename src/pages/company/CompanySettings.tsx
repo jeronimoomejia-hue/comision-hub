@@ -1,103 +1,101 @@
 import DashboardLayout from "@/components/layout/DashboardLayout";
-import { Building2, Globe, Mail, Save, Palette, Crown, Lock, Tag, Code, MessageCircle } from "lucide-react";
+import { Crown, Building2, Lock, Tag, Globe, Code, Palette, Mail, Save, Settings, CheckCircle, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { companies, CURRENT_COMPANY_ID } from "@/data/mockData";
+import { companies, CURRENT_COMPANY_ID, type CompanyPlan } from "@/data/mockData";
 import { useDemo } from "@/contexts/DemoContext";
 import { toast } from "sonner";
+
+const planDetails: Record<CompanyPlan, { label: string; price: string; icon: typeof Zap; features: string[] }> = {
+  freemium: { label: "Freemium", price: "Gratis", icon: Zap, features: ['Máximo 5 servicios', 'Fee 15% por venta', 'Códigos manuales'] },
+  premium: { label: "Premium", price: "€100/mes", icon: Crown, features: ['Servicios ilimitados', 'Sin fee de plataforma', 'Cupones de descuento', 'Chat con vendedores'] },
+  enterprise: { label: "Enterprise", price: "€300/mes", icon: Building2, features: ['Todo Premium', 'Dominio propio + marca blanca', 'Integración API', 'Códigos automáticos'] },
+};
 
 export default function CompanySettings() {
   const { currentCompanyPlan, setCurrentCompanyPlan } = useDemo();
   const company = companies.find(c => c.id === CURRENT_COMPANY_ID);
+  const plan = planDetails[currentCompanyPlan];
 
-  const handleSave = () => {
-    toast.success("Configuración guardada correctamente");
-  };
+  const handleSave = () => toast.success("Configuración guardada");
 
   return (
     <DashboardLayout role="company" userName={company?.name}>
-      <div className="space-y-6">
+      <div className="space-y-8 max-w-2xl">
         <div>
-          <h1 className="text-2xl font-bold">Configuración</h1>
-          <p className="text-muted-foreground">Administra tu empresa y plan</p>
+          <h1 className="text-xl font-bold text-foreground">Configuración</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">Tu plan y personalización de marca</p>
         </div>
 
-        {/* Plan info */}
-        <div className="card-premium p-6">
-          <div className="flex items-center gap-3 mb-4">
-            <Crown className="w-5 h-5 text-primary" />
-            <h3 className="font-semibold">Tu plan actual</h3>
-          </div>
-          <div className="flex items-center justify-between">
-            <div>
-              <Badge className="text-sm">{currentCompanyPlan === 'freemium' ? 'Freemium' : currentCompanyPlan === 'premium' ? 'Premium — €100/mes' : 'Enterprise — €300/mes'}</Badge>
-              <p className="text-xs text-muted-foreground mt-2">
-                {currentCompanyPlan === 'freemium' && 'Máximo 5 servicios · Fee 15% por venta · Códigos manuales'}
-                {currentCompanyPlan === 'premium' && 'Servicios ilimitados · Sin fee · Cupones · Chat · Códigos manuales'}
-                {currentCompanyPlan === 'enterprise' && 'Todo Premium + Dominio propio · Marca blanca · API · Códigos automáticos'}
-              </p>
-            </div>
-            {currentCompanyPlan !== 'enterprise' && (
-              <Button size="sm" onClick={() => setCurrentCompanyPlan(currentCompanyPlan === 'freemium' ? 'premium' : 'enterprise')}>
-                Mejorar plan
-              </Button>
-            )}
-          </div>
-        </div>
-
-        {/* Personalización de marca */}
-        <div className="card-premium p-6">
-          <div className="flex items-center gap-3 mb-6">
-            <Palette className="w-5 h-5 text-primary" />
-            <h3 className="font-semibold">Personalización de marca</h3>
-          </div>
-          <p className="text-xs text-muted-foreground mb-4">
-            Personaliza cómo ven los vendedores tu plataforma. Sube tu logo y elige tus colores corporativos.
-          </p>
-          <div className="grid sm:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Logo de la empresa</Label>
-              <Input type="file" accept="image/*" className="h-9 text-sm" />
-            </div>
-            <div className="space-y-2">
-              <Label>Color principal</Label>
-              <div className="flex gap-2">
-                <Input type="color" defaultValue={company?.primaryColor || '#7c3aed'} className="w-12 h-9 p-1" />
-                <Input defaultValue={company?.primaryColor || '#7c3aed'} className="h-9 text-sm font-mono" />
+        {/* Current plan */}
+        <Section title="Tu plan" icon={plan.icon}>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-base font-bold text-foreground">{plan.label}</span>
+                  <Badge variant="outline" className="text-[10px]">{plan.price}</Badge>
+                </div>
+                <div className="space-y-1 mt-2">
+                  {plan.features.map((f, i) => (
+                    <p key={i} className="text-[11px] text-muted-foreground flex items-center gap-1.5">
+                      <CheckCircle className="w-3 h-3 text-primary flex-shrink-0" />
+                      {f}
+                    </p>
+                  ))}
+                </div>
               </div>
-            </div>
-            <div className="space-y-2">
-              <Label>Color secundario</Label>
-              <div className="flex gap-2">
-                <Input type="color" defaultValue={company?.secondaryColor || '#a78bfa'} className="w-12 h-9 p-1" />
-                <Input defaultValue={company?.secondaryColor || '#a78bfa'} className="h-9 text-sm font-mono" />
-              </div>
+              {currentCompanyPlan !== 'enterprise' && (
+                <Button size="sm" className="text-xs" onClick={() => setCurrentCompanyPlan(currentCompanyPlan === 'freemium' ? 'premium' : 'enterprise')}>
+                  Mejorar plan
+                </Button>
+              )}
             </div>
           </div>
-        </div>
+        </Section>
 
-        {/* Datos de empresa */}
-        <div className="card-premium p-6">
-          <div className="flex items-center gap-3 mb-6">
-            <Building2 className="w-5 h-5 text-primary" />
-            <h3 className="font-semibold">Información de la empresa</h3>
+        {/* Brand customization */}
+        <Section title="Personalización de marca" icon={Palette}>
+          <div className="space-y-4">
+            <p className="text-[11px] text-muted-foreground leading-relaxed">
+              Personaliza cómo ven los vendedores tu plataforma. Logo y colores corporativos.
+            </p>
+            <div className="grid grid-cols-2 gap-3">
+              <FieldRow label="Logo de la empresa">
+                <Input type="file" accept="image/*" className="h-9 text-sm" />
+              </FieldRow>
+              <FieldRow label="Color principal">
+                <div className="flex gap-2">
+                  <Input type="color" defaultValue={company?.primaryColor || '#7c3aed'} className="w-10 h-9 p-1" />
+                  <Input defaultValue={company?.primaryColor || '#7c3aed'} className="h-9 text-sm font-mono flex-1" />
+                </div>
+              </FieldRow>
+            </div>
+            <FieldRow label="Color secundario">
+              <div className="flex gap-2 max-w-xs">
+                <Input type="color" defaultValue={company?.secondaryColor || '#a78bfa'} className="w-10 h-9 p-1" />
+                <Input defaultValue={company?.secondaryColor || '#a78bfa'} className="h-9 text-sm font-mono flex-1" />
+              </div>
+            </FieldRow>
           </div>
-          <div className="grid sm:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Nombre de la empresa</Label>
-              <Input defaultValue={company?.name} />
+        </Section>
+
+        {/* Company info */}
+        <Section title="Datos de la empresa" icon={Building2}>
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-3">
+              <FieldRow label="Nombre">
+                <Input defaultValue={company?.name} className="h-9 text-sm" />
+              </FieldRow>
+              <FieldRow label="Industria">
+                <Input defaultValue={company?.industry} className="h-9 text-sm" />
+              </FieldRow>
             </div>
-            <div className="space-y-2">
-              <Label>Industria</Label>
-              <Input defaultValue={company?.industry} />
-            </div>
-            <div className="space-y-2">
-              <Label>País</Label>
+            <FieldRow label="País">
               <Select defaultValue={company?.country.toLowerCase()}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="colombia">Colombia</SelectItem>
                   <SelectItem value="méxico">México</SelectItem>
@@ -106,85 +104,84 @@ export default function CompanySettings() {
                   <SelectItem value="españa">España</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
+            </FieldRow>
           </div>
-        </div>
+        </Section>
 
-        {/* Contacto */}
-        <div className="card-premium p-6">
-          <div className="flex items-center gap-3 mb-6">
-            <Mail className="w-5 h-5 text-primary" />
-            <h3 className="font-semibold">Contacto</h3>
-          </div>
-          <div className="grid sm:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Email</Label>
-              <Input type="email" defaultValue={company?.contactEmail} />
-            </div>
-            <div className="space-y-2">
-              <Label>Teléfono</Label>
-              <Input defaultValue={company?.contactPhone} />
+        {/* Contact */}
+        <Section title="Contacto" icon={Mail}>
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-3">
+              <FieldRow label="Email">
+                <Input type="email" defaultValue={company?.contactEmail} className="h-9 text-sm" />
+              </FieldRow>
+              <FieldRow label="Teléfono">
+                <Input defaultValue={company?.contactPhone} className="h-9 text-sm" />
+              </FieldRow>
             </div>
           </div>
-        </div>
+        </Section>
 
-        {/* Premium+ features - link to coupons page */}
+        {/* Premium+ features */}
         {currentCompanyPlan !== 'freemium' && (
-          <div className="card-premium p-6">
-            <div className="flex items-center gap-3 mb-4">
-              <Tag className="w-5 h-5 text-primary" />
-              <h3 className="font-semibold">Cupones de descuento</h3>
-              <Badge variant="outline" className="text-[9px]">Premium+</Badge>
+          <Section title="Cupones de descuento" icon={Tag}>
+            <div className="space-y-3">
+              <p className="text-[11px] text-muted-foreground">Crea cupones que tus vendedores pueden aplicar al registrar ventas.</p>
+              <Button size="sm" variant="outline" className="text-xs" asChild>
+                <a href="/company/coupons"><Tag className="w-3 h-3 mr-1.5" />Ir a Cupones</a>
+              </Button>
             </div>
-            <p className="text-xs text-muted-foreground mb-3">Crea y administra cupones de descuento que tus vendedores pueden aplicar al registrar ventas.</p>
-            <Button size="sm" variant="outline" asChild>
-              <a href="/company/coupons">
-                <Tag className="w-3.5 h-3.5 mr-1" /> Ir a Cupones
-              </a>
-            </Button>
-          </div>
+          </Section>
         )}
 
         {/* Enterprise features */}
         {currentCompanyPlan === 'enterprise' && (
           <>
-            <div className="card-premium p-6">
-              <div className="flex items-center gap-3 mb-6">
-                <Globe className="w-5 h-5 text-primary" />
-                <h3 className="font-semibold">Dominio personalizado</h3>
-                <Badge variant="outline" className="text-[9px]">Enterprise</Badge>
+            <Section title="Dominio personalizado" icon={Globe}>
+              <div className="space-y-3">
+                <FieldRow label="Tu dominio">
+                  <Input defaultValue={company?.customDomain || 'ventas.tuempresa.com'} className="h-9 text-sm font-mono" />
+                </FieldRow>
+                <p className="text-[10px] text-muted-foreground">Configura un CNAME apuntando a app.mensualista.com</p>
               </div>
-              <div className="space-y-2">
-                <Label>Tu dominio</Label>
-                <Input defaultValue={company?.customDomain || 'ventas.tuempresa.com'} className="font-mono" />
-                <p className="text-xs text-muted-foreground">Configura un CNAME apuntando a app.mensualista.com</p>
-              </div>
-            </div>
+            </Section>
 
-            <div className="card-premium p-6">
-              <div className="flex items-center gap-3 mb-6">
-                <Code className="w-5 h-5 text-primary" />
-                <h3 className="font-semibold">Integraciones API</h3>
-                <Badge variant="outline" className="text-[9px]">Enterprise</Badge>
+            <Section title="Integraciones API" icon={Code}>
+              <div className="space-y-3">
+                <p className="text-[11px] text-muted-foreground">Conecta tu sistema para activación automática de códigos.</p>
+                <FieldRow label="API Key">
+                  <Input defaultValue="mk_live_****************************" readOnly className="h-9 text-xs font-mono" />
+                </FieldRow>
               </div>
-              <p className="text-xs text-muted-foreground mb-3">
-                Conecta tu sistema para activación automática de códigos de servicios digitales.
-              </p>
-              <div className="space-y-2">
-                <Label>API Key</Label>
-                <Input defaultValue="mk_live_****************************" readOnly className="font-mono text-xs" />
-              </div>
-            </div>
+            </Section>
           </>
         )}
 
         <div className="flex justify-end">
-          <Button onClick={handleSave}>
-            <Save className="w-4 h-4 mr-2" />
-            Guardar cambios
-          </Button>
+          <Button size="sm" onClick={handleSave}><Save className="w-3.5 h-3.5 mr-1.5" />Guardar cambios</Button>
         </div>
       </div>
     </DashboardLayout>
+  );
+}
+
+function Section({ title, icon: Icon, children }: { title: string; icon: typeof Settings; children: React.ReactNode }) {
+  return (
+    <div className="rounded-xl border border-border bg-card overflow-hidden">
+      <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-border">
+        <Icon className="w-4 h-4 text-muted-foreground" />
+        <h2 className="text-sm font-semibold text-foreground">{title}</h2>
+      </div>
+      <div className="p-5">{children}</div>
+    </div>
+  );
+}
+
+function FieldRow({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="space-y-1.5">
+      <label className="text-xs font-medium text-muted-foreground">{label}</label>
+      {children}
+    </div>
   );
 }
