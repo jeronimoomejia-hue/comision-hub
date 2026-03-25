@@ -40,6 +40,7 @@ interface TransactionCardProps {
   refundDecision?: string;
   onRefund?: () => void;
   onSupport?: () => void;
+  onViewReceipt?: () => void;
   role?: 'vendor' | 'company' | 'admin';
 }
 
