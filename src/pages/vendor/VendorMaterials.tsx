@@ -1,4 +1,4 @@
-import DashboardLayout from "@/components/layout/DashboardLayout";
+import VendorTabLayout from "@/components/layout/VendorTabLayout";
 import { Download, FileText, Search, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -46,7 +46,7 @@ export default function VendorMaterials() {
   const totalMaterials = availableServices.reduce((acc, s) => acc + s.materials.length, 0);
 
   return (
-    <DashboardLayout role="vendor" userName={vendor?.name}>
+    <VendorTabLayout>
       <div className="space-y-6">
         <div>
           <h1 className="text-2xl font-bold">Materiales del servicio</h1>
@@ -151,6 +151,6 @@ export default function VendorMaterials() {
           </div>
         )}
       </div>
-    </DashboardLayout>
+    </VendorTabLayout>
   );
 }

@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import DashboardLayout from "@/components/layout/DashboardLayout";
+import VendorTabLayout from "@/components/layout/VendorTabLayout";
 import { Button } from "@/components/ui/button";
 import { StatusBadge, ProgressBar, EmptyState } from "@/components/dashboard/DashboardComponents";
 import { 
@@ -54,7 +54,7 @@ export default function VendorTrainings() {
   };
 
   return (
-    <DashboardLayout role="vendor" userName="Carlos Mendoza">
+    <VendorTabLayout>
       <div className="space-y-6">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold">Capacitaciones</h1>
@@ -197,6 +197,6 @@ export default function VendorTrainings() {
           </TabsContent>
         </Tabs>
       </div>
-    </DashboardLayout>
+    </VendorTabLayout>
   );
 }

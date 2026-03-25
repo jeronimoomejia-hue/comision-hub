@@ -1,4 +1,4 @@
-import DashboardLayout from "@/components/layout/DashboardLayout";
+import VendorTabLayout from "@/components/layout/VendorTabLayout";
 import PageTutorial from "@/components/PageTutorial";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -93,7 +93,7 @@ export default function VendorProfile() {
   };
 
   return (
-    <DashboardLayout role="vendor" userName={vendorData.name}>
+    <VendorTabLayout>
       <div className="space-y-6">
         <PageTutorial
           pageId="vendor-profile"
@@ -405,6 +405,6 @@ export default function VendorProfile() {
           </div>
         </div>
       </div>
-    </DashboardLayout>
+    </VendorTabLayout>
   );
 }

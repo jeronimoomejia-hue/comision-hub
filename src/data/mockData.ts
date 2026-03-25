@@ -347,6 +347,29 @@ export const CURRENT_VENDOR_ID = 'vendor-001';
 export const CURRENT_COMPANY_ID = 'company-001';
 
 // =============================================================================
+// VENDOR ↔ COMPANY LINKS (multi-empresa)
+// =============================================================================
+
+export interface VendorCompanyLink {
+  vendorId: string;
+  companyId: string;
+  joinedAt: string;
+  status: 'active' | 'invited' | 'paused';
+}
+
+export const vendorCompanyLinks: VendorCompanyLink[] = [
+  // vendor-001 linked to 3 companies
+  { vendorId: 'vendor-001', companyId: 'company-001', joinedAt: '2024-06-01', status: 'active' },
+  { vendorId: 'vendor-001', companyId: 'company-002', joinedAt: '2024-08-15', status: 'active' },
+  { vendorId: 'vendor-001', companyId: 'company-005', joinedAt: '2024-10-01', status: 'active' },
+  // other vendors
+  { vendorId: 'vendor-002', companyId: 'company-001', joinedAt: '2024-07-01', status: 'active' },
+  { vendorId: 'vendor-003', companyId: 'company-003', joinedAt: '2024-08-01', status: 'active' },
+  { vendorId: 'vendor-004', companyId: 'company-004', joinedAt: '2024-09-01', status: 'active' },
+  { vendorId: 'vendor-005', companyId: 'company-005', joinedAt: '2024-10-01', status: 'active' },
+];
+
+// =============================================================================
 // DEMO DATA - EMPRESAS DE IA / SAAS
 // =============================================================================
 
@@ -899,44 +922,41 @@ const clientNames = [
   'Smart Corp', 'Futuro Tech', 'Innovación Plus', 'Servicios Élite', 'Desarrollos CR'
 ];
 
-function generateSales(): Sale[] {
+function generateSalesForVendor(vendorId: string, companyId: string, count: number, prefix: string): Sale[] {
   const salesList: Sale[] = [];
   const today = new Date();
-  const activeServices = services.filter(s => s.status === 'activo');
-  
-  // Servicios de Poliza.ai para vendor-001
-  const polizaServices = services.filter(s => s.companyId === 'company-001' && s.status === 'activo');
-  
-  // Generar 18 RELEASED, 9 HELD, 3 REFUNDED = 30 transacciones para vendor-001
+  const companyServices = services.filter(s => s.companyId === companyId && s.status === 'activo');
+  if (companyServices.length === 0) return salesList;
+
+  const released = Math.floor(count * 0.6);
+  const held = Math.floor(count * 0.3);
+  const refunded = count - released - held;
   const statusDistribution: TransactionStatus[] = [
-    ...Array(18).fill('RELEASED'),
-    ...Array(9).fill('HELD'),
-    ...Array(3).fill('REFUNDED')
+    ...Array(released).fill('RELEASED'),
+    ...Array(held).fill('HELD'),
+    ...Array(refunded).fill('REFUNDED')
   ];
-  
-  for (let i = 0; i < 30; i++) {
+
+  for (let i = 0; i < count; i++) {
     const status = statusDistribution[i];
     const daysAgo = status === 'HELD' ? Math.floor(Math.random() * 7) : Math.floor(Math.random() * 30) + 7;
     const saleDate = new Date(today);
     saleDate.setDate(saleDate.getDate() - daysAgo);
-    
     const holdEndDate = new Date(saleDate);
-    holdEndDate.setDate(holdEndDate.getDate() + 7); // 7 días de retención
-    
-    const service = polizaServices[Math.floor(Math.random() * polizaServices.length)];
+    holdEndDate.setDate(holdEndDate.getDate() + 7);
+
+    const service = companyServices[Math.floor(Math.random() * companyServices.length)];
     const client = clientNames[Math.floor(Math.random() * clientNames.length)];
-    
-    // Calcular splits
     const grossAmount = service.priceCOP;
     const sellerCommissionAmount = Math.round(grossAmount * (service.vendorCommissionPct / 100));
     const mensualistaFeeAmount = Math.round(grossAmount * (service.mensualistaPct / 100));
     const providerNetAmount = grossAmount - sellerCommissionAmount - mensualistaFeeAmount;
-    
+
     salesList.push({
-      id: `sale-v1-${String(i + 1).padStart(3, '0')}`,
+      id: `sale-${prefix}-${String(i + 1).padStart(3, '0')}`,
       serviceId: service.id,
       companyId: service.companyId,
-      vendorId: 'vendor-001',
+      vendorId,
       clientName: client,
       clientEmail: `contacto@${client.toLowerCase().replace(/\s+/g, '')}.co`,
       grossAmount,
@@ -949,13 +969,25 @@ function generateSales(): Sale[] {
       refundedAt: status === 'REFUNDED' ? saleDate.toISOString().split('T')[0] : undefined,
       status,
       paymentProvider: 'MercadoPago',
-      mpPaymentId: `MP-${Date.now()}-${i}`,
+      mpPaymentId: `MP-${Date.now()}-${prefix}${i}`,
       isSubscription: service.type === 'suscripción',
       subscriptionActive: status !== 'REFUNDED' && service.type === 'suscripción',
       createdAt: saleDate.toISOString().split('T')[0],
-      amountCOP: grossAmount // Legacy compatibility
+      amountCOP: grossAmount
     });
   }
+  return salesList;
+}
+
+function generateSales(): Sale[] {
+  const salesList: Sale[] = [];
+  const today = new Date();
+  const activeServices = services.filter(s => s.status === 'activo');
+
+  // Vendor-001 sales across 3 companies
+  salesList.push(...generateSalesForVendor('vendor-001', 'company-001', 30, 'v1a'));
+  salesList.push(...generateSalesForVendor('vendor-001', 'company-002', 12, 'v1b'));
+  salesList.push(...generateSalesForVendor('vendor-001', 'company-005', 8, 'v1c'));
   
   // Generar 70 ventas adicionales para otros vendedores
   const otherStatusDistribution: TransactionStatus[] = [

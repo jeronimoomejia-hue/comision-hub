@@ -1,4 +1,4 @@
-import DashboardLayout from "@/components/layout/DashboardLayout";
+import VendorTabLayout from "@/components/layout/VendorTabLayout";
 import { StatusBadge, StatCard, EmptyState } from "@/components/dashboard/DashboardComponents";
 import {
   RotateCcw,
@@ -74,7 +74,7 @@ export default function VendorRefunds() {
   };
 
   return (
-    <DashboardLayout role="vendor" userName="Carlos Mendoza">
+    <VendorTabLayout>
       <div className="space-y-6">
         {/* Header */}
         <div>
@@ -228,6 +228,6 @@ export default function VendorRefunds() {
           />
         )}
       </div>
-    </DashboardLayout>
+    </VendorTabLayout>
   );
 }

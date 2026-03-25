@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import DashboardLayout from "@/components/layout/DashboardLayout";
+import VendorTabLayout from "@/components/layout/VendorTabLayout";
 import { StatCard, EmptyState, DataTable } from "@/components/dashboard/DashboardComponents";
 import { 
   DollarSign, CheckCircle2, AlertTriangle, Clock, CreditCard, Eye, MessageCircle,
@@ -160,7 +160,7 @@ export default function VendorPayments() {
   };
 
   return (
-    <DashboardLayout role="vendor" userName={vendor?.name}>
+    <VendorTabLayout>
       <div className="space-y-6">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold">Mis Ventas y Pagos</h1>
@@ -656,6 +656,6 @@ export default function VendorPayments() {
           )}
         </DialogContent>
       </Dialog>
-    </DashboardLayout>
+    </VendorTabLayout>
   );
 }

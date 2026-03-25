@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import DashboardLayout from "@/components/layout/DashboardLayout";
+import VendorTabLayout from "@/components/layout/VendorTabLayout";
 import PageTutorial from "@/components/PageTutorial";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -30,7 +30,7 @@ export default function VendorTrainingDetail() {
 
   if (!training || !service) {
     return (
-      <DashboardLayout role="vendor" userName="Carlos Mendoza">
+      <VendorTabLayout>
         <div className="flex flex-col items-center justify-center min-h-[400px] text-center">
           <FileText className="w-16 h-16 text-muted-foreground mb-4" />
           <h2 className="text-xl font-semibold mb-2">Capacitación no encontrada</h2>
@@ -42,7 +42,7 @@ export default function VendorTrainingDetail() {
             Volver a servicios
           </Button>
         </div>
-      </DashboardLayout>
+      </VendorTabLayout>
     );
   }
 
@@ -70,7 +70,7 @@ export default function VendorTrainingDetail() {
   const isInProgress = training.status === 'in_progress';
 
   return (
-    <DashboardLayout role="vendor" userName="Carlos Mendoza">
+    <VendorTabLayout>
       <div className="space-y-6">
         <PageTutorial
           pageId="vendor-training"
@@ -276,6 +276,6 @@ export default function VendorTrainingDetail() {
           </div>
         )}
       </div>
-    </DashboardLayout>
+    </VendorTabLayout>
   );
 }
