@@ -82,16 +82,12 @@ function getCompanyNav(plan: CompanyPlan) {
     { icon: LayoutDashboard, label: "Dashboard", href: "/company" },
     { icon: Package, label: "Servicios", href: "/company/services" },
     { icon: Users, label: "Vendedores", href: "/company/vendors" },
-    { icon: BookOpen, label: "Capacitaciones", href: "/company/trainings" },
-    { icon: ShoppingCart, label: "Ventas", href: "/company/sales" },
     { icon: DollarSign, label: "Pagos", href: "/company/payments" },
-    { icon: Palette, label: "Personalizar", href: "/company/profile" },
     { icon: Settings, label: "Configuración", href: "/company/settings" },
   ];
 
-  // Premium & Enterprise: Cupones & Chat
+  // Premium & Enterprise: Chat
   if (plan !== 'freemium') {
-    base.splice(5, 0, { icon: Tag, label: "Cupones", href: "/company/coupons" });
     base.push({ icon: MessageCircle, label: "Chat", href: "/company/chat" });
   }
 
