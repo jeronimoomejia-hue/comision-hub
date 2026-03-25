@@ -44,8 +44,8 @@ export default function VendorTrainingDetail() {
       <VendorTabLayout backTo="/vendor" backLabel="Inicio">
         <div className="flex flex-col items-center justify-center min-h-[400px] text-center">
           <BookOpen className="w-10 h-10 text-muted-foreground/30 mb-4" />
-          <p className="text-sm font-medium">Capacitación no encontrada</p>
-          <p className="text-xs text-muted-foreground mt-1 mb-4">No se encontró el contenido de capacitación</p>
+          <p className="text-sm font-medium">Entrenamiento no encontrada</p>
+          <p className="text-xs text-muted-foreground mt-1 mb-4">No se encontró el contenido de entrenamiento</p>
           <Button variant="outline" size="sm" onClick={() => navigate('/vendor')}>
             <ArrowLeft className="w-3.5 h-3.5 mr-1.5" /> Volver
           </Button>
@@ -82,7 +82,7 @@ export default function VendorTrainingDetail() {
 
   const handleComplete = () => {
     completeTraining(currentVendorId, service.id);
-    toast.success("Capacitación completada. Servicio activado.", {
+    toast.success("Entrenamiento completada. Producto activado.", {
       description: `Ahora puedes vender ${service.name}`,
       duration: 4000
     });
@@ -234,7 +234,7 @@ export default function VendorTrainingDetail() {
                     <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-2">
                       <Play className="w-7 h-7 text-primary ml-0.5" />
                     </div>
-                    <p className="text-xs text-muted-foreground">Video de capacitación</p>
+                    <p className="text-xs text-muted-foreground">Video de entrenamiento</p>
                   </div>
                 </div>
               )}
@@ -355,7 +355,7 @@ export default function VendorTrainingDetail() {
                 <div>
                   <p className="text-sm font-medium text-foreground">¿Listo para vender?</p>
                   <p className="text-[11px] text-muted-foreground">
-                    Declara la capacitación completada para activar el servicio
+                    Declara la entrenamiento completada para activar el producto
                   </p>
                 </div>
                 <Button size="sm" onClick={handleComplete}>
@@ -370,13 +370,13 @@ export default function VendorTrainingDetail() {
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                   <div>
-                    <p className="text-xs font-medium text-emerald-700">Servicio activo</p>
+                    <p className="text-xs font-medium text-emerald-700">Producto activo</p>
                     <p className="text-[10px] text-muted-foreground">Completada el {training?.completedAt}</p>
                   </div>
                 </div>
                 <Button variant="outline" size="sm" className="text-xs"
                   onClick={() => navigate(`/vendor/company/${company?.id}/service/${service.id}`)}>
-                  Ir al servicio <ChevronRight className="w-3 h-3 ml-1" />
+                  Ir al producto <ChevronRight className="w-3 h-3 ml-1" />
                 </Button>
               </div>
             )}

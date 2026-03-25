@@ -178,7 +178,7 @@ export default function TransactionCard({
                   <div>
                     <p className="text-xs font-medium text-amber-700">Dinero en retención</p>
                     <p className="text-[10px] text-amber-600/80 mt-0.5 leading-relaxed">
-                      Los fondos están en retención según la política del servicio. Se liberan automáticamente el {new Date(holdEndDate).toLocaleDateString('es-CO', { day: 'numeric', month: 'long' })}.
+                      Los fondos están en retención según la política del producto. Se liberan automáticamente el {new Date(holdEndDate).toLocaleDateString('es-CO', { day: 'numeric', month: 'long' })}.
                     </p>
                   </div>
                 </div>

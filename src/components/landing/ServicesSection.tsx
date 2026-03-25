@@ -87,7 +87,7 @@ export const ServicesSection = () => {
   };
 
   return (
-    <section id="servicios" className="py-24 px-4 sm:px-6 lg:px-8 bg-background relative overflow-hidden">
+    <section id="productos" className="py-24 px-4 sm:px-6 lg:px-8 bg-background relative overflow-hidden">
       <div className="container mx-auto max-w-6xl">
         {/* Header */}
         <motion.div
@@ -97,13 +97,13 @@ export const ServicesSection = () => {
           className="text-center mb-6"
         >
           <span className="inline-block px-4 py-1.5 rounded-full bg-[#F4F0FA] text-primary text-sm font-medium mb-4 border border-border">
-            Mensualista Servicios
+            Mensualista Productos
           </span>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-foreground">
             Comisiones recurrentes vendiendo suscripciones
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Elige entre docenas de servicios digitales de empresas verificadas y gana cada mes.
+            Elige entre docenas de productos digitales de empresas verificadas y gana cada mes.
           </p>
         </motion.div>
 
@@ -179,7 +179,7 @@ export const ServicesSection = () => {
         >
           <Link to="/auth?mode=register&role=vendor">
             <Button size="lg" className="px-10 group">
-              Entrar a Servicios
+              Entrar a Productos
               <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Button>
           </Link>
@@ -234,7 +234,7 @@ export const ServicesSection = () => {
 
               <Link to="/auth?mode=register&role=vendor" className="block">
                 <Button className="w-full">
-                  Elegir este servicio
+                  Elegir este producto
                   <ArrowRight className="ml-2 w-4 h-4" />
                 </Button>
               </Link>

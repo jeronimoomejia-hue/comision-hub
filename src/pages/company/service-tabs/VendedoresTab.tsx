@@ -73,7 +73,7 @@ export default function VendedoresTab({ service, serviceSales, trainingProgress,
         <div className="text-center py-12 rounded-xl border border-border bg-card">
           <Users className="w-8 h-8 text-muted-foreground/30 mx-auto mb-3" />
           <p className="text-sm font-medium mb-1">Sin vendedores</p>
-          <p className="text-xs text-muted-foreground">Ningún vendedor ha interactuado con este servicio</p>
+          <p className="text-xs text-muted-foreground">Ningún vendedor ha interactuado con este producto</p>
         </div>
       )}
     </div>

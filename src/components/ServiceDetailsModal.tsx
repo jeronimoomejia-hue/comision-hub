@@ -192,7 +192,7 @@ export const ServiceDetailsModal = ({
             <section className="p-4 rounded-xl bg-primary/5 border border-primary/20">
               <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
                 <Lightbulb className="w-4 h-4 text-primary" />
-                Cómo vender este servicio
+                Cómo vender este producto
               </h3>
               <div className="space-y-3">
                 <div>
@@ -264,7 +264,7 @@ export const ServiceDetailsModal = ({
                   )}
                   <div>
                     <h4 className="text-sm font-semibold">
-                      Capacitación {service.trainingType === 'video' ? 'en Video' : 'en PDF'}
+                      Entrenamiento {service.trainingType === 'video' ? 'en Video' : 'en PDF'}
                     </h4>
                     <p className="text-xs text-muted-foreground">
                       ~{details?.trainingDurationMinutes || 15} min · {isTrainingComplete ? 'Completada' : 'Pendiente'}

@@ -35,7 +35,7 @@ export default function CapacitacionTab({ service, trainingProgress }: any) {
     // In production this would persist
     setIsEditing(false);
     setEditContent(null);
-    toast.success("Capacitación actualizada");
+    toast.success("Entrenamiento actualizada");
   };
 
   const currentContent = isEditing && editContent ? editContent : content;
@@ -73,9 +73,9 @@ export default function CapacitacionTab({ service, trainingProgress }: any) {
     return (
       <div className="text-center py-12 rounded-xl border border-border bg-card">
         <BookOpen className="w-8 h-8 text-muted-foreground/30 mx-auto mb-3" />
-        <p className="text-sm font-medium mb-1">Sin contenido de capacitación</p>
+        <p className="text-sm font-medium mb-1">Sin contenido de entrenamiento</p>
         <p className="text-xs text-muted-foreground mb-3">Crea el contenido que los vendedores verán antes de poder vender</p>
-        <Button size="sm" onClick={startEditing}><Plus className="w-3.5 h-3.5 mr-1" /> Crear capacitación</Button>
+        <Button size="sm" onClick={startEditing}><Plus className="w-3.5 h-3.5 mr-1" /> Crear entrenamiento</Button>
       </div>
     );
   }
@@ -86,7 +86,7 @@ export default function CapacitacionTab({ service, trainingProgress }: any) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Switch checked={service.requiresTraining} disabled />
-          <span className="text-xs text-muted-foreground">Requiere capacitación para vender</span>
+          <span className="text-xs text-muted-foreground">Requiere entrenamiento para vender</span>
         </div>
         <div className="flex gap-1.5">
           {isEditing ? (
@@ -135,7 +135,7 @@ export default function CapacitacionTab({ service, trainingProgress }: any) {
           {/* Overview */}
           {isEditing && !previewMode ? (
             <div className="rounded-xl border border-border bg-card p-3 space-y-2">
-              <Label className="text-xs">Título de la capacitación</Label>
+              <Label className="text-xs">Título de la entrenamiento</Label>
               <Input className="h-8 text-xs" value={editContent?.title || ''} onChange={e => editContent && setEditContent({ ...editContent, title: e.target.value })} />
               <Label className="text-xs">Descripción general</Label>
               <Textarea className="text-xs" rows={3} value={editContent?.overview || ''} onChange={e => editContent && setEditContent({ ...editContent, overview: e.target.value })} />
@@ -298,7 +298,7 @@ export default function CapacitacionTab({ service, trainingProgress }: any) {
                       <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-2">
                         <Play className="w-7 h-7 text-primary ml-0.5" />
                       </div>
-                      <p className="text-xs text-muted-foreground">Video de capacitación</p>
+                      <p className="text-xs text-muted-foreground">Video de entrenamiento</p>
                     </div>
                   )}
                 </div>

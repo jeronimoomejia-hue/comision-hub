@@ -64,7 +64,7 @@ export default function ConfigTab({ service, updateService }: any) {
 
       {/* Status */}
       <section className="p-4 rounded-xl border border-border">
-        <h3 className="text-sm font-semibold mb-3 flex items-center gap-2"><Eye className="w-4 h-4 text-primary" /> Estado del servicio</h3>
+        <h3 className="text-sm font-semibold mb-3 flex items-center gap-2"><Eye className="w-4 h-4 text-primary" /> Estado del producto</h3>
         {isEditing ? (
           <div className="flex items-center gap-3">
             <Switch checked={editData.status === 'activo'} onCheckedChange={v => setEditData({ ...editData, status: v ? 'activo' : 'pausado' })} />
@@ -94,7 +94,7 @@ export default function ConfigTab({ service, updateService }: any) {
               <Switch checked={editData.noRefund} onCheckedChange={v => setEditData({ ...editData, noRefund: v })} />
               <div>
                 <p className="text-sm font-medium">Sin devoluciones</p>
-                <p className="text-[10px] text-muted-foreground">Este servicio no ofrece devoluciones. Los fondos se liberan inmediatamente.</p>
+                <p className="text-[10px] text-muted-foreground">Este producto no ofrece devoluciones. Los fondos se liberan inmediatamente.</p>
               </div>
             </div>
 
@@ -139,7 +139,7 @@ export default function ConfigTab({ service, updateService }: any) {
                 </div>
                 <div>
                   <p className="text-sm font-semibold">Sin devoluciones</p>
-                  <p className="text-xs text-muted-foreground">Este servicio no ofrece devoluciones. Los fondos se liberan inmediatamente después de la venta.</p>
+                  <p className="text-xs text-muted-foreground">Este producto no ofrece devoluciones. Los fondos se liberan inmediatamente después de la venta.</p>
                 </div>
               </div>
             ) : (
@@ -164,14 +164,14 @@ export default function ConfigTab({ service, updateService }: any) {
 
       {/* Training config */}
       <section className="p-4 rounded-xl border border-border">
-        <h3 className="text-sm font-semibold mb-3 flex items-center gap-2"><Shield className="w-4 h-4 text-primary" /> Capacitación</h3>
+        <h3 className="text-sm font-semibold mb-3 flex items-center gap-2"><Shield className="w-4 h-4 text-primary" /> Entrenamiento</h3>
         {isEditing ? (
           <div className="space-y-3">
             <div className="flex items-center gap-3">
               <Switch checked={editData.requiresTraining} onCheckedChange={v => setEditData({ ...editData, requiresTraining: v })} />
               <div>
-                <p className="text-sm font-medium">Requiere capacitación</p>
-                <p className="text-[10px] text-muted-foreground">Los vendedores deben completar la capacitación antes de vender</p>
+                <p className="text-sm font-medium">Requiere entrenamiento</p>
+                <p className="text-[10px] text-muted-foreground">Los vendedores deben completar la entrenamiento antes de vender</p>
               </div>
             </div>
             {editData.requiresTraining && (
@@ -191,7 +191,7 @@ export default function ConfigTab({ service, updateService }: any) {
           <div className="flex items-center gap-3">
             <div className={`w-3 h-3 rounded-full ${service.requiresTraining ? 'bg-emerald-500' : 'bg-muted-foreground/30'}`} />
             <div>
-              <p className="text-sm font-medium">{service.requiresTraining ? 'Capacitación requerida' : 'Sin capacitación'}</p>
+              <p className="text-sm font-medium">{service.requiresTraining ? 'Entrenamiento requerida' : 'Sin entrenamiento'}</p>
               <p className="text-[10px] text-muted-foreground">
                 {service.requiresTraining ? `Tipo: ${service.trainingType?.toUpperCase() || 'PDF'} — Los vendedores deben completarla` : 'Los vendedores pueden vender sin capacitarse'}
               </p>

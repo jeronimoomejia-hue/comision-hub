@@ -106,7 +106,7 @@ export default function VendorProducts() {
         <div>
           <h1 className="text-xl font-semibold text-foreground">Productos</h1>
           <p className="text-sm text-muted-foreground mt-0.5">
-            Explora empresas y servicios para vender
+            Explora empresas y productos para vender
           </p>
         </div>
 

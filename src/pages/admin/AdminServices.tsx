@@ -35,7 +35,7 @@ export default function AdminServices() {
   return (
     <DashboardLayout role="admin" userName="Admin">
       <div className="space-y-4">
-        <h1 className="text-xl font-bold">Servicios</h1>
+        <h1 className="text-xl font-bold">Productos</h1>
 
         <Tabs defaultValue="active">
           <TabsList className="h-8">

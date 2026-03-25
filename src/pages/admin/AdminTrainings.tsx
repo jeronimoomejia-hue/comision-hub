@@ -50,11 +50,11 @@ export default function AdminTrainings() {
   return (
     <DashboardLayout role="admin" userName="Admin">
       <div className="space-y-6">
-        <h1 className="text-2xl font-bold">Capacitaciones</h1>
+        <h1 className="text-2xl font-bold">Entrenamientos</h1>
 
         {/* KPIs */}
         <div className="grid grid-cols-3 gap-4">
-          <Card><CardContent className="p-4 text-center"><BookOpen className="w-8 h-8 mx-auto mb-2 text-primary" /><p className="text-2xl font-bold">{activeTrainings}</p><p className="text-sm text-muted-foreground">Capacitaciones activas</p></CardContent></Card>
+          <Card><CardContent className="p-4 text-center"><BookOpen className="w-8 h-8 mx-auto mb-2 text-primary" /><p className="text-2xl font-bold">{activeTrainings}</p><p className="text-sm text-muted-foreground">Entrenamientos activas</p></CardContent></Card>
           <Card><CardContent className="p-4 text-center"><Clock className="w-8 h-8 mx-auto mb-2 text-blue-500" /><p className="text-2xl font-bold">{avgCompletion}%</p><p className="text-sm text-muted-foreground">% promedio completado</p></CardContent></Card>
           <Card><CardContent className="p-4 text-center"><CheckCircle className="w-8 h-8 mx-auto mb-2 text-green-500" /><p className="text-2xl font-bold">{completedToday}</p><p className="text-sm text-muted-foreground">Completadas hoy</p></CardContent></Card>
         </div>

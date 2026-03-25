@@ -9,8 +9,8 @@ import { useDemo } from "@/contexts/DemoContext";
 import { toast } from "sonner";
 
 const planDetails: Record<CompanyPlan, { label: string; price: string; icon: typeof Zap; features: string[] }> = {
-  freemium: { label: "Freemium", price: "Gratis", icon: Zap, features: ['Máximo 5 servicios', 'Fee 15% por venta', 'Códigos manuales'] },
-  premium: { label: "Premium", price: "€100/mes", icon: Crown, features: ['Servicios ilimitados', 'Sin fee de plataforma', 'Cupones de descuento', 'Chat con vendedores'] },
+  freemium: { label: "Freemium", price: "Gratis", icon: Zap, features: ['Máximo 5 productos', 'Fee 15% por venta', 'Códigos manuales'] },
+  premium: { label: "Premium", price: "€100/mes", icon: Crown, features: ['Productos ilimitados', 'Sin fee de plataforma', 'Cupones de descuento', 'Chat con vendedores'] },
   enterprise: { label: "Enterprise", price: "€300/mes", icon: Building2, features: ['Todo Premium', 'Dominio propio + marca blanca', 'Integración API', 'Códigos automáticos'] },
 };
 

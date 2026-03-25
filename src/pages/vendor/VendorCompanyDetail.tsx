@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import TransactionCard from "@/components/TransactionCard";
 import { categoryCovers } from "@/data/coverImages";
 
-type CompanyTab = 'acerca' | 'servicios' | 'ventas' | 'devoluciones' | 'cupones' | 'chat';
+type CompanyTab = 'acerca' | 'productos' | 'ventas' | 'devoluciones' | 'cupones' | 'chat';
 
 export default function VendorCompanyDetail() {
   const { companyId } = useParams<{ companyId: string }>();
@@ -57,7 +57,7 @@ export default function VendorCompanyDetail() {
 
   const tabs: { id: CompanyTab; label: string; icon: React.ElementType; planRequired?: boolean }[] = [
     { id: 'acerca', label: 'Acerca de', icon: Info },
-    { id: 'servicios', label: 'Servicios', icon: Package },
+    { id: 'productos', label: 'Productos', icon: Package },
     { id: 'ventas', label: 'Ventas', icon: ShoppingCart },
     { id: 'devoluciones', label: 'Devoluciones', icon: RotateCcw },
     { id: 'cupones', label: 'Cupones', icon: Tag, planRequired: true },
@@ -89,7 +89,7 @@ export default function VendorCompanyDetail() {
         {/* Quick Stats */}
         <div className="grid grid-cols-3 gap-3">
           <div className="rounded-xl border border-border bg-card p-3 text-center">
-            <p className="text-[10px] text-muted-foreground uppercase tracking-wide">Servicios</p>
+            <p className="text-[10px] text-muted-foreground uppercase tracking-wide">Productos</p>
             <p className="text-lg font-bold text-foreground">{companyServices.length}</p>
           </div>
           <div className="rounded-xl border border-border bg-card p-3 text-center">
@@ -106,7 +106,7 @@ export default function VendorCompanyDetail() {
         {inProgressTrainings > 0 && (
           <Link to="/vendor/trainings" className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500/10 text-amber-600 text-xs font-medium border border-amber-500/20">
             <BookOpen className="w-4 h-4" />
-            {inProgressTrainings} capacitación{inProgressTrainings !== 1 ? 'es' : ''} en curso
+            {inProgressTrainings} entrenamiento{inProgressTrainings !== 1 ? 'es' : ''} en curso
           </Link>
         )}
 
@@ -133,8 +133,8 @@ export default function VendorCompanyDetail() {
           <AcercaTab company={company} companyServices={companyServices} vendorSales={vendorSales} />
         )}
 
-        {activeTab === 'servicios' && (
-          <ServiciosTab
+        {activeTab === 'productos' && (
+          <ProductosTab
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
             filteredServices={filteredServices}
@@ -283,7 +283,7 @@ function AcercaTab({ company, companyServices, vendorSales }: { company: any; co
   );
 }
 
-function ServiciosTab({ searchQuery, setSearchQuery, filteredServices, topServiceIds, onServiceClick }: {
+function ProductosTab({ searchQuery, setSearchQuery, filteredServices, topServiceIds, onServiceClick }: {
   searchQuery: string;
   setSearchQuery: (q: string) => void;
   filteredServices: Array<any>;
@@ -295,7 +295,7 @@ function ServiciosTab({ searchQuery, setSearchQuery, filteredServices, topServic
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
         <Input
-          placeholder="Buscar servicios..."
+          placeholder="Buscar productos..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="pl-9 h-10 bg-card border-border rounded-xl text-sm"
@@ -526,7 +526,7 @@ function ChatTab({ companyName }: { companyName: string }) {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([
     { id: '1', from: 'company', text: `¡Hola! Bienvenido al equipo de ${companyName}. ¿En qué podemos ayudarte?`, time: '10:30' },
-    { id: '2', from: 'vendor', text: 'Hola, tengo una duda sobre el servicio de cotizaciones.', time: '10:32' },
+    { id: '2', from: 'vendor', text: 'Hola, tengo una duda sobre el producto de cotizaciones.', time: '10:32' },
     { id: '3', from: 'company', text: 'Claro, cuéntame. Estoy aquí para ayudarte con lo que necesites.', time: '10:33' },
   ]);
   const scrollRef = useRef<HTMLDivElement>(null);

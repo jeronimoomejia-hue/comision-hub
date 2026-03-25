@@ -54,7 +54,7 @@ export default function VendorRefunds() {
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input placeholder="Buscar por cliente o servicio..." value={searchQuery}
+            <Input placeholder="Buscar por cliente o producto..." value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)} className="pl-10" />
           </div>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
@@ -68,9 +68,9 @@ export default function VendorRefunds() {
             </SelectContent>
           </Select>
           <Select value={serviceFilter} onValueChange={setServiceFilter}>
-            <SelectTrigger className="w-full sm:w-48"><SelectValue placeholder="Servicio" /></SelectTrigger>
+            <SelectTrigger className="w-full sm:w-48"><SelectValue placeholder="Producto" /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Todos los servicios</SelectItem>
+              <SelectItem value="all">Todos los productos</SelectItem>
               {vendorServices.map(service => (
                 <SelectItem key={service!.id} value={service!.id}>{service!.name}</SelectItem>
               ))}

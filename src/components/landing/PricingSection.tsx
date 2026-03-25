@@ -61,9 +61,9 @@ interface ComparisonGroup {
 
 const comparisonData: ComparisonGroup[] = [
   {
-    category: "Servicios",
+    category: "Productos",
     rows: [
-      { feature: "Límite de servicios", freemium: "5", premium: "Ilimitados", enterprise: "Ilimitados" },
+      { feature: "Límite de productos", freemium: "5", premium: "Ilimitados", enterprise: "Ilimitados" },
       { feature: "Códigos de activación manuales", freemium: true, premium: true, enterprise: true },
       { feature: "Códigos automáticos (API)", freemium: false, premium: false, enterprise: true },
     ],

@@ -27,7 +27,7 @@ import { categoryCovers } from "@/data/coverImages";
 
 const refundReasons = [
   { value: "arrepentimiento", label: "Cliente se arrepintió" },
-  { value: "insatisfecho", label: "No le gustó el servicio" },
+  { value: "insatisfecho", label: "No le gustó el producto" },
   { value: "error", label: "Error en compra" },
   { value: "otro", label: "Otro" }
 ];
@@ -62,7 +62,7 @@ export default function VendorServiceDetail() {
       <VendorTabLayout backTo={companyId ? `/vendor/company/${companyId}` : "/vendor"} backLabel="Volver">
         <div className="text-center py-16">
           <Package className="w-10 h-10 text-muted-foreground/30 mx-auto mb-3" />
-          <p className="text-sm font-medium text-foreground">Servicio no encontrado</p>
+          <p className="text-sm font-medium text-foreground">Producto no encontrado</p>
         </div>
       </VendorTabLayout>
     );
@@ -348,7 +348,7 @@ function InfoTab({ service, extended, company, isTrainingComplete }: { service: 
               <Play className="w-3.5 h-3.5 text-primary" />
             </div>
             <div className="text-left">
-              <p className="text-xs font-medium text-foreground">Revisar capacitación</p>
+              <p className="text-xs font-medium text-foreground">Revisar entrenamiento</p>
               <p className="text-[10px] text-muted-foreground">Vuelve a ver el material de venta</p>
             </div>
           </div>
@@ -371,7 +371,7 @@ function InfoTab({ service, extended, company, isTrainingComplete }: { service: 
           className="flex items-center justify-between p-3 rounded-xl border border-border bg-card group hover:border-primary/30 transition-colors cursor-pointer"
         >
           <div>
-            <p className="text-xs font-medium text-foreground">Conocer más sobre este servicio</p>
+            <p className="text-xs font-medium text-foreground">Conocer más sobre este producto</p>
             <p className="text-[10px] text-muted-foreground">{extended.websiteUrl}</p>
           </div>
           <ExternalLink className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
@@ -391,7 +391,7 @@ function InfoTab({ service, extended, company, isTrainingComplete }: { service: 
           <p className="text-[10px] text-muted-foreground">{service.type === 'suscripción' ? 'mensual' : 'pago único'}</p>
         </div>
         <div className="p-3 rounded-xl border border-border bg-card">
-          <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Capacitación</p>
+          <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Entrenamiento</p>
           <p className="text-xs font-medium text-foreground mt-0.5">{service.trainingType === 'video' ? 'Video' : 'PDF'}</p>
           <p className={`text-[10px] font-medium mt-0.5 ${isTrainingComplete ? 'text-emerald-600' : 'text-amber-600'}`}>
             {isTrainingComplete ? 'Completada' : 'Pendiente'} · ~{extended?.trainingDurationMinutes || 15} min
@@ -494,7 +494,7 @@ function InfoTab({ service, extended, company, isTrainingComplete }: { service: 
       {/* Contact */}
       {extended?.contactEmail && (
         <div className="p-3 rounded-xl border border-border bg-card">
-          <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">Contacto del servicio</p>
+          <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">Contacto del producto</p>
           <p className="text-xs text-foreground mt-1">{extended.contactName}</p>
           <p className="text-[10px] text-muted-foreground">{extended.contactEmail}</p>
         </div>
@@ -566,7 +566,7 @@ function VentasTab({ serviceSales, getStatusConfig, commissions, isEligibleForRe
         <div className="text-center py-12 rounded-xl border border-border bg-card">
           <ShoppingCart className="w-8 h-8 text-muted-foreground/30 mx-auto mb-3" />
           <p className="text-sm font-medium text-foreground mb-1">Sin ventas aún</p>
-          <p className="text-xs text-muted-foreground">Registra tu primera venta de este servicio</p>
+          <p className="text-xs text-muted-foreground">Registra tu primera venta de este producto</p>
         </div>
       )}
     </div>
@@ -608,7 +608,7 @@ function DevolucionesTab({ serviceSales, refundRequests }: { serviceSales: Array
         <div className="text-center py-12 rounded-xl border border-border bg-card">
           <RotateCcw className="w-8 h-8 text-muted-foreground/30 mx-auto mb-3" />
           <p className="text-sm font-medium text-foreground mb-1">Sin devoluciones</p>
-          <p className="text-xs text-muted-foreground">No hay solicitudes de devolución para este servicio</p>
+          <p className="text-xs text-muted-foreground">No hay solicitudes de devolución para este producto</p>
         </div>
       )}
     </div>

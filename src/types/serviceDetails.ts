@@ -91,7 +91,7 @@ export const REFUND_REASONS = [
   'Dificultad técnica',
   'Cambio de necesidades',
   'Problemas de integración',
-  'Servicio no funciona',
+  'Producto no funciona',
   'Precio muy alto',
   'Otro motivo'
 ];

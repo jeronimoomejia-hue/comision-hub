@@ -565,7 +565,7 @@ export const services: Service[] = [
     vendorCommissionPct: 18, mensualistaPct: 0, status: 'activo',
     refundPolicy: { autoRefund: false, refundWindowDays: 0 }, 
     requiresTraining: true, trainingType: 'video', trainingUrl: 'https://example.com/elite-corte',
-    materials: [{ id: 'mat-033', serviceId: 'service-033', title: 'Catálogo servicios', type: 'pdf', url: '/materials/salon-catalogo.pdf', uploadedAt: '2025-02-01' }], 
+    materials: [{ id: 'mat-033', serviceId: 'service-033', title: 'Catálogo productos', type: 'pdf', url: '/materials/salon-catalogo.pdf', uploadedAt: '2025-02-01' }], 
     activationCodes: Array.from({ length: 25 }, (_, i) => ({ id: `ac-033-${String(i+1).padStart(3,'0')}`, code: `ELITE-CC-${String(i+1).padStart(4,'0')}`, status: 'available' as const })),
     createdAt: '2025-02-01' 
   },
@@ -607,7 +607,7 @@ export const serviceRequests: ServiceRequest[] = [
 // =============================================================================
 
 export const notifications: Notification[] = [
-  { id: 'notif-001', targetRole: 'vendor', title: '¡Nuevos servicios disponibles!', body: 'Se han añadido 3 nuevos servicios de IA para que puedas vender. Revisa el marketplace.', type: 'system', isActive: true, createdAt: '2025-01-20' },
+  { id: 'notif-001', targetRole: 'vendor', title: '¡Nuevos productos disponibles!', body: 'Se han añadido 3 nuevos productos de IA para que puedas vender. Revisa el marketplace.', type: 'system', isActive: true, createdAt: '2025-01-20' },
   { id: 'notif-002', targetRole: 'vendor', title: 'Pagos automáticos mejorados', body: 'Ahora tus comisiones se liberan automáticamente después del período de retención.', type: 'payment', isActive: true, createdAt: '2025-01-18' },
   { id: 'notif-003', targetRole: 'company', title: 'Nuevas métricas de vendedores', body: 'Ahora puedes ver estadísticas detalladas de ventas en tu panel.', type: 'system', isActive: true, createdAt: '2025-01-19' },
   { id: 'notif-004', targetRole: 'all', title: 'Mantenimiento programado', body: 'El sistema estará en mantenimiento el domingo 26 de enero de 2-4am.', type: 'system', isActive: true, createdAt: '2025-01-21' },
@@ -623,7 +623,7 @@ const clientNames = [
   'SmartBusiness', 'NextGen Tech', 'ProServices', 'GlobalTech', 'FastGrow',
   'StartupPlus', 'MegaCorp', 'TechStart', 'DigitalOne', 'InfoSystems',
   'Negocios Unidos', 'Inversiones Alfa', 'Grupo Omega', 'Consultores Pro', 'Digital Express',
-  'Smart Corp', 'Futuro Tech', 'Innovación Plus', 'Servicios Élite', 'Desarrollos CR'
+  'Smart Corp', 'Futuro Tech', 'Innovación Plus', 'Productos Élite', 'Desarrollos CR'
 ];
 
 function generateSalesForVendor(vendorId: string, companyId: string, count: number, prefix: string): Sale[] {
@@ -931,7 +931,7 @@ export const companyPayouts: CompanyPayout[] = companyPayments.map(p => ({
 
 export const refundRequests: RefundRequest[] = [
   // Vendor-001 has no refunds (new user)
-  { id: 'refund-002', saleId: 'sale-068', vendorId: 'vendor-002', companyId: 'company-002', serviceId: 'service-003', reason: 'No le gustó el servicio', createdAt: '2025-01-05', status: 'aprobado', decisionBy: 'empresa', decidedAt: '2025-01-06' },
+  { id: 'refund-002', saleId: 'sale-068', vendorId: 'vendor-002', companyId: 'company-002', serviceId: 'service-003', reason: 'No le gustó el producto', createdAt: '2025-01-05', status: 'aprobado', decisionBy: 'empresa', decidedAt: '2025-01-06' },
   { id: 'refund-003', saleId: 'sale-069', vendorId: 'vendor-003', companyId: 'company-003', serviceId: 'service-005', reason: 'Problema técnico', createdAt: '2025-01-03', status: 'automático', decisionBy: 'sistema', decidedAt: '2025-01-03' },
   { id: 'refund-004', saleId: 'sale-070', vendorId: 'vendor-004', companyId: 'company-004', serviceId: 'service-007', reason: 'Cliente duplicó compra', createdAt: '2025-01-08', status: 'aprobado', decisionBy: 'empresa', decidedAt: '2025-01-09' }
 ];

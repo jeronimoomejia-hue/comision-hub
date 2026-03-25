@@ -74,8 +74,8 @@ export default function VendorProfile() {
   };
 
   const stats = [
-    { icon: BookOpen, label: "Capacitaciones", value: completedTrainings, color: "text-primary" },
-    { icon: Briefcase, label: "Servicios activos", value: activeServices, color: "text-primary" },
+    { icon: BookOpen, label: "Entrenamientos", value: completedTrainings, color: "text-primary" },
+    { icon: Briefcase, label: "Productos activos", value: activeServices, color: "text-primary" },
     { icon: TrendingUp, label: "Ventas del mes", value: salesThisMonth, color: "text-primary" },
     { icon: DollarSign, label: "Comisiones del mes", value: formatCOP(commissionsThisMonth), color: "text-primary" },
   ];

@@ -62,10 +62,10 @@ const roleLabels = {
 function getVendorNav(plan: CompanyPlan) {
   const base = [
     { icon: LayoutDashboard, label: "Dashboard", href: "/vendor" },
-    { icon: Package, label: "Servicios", href: "/vendor/services" },
+    { icon: Package, label: "Productos", href: "/vendor/services" },
     { icon: ShoppingCart, label: "Mis Ventas", href: "/vendor/sales" },
     { icon: DollarSign, label: "Pagos", href: "/vendor/payments" },
-    { icon: BookOpen, label: "Capacitaciones", href: "/vendor/trainings" },
+    { icon: BookOpen, label: "Entrenamientos", href: "/vendor/trainings" },
     { icon: User, label: "Mi Perfil", href: "/vendor/profile" },
   ];
 
@@ -80,7 +80,7 @@ function getVendorNav(plan: CompanyPlan) {
 function getCompanyNav(plan: CompanyPlan) {
   const base = [
     { icon: LayoutDashboard, label: "Dashboard", href: "/company" },
-    { icon: Package, label: "Servicios", href: "/company/services" },
+    { icon: Package, label: "Productos", href: "/company/services" },
     { icon: Users, label: "Vendedores", href: "/company/vendors" },
     { icon: DollarSign, label: "Pagos", href: "/company/payments" },
     { icon: Settings, label: "Configuración", href: "/company/settings" },
@@ -105,8 +105,8 @@ const adminNav = [
   { icon: UserCheck, label: "Vendedores", href: "/admin/vendors" },
   { icon: Building2, label: "Empresas", href: "/admin/companies" },
   { icon: Activity, label: "Transacciones", href: "/admin/transactions" },
-  { icon: Package, label: "Servicios", href: "/admin/services" },
-  { icon: BookOpen, label: "Capacitaciones", href: "/admin/trainings" },
+  { icon: Package, label: "Productos", href: "/admin/services" },
+  { icon: BookOpen, label: "Entrenamientos", href: "/admin/trainings" },
   { icon: ShoppingCart, label: "Ventas", href: "/admin/sales" },
   { icon: DollarSign, label: "Pagos", href: "/admin/payments" },
   { icon: Users, label: "Usuarios", href: "/admin/users" },

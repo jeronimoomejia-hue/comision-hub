@@ -67,7 +67,7 @@ export default function CompanyServices() {
     });
     setShowNewService(false);
     setNewForm({ name: '', description: '', category: 'seguros', type: 'suscripción', priceCOP: 150000, vendorCommissionPct: 20, requiresTraining: true, trainingType: 'pdf', refundWindowDays: 14, autoRefund: false, initialCodes: '' });
-    toast.success("Servicio creado con " + codeLines.length + " códigos");
+    toast.success("Producto creado con " + codeLines.length + " códigos");
   };
 
   return (
@@ -76,9 +76,9 @@ export default function CompanyServices() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
           <div>
-            <h1 className="text-lg sm:text-2xl font-bold">Mis Servicios</h1>
+            <h1 className="text-lg sm:text-2xl font-bold">Mis Productos</h1>
             <p className="text-[11px] sm:text-sm text-muted-foreground">
-              {companyServices.length} servicio{companyServices.length !== 1 ? 's' : ''} creados
+              {companyServices.length} producto{companyServices.length !== 1 ? 's' : ''} creados
               {currentCompanyPlan === 'freemium' && ` · ${companyServices.length}/5 (Freemium)`}
             </p>
           </div>
@@ -86,7 +86,7 @@ export default function CompanyServices() {
             size="sm" className="h-9 text-xs"
             onClick={() => canAddMore ? setShowNewService(true) : toast.error("Límite alcanzado. Mejora tu plan.")}
           >
-            <Plus className="w-3.5 h-3.5 mr-1.5" /> Nuevo servicio
+            <Plus className="w-3.5 h-3.5 mr-1.5" /> Nuevo producto
           </Button>
         </div>
 
@@ -94,7 +94,7 @@ export default function CompanyServices() {
         <div className="relative max-w-xl">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
           <Input
-            placeholder="Buscar servicios..."
+            placeholder="Buscar productos..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-9 h-9 sm:h-11 bg-card border-border rounded-xl text-xs sm:text-sm"
@@ -114,7 +114,7 @@ export default function CompanyServices() {
             <div className="flex items-center gap-2">
               <Key className="w-4 h-4 text-primary flex-shrink-0" />
               <p className="text-xs text-muted-foreground">
-                <span className="font-medium text-foreground">Códigos:</span> Carga mínimo 20 por servicio. Se entregan automáticamente al comprador.
+                <span className="font-medium text-foreground">Códigos:</span> Carga mínimo 20 por producto. Se entregan automáticamente al comprador.
               </p>
             </div>
           )}
@@ -212,8 +212,8 @@ export default function CompanyServices() {
         ) : (
           <div className="text-center py-16">
             <Package className="w-10 h-10 text-muted-foreground/30 mx-auto mb-3" />
-            <p className="text-sm font-medium mb-1">Sin servicios</p>
-            <p className="text-xs text-muted-foreground">Crea tu primer servicio para empezar a vender</p>
+            <p className="text-sm font-medium mb-1">Sin productos</p>
+            <p className="text-xs text-muted-foreground">Crea tu primer producto para empezar a vender</p>
           </div>
         )}
       </div>
@@ -221,7 +221,7 @@ export default function CompanyServices() {
       {/* Create dialog */}
       <Dialog open={showNewService} onOpenChange={setShowNewService}>
         <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
-          <DialogHeader><DialogTitle className="text-base">Crear nuevo servicio</DialogTitle></DialogHeader>
+          <DialogHeader><DialogTitle className="text-base">Crear nuevo producto</DialogTitle></DialogHeader>
           <div className="space-y-3">
             <div><Label className="text-xs">Nombre</Label>
               <Input className="h-8 text-sm mt-1" value={newForm.name} onChange={e => setNewForm({ ...newForm, name: e.target.value })} /></div>
@@ -275,10 +275,10 @@ export default function CompanyServices() {
             </div>
             <div className="flex items-center gap-2">
               <Switch checked={newForm.requiresTraining} onCheckedChange={v => setNewForm({ ...newForm, requiresTraining: v })} />
-              <Label className="text-xs">Requiere capacitación</Label>
+              <Label className="text-xs">Requiere entrenamiento</Label>
             </div>
             {newForm.requiresTraining && (
-              <div><Label className="text-xs">Tipo de capacitación</Label>
+              <div><Label className="text-xs">Tipo de entrenamiento</Label>
                 <Select value={newForm.trainingType} onValueChange={v => setNewForm({ ...newForm, trainingType: v as any })}>
                   <SelectTrigger className="h-8 text-xs mt-1"><SelectValue /></SelectTrigger>
                   <SelectContent>
@@ -297,7 +297,7 @@ export default function CompanyServices() {
             )}
           </div>
           <DialogFooter>
-            <Button size="sm" className="text-xs" onClick={handleCreateService}>Crear servicio</Button>
+            <Button size="sm" className="text-xs" onClick={handleCreateService}>Crear producto</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

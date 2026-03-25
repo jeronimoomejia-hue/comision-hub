@@ -29,8 +29,8 @@ export const HeroFullScreen = () => {
               <a href="#como-funciona" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                 Cómo funciona
               </a>
-              <a href="#servicios" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                Servicios
+              <a href="#productos" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                Productos
               </a>
               <a href="#empresas" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                 Empresas
@@ -64,7 +64,7 @@ export const HeroFullScreen = () => {
             className="space-y-4"
           >
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight">
-              Vende servicios y{" "}
+              Vende productos y{" "}
               <span className="bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
                 gana comisión mensual.
               </span>

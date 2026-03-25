@@ -72,7 +72,7 @@ export default function AdminDashboard() {
           {[
             { label: "Vendedores", value: activeVendors },
             { label: "Empresas", value: activeCompanies },
-            { label: "Servicios", value: activeServices },
+            { label: "Productos", value: activeServices },
             { label: "Ventas mes", value: salesThisMonth.length },
             { label: "Devoluciones", value: refundedCount },
             { label: "Pagos fallidos", value: failedPayments },

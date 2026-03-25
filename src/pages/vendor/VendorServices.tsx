@@ -58,15 +58,15 @@ export default function VendorServices() {
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2">
           <div>
             <h1 className="text-lg sm:text-2xl font-bold text-foreground">
-              Servicios de {company?.name || 'la empresa'}
+              Productos de {company?.name || 'la empresa'}
             </h1>
             <p className="text-[11px] sm:text-sm text-muted-foreground">
-              {totalActive} listos para vender · {totalPending} pendientes de capacitación
+              {totalActive} listos para vender · {totalPending} pendientes de entrenamiento
             </p>
           </div>
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <Package className="w-3.5 h-3.5" />
-            {filteredServices.length} servicio{filteredServices.length !== 1 ? 's' : ''} disponibles
+            {filteredServices.length} producto{filteredServices.length !== 1 ? 's' : ''} disponibles
           </div>
         </div>
 
@@ -74,7 +74,7 @@ export default function VendorServices() {
         <div className="relative max-w-xl">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
           <Input
-            placeholder="Buscar servicios..."
+            placeholder="Buscar productos..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-9 h-9 sm:h-11 bg-card border-border rounded-xl text-xs sm:text-sm"

@@ -37,7 +37,7 @@ export default function CompanyServiceDetail() {
       <DashboardLayout role="company" userName={company?.name}>
         <div className="text-center py-16">
           <Package className="w-10 h-10 text-muted-foreground/30 mx-auto mb-3" />
-          <p className="text-sm font-medium">Servicio no encontrado</p>
+          <p className="text-sm font-medium">Producto no encontrado</p>
           <Button variant="outline" size="sm" className="mt-3" onClick={() => navigate('/company/services')}>
             <ArrowLeft className="w-3.5 h-3.5 mr-1.5" /> Volver
           </Button>
@@ -62,7 +62,7 @@ export default function CompanyServiceDetail() {
     { id: 'resumen', label: 'Resumen', icon: Info },
     { id: 'ventas', label: 'Ventas', icon: ShoppingCart, badge: serviceSales.length },
     { id: 'vendedores', label: 'Vendedores', icon: Users, badge: allVendorIds.size },
-    { id: 'capacitacion', label: 'Capacitación', icon: BookOpen },
+    { id: 'capacitacion', label: 'Entrenamiento', icon: BookOpen },
     { id: 'cupones', label: 'Cupones', icon: Tag },
     { id: 'codigos', label: 'Códigos', icon: Key, badge: codesAvailable },
     { id: 'config', label: 'Config', icon: Shield },
@@ -72,7 +72,7 @@ export default function CompanyServiceDetail() {
     <DashboardLayout role="company" userName={company?.name}>
       <div className="space-y-5">
         <button onClick={() => navigate('/company/services')} className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
-          <ArrowLeft className="w-3.5 h-3.5" /> Mis Servicios
+          <ArrowLeft className="w-3.5 h-3.5" /> Mis Productos
         </button>
 
         {/* Header */}

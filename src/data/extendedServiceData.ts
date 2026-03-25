@@ -54,15 +54,15 @@ export const extendedServiceDetails: Record<string, ExtendedDetails> = {
     notIncluded: [
       'Emisión directa de pólizas (requiere plan Pro)',
       'Integración con sistemas legacy personalizados',
-      'Capacitación presencial (solo virtual)'
+      'Entrenamiento presencial (solo virtual)'
     ],
-    activationTime: '24 horas después de completar la capacitación',
+    activationTime: '24 horas después de completar la entrenamiento',
     guarantee: 'Garantía de satisfacción de 14 días o te devolvemos el dinero',
     pitchOneLine: 'Cotiza seguros en 30 segundos con IA, no en 30 minutos.',
     pitchThreeLines: '¿Sabías que los corredores de seguros pierden hasta 5 horas diarias cotizando manualmente? Poliza Cotizador IA reduce ese tiempo a segundos, permitiéndote atender más clientes y cerrar más ventas. Nuestros usuarios reportan un aumento del 40% en conversiones.',
     objections: [
       { objection: '¿Funciona con todas las aseguradoras?', response: 'Sí, tenemos integradas las 15 principales aseguradoras de Colombia.' },
-      { objection: '¿Es difícil de aprender?', response: 'No, la capacitación dura solo 12 minutos y la plataforma es muy intuitiva.' },
+      { objection: '¿Es difícil de aprender?', response: 'No, la entrenamiento dura solo 12 minutos y la plataforma es muy intuitiva.' },
       { objection: '¿Qué pasa si el cliente quiere cambios en la cotización?', response: 'Puedes ajustar cualquier parámetro y regenerar la cotización instantáneamente.' },
       { objection: '¿Tiene soporte?', response: 'Sí, soporte 24/7 por WhatsApp con respuesta en menos de 10 minutos.' },
       { objection: '¿Puedo probarlo antes?', response: 'Tienes 14 días de garantía. Si no te funciona, te devolvemos el dinero.' }
@@ -83,12 +83,12 @@ export const extendedServiceDetails: Record<string, ExtendedDetails> = {
     trainingDurationMinutes: 12,
     refundPolicy: {
       acceptedReasons: ['No cumple expectativas', 'Dificultad técnica', 'No compatible con mis aseguradoras'],
-      policyText: 'Devolución sujeta a aprobación. Debes demostrar que completaste la capacitación e intentaste usar la herramienta.'
+      policyText: 'Devolución sujeta a aprobación. Debes demostrar que completaste la entrenamiento e intentaste usar la herramienta.'
     },
     countries: ['CO'],
     restrictions: 'Solo para corredores de seguros con licencia vigente en Colombia.',
     clientRequirements: ['Tener licencia de corredor de seguros', 'Acceso a internet estable', 'Computador o tablet'],
-    termsHighlights: 'El servicio se renueva automáticamente cada mes. Puedes cancelar en cualquier momento sin penalidad.',
+    termsHighlights: 'El producto se renueva automáticamente cada mes. Puedes cancelar en cualquier momento sin penalidad.',
     slaSupport: 'Respuesta en WhatsApp: máximo 10 minutos. Tickets: 24 horas hábiles.',
     contactName: 'María González',
     contactEmail: 'maria@poliza.ai',
@@ -115,7 +115,7 @@ export const extendedServiceDetails: Record<string, ExtendedDetails> = {
       'Asesoría legal personalizada',
       'Representación legal'
     ],
-    activationTime: '12 horas después de completar la capacitación',
+    activationTime: '12 horas después de completar la entrenamiento',
     guarantee: 'Prueba gratis de 7 días con acceso completo',
     pitchOneLine: 'Revisa contratos en 5 minutos con IA, no en 2 horas.',
     pitchThreeLines: '¿Cuántas horas a la semana pierdes revisando contratos? LexIA analiza documentos legales con IA, identificando riesgos y cláusulas problemáticas en minutos. Nuestros clientes ahorran 15 horas semanales en revisión de contratos.',
@@ -123,7 +123,7 @@ export const extendedServiceDetails: Record<string, ExtendedDetails> = {
       { objection: '¿Es seguro subir contratos confidenciales?', response: 'Absolutamente. Usamos encriptación de grado bancario y no almacenamos los documentos.' },
       { objection: '¿Funciona con contratos en español colombiano?', response: 'Sí, está entrenado específicamente con legislación colombiana.' },
       { objection: '¿Reemplaza al abogado?', response: 'No, es una herramienta que potencia al abogado, ahorrándole tiempo en tareas repetitivas.' },
-      { objection: '¿Qué tipo de contratos analiza?', response: 'Laborales, comerciales, arrendamiento, prestación de servicios, y más.' },
+      { objection: '¿Qué tipo de contratos analiza?', response: 'Laborales, comerciales, arrendamiento, prestación de productos, y más.' },
       { objection: '¿Tiene algún límite de documentos?', response: 'El plan incluye hasta 50 análisis mensuales, suficiente para la mayoría.' }
     ],
     idealClient: 'Abogado o estudio jurídico que revisa más de 10 contratos al mes y quiere optimizar su tiempo.',
@@ -176,7 +176,7 @@ services.forEach(service => {
       ],
       notIncluded: [
         'Personalización de interfaz',
-        'Capacitación presencial',
+        'Entrenamiento presencial',
         'Desarrollo de funcionalidades a medida'
       ],
       activationTime: '24-48 horas',
@@ -184,7 +184,7 @@ services.forEach(service => {
       pitchOneLine: `${service.name} automatiza y optimiza tu trabajo diario.`,
       pitchThreeLines: `¿Sabías que puedes ahorrar horas cada semana automatizando tareas repetitivas? ${service.name} usa inteligencia artificial para hacer el trabajo pesado por ti. Nuestros clientes reportan hasta un 50% de ahorro en tiempo.`,
       objections: [
-        { objection: '¿Es difícil de usar?', response: 'No, la interfaz es muy intuitiva y la capacitación dura menos de 15 minutos.' },
+        { objection: '¿Es difícil de usar?', response: 'No, la interfaz es muy intuitiva y la entrenamiento dura menos de 15 minutos.' },
         { objection: '¿Funciona para mi tipo de negocio?', response: 'Sí, tenemos clientes en múltiples industrias con excelentes resultados.' },
         { objection: '¿Qué pasa si no me gusta?', response: 'Tienes 14 días de garantía para probarlo sin riesgo.' },
         { objection: '¿Tiene soporte en español?', response: 'Absolutamente, todo el soporte es en español por WhatsApp.' },
@@ -209,9 +209,9 @@ services.forEach(service => {
         policyText: 'Devolución sujeta a las políticas de la empresa proveedora.'
       },
       countries: ['CO'],
-      restrictions: 'Servicio disponible únicamente en Colombia.',
+      restrictions: 'Producto disponible únicamente en Colombia.',
       clientRequirements: ['Empresa constituida legalmente', 'Acceso a internet', 'Equipo con navegador moderno'],
-      termsHighlights: 'El servicio se presta bajo los términos vigentes al momento de la compra.',
+      termsHighlights: 'El producto se presta bajo los términos vigentes al momento de la compra.',
       slaSupport: 'Respuesta en máximo 24 horas hábiles por WhatsApp.',
       contactName: 'Equipo de Soporte',
       contactEmail: 'soporte@mensualista.com',
