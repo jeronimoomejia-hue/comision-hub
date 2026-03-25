@@ -172,7 +172,7 @@ export default function VendorPayments() {
         <div className="flex items-start gap-3 p-3.5 rounded-xl bg-muted/30 border border-border">
           <CreditCard className="w-4 h-4 text-muted-foreground mt-0.5 flex-shrink-0" />
           <p className="text-xs text-muted-foreground leading-relaxed">
-            Cada venta pasa por <strong className="text-foreground">7 días de retención</strong>. Al liberarse, tu comisión se transfiere automáticamente a tu cuenta bancaria.
+            Cada venta pasa por un <strong className="text-foreground">periodo de retención</strong> definido por la empresa (7, 14 o 30 días según el servicio). Al liberarse, tu comisión se transfiere automáticamente.
           </p>
         </div>
 

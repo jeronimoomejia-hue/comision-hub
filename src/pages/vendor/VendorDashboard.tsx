@@ -29,7 +29,7 @@ const tutorialSteps = [
   { id: 1, title: "Explora tus empresas", desc: "Revisa el catálogo de servicios de cada empresa." },
   { id: 2, title: "Completa capacitaciones", desc: "Activa servicios completando el material de estudio." },
   { id: 3, title: "Registra tu primera venta", desc: "Vende un servicio y gana tu primera comisión." },
-  { id: 4, title: "Cobra tus comisiones", desc: "Las comisiones se liberan automáticamente tras 7 días." },
+  { id: 4, title: "Cobra tus comisiones", desc: "Las comisiones se liberan automáticamente tras el periodo de retención del servicio." },
 ];
 
 export default function VendorDashboard() {
