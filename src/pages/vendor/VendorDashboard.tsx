@@ -126,21 +126,28 @@ export default function VendorDashboard() {
         </motion.div>
 
         {/* Balance Card — Apple Wallet style */}
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.05 }}
-          className="rounded-2xl bg-foreground p-6 text-background"
-        >
-          <p className="text-xs font-light opacity-60 tracking-wide uppercase">Comisiones del mes</p>
-          <p className="text-3xl sm:text-4xl font-semibold tracking-tight mt-1">
-            {formatCOP(commissionsThisMonth)}
-          </p>
-          <div className="flex items-center gap-6 mt-4 text-xs opacity-70">
-            <span>{formatCOP(heldCommissions)} retenidas</span>
-            <span>{formatCOP(releasedCommissions)} liberadas</span>
-          </div>
-        </motion.div>
+        <Link to="/vendor/payments">
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.05 }}
+            className="rounded-2xl bg-foreground p-6 text-background cursor-pointer hover:opacity-95 active:scale-[0.99] transition-all group"
+          >
+            <p className="text-xs font-light opacity-60 tracking-wide uppercase">Comisiones del mes</p>
+            <p className="text-3xl sm:text-4xl font-semibold tracking-tight mt-1">
+              {formatCOP(commissionsThisMonth)}
+            </p>
+            <div className="flex items-center justify-between mt-4">
+              <div className="flex items-center gap-6 text-xs opacity-70">
+                <span>{formatCOP(heldCommissions)} retenidas</span>
+                <span>{formatCOP(releasedCommissions)} liberadas</span>
+              </div>
+              <span className="text-[10px] opacity-40 group-hover:opacity-70 transition-opacity flex items-center gap-1">
+                Ver pagos <ChevronRight className="w-3 h-3" />
+              </span>
+            </div>
+          </motion.div>
+        </Link>
 
         {/* KPIs Row — minimal */}
         <motion.div
@@ -221,7 +228,7 @@ export default function VendorDashboard() {
             </div>
             <Link
               to={`/vendor/company/${featuredService.companyId}`}
-              className="block rounded-2xl border border-border bg-card overflow-hidden group hover:shadow-md transition-all duration-300"
+              className="block rounded-2xl border border-border bg-card overflow-hidden group cursor-pointer hover:shadow-md hover:border-primary/20 active:scale-[0.99] transition-all duration-300"
             >
               <div className="relative h-44 sm:h-48 overflow-hidden">
                 <img 
@@ -261,9 +268,12 @@ export default function VendorDashboard() {
                     </div>
                   ))}
                 </div>
-                <div className="flex items-center gap-2 pt-1">
+                <div className="flex items-center justify-between pt-1 border-t border-border">
                   <span className="text-[10px] text-muted-foreground">
                     Precio cliente: {formatCOP(featuredService.priceCOP)} · {featuredService.type === 'suscripción' ? 'Recurrente' : 'Pago único'} · {featuredService.vendorCommissionPct}% comisión
+                  </span>
+                  <span className="text-[10px] font-medium text-primary flex items-center gap-1 group-hover:underline">
+                    Ver servicio <ChevronRight className="w-3 h-3" />
                   </span>
                 </div>
               </div>
@@ -347,7 +357,7 @@ export default function VendorDashboard() {
                 >
                   <Link
                     to={`/vendor/company/${company.id}`}
-                    className="block rounded-2xl border border-border bg-card overflow-hidden group hover:shadow-md hover:border-primary/20 transition-all duration-300"
+                    className="block rounded-2xl border border-border bg-card overflow-hidden group cursor-pointer hover:shadow-md hover:border-primary/20 transition-all duration-300 active:scale-[0.98]"
                   >
                     <div className="relative h-32 sm:h-36 overflow-hidden">
                       <img 
@@ -383,7 +393,9 @@ export default function VendorDashboard() {
                           {pc.label}
                         </Badge>
                       </div>
-                      <ChevronRight className="w-4 h-4 text-muted-foreground/40 group-hover:text-primary transition-colors" />
+                      <span className="text-[10px] font-medium text-primary opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                        Entrar <ChevronRight className="w-3.5 h-3.5" />
+                      </span>
                     </div>
                   </Link>
                 </motion.div>
