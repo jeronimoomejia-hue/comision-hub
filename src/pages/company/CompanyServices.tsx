@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { formatCOP, CURRENT_COMPANY_ID, companies, type Service } from "@/data/mockData";
 import { useDemo } from "@/contexts/DemoContext";
 import { categoryCovers } from "@/data/coverImages";
+import ServiceEditModal from "@/components/company/ServiceEditModal";
 
 export default function CompanyServices() {
   const { sales: demoSales, services, currentCompanyPlan, addService, updateService, addActivationCodes } = useDemo();

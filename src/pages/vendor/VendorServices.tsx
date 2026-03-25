@@ -9,6 +9,7 @@ import { useState } from "react";
 import { useDemo } from "@/contexts/DemoContext";
 import { formatCOP, companies } from "@/data/mockData";
 import { categoryCovers } from "@/data/coverImages";
+import ServiceDetailsModal from "@/components/ServiceDetailsModal";
 
 export default function VendorServices() {
   const navigate = useNavigate();
