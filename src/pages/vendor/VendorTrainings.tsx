@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import DashboardLayout from "@/components/layout/DashboardLayout";
+import VendorTabLayout from "@/components/layout/VendorTabLayout";
 import { Button } from "@/components/ui/button";
 import { StatusBadge, ProgressBar, EmptyState } from "@/components/dashboard/DashboardComponents";
 import { 

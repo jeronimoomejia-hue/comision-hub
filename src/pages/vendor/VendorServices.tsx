@@ -1,4 +1,4 @@
-import DashboardLayout from "@/components/layout/DashboardLayout";
+import VendorTabLayout from "@/components/layout/VendorTabLayout";
 import { 
   Search, Zap, RefreshCw, AlertTriangle,
   Star, Clock, Shield, Package, Lock

@@ -1,4 +1,4 @@
-import DashboardLayout from "@/components/layout/DashboardLayout";
+import VendorTabLayout from "@/components/layout/VendorTabLayout";
 import { StatusBadge, StatCard, EmptyState } from "@/components/dashboard/DashboardComponents";
 import {
   RotateCcw,

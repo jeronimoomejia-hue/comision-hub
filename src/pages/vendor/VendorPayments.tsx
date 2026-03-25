@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import DashboardLayout from "@/components/layout/DashboardLayout";
+import VendorTabLayout from "@/components/layout/VendorTabLayout";
 import { StatCard, EmptyState, DataTable } from "@/components/dashboard/DashboardComponents";
 import { 
   DollarSign, CheckCircle2, AlertTriangle, Clock, CreditCard, Eye, MessageCircle,

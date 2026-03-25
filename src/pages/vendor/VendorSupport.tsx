@@ -1,4 +1,4 @@
-import DashboardLayout from "@/components/layout/DashboardLayout";
+import VendorTabLayout from "@/components/layout/VendorTabLayout";
 import { MessageCircle, Clock, HelpCircle, ExternalLink, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { vendors, companies, CURRENT_VENDOR_ID, CURRENT_COMPANY_ID } from "@/data/mockData";
