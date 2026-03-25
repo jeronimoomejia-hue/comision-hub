@@ -136,6 +136,7 @@ export default function VendorCRM() {
           vendorId: currentVendorId || CURRENT_VENDOR_ID,
           clientName: newName.trim(),
           clientEmail: `${newName.trim().toLowerCase().replace(/\s+/g, '.')}@email.com`,
+          clientPhone: newPhone.trim() || undefined,
           grossAmount: gross,
           sellerCommissionAmount: comm,
           mensualistaFeeAmount: mFee,
