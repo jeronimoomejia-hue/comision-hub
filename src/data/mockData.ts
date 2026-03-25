@@ -127,6 +127,7 @@ export interface Sale {
   vendorId: string;
   clientName: string;
   clientEmail: string;
+  clientPhone?: string;
   clientCompany?: string;
   // Montos
   grossAmount: number; // Monto total de la venta
@@ -668,6 +669,7 @@ function generateSalesForVendor(vendorId: string, companyId: string, count: numb
       vendorId,
       clientName: client,
       clientEmail: `contacto@${client.toLowerCase().replace(/\s+/g, '')}.co`,
+      clientPhone: `3${Math.floor(Math.random() * 3)}${Math.floor(Math.random() * 10)} ${Math.floor(100 + Math.random() * 900)} ${Math.floor(1000 + Math.random() * 9000)}`,
       grossAmount,
       sellerCommissionAmount,
       mensualistaFeeAmount,
@@ -721,6 +723,7 @@ function generateSales(): Sale[] {
       vendorId: 'vendor-001',
       clientName: vs.client,
       clientEmail: `${vs.client.toLowerCase().replace(/\s+/g, '.')}@email.com`,
+      clientPhone: `3${idx % 3}${idx} ${300 + idx} ${4000 + idx * 111}`,
       grossAmount: gross,
       sellerCommissionAmount: sellerComm,
       mensualistaFeeAmount: mFee,
@@ -776,6 +779,7 @@ function generateSales(): Sale[] {
       vendorId: vendor.id,
       clientName: client,
       clientEmail: `contacto@${client.toLowerCase().replace(/\s+/g, '')}.co`,
+      clientPhone: `3${Math.floor(Math.random() * 3)}${Math.floor(Math.random() * 10)} ${Math.floor(100 + Math.random() * 900)} ${Math.floor(1000 + Math.random() * 9000)}`,
       grossAmount,
       sellerCommissionAmount,
       mensualistaFeeAmount,

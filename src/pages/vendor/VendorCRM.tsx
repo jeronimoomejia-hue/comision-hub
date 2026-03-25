@@ -136,6 +136,7 @@ export default function VendorCRM() {
           vendorId: currentVendorId || CURRENT_VENDOR_ID,
           clientName: newName.trim(),
           clientEmail: `${newName.trim().toLowerCase().replace(/\s+/g, '.')}@email.com`,
+          clientPhone: newPhone.trim() || undefined,
           grossAmount: gross,
           sellerCommissionAmount: comm,
           mensualistaFeeAmount: mFee,
@@ -461,14 +462,12 @@ export default function VendorCRM() {
               className="rounded-full h-10 px-4"
               autoFocus
             />
-            {!quickSale && (
-              <Input
-                placeholder="Teléfono (opcional)"
-                value={newPhone}
-                onChange={(e) => setNewPhone(e.target.value)}
-                className="rounded-full h-10 px-4"
-              />
-            )}
+            <Input
+              placeholder="Teléfono (opcional)"
+              value={newPhone}
+              onChange={(e) => setNewPhone(e.target.value)}
+              className="rounded-full h-10 px-4"
+            />
             <Select value={newService} onValueChange={setNewService}>
               <SelectTrigger className="rounded-full h-10 px-4">
                 <SelectValue placeholder="Producto" />
