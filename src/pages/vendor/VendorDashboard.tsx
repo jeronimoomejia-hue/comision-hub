@@ -275,6 +275,7 @@ export default function VendorDashboard() {
                   <span className="text-[10px] font-medium text-primary flex items-center gap-1 group-hover:underline">
                     Ver servicio <ChevronRight className="w-3 h-3" />
                   </span>
+                </div>
               </div>
             </Link>
           </motion.div>
