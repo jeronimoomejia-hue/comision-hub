@@ -801,12 +801,14 @@ export const sales: Sale[] = generateSales();
 // =============================================================================
 
 function generateCommissions(): Commission[] {
-  return sales.map((sale, i) => ({
+  return sales
+    .filter(sale => sale.status !== 'PENDING' && sale.status !== 'CANCELLED')
+    .map((sale, i) => ({
     id: `comm-${String(i + 1).padStart(3, '0')}`,
     saleId: sale.id,
     vendorId: sale.vendorId,
     amountCOP: sale.sellerCommissionAmount,
-    status: sale.status, // HELD, RELEASED, or REFUNDED
+    status: sale.status as Commission['status'],
     paymentDate: sale.status === 'COMPLETED' ? sale.releasedAt : undefined,
     createdAt: sale.createdAt
   }));
