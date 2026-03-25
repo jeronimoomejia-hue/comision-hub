@@ -2,11 +2,12 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ChevronDown, Clock, CheckCircle2, RotateCcw, MessageCircle,
-  Package, User, Calendar, CreditCard, Shield, Copy, ExternalLink
+  Package, User, CreditCard, Copy, Send, XCircle, ArrowRight,
+  Shield, Ban
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { formatCOP, formatDate, services as allServices } from "@/data/mockData";
+import { formatCOP, services as allServices } from "@/data/mockData";
 import { toast } from "sonner";
 import { categoryCovers } from "@/data/coverImages";
 
@@ -41,24 +42,80 @@ interface TransactionCardProps {
   role?: 'vendor' | 'company' | 'admin';
 }
 
-const saleStatusConfig: Record<string, { icon: typeof Clock; color: string; bg: string; label: string }> = {
-  'HELD': { icon: Clock, color: "text-amber-600", bg: "bg-amber-500/10 border-amber-500/20", label: "En retención" },
-  'COMPLETED': { icon: CheckCircle2, color: "text-emerald-600", bg: "bg-emerald-500/10 border-emerald-500/20", label: "Liberada" },
-  'REFUNDED': { icon: RotateCcw, color: "text-red-600", bg: "bg-red-500/10 border-red-500/20", label: "Devuelta" },
+const statusConfig: Record<string, { icon: typeof Clock; color: string; bg: string; label: string; textColor: string }> = {
+  'PENDING':   { icon: Send,         color: "text-blue-600",    bg: "bg-blue-50 dark:bg-blue-500/10",       label: "Esperando pago",   textColor: "text-blue-700 dark:text-blue-400" },
+  'HELD':      { icon: Clock,        color: "text-amber-600",   bg: "bg-amber-50 dark:bg-amber-500/10",     label: "En retención",     textColor: "text-amber-700 dark:text-amber-400" },
+  'COMPLETED': { icon: CheckCircle2, color: "text-emerald-600", bg: "bg-emerald-50 dark:bg-emerald-500/10", label: "Completada",       textColor: "text-emerald-700 dark:text-emerald-400" },
+  'REFUNDED':  { icon: RotateCcw,    color: "text-red-600",     bg: "bg-red-50 dark:bg-red-500/10",         label: "Devuelta",         textColor: "text-red-700 dark:text-red-400" },
+  'CANCELLED': { icon: XCircle,      color: "text-gray-500",    bg: "bg-gray-100 dark:bg-gray-500/10",      label: "Cancelada",        textColor: "text-gray-600 dark:text-gray-400" },
 };
 
-const paymentStatusConfig: Record<string, { icon: typeof Clock; color: string; bg: string; label: string }> = {
-  'programado': { icon: Clock, color: "text-blue-600", bg: "bg-blue-500/10 border-blue-500/20", label: "Programado" },
-  'enviado': { icon: CheckCircle2, color: "text-emerald-600", bg: "bg-emerald-500/10 border-emerald-500/20", label: "Transferido" },
-  'falló': { icon: RotateCcw, color: "text-red-600", bg: "bg-red-500/10 border-red-500/20", label: "Falló" },
+const paymentStatusConfig: Record<string, { icon: typeof Clock; color: string; bg: string; label: string; textColor: string }> = {
+  'programado': { icon: Clock,        color: "text-blue-600",    bg: "bg-blue-50 dark:bg-blue-500/10",       label: "Programado",   textColor: "text-blue-700" },
+  'enviado':    { icon: CheckCircle2, color: "text-emerald-600", bg: "bg-emerald-50 dark:bg-emerald-500/10", label: "Transferido",  textColor: "text-emerald-700" },
+  'falló':      { icon: XCircle,      color: "text-red-600",     bg: "bg-red-50 dark:bg-red-500/10",         label: "Falló",        textColor: "text-red-700" },
 };
 
-const refundStatusConfig: Record<string, { icon: typeof Clock; color: string; bg: string; label: string }> = {
-  'pendiente': { icon: Clock, color: "text-amber-600", bg: "bg-amber-500/10 border-amber-500/20", label: "Pendiente" },
-  'aprobado': { icon: CheckCircle2, color: "text-emerald-600", bg: "bg-emerald-500/10 border-emerald-500/20", label: "Aprobada" },
-  'rechazado': { icon: RotateCcw, color: "text-red-600", bg: "bg-red-500/10 border-red-500/20", label: "Rechazada" },
-  'automático': { icon: CheckCircle2, color: "text-blue-600", bg: "bg-blue-500/10 border-blue-500/20", label: "Automática" },
-};
+interface TimelineStep {
+  label: string;
+  date?: string;
+  icon: typeof Clock;
+  status: 'done' | 'active' | 'upcoming' | 'failed';
+}
+
+function getTimeline(
+  saleStatus: string,
+  date: string,
+  holdEndDate?: string,
+  releasedDate?: string,
+  refundWindowDays?: number
+): TimelineStep[] {
+  const steps: TimelineStep[] = [];
+
+  if (saleStatus === 'CANCELLED') {
+    steps.push({ label: 'Link enviado', date, icon: Send, status: 'done' });
+    steps.push({ label: 'Cancelado / Expirado', date, icon: XCircle, status: 'failed' });
+    return steps;
+  }
+
+  // Step 1: Link sent / Payment
+  if (saleStatus === 'PENDING') {
+    steps.push({ label: 'Link enviado', date, icon: Send, status: 'active' });
+    steps.push({ label: 'Esperando pago', icon: CreditCard, status: 'upcoming' });
+    if (refundWindowDays && refundWindowDays > 0) {
+      steps.push({ label: `Retención (${refundWindowDays}d)`, icon: Clock, status: 'upcoming' });
+    }
+    steps.push({ label: 'Pago completado', icon: CheckCircle2, status: 'upcoming' });
+    return steps;
+  }
+
+  // Paid
+  steps.push({ label: 'Pago recibido', date, icon: CreditCard, status: 'done' });
+
+  if (saleStatus === 'REFUNDED') {
+    if (refundWindowDays && refundWindowDays > 0) {
+      steps.push({ label: `Retención (${refundWindowDays}d)`, icon: Clock, status: 'done' });
+    }
+    steps.push({ label: 'Devuelta al cliente', date: releasedDate, icon: RotateCcw, status: 'failed' });
+    return steps;
+  }
+
+  // Has refund window?
+  if (refundWindowDays && refundWindowDays > 0) {
+    if (saleStatus === 'HELD') {
+      steps.push({ label: `En retención (${refundWindowDays}d)`, date: holdEndDate ? `hasta ${new Date(holdEndDate).toLocaleDateString('es-CO', { day: 'numeric', month: 'short' })}` : undefined, icon: Clock, status: 'active' });
+      steps.push({ label: 'Dinero liberado', icon: CheckCircle2, status: 'upcoming' });
+    } else {
+      steps.push({ label: `Retención completada`, icon: Clock, status: 'done' });
+      steps.push({ label: 'Dinero liberado', date: releasedDate, icon: CheckCircle2, status: 'done' });
+    }
+  } else {
+    // No refund window → instant
+    steps.push({ label: 'Liberación inmediata', date, icon: CheckCircle2, status: 'done' });
+  }
+
+  return steps;
+}
 
 export default function TransactionCard({
   id, clientName, clientEmail, serviceName, serviceCategory, serviceId,
@@ -70,32 +127,49 @@ export default function TransactionCard({
 }: TransactionCardProps) {
   const [expanded, setExpanded] = useState(false);
 
-  const configMap = statusType === 'payment' ? paymentStatusConfig : statusType === 'refund' ? refundStatusConfig : saleStatusConfig;
-  const sc = configMap[status] || { icon: Package, color: "text-muted-foreground", bg: "bg-muted", label: status };
-  const StatusIcon = sc.icon;
+  const config = statusType === 'payment'
+    ? (paymentStatusConfig[status] || statusConfig['PENDING'])
+    : (statusConfig[status] || statusConfig['PENDING']);
+  const StatusIcon = config.icon;
   const coverImg = serviceCategory ? categoryCovers[serviceCategory] : null;
+
+  // Get refund window for timeline
+  const service = serviceId ? allServices.find(s => s.id === serviceId) : undefined;
+  const refundWindowDays = service?.refundPolicy.refundWindowDays;
+
+  const timeline = statusType === 'sale' ? getTimeline(status, date, holdEndDate, releasedDate, refundWindowDays) : [];
 
   const copyId = () => {
     navigator.clipboard.writeText(paymentId || id);
-    toast.success("ID copiado al portapapeles");
+    toast.success("ID copiado");
   };
+
+  const isCancelledOrRefunded = status === 'CANCELLED' || status === 'REFUNDED';
 
   return (
     <div
-      className="rounded-xl border border-border bg-card overflow-hidden transition-all hover:shadow-md cursor-pointer active:scale-[0.995]"
+      className={`rounded-2xl border bg-card overflow-hidden transition-all cursor-pointer active:scale-[0.998] ${
+        expanded ? 'border-border shadow-lg' : 'border-border/60 hover:border-border hover:shadow-sm'
+      } ${isCancelledOrRefunded ? 'opacity-70' : ''}`}
       onClick={() => setExpanded(!expanded)}
     >
       {/* Main row */}
-      <div className="flex items-center gap-3 p-3.5">
-        {/* Service cover */}
-        <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-muted">
-          {coverImg ? (
-            <img src={coverImg} alt={serviceCategory} className="w-full h-full object-cover" />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center">
-              <Package className="w-5 h-5 text-muted-foreground/50" />
-            </div>
-          )}
+      <div className="flex items-center gap-3.5 p-4">
+        {/* Service cover with status indicator */}
+        <div className="relative w-12 h-12 flex-shrink-0">
+          <div className="w-12 h-12 rounded-xl overflow-hidden bg-muted">
+            {coverImg ? (
+              <img src={coverImg} alt={serviceCategory} className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center">
+                <Package className="w-5 h-5 text-muted-foreground/40" />
+              </div>
+            )}
+          </div>
+          {/* Status dot */}
+          <div className={`absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full border-2 border-card flex items-center justify-center ${config.bg}`}>
+            <StatusIcon className={`w-2 h-2 ${config.color}`} />
+          </div>
         </div>
 
         {/* Info */}
@@ -103,29 +177,27 @@ export default function TransactionCard({
           <div className="flex items-center gap-2">
             <p className="text-sm font-semibold text-foreground truncate">{clientName}</p>
             {isSubscription && (
-              <Badge variant="outline" className="text-[8px] px-1 py-0 h-4 border-primary/30 text-primary">REC</Badge>
+              <span className="text-[8px] font-bold px-1.5 py-0.5 rounded-full bg-primary/10 text-primary uppercase tracking-wider">Rec</span>
             )}
           </div>
           <p className="text-[11px] text-muted-foreground truncate mt-0.5">
             {serviceName}{companyName ? ` · ${companyName}` : ''}{vendorName ? ` · ${vendorName}` : ''}
           </p>
-          <p className="text-[10px] text-muted-foreground/70 mt-0.5">
-            {new Date(date).toLocaleDateString('es-CO', { day: 'numeric', month: 'short', year: 'numeric' })}
-          </p>
         </div>
 
         {/* Amount + Status */}
-        <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
-          <p className="text-sm font-bold text-foreground">{formatCOP(amount)}</p>
-          <Badge variant="outline" className={`text-[9px] px-1.5 py-0 h-5 font-medium ${sc.bg} ${sc.color} border`}>
-            <StatusIcon className="w-2.5 h-2.5 mr-0.5" />
-            {sc.label}
-          </Badge>
+        <div className="flex flex-col items-end gap-1 flex-shrink-0">
+          <p className={`text-sm font-bold ${isCancelledOrRefunded ? 'text-muted-foreground line-through' : 'text-foreground'}`}>
+            {role === 'vendor' && commission ? formatCOP(commission) : formatCOP(amount)}
+          </p>
+          <span className={`text-[10px] font-medium ${config.textColor}`}>
+            {config.label}
+          </span>
         </div>
 
         {/* Chevron */}
         <motion.div animate={{ rotate: expanded ? 180 : 0 }} transition={{ duration: 0.2 }}>
-          <ChevronDown className="w-4 h-4 text-muted-foreground/40" />
+          <ChevronDown className="w-4 h-4 text-muted-foreground/30" />
         </motion.div>
       </div>
 
@@ -139,10 +211,52 @@ export default function TransactionCard({
             transition={{ duration: 0.25, ease: "easeInOut" }}
             className="overflow-hidden"
           >
-            <div className="px-3.5 pb-3.5 space-y-3 border-t border-border/50 pt-3">
+            <div className="px-4 pb-4 space-y-4 border-t border-border/40 pt-4">
+
+              {/* Timeline */}
+              {timeline.length > 0 && (
+                <div className="space-y-0">
+                  <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-3">Estado del pedido</p>
+                  <div className="relative pl-5">
+                    {timeline.map((step, i) => {
+                      const isLast = i === timeline.length - 1;
+                      const StepIcon = step.icon;
+                      const dotColor = step.status === 'done' ? 'bg-emerald-500'
+                        : step.status === 'active' ? 'bg-amber-500 animate-pulse'
+                        : step.status === 'failed' ? 'bg-red-500'
+                        : 'bg-muted-foreground/20';
+                      const lineColor = step.status === 'done' ? 'bg-emerald-500/30'
+                        : step.status === 'active' ? 'bg-amber-500/30'
+                        : 'bg-border';
+                      const textColor = step.status === 'upcoming' ? 'text-muted-foreground/50' : 'text-foreground';
+
+                      return (
+                        <div key={i} className="relative flex items-start gap-3 pb-4 last:pb-0">
+                          {/* Vertical line */}
+                          {!isLast && (
+                            <div className={`absolute left-[5px] top-[14px] w-[2px] h-[calc(100%-6px)] ${lineColor} rounded-full`} />
+                          )}
+                          {/* Dot */}
+                          <div className={`relative z-10 w-3 h-3 rounded-full ${dotColor} flex-shrink-0 mt-0.5`} />
+                          {/* Content */}
+                          <div className="flex-1 min-w-0">
+                            <p className={`text-xs font-medium ${textColor}`}>{step.label}</p>
+                            {step.date && (
+                              <p className="text-[10px] text-muted-foreground/70 mt-0.5">
+                                {step.date.startsWith('hasta') ? step.date : new Date(step.date).toLocaleDateString('es-CO', { day: 'numeric', month: 'short', year: 'numeric' })}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
               {/* Financial breakdown */}
-              <div className="bg-muted/30 rounded-lg p-3 space-y-2">
-                <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Desglose financiero</p>
+              <div className="rounded-xl bg-muted/30 p-3.5 space-y-2">
+                <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Desglose</p>
                 <div className="space-y-1.5">
                   <div className="flex justify-between text-xs">
                     <span className="text-muted-foreground">Venta bruta</span>
@@ -171,62 +285,39 @@ export default function TransactionCard({
                 </div>
               </div>
 
-              {/* Hold explanation */}
-              {status === 'HELD' && holdEndDate && (
-                <div className="flex items-start gap-2.5 p-2.5 rounded-lg bg-amber-500/5 border border-amber-500/10">
-                  <Clock className="w-3.5 h-3.5 text-amber-500 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <p className="text-xs font-medium text-amber-700">Dinero en retención</p>
-                    <p className="text-[10px] text-amber-600/80 mt-0.5 leading-relaxed">
-                      Los fondos están en retención según la política del producto. Se liberan automáticamente el {new Date(holdEndDate).toLocaleDateString('es-CO', { day: 'numeric', month: 'long' })}.
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {/* Details grid */}
-              <div className="grid grid-cols-2 gap-2">
+              {/* Extra info */}
+              <div className="flex flex-wrap gap-x-4 gap-y-1.5">
                 {clientEmail && (
-                  <div className="flex items-center gap-2 text-xs">
-                    <User className="w-3 h-3 text-muted-foreground/50" />
-                    <span className="text-muted-foreground truncate">{clientEmail}</span>
+                  <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
+                    <User className="w-3 h-3" />
+                    <span className="truncate">{clientEmail}</span>
                   </div>
                 )}
-                {releasedDate && status === 'COMPLETED' && (
-                  <div className="flex items-center gap-2 text-xs">
-                    <CheckCircle2 className="w-3 h-3 text-emerald-500" />
-                    <span className="text-emerald-600">Liberada {new Date(releasedDate).toLocaleDateString('es-CO', { day: 'numeric', month: 'short' })}</span>
-                  </div>
-                )}
-                {(paymentId || id) && (
-                  <div className="flex items-center gap-2 text-xs">
-                    <CreditCard className="w-3 h-3 text-muted-foreground/50" />
-                    <span className="text-muted-foreground font-mono text-[10px] truncate">{paymentId || id}</span>
-                  </div>
-                )}
+                <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
+                  <CreditCard className="w-3 h-3" />
+                  <span className="font-mono">{paymentId || id}</span>
+                </div>
               </div>
 
               {/* Activation code */}
               {activationCode && (
-                <div className="flex items-center justify-between p-2.5 rounded-lg bg-primary/5 border border-primary/10">
+                <div className="flex items-center justify-between p-2.5 rounded-xl bg-primary/5 border border-primary/10">
                   <div className="flex items-center gap-2">
                     <Shield className="w-3.5 h-3.5 text-primary" />
-                    <span className="text-xs font-medium text-foreground">Código de activación</span>
+                    <span className="text-xs font-medium">Código de activación</span>
                   </div>
                   <code className="text-xs font-mono bg-card px-2 py-0.5 rounded border border-border">{activationCode}</code>
                 </div>
               )}
 
-              {/* Failure reason */}
+              {/* Failure / Refund reason */}
               {failureReason && (
-                <div className="p-2.5 rounded-lg bg-red-500/5 border border-red-500/10">
+                <div className="p-2.5 rounded-xl bg-red-50 dark:bg-red-500/5 border border-red-200 dark:border-red-500/10">
                   <p className="text-xs text-red-600">{failureReason}</p>
                 </div>
               )}
-
-              {/* Refund info */}
               {refundReason && (
-                <div className="p-2.5 rounded-lg bg-amber-500/5 border border-amber-500/10">
+                <div className="p-2.5 rounded-xl bg-amber-50 dark:bg-amber-500/5 border border-amber-200 dark:border-amber-500/10">
                   <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-1">Motivo de devolución</p>
                   <p className="text-xs text-foreground">{refundReason}</p>
                   {refundDecision && <p className="text-[10px] text-muted-foreground mt-1">Decidido por: {refundDecision}</p>}
@@ -234,17 +325,17 @@ export default function TransactionCard({
               )}
 
               {/* Actions */}
-              <div className="flex gap-2 pt-1" onClick={e => e.stopPropagation()}>
-                <Button variant="ghost" size="sm" className="flex-1 h-8 text-xs text-muted-foreground" onClick={copyId}>
+              <div className="flex gap-2 pt-0.5" onClick={e => e.stopPropagation()}>
+                <Button variant="outline" size="sm" className="flex-1 h-8 text-xs rounded-xl" onClick={copyId}>
                   <Copy className="w-3 h-3 mr-1.5" /> Copiar ID
                 </Button>
                 {onSupport && (
-                  <Button variant="ghost" size="sm" className="flex-1 h-8 text-xs text-emerald-600" onClick={onSupport}>
+                  <Button variant="outline" size="sm" className="flex-1 h-8 text-xs rounded-xl text-emerald-600 border-emerald-200 hover:bg-emerald-50" onClick={onSupport}>
                     <MessageCircle className="w-3 h-3 mr-1.5" /> Soporte
                   </Button>
                 )}
                 {onRefund && refundDaysLeft !== undefined && refundDaysLeft > 0 && !refundStatus && (
-                  <Button variant="ghost" size="sm" className="flex-1 h-8 text-xs text-destructive" onClick={onRefund}>
+                  <Button variant="outline" size="sm" className="flex-1 h-8 text-xs rounded-xl text-red-600 border-red-200 hover:bg-red-50" onClick={onRefund}>
                     <RotateCcw className="w-3 h-3 mr-1.5" /> Devolver ({refundDaysLeft}d)
                   </Button>
                 )}
