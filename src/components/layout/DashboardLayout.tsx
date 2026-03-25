@@ -82,6 +82,7 @@ function getCompanyNav(plan: CompanyPlan) {
     { icon: LayoutDashboard, label: "Dashboard", href: "/company" },
     { icon: Package, label: "Servicios", href: "/company/services" },
     { icon: Users, label: "Vendedores", href: "/company/vendors" },
+    { icon: BookOpen, label: "Capacitaciones", href: "/company/trainings" },
     { icon: ShoppingCart, label: "Ventas", href: "/company/sales" },
     { icon: DollarSign, label: "Pagos", href: "/company/payments" },
     { icon: Palette, label: "Personalizar", href: "/company/profile" },
