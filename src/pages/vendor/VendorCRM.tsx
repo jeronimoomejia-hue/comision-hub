@@ -462,14 +462,12 @@ export default function VendorCRM() {
               className="rounded-full h-10 px-4"
               autoFocus
             />
-            {!quickSale && (
-              <Input
-                placeholder="Teléfono (opcional)"
-                value={newPhone}
-                onChange={(e) => setNewPhone(e.target.value)}
-                className="rounded-full h-10 px-4"
-              />
-            )}
+            <Input
+              placeholder="Teléfono (opcional)"
+              value={newPhone}
+              onChange={(e) => setNewPhone(e.target.value)}
+              className="rounded-full h-10 px-4"
+            />
             <Select value={newService} onValueChange={setNewService}>
               <SelectTrigger className="rounded-full h-10 px-4">
                 <SelectValue placeholder="Producto" />
