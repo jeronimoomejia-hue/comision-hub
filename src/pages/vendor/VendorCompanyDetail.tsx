@@ -1,11 +1,14 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import VendorTabLayout from "@/components/layout/VendorTabLayout";
 import { useDemo } from "@/contexts/DemoContext";
 import { companies, services as allServices, formatCOP, CURRENT_VENDOR_ID } from "@/data/mockData";
-import { Search, Package, Star, RefreshCw, Zap, Lock, Clock, Shield, AlertTriangle, BookOpen, MessageCircle, Tag, ShoppingCart, RotateCcw, ChevronRight } from "lucide-react";
+import { Search, Package, Star, RefreshCw, Zap, Lock, Clock, Shield, AlertTriangle, BookOpen, MessageCircle, Tag, ShoppingCart, RotateCcw, ChevronRight, Send, Copy, Percent } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import TransactionCard from "@/components/TransactionCard";
 
 import insuranceImg from "@/assets/service-covers/insurance-ai.jpg";
 import legalImg from "@/assets/service-covers/legal-ai.jpg";
@@ -31,7 +34,7 @@ type CompanyTab = 'servicios' | 'ventas' | 'devoluciones' | 'cupones' | 'chat';
 
 export default function VendorCompanyDetail() {
   const { companyId } = useParams<{ companyId: string }>();
-  const { sales, trainingProgress, commissions, currentVendorId } = useDemo();
+  const { sales, trainingProgress, commissions, refundRequests, currentVendorId } = useDemo();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState<CompanyTab>('servicios');
@@ -43,15 +46,13 @@ export default function VendorCompanyDetail() {
   const isPremiumOrHigher = company.plan !== 'freemium';
 
   const getTrainingStatus = (serviceId: string) => {
-    const training = trainingProgress.find(
-      tp => tp.vendorId === vendorId && tp.serviceId === serviceId
-    );
+    const training = trainingProgress.find(tp => tp.vendorId === vendorId && tp.serviceId === serviceId);
     return training?.status === 'declared_completed';
   };
 
   const companyServices = allServices.filter(s => s.status === 'activo' && s.companyId === companyId);
   const vendorSales = sales.filter(s => s.vendorId === vendorId && s.companyId === companyId);
-  const vendorComms = commissions.filter(c => c.vendorId === vendorId);
+  const vendorRefunds = refundRequests.filter(r => r.vendorId === vendorId && r.companyId === companyId);
 
   const vendorServices = companyServices.map(service => {
     const isActive = !service.requiresTraining || getTrainingStatus(service.id);
@@ -60,11 +61,7 @@ export default function VendorCompanyDetail() {
   });
 
   const sortedServices = [...vendorServices].sort((a, b) => b.salesCount - a.salesCount);
-  const topServiceIds = [...vendorServices]
-    .sort((a, b) => b.salesCount - a.salesCount)
-    .slice(0, 3)
-    .filter(s => s.salesCount > 0)
-    .map(s => s.id);
+  const topServiceIds = [...vendorServices].sort((a, b) => b.salesCount - a.salesCount).slice(0, 3).filter(s => s.salesCount > 0).map(s => s.id);
 
   const filteredServices = sortedServices.filter(service =>
     service.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -77,7 +74,6 @@ export default function VendorCompanyDetail() {
     return tp?.status === 'in_progress';
   }).length;
 
-  // Tabs config (plan-dependent)
   const tabs: { id: CompanyTab; label: string; icon: React.ElementType; planRequired?: boolean }[] = [
     { id: 'servicios', label: 'Servicios', icon: Package },
     { id: 'ventas', label: 'Ventas', icon: ShoppingCart },
@@ -87,15 +83,6 @@ export default function VendorCompanyDetail() {
   ];
 
   const visibleTabs = tabs.filter(t => !t.planRequired || isPremiumOrHigher);
-
-  const getStatusConfig = (status: string) => {
-    const map: Record<string, { cls: string; label: string }> = {
-      'HELD': { cls: "bg-amber-50 text-amber-600", label: "Retenida" },
-      'RELEASED': { cls: "bg-emerald-50 text-emerald-600", label: "Liberada" },
-      'REFUNDED': { cls: "bg-red-50 text-red-600", label: "Devuelta" },
-    };
-    return map[status] || { cls: "bg-muted text-muted-foreground", label: status };
-  };
 
   return (
     <VendorTabLayout backTo="/vendor" backLabel="Empresas">
@@ -129,7 +116,7 @@ export default function VendorCompanyDetail() {
           </div>
           <div className="rounded-xl border border-border bg-card p-3 text-center">
             <p className="text-[10px] text-muted-foreground uppercase tracking-wide">Comisiones</p>
-            <p className="text-lg font-bold" style={{ color: company.primaryColor || 'hsl(var(--primary))' }}>{formatCOP(totalSalesAmount)}</p>
+            <p className="text-lg font-bold text-primary">{formatCOP(totalSalesAmount)}</p>
           </div>
         </div>
 
@@ -167,48 +154,37 @@ export default function VendorCompanyDetail() {
             filteredServices={filteredServices}
             topServiceIds={topServiceIds}
             onServiceClick={(serviceId: string) => navigate(`/vendor/company/${companyId}/service/${serviceId}`)}
-            companyIndustry={company.industry}
           />
         )}
 
         {activeTab === 'ventas' && (
-          <VentasTab vendorSales={vendorSales} getStatusConfig={getStatusConfig} />
+          <VentasTab vendorSales={vendorSales} companyId={companyId!} />
         )}
 
         {activeTab === 'devoluciones' && (
-          <DevolucionesTab vendorSales={vendorSales} />
+          <DevolucionesTab vendorSales={vendorSales} vendorRefunds={vendorRefunds} />
         )}
 
         {activeTab === 'cupones' && (
-          <div className="text-center py-12 rounded-xl border border-border bg-card">
-            <Tag className="w-8 h-8 text-muted-foreground/30 mx-auto mb-3" />
-            <p className="text-sm font-medium text-foreground mb-1">Cupones de descuento</p>
-            <p className="text-xs text-muted-foreground">Los cupones disponibles de esta empresa aparecerán aquí</p>
-          </div>
+          <CuponesTab companyName={company.name} />
         )}
 
         {activeTab === 'chat' && (
-          <div className="text-center py-12 rounded-xl border border-border bg-card">
-            <MessageCircle className="w-8 h-8 text-muted-foreground/30 mx-auto mb-3" />
-            <p className="text-sm font-medium text-foreground mb-1">Chat con {company.name}</p>
-            <p className="text-xs text-muted-foreground">El chat con la empresa estará disponible aquí</p>
-          </div>
+          <ChatTab companyName={company.name} />
         )}
       </div>
-
     </VendorTabLayout>
   );
 }
 
 /* =========== Sub-components =========== */
 
-function ServiciosTab({ searchQuery, setSearchQuery, filteredServices, topServiceIds, onServiceClick, companyIndustry }: {
+function ServiciosTab({ searchQuery, setSearchQuery, filteredServices, topServiceIds, onServiceClick }: {
   searchQuery: string;
   setSearchQuery: (q: string) => void;
   filteredServices: Array<any>;
   topServiceIds: string[];
   onServiceClick: (id: string) => void;
-  companyIndustry: string;
 }) {
   return (
     <div className="space-y-4">
@@ -313,31 +289,38 @@ function ServiciosTab({ searchQuery, setSearchQuery, filteredServices, topServic
   );
 }
 
-function VentasTab({ vendorSales, getStatusConfig }: {
-  vendorSales: Array<any>;
-  getStatusConfig: (status: string) => { cls: string; label: string };
-}) {
+function VentasTab({ vendorSales, companyId }: { vendorSales: Array<any>; companyId: string }) {
   const activeSales = vendorSales.filter(s => s.status !== 'REFUNDED');
-  
+
   return (
     <div className="space-y-3">
       <p className="text-xs text-muted-foreground">{activeSales.length} venta{activeSales.length !== 1 ? 's' : ''} activa{activeSales.length !== 1 ? 's' : ''}</p>
       {vendorSales.length > 0 ? (
-        <div className="divide-y divide-border rounded-xl border border-border bg-card overflow-hidden">
+        <div className="space-y-2">
           {vendorSales.map(sale => {
             const svc = allServices.find(s => s.id === sale.serviceId);
-            const sc = getStatusConfig(sale.status);
             return (
-              <div key={sale.id} className="flex items-center justify-between p-3 gap-3">
-                <div className="min-w-0">
-                  <p className="text-sm font-medium truncate">{sale.clientName}</p>
-                  <p className="text-[10px] text-muted-foreground truncate">{svc?.name} · {new Date(sale.createdAt).toLocaleDateString('es-CO', { month: 'short', day: 'numeric' })}</p>
-                </div>
-                <div className="flex items-center gap-2 flex-shrink-0">
-                  <span className="text-xs font-semibold">{formatCOP(sale.sellerCommissionAmount)}</span>
-                  <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-medium ${sc.cls}`}>{sc.label}</span>
-                </div>
-              </div>
+              <TransactionCard
+                key={sale.id}
+                id={sale.id}
+                clientName={sale.clientName}
+                clientEmail={sale.clientEmail}
+                serviceName={svc?.name}
+                serviceCategory={svc?.category}
+                amount={sale.grossAmount}
+                commission={sale.sellerCommissionAmount}
+                platformFee={sale.mensualistaFeeAmount}
+                netAmount={sale.providerNetAmount}
+                status={sale.status}
+                statusType="sale"
+                date={sale.createdAt}
+                holdEndDate={sale.holdEndAt}
+                releasedDate={sale.releasedAt}
+                activationCode={sale.activationCode}
+                isSubscription={sale.isSubscription}
+                paymentId={sale.mpPaymentId}
+                role="vendor"
+              />
             );
           })}
         </div>
@@ -352,23 +335,32 @@ function VentasTab({ vendorSales, getStatusConfig }: {
   );
 }
 
-function DevolucionesTab({ vendorSales }: { vendorSales: Array<any> }) {
-  const refundedSales = vendorSales.filter(s => s.status === 'REFUNDED');
-  
+function DevolucionesTab({ vendorSales, vendorRefunds }: { vendorSales: Array<any>; vendorRefunds: Array<any> }) {
   return (
     <div className="space-y-3">
-      {refundedSales.length > 0 ? (
-        <div className="divide-y divide-border rounded-xl border border-border bg-card overflow-hidden">
-          {refundedSales.map(sale => {
-            const svc = allServices.find(s => s.id === sale.serviceId);
+      <p className="text-xs text-muted-foreground">{vendorRefunds.length} devolución{vendorRefunds.length !== 1 ? 'es' : ''}</p>
+      {vendorRefunds.length > 0 ? (
+        <div className="space-y-2">
+          {vendorRefunds.map(refund => {
+            const sale = vendorSales.find(s => s.id === refund.saleId);
+            const svc = sale ? allServices.find(s => s.id === sale.serviceId) : null;
             return (
-              <div key={sale.id} className="flex items-center justify-between p-3 gap-3">
-                <div className="min-w-0">
-                  <p className="text-sm font-medium truncate">{sale.clientName}</p>
-                  <p className="text-[10px] text-muted-foreground truncate">{svc?.name}</p>
-                </div>
-                <span className="text-xs text-destructive font-medium flex-shrink-0">{formatCOP(sale.sellerCommissionAmount)}</span>
-              </div>
+              <TransactionCard
+                key={refund.id}
+                id={refund.id}
+                clientName={sale?.clientName || 'Cliente'}
+                clientEmail={sale?.clientEmail}
+                serviceName={svc?.name}
+                serviceCategory={svc?.category}
+                amount={sale?.grossAmount || 0}
+                commission={sale?.sellerCommissionAmount}
+                status={refund.status}
+                statusType="refund"
+                date={refund.createdAt}
+                refundReason={refund.reason}
+                refundDecision={refund.decisionBy === 'sistema' ? 'Automática' : refund.decisionBy === 'empresa' ? 'Empresa' : undefined}
+                role="vendor"
+              />
             );
           })}
         </div>
@@ -379,6 +371,118 @@ function DevolucionesTab({ vendorSales }: { vendorSales: Array<any> }) {
           <p className="text-xs text-muted-foreground">No tienes devoluciones en esta empresa</p>
         </div>
       )}
+    </div>
+  );
+}
+
+function CuponesTab({ companyName }: { companyName: string }) {
+  const mockCoupons = [
+    { id: '1', code: 'NUEVO20', discount: 20, type: 'percent' as const, description: 'Para clientes nuevos', validUntil: '2026-04-30', usesLeft: 15 },
+    { id: '2', code: 'PROMO50K', discount: 50000, type: 'fixed' as const, description: 'Descuento en plan anual', validUntil: '2026-05-15', usesLeft: 5 },
+    { id: '3', code: 'LANZAMIENTO', discount: 10, type: 'percent' as const, description: 'Promoción de lanzamiento', validUntil: '2026-06-01', usesLeft: 50 },
+  ];
+
+  const copyCoupon = (code: string) => {
+    navigator.clipboard.writeText(code);
+    toast.success(`Cupón ${code} copiado`);
+  };
+
+  return (
+    <div className="space-y-3">
+      <p className="text-xs text-muted-foreground">{mockCoupons.length} cupones disponibles</p>
+      <div className="space-y-2">
+        {mockCoupons.map(coupon => (
+          <div key={coupon.id} className="rounded-xl border border-border bg-card p-3.5 flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+              <Percent className="w-4.5 h-4.5 text-primary" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2">
+                <code className="text-sm font-semibold font-mono text-foreground">{coupon.code}</code>
+                <Badge variant="outline" className="text-[9px] px-1.5 h-4">
+                  {coupon.type === 'percent' ? `${coupon.discount}%` : formatCOP(coupon.discount)}
+                </Badge>
+              </div>
+              <p className="text-[11px] text-muted-foreground mt-0.5">{coupon.description}</p>
+              <p className="text-[10px] text-muted-foreground mt-0.5">
+                Válido hasta {new Date(coupon.validUntil).toLocaleDateString('es-CO', { day: 'numeric', month: 'short' })} · {coupon.usesLeft} usos
+              </p>
+            </div>
+            <Button variant="ghost" size="sm" className="h-8 text-xs text-muted-foreground flex-shrink-0" onClick={() => copyCoupon(coupon.code)}>
+              <Copy className="w-3.5 h-3.5 mr-1" /> Copiar
+            </Button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ChatTab({ companyName }: { companyName: string }) {
+  const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState([
+    { id: '1', from: 'company', text: `¡Hola! Bienvenido al equipo de ${companyName}. ¿En qué podemos ayudarte?`, time: '10:30' },
+    { id: '2', from: 'vendor', text: 'Hola, tengo una duda sobre el servicio de cotizaciones.', time: '10:32' },
+    { id: '3', from: 'company', text: 'Claro, cuéntame. Estoy aquí para ayudarte con lo que necesites.', time: '10:33' },
+  ]);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
+  }, [messages]);
+
+  const sendMessage = () => {
+    if (!message.trim()) return;
+    setMessages(prev => [...prev, {
+      id: Date.now().toString(),
+      from: 'vendor',
+      text: message.trim(),
+      time: new Date().toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' })
+    }]);
+    setMessage("");
+
+    // Simulate response
+    setTimeout(() => {
+      setMessages(prev => [...prev, {
+        id: (Date.now() + 1).toString(),
+        from: 'company',
+        text: 'Gracias por tu mensaje. Te responderemos pronto.',
+        time: new Date().toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' })
+      }]);
+    }, 1500);
+  };
+
+  return (
+    <div className="rounded-xl border border-border bg-card overflow-hidden flex flex-col" style={{ height: '420px' }}>
+      {/* Messages */}
+      <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-3">
+        {messages.map(msg => (
+          <div key={msg.id} className={`flex ${msg.from === 'vendor' ? 'justify-end' : 'justify-start'}`}>
+            <div className={`max-w-[75%] rounded-2xl px-3.5 py-2 ${
+              msg.from === 'vendor'
+                ? 'bg-primary text-primary-foreground rounded-br-md'
+                : 'bg-muted text-foreground rounded-bl-md'
+            }`}>
+              <p className="text-sm leading-relaxed">{msg.text}</p>
+              <p className={`text-[9px] mt-1 ${msg.from === 'vendor' ? 'text-primary-foreground/60' : 'text-muted-foreground'}`}>{msg.time}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Input */}
+      <div className="border-t border-border p-3 flex items-center gap-2">
+        <Input
+          value={message}
+          onChange={e => setMessage(e.target.value)}
+          onKeyDown={e => e.key === 'Enter' && sendMessage()}
+          placeholder="Escribe un mensaje..."
+          className="flex-1 h-9 text-sm rounded-full bg-muted/50 border-0"
+        />
+        <Button size="icon" className="h-9 w-9 rounded-full flex-shrink-0" onClick={sendMessage} disabled={!message.trim()}>
+          <Send className="w-4 h-4" />
+        </Button>
+      </div>
     </div>
   );
 }
