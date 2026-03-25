@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import { vendors, formatCOP } from "@/data/mockData";
 import TransactionCard from "@/components/TransactionCard";
+import StatusGuide from "@/components/StatusGuide";
 import { toast } from "sonner";
 
 export default function VentasTab({ service, serviceSales, commissions, refundRequests, updateRefundRequest }: any) {
@@ -31,6 +32,8 @@ export default function VentasTab({ service, serviceSales, commissions, refundRe
       </div>
 
       <p className="text-xs text-muted-foreground">{filtered.length} venta{filtered.length !== 1 ? 's' : ''}</p>
+
+      <StatusGuide />
 
       {filtered.length > 0 ? (
         <div className="space-y-2">

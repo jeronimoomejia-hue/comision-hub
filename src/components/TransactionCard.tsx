@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   ChevronDown, Clock, CheckCircle2, RotateCcw, MessageCircle,
   Package, User, CreditCard, Copy, Send, XCircle, ArrowRight,
-  Shield, Ban
+  Shield, Ban, FileText
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -40,6 +40,7 @@ interface TransactionCardProps {
   refundDecision?: string;
   onRefund?: () => void;
   onSupport?: () => void;
+  onViewReceipt?: () => void;
   role?: 'vendor' | 'company' | 'admin';
 }
 
@@ -124,7 +125,7 @@ export default function TransactionCard({
   status, statusType = 'sale', date, holdEndDate, releasedDate,
   activationCode, refundDaysLeft, refundStatus, isSubscription,
   paymentId, failureReason, refundReason, refundDecision,
-  onRefund, onSupport, role = 'vendor'
+  onRefund, onSupport, onViewReceipt, role = 'vendor'
 }: TransactionCardProps) {
   const [expanded, setExpanded] = useState(false);
 
@@ -368,6 +369,11 @@ export default function TransactionCard({
                   <Badge variant="outline" className="text-[9px] bg-amber-500/10 text-amber-600 border-amber-500/20 self-center">
                     Devolución: {refundStatus}
                   </Badge>
+                )}
+                {onViewReceipt && (
+                  <Button variant="outline" size="sm" className="flex-1 h-8 text-xs rounded-xl" onClick={onViewReceipt}>
+                    <FileText className="w-3 h-3 mr-1.5" /> Ver comprobante
+                  </Button>
                 )}
               </div>
             </div>

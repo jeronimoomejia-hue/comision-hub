@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { sales, services, companies, vendors, formatCOP } from "@/data/mockData";
 import TransactionCard from "@/components/TransactionCard";
+import StatusGuide from "@/components/StatusGuide";
 
 export default function AdminSales() {
   const [statusFilter, setStatusFilter] = useState("all");
@@ -37,6 +38,8 @@ export default function AdminSales() {
           </Select>
           <span className="text-xs text-muted-foreground self-center ml-auto">{filtered.length} resultados</span>
         </div>
+
+        <StatusGuide />
 
         <div className="space-y-2">
           {filtered.length === 0 && <p className="text-xs text-muted-foreground text-center py-8">Sin ventas</p>}

@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useDemo } from "@/contexts/DemoContext";
 import { vendors, companies, formatCOP, getServiceById } from "@/data/mockData";
 import TransactionCard from "@/components/TransactionCard";
+import StatusGuide from "@/components/StatusGuide";
 
 export default function AdminTransactions() {
   const { sales } = useDemo();
@@ -50,6 +51,8 @@ export default function AdminTransactions() {
           </Select>
           <span className="text-[10px] text-muted-foreground ml-auto">{filtered.length} transacciones</span>
         </div>
+
+        <StatusGuide />
 
         <div className="space-y-2">
           {filtered.slice(0, 30).map(sale => {
