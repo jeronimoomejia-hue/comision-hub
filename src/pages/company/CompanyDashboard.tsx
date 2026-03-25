@@ -1,6 +1,8 @@
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { 
-  DollarSign, ShoppingCart, TrendingUp, Users, Crown, Zap, Building2, Tag, MessageCircle, Globe, Code, ArrowRight, Lock, Settings, BarChart3, CheckCircle
+  DollarSign, ShoppingCart, TrendingUp, Users, Crown, Zap, Building2, 
+  Tag, MessageCircle, Globe, Code, ArrowRight, Lock, Settings, CheckCircle,
+  Package, BookOpen, ChevronRight
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -10,13 +12,13 @@ import {
   companies, vendors, CURRENT_COMPANY_ID, formatCOP, CompanyPlan
 } from "@/data/mockData";
 import { 
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
+  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer
 } from 'recharts';
 
-const planConfig: Record<CompanyPlan, { label: string; color: string; bgColor: string; icon: React.ElementType; price: string }> = {
-  freemium: { label: "Freemium", color: "bg-muted text-muted-foreground", bgColor: "bg-muted/30", icon: Zap, price: "Gratis" },
-  premium: { label: "Premium", color: "bg-primary text-primary-foreground", bgColor: "bg-primary/5", icon: Crown, price: "€100/mes" },
-  enterprise: { label: "Enterprise", color: "bg-foreground text-background", bgColor: "bg-foreground/5", icon: Building2, price: "€300/mes" },
+const planConfig: Record<CompanyPlan, { label: string; icon: React.ElementType; price: string }> = {
+  freemium: { label: "Freemium", icon: Zap, price: "Gratis" },
+  premium: { label: "Premium", icon: Crown, price: "€100/mes" },
+  enterprise: { label: "Enterprise", icon: Building2, price: "€300/mes" },
 };
 
 const allPlans: CompanyPlan[] = ['freemium', 'premium', 'enterprise'];
@@ -55,16 +57,6 @@ export default function CompanyDashboard() {
     return { week: `S${i + 1}`, ventas: weekSales.length };
   });
 
-  const getStatusConfig = (status: string) => {
-    const map: Record<string, { cls: string; label: string }> = {
-      'HELD': { cls: "text-amber-600 bg-amber-50", label: "Retenida" },
-      'RELEASED': { cls: "text-emerald-600 bg-emerald-50", label: "Liberada" },
-      'REFUNDED': { cls: "text-red-600 bg-red-50", label: "Devuelta" },
-    };
-    return map[status] || { cls: "text-muted-foreground bg-muted", label: status };
-  };
-
-  // Feature matrix per plan
   const featureMatrix = [
     { label: "Servicios", freemium: "Máx. 5", premium: "Ilimitados", enterprise: "Ilimitados" },
     { label: "Códigos de activación", freemium: "Manual", premium: "Manual", enterprise: "Automático + API" },
@@ -76,12 +68,21 @@ export default function CompanyDashboard() {
     { label: "Integraciones API", freemium: false, premium: false, enterprise: true },
   ];
 
+  const getStatusConfig = (status: string) => {
+    const map: Record<string, { cls: string; label: string }> = {
+      'HELD': { cls: "text-amber-600 bg-amber-500/10", label: "Retenida" },
+      'RELEASED': { cls: "text-emerald-600 bg-emerald-500/10", label: "Liberada" },
+      'REFUNDED': { cls: "text-red-600 bg-red-500/10", label: "Devuelta" },
+    };
+    return map[status] || { cls: "text-muted-foreground bg-muted", label: status };
+  };
+
   return (
     <DashboardLayout role="company" userName={company?.name}>
-      <div className="space-y-5">
-        {/* ── DEMO Plan Switcher ── */}
+      <div className="space-y-6 max-w-4xl">
+        {/* Plan switcher (demo) */}
         <div className="rounded-xl border-2 border-dashed border-primary/30 bg-primary/5 p-3">
-          <p className="text-[10px] uppercase tracking-widest text-primary font-semibold mb-2">🔀 Demo: Cambiar plan</p>
+          <p className="text-[10px] uppercase tracking-widest text-primary font-semibold mb-2">Demo: Cambiar plan</p>
           <div className="flex gap-2">
             {allPlans.map(p => {
               const cfg = planConfig[p];
@@ -91,7 +92,7 @@ export default function CompanyDashboard() {
                   onClick={() => setCurrentCompanyPlan(p)}
                   className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all ${
                     plan === p
-                      ? 'bg-primary text-primary-foreground shadow-md scale-[1.02]'
+                      ? 'bg-foreground text-background'
                       : 'bg-card border border-border text-muted-foreground hover:border-primary/40'
                   }`}
                 >
@@ -103,55 +104,102 @@ export default function CompanyDashboard() {
           </div>
         </div>
 
-        {/* ── Plan Badge + Balance ── */}
-        <div className={`rounded-2xl p-5 relative overflow-hidden ${pc.bgColor} border border-border`}>
-          <div className="flex items-center justify-between mb-3">
-            <Badge className={`${pc.color} gap-1`}>
-              <pc.icon className="w-3 h-3" />
-              Plan {pc.label} — {pc.price}
-            </Badge>
+        {/* Main KPI + Plan */}
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+          {/* Revenue card */}
+          <div className="lg:col-span-2 rounded-xl border border-border bg-card p-5">
+            <div className="flex items-center justify-between mb-3">
+              <Badge variant="outline" className="text-[10px] gap-1">
+                <pc.icon className="w-3 h-3" />
+                {pc.label} — {pc.price}
+              </Badge>
+              {plan === 'freemium' && (
+                <Button size="sm" variant="ghost" className="text-[10px] h-6 px-2 text-primary" onClick={() => setCurrentCompanyPlan('premium')}>
+                  Mejorar
+                </Button>
+              )}
+            </div>
+            <p className="text-xs text-muted-foreground">Ventas este mes</p>
+            <p className="text-2xl sm:text-3xl font-bold text-foreground mt-1">{formatCOP(gmvThisMonth)}</p>
+            <div className="flex items-center gap-1.5 mt-2">
+              <TrendingUp className="w-3 h-3 text-primary" />
+              <span className="text-[11px] text-primary font-medium">{salesThisMonth.length} ventas · {releasedSalesMonth.length} liberadas</span>
+            </div>
             {plan === 'freemium' && (
-              <Button size="sm" variant="outline" className="text-xs gap-1" onClick={() => setCurrentCompanyPlan('premium')}>
-                <Crown className="w-3 h-3" />
-                Mejorar plan
-              </Button>
+              <p className="text-[10px] text-destructive font-medium mt-2">Fee: 15% + 3% + $1.000 COP pasarela</p>
+            )}
+            {plan !== 'freemium' && (
+              <p className="text-[10px] text-primary font-medium mt-2">Sin fee Mensualista — solo costos de pasarela</p>
             )}
           </div>
-          <p className="text-xs text-muted-foreground">Ventas este mes</p>
-          <p className="text-3xl font-bold tracking-tight mt-1" style={{ color: 'hsl(var(--primary))' }}>
-            {formatCOP(gmvThisMonth)}
-          </p>
-          <p className="text-xs text-muted-foreground mt-1">{salesThisMonth.length} ventas · {releasedSalesMonth.length} liberadas</p>
-          {plan === 'freemium' && (
-            <p className="text-[10px] text-destructive font-medium mt-2">⚠ Fee: 15% Mensualista + 3% + $1.000 COP pasarela por venta</p>
-          )}
-          {plan !== 'freemium' && (
-            <p className="text-[10px] text-success font-medium mt-2">✓ Sin fee Mensualista — solo 3% + $1.000 COP pasarela</p>
-          )}
+
+          {/* Quick stats */}
+          <div className="lg:col-span-3 grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {[
+              { label: "Ventas mes", value: salesThisMonth.length, icon: ShoppingCart },
+              { label: "Retenidas", value: heldSales.length, icon: DollarSign },
+              { label: "Servicios", value: plan === 'freemium' ? `${activeServicesCount}/5` : `${activeServicesCount}`, icon: Package },
+              { label: "Vendedores", value: uniqueVendors, icon: Users },
+            ].map(stat => (
+              <div key={stat.label} className="rounded-xl border border-border bg-card p-3.5 text-center">
+                <stat.icon className="w-4 h-4 text-muted-foreground mx-auto mb-1.5" />
+                <p className="text-lg font-bold text-foreground">{stat.value}</p>
+                <p className="text-[10px] text-muted-foreground uppercase tracking-wide">{stat.label}</p>
+              </div>
+            ))}
+          </div>
         </div>
 
-        {/* ── Quick stats ── */}
-        <div className="grid grid-cols-4 gap-2">
+        {/* Chart */}
+        <div className="rounded-xl border border-border bg-card p-4">
+          <p className="text-xs font-medium text-muted-foreground mb-3">Ventas por semana</p>
+          <ResponsiveContainer width="100%" height={140}>
+            <BarChart data={weeklyData}>
+              <XAxis dataKey="week" fontSize={10} stroke="hsl(var(--muted-foreground))" tickLine={false} axisLine={false} />
+              <YAxis fontSize={10} stroke="hsl(var(--muted-foreground))" tickLine={false} axisLine={false} />
+              <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '8px', fontSize: '11px' }} />
+              <Bar dataKey="ventas" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Quick actions grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
           {[
-            { label: "Ventas mes", value: salesThisMonth.length },
-            { label: "Retenidas", value: heldSales.length },
-            { label: "Servicios", value: plan === 'freemium' ? `${activeServicesCount}/5` : `${activeServicesCount}` },
-            { label: "Vendedores", value: uniqueVendors },
-          ].map(stat => (
-            <div key={stat.label} className="text-center p-3 rounded-xl border border-border bg-card">
-              <p className="text-lg font-bold">{stat.value}</p>
-              <p className="text-[10px] text-muted-foreground uppercase tracking-wide">{stat.label}</p>
-            </div>
+            { label: "Servicios", desc: plan === 'freemium' ? 'Máximo 5' : 'Ilimitados', icon: Package, href: "/company/services", locked: false },
+            { label: "Vendedores", desc: "Red privada", icon: Users, href: "/company/vendors", locked: false },
+            { label: "Capacitaciones", desc: "Contenido", icon: BookOpen, href: "/company/trainings", locked: false },
+            { label: "Ventas", desc: "Historial", icon: ShoppingCart, href: "/company/sales", locked: false },
+            { label: "Cupones", desc: "Descuentos", icon: Tag, href: "/company/coupons", locked: plan === 'freemium' },
+            { label: "Chat", desc: "Vendedores", icon: MessageCircle, href: "/company/chat", locked: plan === 'freemium' },
+            { label: "Dominio", desc: "Marca blanca", icon: Globe, href: "/company/domain", locked: plan !== 'enterprise' },
+            { label: "API", desc: "Integración", icon: Code, href: "/company/api", locked: plan !== 'enterprise' },
+          ].map(action => (
+            action.locked ? (
+              <div key={action.label} className="rounded-xl border border-border bg-card p-3 text-center opacity-40 cursor-not-allowed">
+                <Lock className="w-4 h-4 mx-auto mb-1.5 text-muted-foreground" />
+                <p className="text-xs font-medium text-muted-foreground">{action.label}</p>
+                <p className="text-[9px] text-muted-foreground">{action.label === 'Dominio' || action.label === 'API' ? 'Enterprise' : 'Premium+'}</p>
+              </div>
+            ) : (
+              <Link key={action.label} to={action.href}>
+                <div className="rounded-xl border border-border bg-card p-3 text-center hover:border-primary/30 hover:shadow-sm transition-all">
+                  <action.icon className="w-4 h-4 mx-auto mb-1.5 text-primary" />
+                  <p className="text-xs font-medium text-foreground">{action.label}</p>
+                  <p className="text-[9px] text-muted-foreground">{action.desc}</p>
+                </div>
+              </Link>
+            )
           ))}
         </div>
 
-        {/* ── Feature Matrix for current plan ── */}
+        {/* Feature matrix */}
         <div className="rounded-xl border border-border bg-card overflow-hidden">
-          <div className="px-4 py-3 border-b border-border bg-muted/30">
-            <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-2">
-              <Settings className="w-3.5 h-3.5" />
-              Funciones de tu plan {pc.label}
-            </h3>
+          <div className="px-4 py-3 border-b border-border">
+            <div className="flex items-center gap-2">
+              <Settings className="w-3.5 h-3.5 text-muted-foreground" />
+              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Funciones de tu plan</span>
+            </div>
           </div>
           <div className="divide-y divide-border/50">
             {featureMatrix.map((feat, i) => {
@@ -159,17 +207,13 @@ export default function CompanyDashboard() {
               const isAvailable = value !== false;
               return (
                 <div key={i} className="flex items-center justify-between px-4 py-2.5">
-                  <span className={`text-xs ${isAvailable ? 'text-foreground' : 'text-muted-foreground/50'}`}>
+                  <span className={`text-xs ${isAvailable ? 'text-foreground' : 'text-muted-foreground/40'}`}>
                     {feat.label}
                   </span>
                   {typeof value === 'boolean' ? (
-                    value ? (
-                      <CheckCircle className="w-4 h-4 text-success" />
-                    ) : (
-                      <Lock className="w-4 h-4 text-muted-foreground/30" />
-                    )
+                    value ? <CheckCircle className="w-3.5 h-3.5 text-primary" /> : <Lock className="w-3.5 h-3.5 text-muted-foreground/20" />
                   ) : (
-                    <span className="text-xs font-medium text-primary">{value}</span>
+                    <span className="text-[11px] font-medium text-primary">{value}</span>
                   )}
                 </div>
               );
@@ -177,95 +221,13 @@ export default function CompanyDashboard() {
           </div>
         </div>
 
-        {/* ── Chart ── */}
-        <div className="rounded-xl border border-border bg-card p-4">
-          <p className="text-xs font-medium text-muted-foreground mb-3">Ventas por semana</p>
-          <ResponsiveContainer width="100%" height={160}>
-            <BarChart data={weeklyData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis dataKey="week" fontSize={10} stroke="hsl(var(--muted-foreground))" />
-              <YAxis fontSize={10} stroke="hsl(var(--muted-foreground))" />
-              <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '8px', fontSize: '11px' }} />
-              <Bar dataKey="ventas" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* ── Plan-specific action cards ── */}
-        <div className="grid grid-cols-2 gap-2">
-          <Link to="/company/services">
-            <div className="rounded-xl border border-border bg-card p-3 hover:border-primary/30 transition-colors text-center">
-              <ShoppingCart className="w-5 h-5 mx-auto mb-1 text-primary" />
-              <p className="text-sm font-medium">Servicios</p>
-              <p className="text-[10px] text-muted-foreground">
-                {plan === 'freemium' ? 'Máximo 5' : 'Ilimitados'}
-              </p>
-            </div>
-          </Link>
-          <Link to="/company/vendors">
-            <div className="rounded-xl border border-border bg-card p-3 hover:border-primary/30 transition-colors text-center">
-              <Users className="w-5 h-5 mx-auto mb-1 text-primary" />
-              <p className="text-sm font-medium">Vendedores</p>
-              <p className="text-[10px] text-muted-foreground">Red privada</p>
-            </div>
-          </Link>
-
-          {/* Cupones */}
-          {plan !== 'freemium' ? (
-            <Link to="/company/settings">
-              <div className="rounded-xl border border-border bg-card p-3 hover:border-primary/30 transition-colors text-center">
-                <Tag className="w-5 h-5 mx-auto mb-1 text-primary" />
-                <p className="text-sm font-medium">Cupones</p>
-                <p className="text-[10px] text-muted-foreground">Gestionar descuentos</p>
-              </div>
-            </Link>
-          ) : (
-            <div className="rounded-xl border border-border bg-card p-3 text-center opacity-50 cursor-not-allowed">
-              <Lock className="w-5 h-5 mx-auto mb-1 text-muted-foreground" />
-              <p className="text-sm font-medium text-muted-foreground">Cupones</p>
-              <p className="text-[10px] text-muted-foreground">Premium+</p>
-            </div>
-          )}
-
-          {/* Chat */}
-          {plan !== 'freemium' ? (
-            <Link to="/company/settings">
-              <div className="rounded-xl border border-border bg-card p-3 hover:border-primary/30 transition-colors text-center">
-                <MessageCircle className="w-5 h-5 mx-auto mb-1 text-primary" />
-                <p className="text-sm font-medium">Chat</p>
-                <p className="text-[10px] text-muted-foreground">Mensajes vendedores</p>
-              </div>
-            </Link>
-          ) : (
-            <div className="rounded-xl border border-border bg-card p-3 text-center opacity-50 cursor-not-allowed">
-              <Lock className="w-5 h-5 mx-auto mb-1 text-muted-foreground" />
-              <p className="text-sm font-medium text-muted-foreground">Chat</p>
-              <p className="text-[10px] text-muted-foreground">Premium+</p>
-            </div>
-          )}
-        </div>
-
-        {/* Enterprise-exclusive features */}
-        {plan === 'enterprise' && (
-          <div className="grid grid-cols-2 gap-2">
-            <div className="rounded-xl border border-primary/20 bg-primary/5 p-3 text-center">
-              <Globe className="w-5 h-5 mx-auto mb-1 text-primary" />
-              <p className="text-sm font-medium">Dominio propio</p>
-              <p className="text-[10px] text-primary font-mono">{company?.customDomain || 'ventas.tuempresa.com'}</p>
-            </div>
-            <div className="rounded-xl border border-primary/20 bg-primary/5 p-3 text-center">
-              <Code className="w-5 h-5 mx-auto mb-1 text-primary" />
-              <p className="text-sm font-medium">API / Integración</p>
-              <p className="text-[10px] text-muted-foreground">Códigos automáticos</p>
-            </div>
-          </div>
-        )}
-
         {/* Recent sales */}
-        <div className="rounded-xl border border-border bg-card">
+        <div className="rounded-xl border border-border bg-card overflow-hidden">
           <div className="flex items-center justify-between px-4 py-3 border-b border-border">
-            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Ventas recientes</p>
-            <Link to="/company/sales" className="text-xs text-primary hover:underline">Ver todas</Link>
+            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Ventas recientes</span>
+            <Link to="/company/sales" className="text-[11px] text-primary hover:underline flex items-center gap-0.5">
+              Ver todas <ChevronRight className="w-3 h-3" />
+            </Link>
           </div>
           <div className="divide-y divide-border/50">
             {recentSales.map(sale => {
@@ -291,22 +253,22 @@ export default function CompanyDashboard() {
           </div>
         </div>
 
-        {/* Upgrade CTA for non-enterprise */}
+        {/* Upgrade CTA */}
         {plan !== 'enterprise' && (
-          <div className="rounded-xl bg-primary/5 border border-primary/20 p-4">
+          <div className="rounded-xl border border-primary/20 bg-primary/5 p-4">
             <div className="flex items-center gap-3">
-              {plan === 'freemium' ? <Crown className="w-8 h-8 text-primary" /> : <Building2 className="w-8 h-8 text-primary" />}
+              {plan === 'freemium' ? <Crown className="w-6 h-6 text-primary flex-shrink-0" /> : <Building2 className="w-6 h-6 text-primary flex-shrink-0" />}
               <div className="flex-1">
-                <p className="text-sm font-semibold">
+                <p className="text-sm font-semibold text-foreground">
                   {plan === 'freemium' ? 'Desbloquea Premium' : 'Escala a Enterprise'}
                 </p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-[11px] text-muted-foreground">
                   {plan === 'freemium'
                     ? 'Servicios ilimitados, cupones, chat y sin fee del 15%'
                     : 'Dominio propio, marca blanca, integración API automática'}
                 </p>
               </div>
-              <Button size="sm" className="gap-1" onClick={() => setCurrentCompanyPlan(plan === 'freemium' ? 'premium' : 'enterprise')}>
+              <Button size="sm" className="text-xs gap-1" onClick={() => setCurrentCompanyPlan(plan === 'freemium' ? 'premium' : 'enterprise')}>
                 Mejorar <ArrowRight className="w-3 h-3" />
               </Button>
             </div>
