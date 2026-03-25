@@ -344,7 +344,7 @@ export function getStatusColor(status: TransactionStatus): string {
 // =============================================================================
 
 export const CURRENT_VENDOR_ID = 'vendor-001';
-export const CURRENT_COMPANY_ID = 'company-001';
+export const CURRENT_COMPANY_ID = 'company-009';
 
 // =============================================================================
 // VENDOR ↔ COMPANY LINKS (multi-empresa)
@@ -369,9 +369,13 @@ export const vendorCompanyLinks: VendorCompanyLink[] = [
   { vendorId: 'vendor-001', companyId: 'company-012', joinedAt: '2025-02-01', status: 'active' },
   // other vendors
   { vendorId: 'vendor-002', companyId: 'company-001', joinedAt: '2024-07-01', status: 'active' },
+  { vendorId: 'vendor-002', companyId: 'company-009', joinedAt: '2025-01-05', status: 'active' },
   { vendorId: 'vendor-003', companyId: 'company-003', joinedAt: '2024-08-01', status: 'active' },
+  { vendorId: 'vendor-003', companyId: 'company-009', joinedAt: '2025-01-08', status: 'active' },
   { vendorId: 'vendor-004', companyId: 'company-004', joinedAt: '2024-09-01', status: 'active' },
+  { vendorId: 'vendor-004', companyId: 'company-009', joinedAt: '2025-01-12', status: 'active' },
   { vendorId: 'vendor-005', companyId: 'company-005', joinedAt: '2024-10-01', status: 'active' },
+  { vendorId: 'vendor-005', companyId: 'company-009', joinedAt: '2025-01-20', status: 'active' },
 ];
 
 // =============================================================================
@@ -1135,10 +1139,16 @@ function generateSales(): Sale[] {
   const today = new Date();
   const activeServices = services.filter(s => s.status === 'activo');
 
-  // Vendor-001 sales across 3 companies
+  // Vendor-001 sales across companies
   salesList.push(...generateSalesForVendor('vendor-001', 'company-001', 30, 'v1a'));
   salesList.push(...generateSalesForVendor('vendor-001', 'company-002', 12, 'v1b'));
   salesList.push(...generateSalesForVendor('vendor-001', 'company-005', 8, 'v1c'));
+  salesList.push(...generateSalesForVendor('vendor-001', 'company-009', 25, 'v1d'));
+  // Other vendors selling IronHaus
+  salesList.push(...generateSalesForVendor('vendor-002', 'company-009', 18, 'v2d'));
+  salesList.push(...generateSalesForVendor('vendor-003', 'company-009', 12, 'v3d'));
+  salesList.push(...generateSalesForVendor('vendor-004', 'company-009', 8, 'v4d'));
+  salesList.push(...generateSalesForVendor('vendor-005', 'company-009', 15, 'v5d'));
   
   // Generar 70 ventas adicionales para otros vendedores
   const otherStatusDistribution: TransactionStatus[] = [
