@@ -1,12 +1,11 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import VendorTabLayout from "@/components/layout/VendorTabLayout";
 import { useDemo } from "@/contexts/DemoContext";
 import { companies, services as allServices, formatCOP, CURRENT_VENDOR_ID } from "@/data/mockData";
-import { Search, Package, Star, RefreshCw, Zap, Lock, Clock, Shield, AlertTriangle, BookOpen, MessageCircle, Tag, ShoppingCart, RotateCcw } from "lucide-react";
+import { Search, Package, Star, RefreshCw, Zap, Lock, Clock, Shield, AlertTriangle, BookOpen, MessageCircle, Tag, ShoppingCart, RotateCcw, ChevronRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import ServiceDetailsModal from "@/components/ServiceDetailsModal";
 
 import insuranceImg from "@/assets/service-covers/insurance-ai.jpg";
 import legalImg from "@/assets/service-covers/legal-ai.jpg";
@@ -33,8 +32,8 @@ type CompanyTab = 'servicios' | 'ventas' | 'devoluciones' | 'cupones' | 'chat';
 export default function VendorCompanyDetail() {
   const { companyId } = useParams<{ companyId: string }>();
   const { sales, trainingProgress, commissions, currentVendorId } = useDemo();
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedServiceId, setSelectedServiceId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<CompanyTab>('servicios');
 
   const company = companies.find(c => c.id === companyId);
@@ -73,7 +72,10 @@ export default function VendorCompanyDetail() {
   );
 
   const totalSalesAmount = vendorSales.filter(s => s.status !== 'REFUNDED').reduce((a, s) => a + s.sellerCommissionAmount, 0);
-  const pendingTrainings = companyServices.filter(s => s.requiresTraining && !getTrainingStatus(s.id)).length;
+  const inProgressTrainings = companyServices.filter(s => {
+    const tp = trainingProgress.find(t => t.vendorId === vendorId && t.serviceId === s.id);
+    return tp?.status === 'in_progress';
+  }).length;
 
   // Tabs config (plan-dependent)
   const tabs: { id: CompanyTab; label: string; icon: React.ElementType; planRequired?: boolean }[] = [
@@ -131,11 +133,11 @@ export default function VendorCompanyDetail() {
           </div>
         </div>
 
-        {/* Pending trainings alert */}
-        {pendingTrainings > 0 && (
+        {/* In-progress trainings alert */}
+        {inProgressTrainings > 0 && (
           <Link to="/vendor/trainings" className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500/10 text-amber-600 text-xs font-medium border border-amber-500/20">
             <BookOpen className="w-4 h-4" />
-            {pendingTrainings} capacitación{pendingTrainings !== 1 ? 'es' : ''} pendiente{pendingTrainings !== 1 ? 's' : ''}
+            {inProgressTrainings} capacitación{inProgressTrainings !== 1 ? 'es' : ''} en curso
           </Link>
         )}
 
@@ -164,7 +166,7 @@ export default function VendorCompanyDetail() {
             setSearchQuery={setSearchQuery}
             filteredServices={filteredServices}
             topServiceIds={topServiceIds}
-            setSelectedServiceId={setSelectedServiceId}
+            onServiceClick={(serviceId: string) => navigate(`/vendor/company/${companyId}/service/${serviceId}`)}
             companyIndustry={company.industry}
           />
         )}
@@ -194,25 +196,18 @@ export default function VendorCompanyDetail() {
         )}
       </div>
 
-      {selectedServiceId && (
-        <ServiceDetailsModal
-          serviceId={selectedServiceId}
-          isOpen={!!selectedServiceId}
-          onClose={() => setSelectedServiceId(null)}
-        />
-      )}
     </VendorTabLayout>
   );
 }
 
 /* =========== Sub-components =========== */
 
-function ServiciosTab({ searchQuery, setSearchQuery, filteredServices, topServiceIds, setSelectedServiceId, companyIndustry }: {
+function ServiciosTab({ searchQuery, setSearchQuery, filteredServices, topServiceIds, onServiceClick, companyIndustry }: {
   searchQuery: string;
   setSearchQuery: (q: string) => void;
   filteredServices: Array<any>;
   topServiceIds: string[];
-  setSelectedServiceId: (id: string) => void;
+  onServiceClick: (id: string) => void;
   companyIndustry: string;
 }) {
   return (
@@ -238,7 +233,7 @@ function ServiciosTab({ searchQuery, setSearchQuery, filteredServices, topServic
             return (
               <div
                 key={service.id}
-                onClick={() => setSelectedServiceId(service.id)}
+                onClick={() => onServiceClick(service.id)}
                 className={`rounded-xl border border-border bg-card overflow-hidden cursor-pointer group hover:shadow-lg hover:border-primary/30 transition-all duration-300 ${
                   !service.isActive ? 'grayscale opacity-75' : ''
                 }`}
