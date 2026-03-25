@@ -1,12 +1,11 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import VendorTabLayout from "@/components/layout/VendorTabLayout";
 import { useDemo } from "@/contexts/DemoContext";
 import { companies, services as allServices, formatCOP, CURRENT_VENDOR_ID } from "@/data/mockData";
-import { Search, Package, Star, RefreshCw, Zap, Lock, Clock, Shield, AlertTriangle, BookOpen, MessageCircle, Tag, ShoppingCart, RotateCcw } from "lucide-react";
+import { Search, Package, Star, RefreshCw, Zap, Lock, Clock, Shield, AlertTriangle, BookOpen, MessageCircle, Tag, ShoppingCart, RotateCcw, ChevronRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import ServiceDetailsModal from "@/components/ServiceDetailsModal";
 
 import insuranceImg from "@/assets/service-covers/insurance-ai.jpg";
 import legalImg from "@/assets/service-covers/legal-ai.jpg";
@@ -33,8 +32,8 @@ type CompanyTab = 'servicios' | 'ventas' | 'devoluciones' | 'cupones' | 'chat';
 export default function VendorCompanyDetail() {
   const { companyId } = useParams<{ companyId: string }>();
   const { sales, trainingProgress, commissions, currentVendorId } = useDemo();
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedServiceId, setSelectedServiceId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<CompanyTab>('servicios');
 
   const company = companies.find(c => c.id === companyId);
@@ -73,7 +72,10 @@ export default function VendorCompanyDetail() {
   );
 
   const totalSalesAmount = vendorSales.filter(s => s.status !== 'REFUNDED').reduce((a, s) => a + s.sellerCommissionAmount, 0);
-  const pendingTrainings = companyServices.filter(s => s.requiresTraining && !getTrainingStatus(s.id)).length;
+  const inProgressTrainings = companyServices.filter(s => {
+    const tp = trainingProgress.find(t => t.vendorId === vendorId && t.serviceId === s.id);
+    return tp?.status === 'in_progress';
+  }).length;
 
   // Tabs config (plan-dependent)
   const tabs: { id: CompanyTab; label: string; icon: React.ElementType; planRequired?: boolean }[] = [
