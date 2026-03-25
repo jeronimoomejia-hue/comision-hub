@@ -1,63 +1,47 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import { useState } from "react";
 import VendorTabLayout from "@/components/layout/VendorTabLayout";
-import PageTutorial from "@/components/PageTutorial";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { StatusBadge, StatCard, EmptyState } from "@/components/dashboard/DashboardComponents";
+import { Badge } from "@/components/ui/badge";
 import {
-  ArrowLeft,
-  Building2,
-  Clock,
-  DollarSign,
-  RotateCcw,
-  ShoppingCart,
-  TrendingUp,
-  Users,
-  AlertCircle,
-  CheckCircle,
-  Plus,
-  Download,
-  FileText,
-  User,
-  Mail,
-  MessageSquare,
-  Lightbulb,
-  Target,
-  Shield,
-  X
+  ShoppingCart, RotateCcw, Clock, DollarSign, Plus, User, Mail,
+  RefreshCw, Zap, Lock, Check, BookOpen, FileText, Download,
+  Lightbulb, HelpCircle, AlertCircle, Target, Users, Package,
+  Shield, MessageSquare, ChevronRight, Star, Play, Info
 } from "lucide-react";
 import { useDemo } from "@/contexts/DemoContext";
-import { formatCOP, formatDate } from "@/data/mockData";
-import { useState } from "react";
+import { formatCOP, formatDate, CURRENT_VENDOR_ID } from "@/data/mockData";
+import { extendedServiceDetails } from "@/data/extendedServiceData";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
+  Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import extendedServiceDetails from "@/data/extendedServiceData";
+
+import insuranceImg from "@/assets/service-covers/insurance-ai.jpg";
+import legalImg from "@/assets/service-covers/legal-ai.jpg";
+import marketingImg from "@/assets/service-covers/marketing-ai.jpg";
+import salesImg from "@/assets/service-covers/sales-ai.jpg";
+import supportImg from "@/assets/service-covers/support-ai.jpg";
+import accountingImg from "@/assets/service-covers/accounting-ai.jpg";
+import hrImg from "@/assets/service-covers/hr-ai.jpg";
+import securityImg from "@/assets/service-covers/security-ai.jpg";
+
+const categoryCovers: Record<string, string> = {
+  'IA para Seguros': insuranceImg,
+  'IA Legal': legalImg,
+  'IA para Marketing': marketingImg,
+  'IA para Ventas': salesImg,
+  'IA para Atención': supportImg,
+  'IA para Contabilidad': accountingImg,
+  'IA para RRHH': hrImg,
+  'IA para Ciberseguridad': securityImg,
+};
 
 const refundReasons = [
   { value: "arrepentimiento", label: "Cliente se arrepintió" },
@@ -66,78 +50,57 @@ const refundReasons = [
   { value: "otro", label: "Otro" }
 ];
 
+type ServiceTab = 'info' | 'ventas' | 'devoluciones';
+
 export default function VendorServiceDetail() {
-  const { serviceId } = useParams<{ serviceId: string }>();
+  const { serviceId, companyId } = useParams<{ serviceId: string; companyId?: string }>();
   const navigate = useNavigate();
-  const { 
-    services, 
-    sales, 
-    commissions, 
-    companies, 
-    currentVendorId,
-    addRefundRequest,
-    addSale,
-    refundRequests
+  const {
+    services, sales, commissions, companies, trainingProgress,
+    currentVendorId, addRefundRequest, addSale, refundRequests
   } = useDemo();
 
+  const [activeTab, setActiveTab] = useState<ServiceTab>('info');
+  const [saleDialogOpen, setSaleDialogOpen] = useState(false);
+  const [saleLoading, setSaleLoading] = useState(false);
+  const [saleForm, setSaleForm] = useState({ clientName: "", clientEmail: "" });
   const [refundDialogOpen, setRefundDialogOpen] = useState(false);
   const [selectedSale, setSelectedSale] = useState<typeof sales[0] | null>(null);
   const [refundReason, setRefundReason] = useState("");
   const [refundNotes, setRefundNotes] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Sale form state
-  const [saleDialogOpen, setSaleDialogOpen] = useState(false);
-  const [saleLoading, setSaleLoading] = useState(false);
-  const [saleForm, setSaleForm] = useState({ clientName: "", clientEmail: "" });
-
-  // Sales pitch modal
-  const [pitchModalOpen, setPitchModalOpen] = useState(false);
-
+  const vendorId = currentVendorId || CURRENT_VENDOR_ID;
   const service = services.find(s => s.id === serviceId);
-  
-  if (!service) {
+  const company = service ? companies.find(c => c.id === service.companyId) : null;
+  const extended = service ? extendedServiceDetails[service.id] : null;
+
+  if (!service || !company) {
     return (
-      <VendorTabLayout>
-        <EmptyState
-          icon={Building2}
-          title="Servicio no encontrado"
-          description="El servicio que buscas no existe"
-          action={
-            <Button onClick={() => navigate('/vendor/services')}>
-              Volver a servicios
-            </Button>
-          }
-        />
+      <VendorTabLayout backTo={companyId ? `/vendor/company/${companyId}` : "/vendor"} backLabel="Volver">
+        <div className="text-center py-16">
+          <Package className="w-10 h-10 text-muted-foreground/30 mx-auto mb-3" />
+          <p className="text-sm font-medium text-foreground">Servicio no encontrado</p>
+        </div>
       </VendorTabLayout>
     );
   }
 
-  const company = companies.find(c => c.id === service.companyId);
-  const extended = extendedServiceDetails[service.id];
+  const coverImg = categoryCovers[service.category];
+  const estimatedCommission = Math.round(service.priceCOP * service.vendorCommissionPct / 100);
+  const vendorTraining = trainingProgress.find(tp => tp.vendorId === vendorId && tp.serviceId === serviceId);
+  const isTrainingComplete = vendorTraining?.status === 'declared_completed';
+  const backPath = companyId ? `/vendor/company/${companyId}` : "/vendor";
 
   // Sales data
-  const serviceSales = sales.filter(
-    s => s.serviceId === serviceId && s.vendorId === currentVendorId
-  );
-  const thisMonth = new Date();
-  const salesThisMonth = serviceSales.filter(s => {
-    const d = new Date(s.createdAt);
-    return d.getMonth() === thisMonth.getMonth() && d.getFullYear() === thisMonth.getFullYear();
-  });
-  const activeClients = serviceSales.filter(s => s.status === 'HELD' || s.status === 'RELEASED').length;
-  const commissionsThisMonth = commissions.filter(c => {
-    const sale = sales.find(s => s.id === c.saleId);
-    if (!sale || sale.serviceId !== serviceId || sale.vendorId !== currentVendorId) return false;
-    const d = new Date(c.createdAt);
-    return d.getMonth() === thisMonth.getMonth() && d.getFullYear() === thisMonth.getFullYear();
-  });
-  const commissionsTotal = commissionsThisMonth.reduce((acc, c) => acc + c.amountCOP, 0);
-  const refundsThisMonth = refundRequests.filter(r => {
-    const d = new Date(r.createdAt);
-    return r.serviceId === serviceId && r.vendorId === currentVendorId &&
-      d.getMonth() === thisMonth.getMonth() && d.getFullYear() === thisMonth.getFullYear();
-  }).length;
+  const serviceSales = sales.filter(s => s.serviceId === serviceId && s.vendorId === vendorId);
+  const activeSales = serviceSales.filter(s => s.status !== 'REFUNDED');
+  const refundedSales = serviceSales.filter(s => s.status === 'REFUNDED');
+  const totalCommissions = commissions
+    .filter(c => { const s = sales.find(sl => sl.id === c.saleId); return s?.serviceId === serviceId && s?.vendorId === vendorId && c.status !== 'REFUNDED'; })
+    .reduce((a, c) => a + c.amountCOP, 0);
+
+  const availableCodes = service.activationCodes.filter(c => c.status === 'available').length;
 
   // Refund helpers
   const isEligibleForRefund = (sale: typeof sales[0]) => {
@@ -150,20 +113,38 @@ export default function VendorServiceDetail() {
     const days = Math.floor((Date.now() - new Date(sale.createdAt).getTime()) / (1000 * 60 * 60 * 24));
     return Math.max(0, service.refundPolicy.refundWindowDays - days);
   };
-  const handleRefundClick = (sale: typeof sales[0]) => {
-    setSelectedSale(sale);
-    setRefundReason("");
-    setRefundNotes("");
-    setRefundDialogOpen(true);
+
+  const handleSubmitSale = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (availableCodes === 0) { toast.error("No hay códigos disponibles."); return; }
+    setSaleLoading(true);
+    await new Promise(r => setTimeout(r, 600));
+    const grossAmount = service.priceCOP;
+    const sellerCommissionAmount = Math.round(grossAmount * service.vendorCommissionPct / 100);
+    const mensualistaFeeAmount = Math.round(grossAmount * service.mensualistaPct / 100);
+    const providerNetAmount = grossAmount - sellerCommissionAmount - mensualistaFeeAmount;
+    addSale({
+      serviceId: service.id, vendorId, companyId: service.companyId,
+      clientName: saleForm.clientName, clientEmail: saleForm.clientEmail,
+      grossAmount, sellerCommissionAmount, mensualistaFeeAmount, providerNetAmount,
+      status: 'HELD', isSubscription: service.type === 'suscripción', subscriptionActive: service.type === 'suscripción',
+      amountCOP: grossAmount, holdStartAt: new Date().toISOString(), holdEndAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+      paymentProvider: 'MercadoPago', mpPaymentId: `MP-${Date.now()}`
+    });
+    toast.success("¡Venta registrada!", { description: `Comisión de ${formatCOP(sellerCommissionAmount)} en retención 7 días.` });
+    setSaleForm({ clientName: "", clientEmail: "" });
+    setSaleLoading(false);
+    setSaleDialogOpen(false);
   };
+
   const handleSubmitRefund = async () => {
     if (!selectedSale || !refundReason) return;
     setIsSubmitting(true);
-    await new Promise(resolve => setTimeout(resolve, 800));
+    await new Promise(r => setTimeout(r, 600));
     const reasonLabel = refundReasons.find(r => r.value === refundReason)?.label || refundReason;
     const fullReason = refundNotes ? `${reasonLabel}: ${refundNotes}` : reasonLabel;
     addRefundRequest({
-      saleId: selectedSale.id, vendorId: currentVendorId, companyId: service.companyId,
+      saleId: selectedSale.id, vendorId, companyId: service.companyId,
       serviceId: service.id, reason: fullReason,
       status: service.refundPolicy.autoRefund ? 'automático' : 'pendiente',
       decisionBy: service.refundPolicy.autoRefund ? 'sistema' : undefined,
@@ -175,506 +156,411 @@ export default function VendorServiceDetail() {
     setSelectedSale(null);
   };
 
-  // Sale submission
-  const availableCodes = service.activationCodes.filter(c => c.status === 'available').length;
-  
-  const handleSubmitSale = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (availableCodes === 0) {
-      toast.error("No hay códigos de activación disponibles. Contacta a la empresa.");
-      return;
-    }
-    setSaleLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 800));
-    const grossAmount = service.priceCOP;
-    const sellerCommissionAmount = Math.round(grossAmount * service.vendorCommissionPct / 100);
-    const mensualistaFeeAmount = Math.round(grossAmount * service.mensualistaPct / 100);
-    const providerNetAmount = grossAmount - sellerCommissionAmount - mensualistaFeeAmount;
-    addSale({
-      serviceId: service.id, vendorId: currentVendorId, companyId: service.companyId,
-      clientName: saleForm.clientName, clientEmail: saleForm.clientEmail,
-      grossAmount, sellerCommissionAmount, mensualistaFeeAmount, providerNetAmount,
-      status: 'HELD', isSubscription: service.type === 'suscripción', subscriptionActive: service.type === 'suscripción',
-      amountCOP: grossAmount, holdStartAt: new Date().toISOString(), holdEndAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-      paymentProvider: 'MercadoPago', mpPaymentId: `MP-${Date.now()}`
-    });
-    toast.success("¡Venta registrada! Código de activación entregado al cliente.", { description: `Comisión de ${formatCOP(sellerCommissionAmount)} en retención 7 días.` });
-    setSaleForm({ clientName: "", clientEmail: "" });
-    setSaleLoading(false);
-    setSaleDialogOpen(false);
+  const getStatusConfig = (status: string) => {
+    const map: Record<string, { cls: string; label: string }> = {
+      'HELD': { cls: "bg-amber-50 text-amber-600", label: "Retenida" },
+      'RELEASED': { cls: "bg-emerald-50 text-emerald-600", label: "Liberada" },
+      'REFUNDED': { cls: "bg-red-50 text-red-600", label: "Devuelta" },
+    };
+    return map[status] || { cls: "bg-muted text-muted-foreground", label: status };
   };
 
-  const handleDownload = (title: string) => {
-    toast.success(`Descargando: ${title}`);
-  };
-
-  const getStatusLabel = (status: string) => {
-    const labels: Record<string, string> = { 'HELD': 'En retención', 'RELEASED': 'Liberada', 'REFUNDED': 'Devuelta' };
-    return labels[status] || status;
-  };
+  const tabs: { id: ServiceTab; label: string; icon: React.ElementType }[] = [
+    { id: 'info', label: 'Información', icon: Info },
+    { id: 'ventas', label: 'Ventas', icon: ShoppingCart },
+    { id: 'devoluciones', label: 'Devoluciones', icon: RotateCcw },
+  ];
 
   return (
-    <VendorTabLayout>
-      <div className="space-y-6">
-        <PageTutorial
-          pageId="vendor-service-detail"
-          title="Detalle del servicio"
-          description="Desde aquí registras ventas, descargas materiales y consultas la guía de venta."
-          steps={[
-            "Usa 'Guía de venta' para ver el pitch, objeciones y datos del cliente ideal",
-            "Registra ventas directamente con el botón 'Registrar venta'",
-            "Descarga los materiales de apoyo en la sección inferior"
-          ]}
-        />
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <Button variant="ghost" onClick={() => navigate('/vendor/services')}>
-            <ArrowLeft className="mr-2 w-4 h-4" />
-            Volver a servicios
-          </Button>
-          <div className="flex items-center gap-2">
-            <Button variant="outline" onClick={() => setPitchModalOpen(true)}>
-              <MessageSquare className="mr-2 w-4 h-4" />
-              Guía de venta
-            </Button>
-            <Button onClick={() => setSaleDialogOpen(true)}>
-              <Plus className="mr-2 w-4 h-4" />
-              Registrar venta
-            </Button>
+    <VendorTabLayout backTo={backPath} backLabel={company.name}>
+      <div className="space-y-5">
+        {/* Service Header */}
+        <div className="flex items-start gap-4">
+          <div className="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0">
+            <img src={coverImg} alt={service.category} className="w-full h-full object-cover" />
           </div>
-        </div>
-
-        {/* Header */}
-        <div className="card-premium p-6">
-          <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
-            <div className="flex items-start gap-4">
-              <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center">
-                <Building2 className="w-5 h-5 text-muted-foreground" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <h1 className="text-lg font-bold">{service.name}</h1>
-                  <StatusBadge status="activo" label="ACTIVO" />
-                </div>
-                <p className="text-muted-foreground">{company?.name || 'Empresa'}</p>
-                <p className="text-sm text-muted-foreground mt-1">{service.description}</p>
-              </div>
-            </div>
-            <div className="flex flex-col items-end gap-2">
-              <div className="text-right">
-                <p className="text-lg font-bold text-primary">{formatCOP(service.priceCOP)}</p>
-                <p className="text-sm text-muted-foreground">
-                  {service.type === 'suscripción' ? 'mensual' : 'pago único'}
-                </p>
-              </div>
-              <span className={`px-3 py-1 rounded-full text-sm ${
-                service.type === 'suscripción' 
-                  ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
-                  : 'bg-purple-500/10 text-purple-600 dark:text-purple-400'
-              }`}>
-                {service.type === 'suscripción' ? 'Suscripción' : 'Puntual'}
-              </span>
-            </div>
-          </div>
-
-          {/* Refund Policy */}
-          <div className="mt-6 p-4 bg-muted/50 rounded-lg">
-            <h3 className="font-medium mb-2 flex items-center gap-2">
-              <Clock className="w-4 h-4" /> Política de devolución
-            </h3>
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div>
-                <span className="text-muted-foreground">Devolución automática:</span>
-                <span className={`ml-2 font-medium ${service.refundPolicy.autoRefund ? 'text-green-600' : 'text-amber-600'}`}>
-                  {service.refundPolicy.autoRefund ? 'Sí' : 'No (requiere aprobación)'}
-                </span>
-              </div>
-              <div>
-                <span className="text-muted-foreground">Plazo:</span>
-                <span className="ml-2 font-medium">{service.refundPolicy.refundWindowDays} días</span>
-              </div>
+          <div className="flex-1 min-w-0">
+            <h1 className="text-xl font-semibold text-foreground leading-tight">{service.name}</h1>
+            <p className="text-xs text-muted-foreground mt-0.5">{company.name} · {service.category}</p>
+            <div className="flex items-center gap-2 mt-2">
+              <Badge variant="outline" className="text-[9px]">
+                {service.type === 'suscripción' ? <><RefreshCw className="w-2.5 h-2.5 mr-0.5" /> Recurrente</> : <><Zap className="w-2.5 h-2.5 mr-0.5" /> Puntual</>}
+              </Badge>
+              {isTrainingComplete ? (
+                <Badge className="bg-emerald-500/10 text-emerald-600 border-0 text-[9px]"><Check className="w-2.5 h-2.5 mr-0.5" /> Activo</Badge>
+              ) : (
+                <Badge variant="outline" className="text-[9px] text-muted-foreground"><Lock className="w-2.5 h-2.5 mr-0.5" /> Sin activar</Badge>
+              )}
             </div>
           </div>
         </div>
 
-        {/* KPIs */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatCard title="Ventas del mes" value={salesThisMonth.length} icon={ShoppingCart} />
-          {service.type === 'suscripción' && (
-            <StatCard title="Clientes activos" value={activeClients} icon={Users} variant="success" />
+        {/* Quick Stats */}
+        <div className="grid grid-cols-3 gap-3">
+          <div className="rounded-xl border border-border bg-card p-3 text-center">
+            <p className="text-[10px] text-muted-foreground uppercase tracking-wide">Comisión</p>
+            <p className="text-lg font-semibold text-primary">{formatCOP(estimatedCommission)}</p>
+            <p className="text-[9px] text-muted-foreground">{service.vendorCommissionPct}% por venta</p>
+          </div>
+          <div className="rounded-xl border border-border bg-card p-3 text-center">
+            <p className="text-[10px] text-muted-foreground uppercase tracking-wide">Mis ventas</p>
+            <p className="text-lg font-semibold text-foreground">{activeSales.length}</p>
+          </div>
+          <div className="rounded-xl border border-border bg-card p-3 text-center">
+            <p className="text-[10px] text-muted-foreground uppercase tracking-wide">Ganado</p>
+            <p className="text-lg font-semibold text-foreground">{formatCOP(totalCommissions)}</p>
+          </div>
+        </div>
+
+        {/* Action buttons */}
+        <div className="flex gap-2">
+          {isTrainingComplete ? (
+            <Button size="sm" className="flex-1" onClick={() => setSaleDialogOpen(true)}>
+              <Plus className="w-3.5 h-3.5 mr-1.5" /> Registrar venta
+            </Button>
+          ) : (
+            <Button size="sm" variant="outline" className="flex-1 border-amber-400 text-amber-700" onClick={() => navigate(`/vendor/trainings/${serviceId}`)}>
+              <BookOpen className="w-3.5 h-3.5 mr-1.5" /> Capacitarme primero
+            </Button>
           )}
-          <StatCard title="Comisiones del mes" value={formatCOP(commissionsTotal)} icon={TrendingUp} />
-          <StatCard title="Devoluciones" value={refundsThisMonth} icon={RotateCcw} variant={refundsThisMonth > 0 ? "warning" : "default"} />
         </div>
 
-        {/* Materials Section */}
-        {service.materials.length > 0 && (
-          <div className="card-premium">
-            <div className="p-4 border-b border-border flex items-center justify-between">
-              <h2 className="font-semibold flex items-center gap-2">
-                <FileText className="w-4 h-4 text-primary" />
-                Materiales del servicio
-              </h2>
-              <span className="text-xs text-muted-foreground">{service.materials.length} archivo{service.materials.length !== 1 ? 's' : ''}</span>
-            </div>
-            <div className="divide-y divide-border">
-              {service.materials.map(material => (
-                <div key={material.id} className="p-4 flex items-center justify-between hover:bg-muted/30 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center">
-                      <FileText className="w-5 h-5 text-red-500" />
-                    </div>
-                    <div>
-                      <p className="font-medium text-sm">{material.title}</p>
-                      <p className="text-xs text-muted-foreground">PDF • {material.uploadedAt}</p>
-                    </div>
-                  </div>
-                  <Button variant="outline" size="sm" onClick={() => handleDownload(material.title)}>
-                    <Download className="w-4 h-4 mr-1" /> Descargar
-                  </Button>
-                </div>
-              ))}
-            </div>
-          </div>
+        {/* Internal Tabs */}
+        <div className="flex gap-1 overflow-x-auto pb-1 scrollbar-hide border-b border-border">
+          {tabs.map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex items-center gap-1.5 px-4 py-2.5 text-xs font-medium whitespace-nowrap transition-colors border-b-2 -mb-[1px] ${
+                activeTab === tab.id
+                  ? 'border-primary text-primary'
+                  : 'border-transparent text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              <tab.icon className="w-3.5 h-3.5" />
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Tab Content */}
+        {activeTab === 'info' && (
+          <InfoTab service={service} extended={extended} company={company} isTrainingComplete={isTrainingComplete} />
         )}
 
-        {/* Sales Table */}
-        <div className="card-premium">
-          <div className="p-4 border-b border-border">
-            <h2 className="font-semibold text-lg">Clientes / ventas de este servicio</h2>
-          </div>
-          
-          {serviceSales.length > 0 ? (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Fecha</TableHead>
-                  <TableHead>Cliente</TableHead>
-                  <TableHead>Código</TableHead>
-                  <TableHead>Estado</TableHead>
-                  <TableHead className="text-right">Monto</TableHead>
-                  <TableHead className="text-right">Comisión</TableHead>
-                  <TableHead className="text-center">Acción</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {serviceSales.slice(0, 15).map((sale) => {
-                  const commission = commissions.find(c => c.saleId === sale.id);
-                  const eligible = isEligibleForRefund(sale);
-                  const daysRemaining = getDaysRemaining(sale);
-                  const existingRefund = refundRequests.find(r => r.saleId === sale.id);
-                  
-                  return (
-                    <TableRow key={sale.id}>
-                      <TableCell className="font-medium">{formatDate(sale.createdAt)}</TableCell>
-                      <TableCell>
-                        <div>
-                          <p className="font-medium">{sale.clientName}</p>
-                          <p className="text-xs text-muted-foreground">{sale.clientEmail}</p>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        {sale.activationCode ? (
-                          <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">{sale.activationCode}</code>
-                        ) : (
-                          <span className="text-xs text-muted-foreground">—</span>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        <StatusBadge 
-                          status={sale.status === 'RELEASED' ? 'activo' : sale.status === 'REFUNDED' ? 'rechazado' : 'pendiente'} 
-                          label={getStatusLabel(sale.status)}
-                        />
-                      </TableCell>
-                      <TableCell className="text-right font-medium">{formatCOP(sale.amountCOP)}</TableCell>
-                      <TableCell className="text-right">
-                        {commission ? (
-                          <div>
-                            <p className="font-medium text-green-600">{formatCOP(commission.amountCOP)}</p>
-                            <p className="text-xs text-muted-foreground">{getStatusLabel(commission.status)}</p>
-                          </div>
-                        ) : '-'}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {existingRefund ? (
-                          <span className={`text-xs px-2 py-1 rounded ${
-                            existingRefund.status === 'pendiente' ? 'bg-amber-500/10 text-amber-600' :
-                            existingRefund.status === 'aprobado' || existingRefund.status === 'automático' ? 'bg-green-500/10 text-green-600' :
-                            'bg-red-500/10 text-red-600'
-                          }`}>
-                            Devolución {existingRefund.status}
-                          </span>
-                        ) : eligible ? (
-                          <Button variant="outline" size="sm" onClick={() => handleRefundClick(sale)}>
-                            <RotateCcw className="mr-1 w-3 h-3" />
-                            Devolución ({daysRemaining}d)
-                          </Button>
-                        ) : (
-                          <span className="text-xs text-muted-foreground">
-                            {sale.status === 'REFUNDED' ? 'Devuelta' : 'Fuera de período'}
-                          </span>
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          ) : (
-            <div className="p-8">
-              <EmptyState
-                icon={ShoppingCart}
-                title="Sin ventas aún"
-                description="Registra tu primera venta de este servicio"
-                action={
-                  <Button onClick={() => setSaleDialogOpen(true)}>
-                    <Plus className="mr-2 w-4 h-4" /> Registrar venta
-                  </Button>
-                }
-              />
+        {activeTab === 'ventas' && (
+          <VentasTab 
+            serviceSales={serviceSales} 
+            getStatusConfig={getStatusConfig} 
+            commissions={commissions}
+            isEligibleForRefund={isEligibleForRefund}
+            getDaysRemaining={getDaysRemaining}
+            refundRequests={refundRequests}
+            onRefundClick={(sale) => { setSelectedSale(sale); setRefundReason(""); setRefundNotes(""); setRefundDialogOpen(true); }}
+            onNewSale={() => setSaleDialogOpen(true)}
+            isTrainingComplete={isTrainingComplete}
+          />
+        )}
+
+        {activeTab === 'devoluciones' && (
+          <DevolucionesTab serviceSales={serviceSales} refundRequests={refundRequests} />
+        )}
+      </div>
+
+      {/* Sale Dialog */}
+      <Dialog open={saleDialogOpen} onOpenChange={setSaleDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Registrar venta</DialogTitle>
+            <DialogDescription>{service.name} — {formatCOP(service.priceCOP)}</DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleSubmitSale} className="space-y-4">
+            <div className="space-y-2">
+              <Label>Nombre del cliente</Label>
+              <div className="relative">
+                <Input className="pl-10" placeholder="Juan García" value={saleForm.clientName} onChange={(e) => setSaleForm({...saleForm, clientName: e.target.value})} required />
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Email del cliente</Label>
+              <div className="relative">
+                <Input className="pl-10" type="email" placeholder="cliente@email.com" value={saleForm.clientEmail} onChange={(e) => setSaleForm({...saleForm, clientEmail: e.target.value})} required />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              </div>
+            </div>
+            <div className="p-3 bg-muted/50 rounded-lg text-sm space-y-1">
+              <div className="flex justify-between"><span className="text-muted-foreground">Precio:</span><span className="font-medium">{formatCOP(service.priceCOP)}</span></div>
+              <div className="flex justify-between"><span className="text-muted-foreground">Tu comisión ({service.vendorCommissionPct}%):</span><span className="font-medium text-primary">{formatCOP(estimatedCommission)}</span></div>
+            </div>
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={() => setSaleDialogOpen(false)}>Cancelar</Button>
+              <Button type="submit" disabled={saleLoading}>{saleLoading ? "Registrando..." : "Registrar venta"}</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Refund Dialog */}
+      <Dialog open={refundDialogOpen} onOpenChange={setRefundDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Solicitar devolución</DialogTitle>
+            <DialogDescription>{service.refundPolicy.autoRefund ? "Procesamiento automático." : "La empresa revisará tu solicitud."}</DialogDescription>
+          </DialogHeader>
+          {selectedSale && (
+            <div className="space-y-4">
+              <div className="p-3 bg-muted/50 rounded-lg text-sm space-y-1">
+                <div className="flex justify-between"><span className="text-muted-foreground">Cliente:</span><span className="font-medium">{selectedSale.clientName}</span></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">Monto:</span><span className="font-medium">{formatCOP(selectedSale.amountCOP)}</span></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">Días restantes:</span><span className="font-medium">{getDaysRemaining(selectedSale)}d</span></div>
+              </div>
+              <div className="space-y-2">
+                <Label>Motivo *</Label>
+                <Select value={refundReason} onValueChange={setRefundReason}>
+                  <SelectTrigger><SelectValue placeholder="Selecciona un motivo" /></SelectTrigger>
+                  <SelectContent>{refundReasons.map(r => <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Notas (opcional)</Label>
+                <Textarea placeholder="Detalles adicionales..." value={refundNotes} onChange={(e) => setRefundNotes(e.target.value)} rows={2} />
+              </div>
             </div>
           )}
-        </div>
-
-        {/* ============ SALE REGISTRATION DIALOG ============ */}
-        <Dialog open={saleDialogOpen} onOpenChange={setSaleDialogOpen}>
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle>Registrar venta</DialogTitle>
-              <DialogDescription>
-                {service.name} — {formatCOP(service.priceCOP)} ({service.vendorCommissionPct}% comisión)
-              </DialogDescription>
-            </DialogHeader>
-            <form onSubmit={handleSubmitSale} className="space-y-4">
-              <div className="space-y-2">
-                <Label>Nombre del cliente</Label>
-                <div className="relative">
-                  <Input className="pl-10" placeholder="Juan García" value={saleForm.clientName} onChange={(e) => setSaleForm({...saleForm, clientName: e.target.value})} required />
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label>Email del cliente</Label>
-                <div className="relative">
-                  <Input className="pl-10" type="email" placeholder="cliente@email.com" value={saleForm.clientEmail} onChange={(e) => setSaleForm({...saleForm, clientEmail: e.target.value})} required />
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                </div>
-              </div>
-              <div className="p-3 bg-muted/50 rounded-lg text-sm space-y-1">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Precio:</span>
-                  <span className="font-medium">{formatCOP(service.priceCOP)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Tu comisión ({service.vendorCommissionPct}%):</span>
-                  <span className="font-medium text-primary">{formatCOP(Math.round(service.priceCOP * service.vendorCommissionPct / 100))}</span>
-                </div>
-              </div>
-              <DialogFooter>
-                <Button type="button" variant="outline" onClick={() => setSaleDialogOpen(false)}>Cancelar</Button>
-                <Button type="submit" disabled={saleLoading}>
-                  {saleLoading ? "Registrando..." : "Registrar venta"}
-                </Button>
-              </DialogFooter>
-            </form>
-          </DialogContent>
-        </Dialog>
-
-        {/* ============ REFUND DIALOG ============ */}
-        <Dialog open={refundDialogOpen} onOpenChange={setRefundDialogOpen}>
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle>Solicitar devolución</DialogTitle>
-              <DialogDescription>
-                {service.refundPolicy.autoRefund 
-                  ? "Esta devolución se procesará automáticamente."
-                  : "La empresa revisará tu solicitud."}
-              </DialogDescription>
-            </DialogHeader>
-            {selectedSale && (
-              <div className="space-y-4">
-                <div className="p-4 bg-muted/50 rounded-lg space-y-2 text-sm">
-                  <div className="flex justify-between"><span className="text-muted-foreground">Cliente:</span><span className="font-medium">{selectedSale.clientName}</span></div>
-                  <div className="flex justify-between"><span className="text-muted-foreground">Monto:</span><span className="font-medium text-primary">{formatCOP(selectedSale.amountCOP)}</span></div>
-                  <div className="flex justify-between"><span className="text-muted-foreground">Días restantes:</span><span className="font-medium">{getDaysRemaining(selectedSale)} días</span></div>
-                </div>
-                {service.refundPolicy.autoRefund ? (
-                  <div className="flex items-start gap-2 p-3 bg-green-500/10 rounded-lg text-sm">
-                    <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
-                    <span className="text-green-700 dark:text-green-400">Reembolso automático inmediato.</span>
-                  </div>
-                ) : (
-                  <div className="flex items-start gap-2 p-3 bg-amber-500/10 rounded-lg text-sm">
-                    <AlertCircle className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
-                    <span className="text-amber-700 dark:text-amber-400">Requiere aprobación de la empresa.</span>
-                  </div>
-                )}
-                <div className="space-y-2">
-                  <Label>Motivo *</Label>
-                  <Select value={refundReason} onValueChange={setRefundReason}>
-                    <SelectTrigger><SelectValue placeholder="Selecciona un motivo" /></SelectTrigger>
-                    <SelectContent>
-                      {refundReasons.map(r => <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label>Notas (opcional)</Label>
-                  <Textarea placeholder="Detalles adicionales..." value={refundNotes} onChange={(e) => setRefundNotes(e.target.value)} rows={3} />
-                </div>
-              </div>
-            )}
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setRefundDialogOpen(false)} disabled={isSubmitting}>Cancelar</Button>
-              <Button onClick={handleSubmitRefund} disabled={!refundReason || isSubmitting}>
-                {isSubmitting ? "Enviando..." : "Solicitar devolución"}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-
-        {/* ============ SALES PITCH MODAL ============ */}
-        <Dialog open={pitchModalOpen} onOpenChange={setPitchModalOpen}>
-          <DialogContent className="sm:max-w-2xl max-h-[85vh] p-0">
-            <DialogHeader className="p-6 pb-0">
-              <DialogTitle className="flex items-center gap-2">
-                <MessageSquare className="w-5 h-5 text-primary" />
-                Guía de venta — {service.name}
-              </DialogTitle>
-              <DialogDescription>Speeches, datos y recomendaciones para vender este servicio</DialogDescription>
-            </DialogHeader>
-            
-            <ScrollArea className="max-h-[65vh]">
-              <Tabs defaultValue="pitch" className="px-6 pb-6">
-                <TabsList className="grid w-full grid-cols-4 mb-4">
-                  <TabsTrigger value="pitch">Speech</TabsTrigger>
-                  <TabsTrigger value="objections">Objeciones</TabsTrigger>
-                  <TabsTrigger value="client">Cliente ideal</TabsTrigger>
-                  <TabsTrigger value="info">Info clave</TabsTrigger>
-                </TabsList>
-
-                {/* SPEECH TAB */}
-                <TabsContent value="pitch" className="space-y-4">
-                  <div className="space-y-3">
-                    <div>
-                      <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2 flex items-center gap-1">
-                        <Lightbulb className="w-3 h-3" /> Pitch de una línea
-                      </h4>
-                      <div className="p-4 bg-primary/5 border border-primary/20 rounded-lg">
-                        <p className="font-medium text-lg italic">"{extended?.pitchOneLine}"</p>
-                      </div>
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Pitch de 3 líneas</h4>
-                      <div className="p-4 bg-muted/50 rounded-lg">
-                        <p className="text-sm leading-relaxed">{extended?.pitchThreeLines}</p>
-                      </div>
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Preguntas de calificación</h4>
-                      <ul className="space-y-2">
-                        {extended?.qualificationQuestions.map((q, i) => (
-                          <li key={i} className="flex items-start gap-2 text-sm">
-                            <span className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">{i + 1}</span>
-                            {q}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                </TabsContent>
-
-                {/* OBJECTIONS TAB */}
-                <TabsContent value="objections" className="space-y-3">
-                  {extended?.objections.map((obj, i) => (
-                    <div key={i} className="p-4 rounded-lg border border-border space-y-2">
-                      <p className="font-medium text-sm flex items-start gap-2">
-                        <Shield className="w-4 h-4 text-amber-500 mt-0.5 flex-shrink-0" />
-                        "{obj.objection}"
-                      </p>
-                      <p className="text-sm text-muted-foreground ml-6">
-                        → {obj.response}
-                      </p>
-                    </div>
-                  ))}
-                </TabsContent>
-
-                {/* CLIENT TAB */}
-                <TabsContent value="client" className="space-y-4">
-                  <div>
-                    <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2 flex items-center gap-1">
-                      <Target className="w-3 h-3" /> Cliente ideal
-                    </h4>
-                    <div className="p-4 bg-muted/50 rounded-lg">
-                      <p className="text-sm">{extended?.idealClient}</p>
-                    </div>
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Audiencia objetivo</h4>
-                    <p className="text-sm text-muted-foreground">{extended?.targetAudience}</p>
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Casos de uso</h4>
-                    <ul className="space-y-1.5">
-                      {extended?.useCases.map((uc, i) => (
-                        <li key={i} className="flex items-center gap-2 text-sm">
-                          <CheckCircle className="w-3 h-3 text-green-500 flex-shrink-0" />
-                          {uc}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </TabsContent>
-
-                {/* INFO TAB */}
-                <TabsContent value="info" className="space-y-4">
-                  <div>
-                    <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Problema que resuelve</h4>
-                    <p className="text-sm">{extended?.problemSolved}</p>
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Resultado prometido</h4>
-                    <div className="p-3 bg-green-500/10 rounded-lg">
-                      <p className="text-sm font-medium text-green-700 dark:text-green-400">{extended?.promisedResult}</p>
-                    </div>
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Qué incluye</h4>
-                    <ul className="space-y-1">
-                      {extended?.features.map((f, i) => (
-                        <li key={i} className="flex items-center gap-2 text-sm">
-                          <CheckCircle className="w-3 h-3 text-primary flex-shrink-0" />
-                          {f}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">No incluye</h4>
-                    <ul className="space-y-1">
-                      {extended?.notIncluded.map((f, i) => (
-                        <li key={i} className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <X className="w-3 h-3 text-red-400 flex-shrink-0" />
-                          {f}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div>
-                      <span className="text-muted-foreground">Activación:</span>
-                      <p className="font-medium">{extended?.activationTime}</p>
-                    </div>
-                    <div>
-                      <span className="text-muted-foreground">Garantía:</span>
-                      <p className="font-medium">{extended?.guarantee}</p>
-                    </div>
-                  </div>
-                </TabsContent>
-              </Tabs>
-            </ScrollArea>
-          </DialogContent>
-        </Dialog>
-      </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setRefundDialogOpen(false)} disabled={isSubmitting}>Cancelar</Button>
+            <Button onClick={handleSubmitRefund} disabled={!refundReason || isSubmitting}>{isSubmitting ? "Enviando..." : "Solicitar devolución"}</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </VendorTabLayout>
+  );
+}
+
+/* =========== Sub-components =========== */
+
+function InfoTab({ service, extended, company, isTrainingComplete }: { service: any; extended: any; company: any; isTrainingComplete: boolean }) {
+  return (
+    <div className="space-y-5">
+      {/* Description */}
+      <div>
+        <p className="text-sm text-muted-foreground leading-relaxed">{extended?.shortDescription || service.description}</p>
+      </div>
+
+      {/* Pricing */}
+      <div className="grid grid-cols-2 gap-3">
+        <div className="p-4 rounded-xl border-2 border-primary/20 bg-primary/5">
+          <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Tu comisión</p>
+          <p className="text-2xl font-semibold text-primary mt-1">{formatCOP(Math.round(service.priceCOP * service.vendorCommissionPct / 100))}</p>
+          <p className="text-[10px] text-muted-foreground mt-0.5">{service.vendorCommissionPct}% por venta</p>
+        </div>
+        <div className="p-4 rounded-xl border bg-card">
+          <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Precio cliente</p>
+          <p className="text-2xl font-semibold text-foreground mt-1">{formatCOP(service.priceCOP)}</p>
+          <p className="text-[10px] text-muted-foreground mt-0.5">{service.type === 'suscripción' ? 'mensual' : 'pago único'}</p>
+        </div>
+      </div>
+
+      {/* Problem / Result / Audience */}
+      <div className="space-y-2">
+        {[
+          { icon: AlertCircle, color: "text-destructive", label: "Problema", text: extended?.problemSolved || 'Procesos manuales.' },
+          { icon: Target, color: "text-emerald-600", label: "Resultado", text: extended?.promisedResult || 'Mayor productividad.' },
+          { icon: Users, color: "text-primary", label: "Audiencia", text: extended?.targetAudience || 'Empresas en Colombia.' },
+        ].map((item, i) => (
+          <div key={i} className="flex items-start gap-3 p-3 rounded-xl border border-border bg-card">
+            <item.icon className={`w-4 h-4 ${item.color} mt-0.5 flex-shrink-0`} />
+            <div>
+              <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">{item.label}</p>
+              <p className="text-xs text-foreground mt-0.5 leading-relaxed">{item.text}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Pitch */}
+      <div className="p-4 rounded-xl bg-primary/5 border border-primary/10 space-y-3">
+        <div className="flex items-center gap-2">
+          <Lightbulb className="w-4 h-4 text-primary" />
+          <p className="text-xs font-medium text-foreground">Cómo venderlo</p>
+        </div>
+        <p className="text-sm font-medium text-foreground italic">"{extended?.pitchOneLine || `${service.name} automatiza tu negocio.`}"</p>
+        <p className="text-xs text-muted-foreground leading-relaxed">{extended?.pitchThreeLines}</p>
+      </div>
+
+      {/* Objections */}
+      {extended?.objections && (
+        <div className="space-y-2">
+          <p className="text-xs font-medium text-foreground flex items-center gap-2">
+            <HelpCircle className="w-3.5 h-3.5" /> Objeciones comunes
+          </p>
+          {extended.objections.slice(0, 3).map((obj: any, i: number) => (
+            <div key={i} className="p-3 rounded-xl border border-border bg-card">
+              <p className="text-xs font-medium text-foreground">❓ {obj.objection}</p>
+              <p className="text-xs text-muted-foreground mt-1">✅ {obj.response}</p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Training */}
+      <div className={`p-4 rounded-xl border ${isTrainingComplete ? 'bg-emerald-500/5 border-emerald-500/20' : 'bg-amber-500/5 border-amber-500/20'}`}>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            {service.trainingType === 'video' ? <Play className={`w-5 h-5 ${isTrainingComplete ? 'text-emerald-500' : 'text-amber-500'}`} /> : <FileText className={`w-5 h-5 ${isTrainingComplete ? 'text-emerald-500' : 'text-amber-500'}`} />}
+            <div>
+              <p className="text-sm font-medium">Capacitación {service.trainingType === 'video' ? 'en Video' : 'en PDF'}</p>
+              <p className="text-[10px] text-muted-foreground">~{extended?.trainingDurationMinutes || 15} min · {isTrainingComplete ? 'Completada' : 'Pendiente'}</p>
+            </div>
+          </div>
+          {isTrainingComplete ? (
+            <Badge className="bg-emerald-500/10 text-emerald-600 border-0 text-[10px]"><Check className="w-3 h-3 mr-1" /> Listo</Badge>
+          ) : (
+            <Badge variant="outline" className="text-[10px] text-amber-600 border-amber-400"><BookOpen className="w-3 h-3 mr-1" /> Pendiente</Badge>
+          )}
+        </div>
+      </div>
+
+      {/* Refund Policy */}
+      <div className="p-4 rounded-xl border border-border bg-card">
+        <p className="text-xs font-medium text-foreground flex items-center gap-2 mb-2">
+          <Shield className="w-3.5 h-3.5" /> Política de devoluciones
+        </p>
+        <div className="flex items-center gap-4 text-xs text-muted-foreground">
+          <span>{service.refundPolicy.autoRefund ? 'Automática' : 'Requiere aprobación'}</span>
+          <span>·</span>
+          <span>{service.refundPolicy.refundWindowDays} días</span>
+        </div>
+      </div>
+
+      {/* Materials */}
+      {service.materials.length > 0 && (
+        <div className="space-y-2">
+          <p className="text-xs font-medium text-foreground flex items-center gap-2">
+            <Download className="w-3.5 h-3.5" /> Materiales
+          </p>
+          {service.materials.map((m: any) => (
+            <div key={m.id} className="flex items-center justify-between p-3 rounded-xl border border-border bg-card">
+              <div className="flex items-center gap-2">
+                <FileText className="w-4 h-4 text-muted-foreground" />
+                <span className="text-xs text-foreground">{m.title}</span>
+              </div>
+              <Button variant="ghost" size="sm" className="text-[10px] h-7" onClick={() => toast.success(`Descargando: ${m.title}`)}>
+                <Download className="w-3 h-3 mr-1" /> PDF
+              </Button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function VentasTab({ serviceSales, getStatusConfig, commissions, isEligibleForRefund, getDaysRemaining, refundRequests, onRefundClick, onNewSale, isTrainingComplete }: {
+  serviceSales: Array<any>;
+  getStatusConfig: (status: string) => { cls: string; label: string };
+  commissions: Array<any>;
+  isEligibleForRefund: (sale: any) => boolean;
+  getDaysRemaining: (sale: any) => number;
+  refundRequests: Array<any>;
+  onRefundClick: (sale: any) => void;
+  onNewSale: () => void;
+  isTrainingComplete: boolean;
+}) {
+  const activeSales = serviceSales.filter((s: any) => s.status !== 'REFUNDED');
+
+  return (
+    <div className="space-y-3">
+      {isTrainingComplete && (
+        <Button size="sm" className="w-full" onClick={onNewSale}>
+          <Plus className="w-3.5 h-3.5 mr-1.5" /> Registrar nueva venta
+        </Button>
+      )}
+
+      <p className="text-xs text-muted-foreground">{activeSales.length} venta{activeSales.length !== 1 ? 's' : ''} activa{activeSales.length !== 1 ? 's' : ''}</p>
+
+      {serviceSales.length > 0 ? (
+        <div className="divide-y divide-border rounded-xl border border-border bg-card overflow-hidden">
+          {serviceSales.map((sale: any) => {
+            const sc = getStatusConfig(sale.status);
+            const eligible = isEligibleForRefund(sale);
+            const existingRefund = refundRequests.find((r: any) => r.saleId === sale.id);
+
+            return (
+              <div key={sale.id} className="p-3 space-y-2">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium truncate">{sale.clientName}</p>
+                    <p className="text-[10px] text-muted-foreground">{sale.clientEmail} · {new Date(sale.createdAt).toLocaleDateString('es-CO', { month: 'short', day: 'numeric' })}</p>
+                  </div>
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <span className="text-xs font-semibold">{formatCOP(sale.sellerCommissionAmount)}</span>
+                    <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-medium ${sc.cls}`}>{sc.label}</span>
+                  </div>
+                </div>
+                {sale.activationCode && (
+                  <p className="text-[10px] text-muted-foreground">Código: <code className="bg-muted px-1 rounded font-mono">{sale.activationCode}</code></p>
+                )}
+                {eligible && !existingRefund && (
+                  <button 
+                    onClick={() => onRefundClick(sale)}
+                    className="text-[10px] font-medium text-destructive hover:underline flex items-center gap-1"
+                  >
+                    <RotateCcw className="w-3 h-3" /> Solicitar devolución ({getDaysRemaining(sale)}d restantes)
+                  </button>
+                )}
+                {existingRefund && (
+                  <p className="text-[10px] text-muted-foreground">Devolución: {existingRefund.status}</p>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="text-center py-12 rounded-xl border border-border bg-card">
+          <ShoppingCart className="w-8 h-8 text-muted-foreground/30 mx-auto mb-3" />
+          <p className="text-sm font-medium text-foreground mb-1">Sin ventas aún</p>
+          <p className="text-xs text-muted-foreground">Registra tu primera venta de este servicio</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function DevolucionesTab({ serviceSales, refundRequests }: { serviceSales: Array<any>; refundRequests: Array<any> }) {
+  const serviceRefunds = refundRequests.filter((r: any) => serviceSales.some((s: any) => s.id === r.saleId));
+
+  return (
+    <div className="space-y-3">
+      {serviceRefunds.length > 0 ? (
+        <div className="divide-y divide-border rounded-xl border border-border bg-card overflow-hidden">
+          {serviceRefunds.map((refund: any) => {
+            const sale = serviceSales.find((s: any) => s.id === refund.saleId);
+            return (
+              <div key={refund.id} className="flex items-center justify-between p-3 gap-3">
+                <div className="min-w-0">
+                  <p className="text-sm font-medium truncate">{sale?.clientName || 'Cliente'}</p>
+                  <p className="text-[10px] text-muted-foreground truncate">{refund.reason}</p>
+                </div>
+                <Badge variant="outline" className={`text-[9px] ${
+                  refund.status === 'pendiente' ? 'border-amber-400 text-amber-600' :
+                  refund.status === 'aprobado' || refund.status === 'automático' ? 'border-emerald-400 text-emerald-600' :
+                  'border-destructive text-destructive'
+                }`}>
+                  {refund.status}
+                </Badge>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="text-center py-12 rounded-xl border border-border bg-card">
+          <RotateCcw className="w-8 h-8 text-muted-foreground/30 mx-auto mb-3" />
+          <p className="text-sm font-medium text-foreground mb-1">Sin devoluciones</p>
+          <p className="text-xs text-muted-foreground">No hay solicitudes de devolución para este servicio</p>
+        </div>
+      )}
+    </div>
   );
 }
