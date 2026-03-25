@@ -23,6 +23,7 @@ import VendorProfile from "./pages/vendor/VendorProfile";
 import VendorCompanyDetail from "./pages/vendor/VendorCompanyDetail";
 import CompanyDashboard from "./pages/company/CompanyDashboard";
 import CompanyServices from "./pages/company/CompanyServices";
+import CompanyServiceDetail from "./pages/company/CompanyServiceDetail";
 import CompanySales from "./pages/company/CompanySales";
 import CompanyVendors from "./pages/company/CompanyVendors";
 import CompanyPayments from "./pages/company/CompanyPayments";
