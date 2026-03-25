@@ -196,10 +196,10 @@ export default function VendorSales() {
       clientName: formData.clientName, clientEmail: formData.clientEmail,
       grossAmount, sellerCommissionAmount, mensualistaFeeAmount, providerNetAmount,
       status: 'HELD', isSubscription: service.type === 'suscripción', subscriptionActive: service.type === 'suscripción',
-      amountCOP: grossAmount, holdStartAt: new Date().toISOString(), holdEndAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+      amountCOP: grossAmount, holdStartAt: new Date().toISOString(), holdEndAt: new Date(Date.now() + service.refundPolicy.refundWindowDays * 24 * 60 * 60 * 1000).toISOString(),
       paymentProvider: 'MercadoPago', mpPaymentId: `MP-${Date.now()}`
     });
-    toast.success("¡Venta registrada!", { description: "La comisión estará en retención 7 días." });
+    toast.success("¡Venta registrada!", { description: `Comisión en retención ${service.refundPolicy.refundWindowDays} días.` });
     setFormData({ serviceId: "", clientName: "", clientEmail: "", clientPhone: "", notes: "" });
     setIsLoading(false);
     setIsDialogOpen(false);
