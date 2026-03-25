@@ -291,6 +291,7 @@ export default function VendorPayments() {
                   id={sale.id}
                   clientName={sale.clientName}
                   clientEmail={sale.clientEmail}
+                  clientPhone={sale.clientPhone}
                   serviceName={service?.name}
                   serviceCategory={service?.category}
                   serviceId={service?.id}
