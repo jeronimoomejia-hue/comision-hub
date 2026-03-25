@@ -49,8 +49,14 @@ export default function VendorPayments() {
   const totalCompleted = completedSales.reduce((acc, s) => acc + s.sellerCommissionAmount, 0);
   const totalHeld = heldSales.reduce((acc, s) => acc + s.sellerCommissionAmount, 0);
   const totalPending = pendingSales.reduce((acc, s) => acc + s.sellerCommissionAmount, 0);
+  // Active subscriptions for this vendor
+  const mySubscriptions = useMemo(() => 
+    subscriptions.filter(s => s.vendorId === currentVendorId && s.status === 'active'),
+    [currentVendorId]
+  );
+  const monthlyRecurring = mySubscriptions.reduce((acc, s) => acc + s.monthlyCommissionCOP, 0);
 
-  // Filtering
+
   const filteredSales = mySales.filter(sale => {
     const service = allServices.find(s => s.id === sale.serviceId);
     const matchesSearch = !searchQuery || 
