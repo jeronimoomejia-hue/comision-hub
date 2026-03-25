@@ -366,7 +366,7 @@ export const vendorCompanyLinks: VendorCompanyLink[] = [
   // other vendors
   { vendorId: 'vendor-002', companyId: 'company-001', joinedAt: '2024-07-01', status: 'active' },
   { vendorId: 'vendor-002', companyId: 'company-009', joinedAt: '2025-01-05', status: 'active' },
-  { vendorId: 'vendor-003', companyId: 'company-003', joinedAt: '2024-08-01', status: 'active' },
+  { vendorId: 'vendor-003', companyId: 'company-004', joinedAt: '2024-08-01', status: 'active' },
   { vendorId: 'vendor-003', companyId: 'company-009', joinedAt: '2025-01-08', status: 'active' },
   { vendorId: 'vendor-004', companyId: 'company-004', joinedAt: '2024-09-01', status: 'active' },
   { vendorId: 'vendor-004', companyId: 'company-009', joinedAt: '2025-01-12', status: 'active' },
