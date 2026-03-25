@@ -190,18 +190,25 @@ export default function TransactionCard({
                 </div>
               </div>
 
+              {/* Hold explanation */}
+              {status === 'HELD' && holdEndDate && (
+                <div className="flex items-start gap-2.5 p-2.5 rounded-lg bg-amber-500/5 border border-amber-500/10">
+                  <Clock className="w-3.5 h-3.5 text-amber-500 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="text-xs font-medium text-amber-700">Dinero en retención</p>
+                    <p className="text-[10px] text-amber-600/80 mt-0.5 leading-relaxed">
+                      Los fondos se retienen 7 días para proteger al comprador. Se liberan automáticamente el {new Date(holdEndDate).toLocaleDateString('es-CO', { day: 'numeric', month: 'long' })}.
+                    </p>
+                  </div>
+                </div>
+              )}
+
               {/* Details grid */}
               <div className="grid grid-cols-2 gap-2">
                 {clientEmail && (
                   <div className="flex items-center gap-2 text-xs">
                     <User className="w-3 h-3 text-muted-foreground/50" />
                     <span className="text-muted-foreground truncate">{clientEmail}</span>
-                  </div>
-                )}
-                {holdEndDate && status === 'HELD' && (
-                  <div className="flex items-center gap-2 text-xs">
-                    <Clock className="w-3 h-3 text-amber-500" />
-                    <span className="text-amber-600 font-medium">Libera {new Date(holdEndDate).toLocaleDateString('es-CO', { day: 'numeric', month: 'short' })}</span>
                   </div>
                 )}
                 {releasedDate && status === 'RELEASED' && (

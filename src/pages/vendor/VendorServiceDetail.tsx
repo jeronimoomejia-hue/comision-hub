@@ -214,17 +214,13 @@ export default function VendorServiceDetail() {
         </div>
 
         {/* Action buttons */}
-        <div className="flex gap-2">
-          {isTrainingComplete ? (
-            <Button size="sm" className="flex-1" onClick={() => setSaleDialogOpen(true)}>
-              <Plus className="w-3.5 h-3.5 mr-1.5" /> Registrar venta
-            </Button>
-          ) : (
+        {!isTrainingComplete && (
+          <div className="flex gap-2">
             <Button size="sm" variant="outline" className="flex-1 border-amber-400 text-amber-700" onClick={() => navigate(`/vendor/trainings/${serviceId}`)}>
               <BookOpen className="w-3.5 h-3.5 mr-1.5" /> Capacitarme primero
             </Button>
-          )}
-        </div>
+          </div>
+        )}
 
         {/* Internal Tabs */}
         <div className="flex gap-1 overflow-x-auto pb-1 scrollbar-hide border-b border-border">
@@ -342,7 +338,14 @@ export default function VendorServiceDetail() {
 /* =========== Sub-components =========== */
 
 function InfoTab({ service, extended, company, isTrainingComplete }: { service: any; extended: any; company: any; isTrainingComplete: boolean }) {
+  const navigate = useNavigate();
   const coverImg = categoryCovers[service.category];
+
+  // Mock coupons for demo
+  const activeCoupons = [
+    { code: 'NUEVO20', discount: '20%', expires: '2026-04-30', description: 'Descuento para nuevos clientes' },
+    { code: 'PROMO10', discount: '10%', expires: '2026-05-15', description: 'Promoción de temporada' },
+  ];
   
   return (
     <div className="space-y-5">
@@ -351,6 +354,25 @@ function InfoTab({ service, extended, company, isTrainingComplete }: { service: 
         <div className="rounded-xl overflow-hidden aspect-[2.4/1]">
           <img src={coverImg} alt={service.name} className="w-full h-full object-cover" />
         </div>
+      )}
+
+      {/* Review training (when active) */}
+      {isTrainingComplete && (
+        <button
+          onClick={() => navigate(`/vendor/trainings/${service.id}`)}
+          className="flex items-center justify-between w-full p-3 rounded-xl border border-border bg-card group hover:border-primary/30 transition-colors"
+        >
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+              <Play className="w-3.5 h-3.5 text-primary" />
+            </div>
+            <div className="text-left">
+              <p className="text-xs font-medium text-foreground">Revisar capacitación</p>
+              <p className="text-[10px] text-muted-foreground">Vuelve a ver el material de venta</p>
+            </div>
+          </div>
+          <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+        </button>
       )}
 
       {/* Description */}
@@ -459,6 +481,30 @@ function InfoTab({ service, extended, company, isTrainingComplete }: { service: 
               <Button variant="ghost" size="sm" className="text-[10px] h-7 text-muted-foreground" onClick={() => toast.success(`Descargando: ${m.title}`)}>
                 Descargar
               </Button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Active Coupons */}
+      {activeCoupons.length > 0 && (
+        <div className="space-y-2">
+          <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">Ofertas activas</p>
+          {activeCoupons.map((coupon, i) => (
+            <div key={i} className="flex items-center justify-between p-3 rounded-xl border border-primary/15 bg-primary/5">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <Zap className="w-3.5 h-3.5 text-primary" />
+                </div>
+                <div>
+                  <p className="text-xs font-medium text-foreground">{coupon.description}</p>
+                  <p className="text-[10px] text-muted-foreground">Vence {new Date(coupon.expires).toLocaleDateString('es-CO', { day: 'numeric', month: 'short' })}</p>
+                </div>
+              </div>
+              <div className="text-right">
+                <code className="text-xs font-mono font-semibold text-primary bg-card px-2 py-0.5 rounded border border-border">{coupon.code}</code>
+                <p className="text-[10px] font-medium text-primary mt-0.5">{coupon.discount} OFF</p>
+              </div>
             </div>
           ))}
         </div>
