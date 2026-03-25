@@ -50,7 +50,7 @@ export interface Vendor {
 
 export interface RefundPolicy {
   autoRefund: boolean;
-  refundWindowDays: 7 | 14 | 30;
+  refundWindowDays: 0 | 7 | 14 | 30;
 }
 
 export interface Material {
