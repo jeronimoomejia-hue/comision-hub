@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import VendorTabLayout from "@/components/layout/VendorTabLayout";
+import { 
   Search, Zap, RefreshCw, AlertTriangle,
   Star, Clock, Shield, Package, Lock
 } from "lucide-react";
