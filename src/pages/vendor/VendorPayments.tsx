@@ -10,9 +10,11 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { useDemo } from "@/contexts/DemoContext";
-import { vendors, CURRENT_VENDOR_ID, formatCOP, formatDate, services as allServices, companies } from "@/data/mockData";
+import { vendors, CURRENT_VENDOR_ID, formatCOP, formatDate, services as allServices, companies, subscriptions } from "@/data/mockData";
 import type { Sale } from "@/data/mockData";
 import { toast } from "sonner";
+import { Repeat, ChevronRight } from "lucide-react";
+import { categoryCovers } from "@/data/coverImages";
 
 const STATUS_TABS = [
   { key: 'all' as const,       label: 'Todas',           icon: Package },
