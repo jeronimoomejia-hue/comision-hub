@@ -277,6 +277,51 @@ export default function VendorDashboard() {
           </div>
         )}
 
+        {/* Empresas disponibles */}
+        <div className="card-premium p-3 sm:p-5">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-semibold text-xs sm:text-sm flex items-center gap-2">
+              <Building2 className="w-4 h-4 text-primary" />
+              Empresas disponibles
+            </h3>
+            <Link to="/vendor/home" className="text-[10px] sm:text-xs text-primary hover:underline">Ver todas</Link>
+          </div>
+          <div className="space-y-2">
+            {companies.map(c => {
+              const isActive = vendorSales.some(s => s.companyId === c.id);
+              const companyServices = allServices.filter(s => s.companyId === c.id && s.status === 'activo');
+              return (
+                <div
+                  key={c.id}
+                  className={`flex items-center gap-3 p-2.5 rounded-lg border transition-all cursor-pointer hover:border-primary/40 hover:shadow-sm ${
+                    c.id === currentCompanyId ? 'border-primary/50 bg-primary/5' : 'border-border bg-card/50'
+                  }`}
+                  onClick={() => navigate('/vendor/home')}
+                >
+                  <div
+                    className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0"
+                    style={{ backgroundColor: c.primaryColor || 'hsl(var(--primary))' }}
+                  >
+                    <span className="text-white font-bold text-sm">{c.name[0]}</span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-1.5">
+                      <p className="text-xs sm:text-sm font-medium truncate">{c.name}</p>
+                      {c.id === currentCompanyId && (
+                        <Badge variant="default" className="text-[8px] px-1.5 py-0">Actual</Badge>
+                      )}
+                      {isActive && c.id !== currentCompanyId && (
+                        <Badge variant="secondary" className="text-[8px] px-1.5 py-0">Activa</Badge>
+                      )}
+                    </div>
+                    <p className="text-[10px] text-muted-foreground">{c.industry} · {companyServices.length} servicios</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
         {/* Trainings */}
         <div className="card-premium p-3 sm:p-4">
           <div className="flex items-center justify-between mb-2">
