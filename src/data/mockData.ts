@@ -50,7 +50,7 @@ export interface Vendor {
 
 export interface RefundPolicy {
   autoRefund: boolean;
-  refundWindowDays: 7 | 14 | 30;
+  refundWindowDays: 0 | 7 | 14 | 30;
 }
 
 export interface Material {
@@ -366,7 +366,7 @@ export const vendorCompanyLinks: VendorCompanyLink[] = [
   // other vendors
   { vendorId: 'vendor-002', companyId: 'company-001', joinedAt: '2024-07-01', status: 'active' },
   { vendorId: 'vendor-002', companyId: 'company-009', joinedAt: '2025-01-05', status: 'active' },
-  { vendorId: 'vendor-003', companyId: 'company-003', joinedAt: '2024-08-01', status: 'active' },
+  { vendorId: 'vendor-003', companyId: 'company-004', joinedAt: '2024-08-01', status: 'active' },
   { vendorId: 'vendor-003', companyId: 'company-009', joinedAt: '2025-01-08', status: 'active' },
   { vendorId: 'vendor-004', companyId: 'company-004', joinedAt: '2024-09-01', status: 'active' },
   { vendorId: 'vendor-004', companyId: 'company-009', joinedAt: '2025-01-12', status: 'active' },
@@ -391,18 +391,16 @@ export const adminUser: User = {
 
 // Companies (12) - Empresas de IA, SaaS, Fitness, Belleza
 export const companies: Company[] = [
+  // Tech/IA — MUST be enterprise
   { id: 'company-001', name: 'Poliza.ai', description: 'Cotizaciones y gestión de seguros con inteligencia artificial.', industry: 'IA para Seguros', country: 'Colombia', status: 'active', plan: 'enterprise', pendingPaymentCOP: 45200000, nextPaymentDate: '2025-01-24', contactEmail: 'contacto@poliza.ai', contactPhone: '+57 300 123 4567', websiteUrl: 'https://poliza.ai', customDomain: 'ventas.poliza.ai', primaryColor: '#5B6FE0', secondaryColor: '#4A5BC7' },
-  { id: 'company-002', name: 'LexIA', description: 'Automatización legal y análisis de contratos con IA.', industry: 'IA Legal', country: 'Colombia', status: 'active', plan: 'premium', pendingPaymentCOP: 78500000, nextPaymentDate: '2025-01-24', contactEmail: 'ventas@lexia.co', contactPhone: '+57 301 234 5678', websiteUrl: 'https://lexia.co', primaryColor: '#00B87A', secondaryColor: '#009965' },
-  { id: 'company-003', name: 'Kreativo', description: 'Creación de contenido y campañas de marketing con IA.', industry: 'IA para Marketing', country: 'Colombia', status: 'active', plan: 'premium', pendingPaymentCOP: 22100000, nextPaymentDate: '2025-01-24', contactEmail: 'hola@kreativo.co', contactPhone: '+57 302 345 6789', websiteUrl: 'https://kreativo.co', primaryColor: '#E5294A', secondaryColor: '#C91D3D' },
-  { id: 'company-004', name: 'Cierro', description: 'Asistente de ventas inteligente para cerrar más negocios.', industry: 'IA para Ventas', country: 'Colombia', status: 'active', plan: 'freemium', pendingPaymentCOP: 35600000, nextPaymentDate: '2025-01-24', contactEmail: 'info@cierro.co', contactPhone: '+57 303 456 7890', websiteUrl: 'https://cierro.co', primaryColor: '#F59E0B', secondaryColor: '#D97706' },
+  { id: 'company-004', name: 'Cierro', description: 'Asistente de ventas inteligente para cerrar más negocios.', industry: 'IA para Ventas', country: 'Colombia', status: 'active', plan: 'enterprise', pendingPaymentCOP: 35600000, nextPaymentDate: '2025-01-24', contactEmail: 'info@cierro.co', contactPhone: '+57 303 456 7890', websiteUrl: 'https://cierro.co', customDomain: 'app.cierro.co', primaryColor: '#F59E0B', secondaryColor: '#D97706' },
   { id: 'company-005', name: 'Asista', description: 'Chatbots y atención al cliente automatizada con IA.', industry: 'IA para Atención', country: 'Colombia', status: 'active', plan: 'enterprise', pendingPaymentCOP: 95200000, nextPaymentDate: '2025-01-24', contactEmail: 'soporte@asista.co', contactPhone: '+57 304 567 8901', websiteUrl: 'https://asista.co', customDomain: 'vendedores.asista.co', primaryColor: '#5007FA', secondaryColor: '#3D04C2' },
-  { id: 'company-006', name: 'NumeroIA', description: 'Contabilidad automatizada y reportes financieros con IA.', industry: 'IA para Contabilidad', country: 'Colombia', status: 'active', plan: 'freemium', pendingPaymentCOP: 18900000, nextPaymentDate: '2025-01-24', contactEmail: 'contacto@numeroia.co', contactPhone: '+57 305 678 9012', websiteUrl: 'https://numeroia.co', primaryColor: '#6366F1', secondaryColor: '#4F46E5' },
-  { id: 'company-007', name: 'Recruta', description: 'Reclutamiento y selección de personal potenciado por IA.', industry: 'IA para RRHH', country: 'Colombia', status: 'active', plan: 'premium', pendingPaymentCOP: 28400000, nextPaymentDate: '2025-01-24', contactEmail: 'admin@recruta.co', contactPhone: '+57 306 789 0123', websiteUrl: 'https://recruta.co', primaryColor: '#EC4899', secondaryColor: '#DB2777' },
-  { id: 'company-008', name: 'Blindaje', description: 'Protección y monitoreo de ciberseguridad empresarial.', industry: 'IA para Ciberseguridad', country: 'Colombia', status: 'active', plan: 'enterprise', pendingPaymentCOP: 67800000, nextPaymentDate: '2025-01-24', contactEmail: 'info@blindaje.co', contactPhone: '+57 307 890 1234', websiteUrl: 'https://blindaje.co', customDomain: 'red.blindaje.co', primaryColor: '#10B981', secondaryColor: '#059669' },
+  // Non-tech — various plans
   { id: 'company-009', name: 'IronHaus', description: 'Gimnasio de alto rendimiento con planes personalizados.', industry: 'Gimnasio', country: 'Colombia', status: 'active', plan: 'premium', pendingPaymentCOP: 32500000, nextPaymentDate: '2025-02-01', contactEmail: 'admin@ironhaus.co', contactPhone: '+57 310 111 2233', websiteUrl: 'https://ironhaus.co', primaryColor: '#1A1A2E', secondaryColor: '#16213E' },
-  { id: 'company-010', name: 'Prana Studio', description: 'Clases de yoga, meditación y bienestar integral.', industry: 'Yoga & Bienestar', country: 'Colombia', status: 'active', plan: 'enterprise', pendingPaymentCOP: 28700000, nextPaymentDate: '2025-02-01', contactEmail: 'hola@pranastudio.co', contactPhone: '+57 311 222 3344', websiteUrl: 'https://pranastudio.co', customDomain: 'ventas.pranastudio.co', primaryColor: '#B45309', secondaryColor: '#92400E' },
-  { id: 'company-011', name: 'Vitalik Wellness', description: 'Spa premium con tratamientos de relajación y belleza.', industry: 'Spa & Wellness', country: 'Colombia', status: 'active', plan: 'premium', pendingPaymentCOP: 41200000, nextPaymentDate: '2025-02-01', contactEmail: 'reservas@vitalik.co', contactPhone: '+57 312 333 4455', websiteUrl: 'https://vitalik.co', primaryColor: '#7C3AED', secondaryColor: '#6D28D9' },
-  { id: 'company-012', name: 'Salón Élite', description: 'Peluquería y estética profesional con los mejores estilistas.', industry: 'Peluquería & Estética', country: 'Colombia', status: 'active', plan: 'enterprise', pendingPaymentCOP: 19800000, nextPaymentDate: '2025-02-01', contactEmail: 'citas@salonelite.co', contactPhone: '+57 313 444 5566', websiteUrl: 'https://salonelite.co', customDomain: 'agenda.salonelite.co', primaryColor: '#D4A574', secondaryColor: '#B8956A' },
+  { id: 'company-010', name: 'Prana Studio', description: 'Clases de yoga, meditación y bienestar integral.', industry: 'Yoga & Bienestar', country: 'Colombia', status: 'active', plan: 'premium', pendingPaymentCOP: 28700000, nextPaymentDate: '2025-02-01', contactEmail: 'hola@pranastudio.co', contactPhone: '+57 311 222 3344', websiteUrl: 'https://pranastudio.co', primaryColor: '#B45309', secondaryColor: '#92400E' },
+  { id: 'company-011', name: 'Vitalik Wellness', description: 'Spa premium con tratamientos de relajación y belleza.', industry: 'Spa & Wellness', country: 'Colombia', status: 'active', plan: 'freemium', pendingPaymentCOP: 41200000, nextPaymentDate: '2025-02-01', contactEmail: 'reservas@vitalik.co', contactPhone: '+57 312 333 4455', websiteUrl: 'https://vitalik.co', primaryColor: '#7C3AED', secondaryColor: '#6D28D9' },
+  { id: 'company-012', name: 'Salón Élite', description: 'Peluquería y estética profesional con los mejores estilistas.', industry: 'Peluquería & Estética', country: 'Colombia', status: 'active', plan: 'premium', pendingPaymentCOP: 19800000, nextPaymentDate: '2025-02-01', contactEmail: 'citas@salonelite.co', contactPhone: '+57 313 444 5566', websiteUrl: 'https://salonelite.co', primaryColor: '#D4A574', secondaryColor: '#B8956A' },
+  { id: 'company-013', name: 'Arena Beach Club', description: 'Canchas de vóley playa y fútbol playa con bar y zona lounge.', industry: 'Cancha de Playa', country: 'Colombia', status: 'active', plan: 'freemium', pendingPaymentCOP: 8500000, nextPaymentDate: '2025-02-01', contactEmail: 'reservas@arenabeach.co', contactPhone: '+57 315 666 7788', websiteUrl: 'https://arenabeach.co', primaryColor: '#0EA5E9', secondaryColor: '#0284C7' },
 ];
 
 // Company Users (12)
@@ -437,474 +435,70 @@ export const vendors: User[] = vendorNames.map((name, i) => ({
 }));
 
 // =============================================================================
-// SERVICIOS DE IA - 24 servicios (precios $100k - $300k COP)
+// SERVICES — Reduced: 3 IA (enterprise), 5 non-tech, 1 beach court
 // =============================================================================
 
 export const services: Service[] = [
-  // Poliza.ai - IA para Seguros
+  // Poliza.ai - IA para Seguros (enterprise)
   { 
     id: 'service-001', companyId: 'company-001', name: 'Poliza Cotizador IA', 
     description: 'IA que genera cotizaciones de seguros en segundos analizando el perfil del cliente.', 
     category: 'IA para Seguros', priceCOP: 179000, type: 'suscripción',
-    vendorCommissionPct: 20, mensualistaPct: 8, status: 'activo',
+    vendorCommissionPct: 20, mensualistaPct: 0, status: 'activo',
     refundPolicy: { autoRefund: false, refundWindowDays: 14 }, 
     requiresTraining: true, trainingType: 'video', trainingUrl: 'https://example.com/poliza-training',
     activeSubscriptions: 42,
     materials: [{ id: 'mat-001', serviceId: 'service-001', title: 'Guion de venta Poliza', type: 'pdf', url: '/materials/guion-poliza.pdf', uploadedAt: '2024-06-01' }], 
-    activationCodes: [{ id: 'ac-001-001', code: 'POLIZA-COT-0001', status: 'delivered' as const, assignedToSaleId: 'sale-001', deliveredAt: '2025-01-11' }, { id: 'ac-001-002', code: 'POLIZA-COT-0002', status: 'delivered' as const, assignedToSaleId: 'sale-002', deliveredAt: '2025-01-12' }, { id: 'ac-001-003', code: 'POLIZA-COT-0003', status: 'delivered' as const, assignedToSaleId: 'sale-003', deliveredAt: '2025-01-13' }, { id: 'ac-001-004', code: 'POLIZA-COT-0004', status: 'delivered' as const, assignedToSaleId: 'sale-004', deliveredAt: '2025-01-14' }, { id: 'ac-001-005', code: 'POLIZA-COT-0005', status: 'delivered' as const, assignedToSaleId: 'sale-005', deliveredAt: '2025-01-15' }, { id: 'ac-001-006', code: 'POLIZA-COT-0006', status: 'delivered' as const, assignedToSaleId: 'sale-006', deliveredAt: '2025-01-16' }, { id: 'ac-001-007', code: 'POLIZA-COT-0007', status: 'delivered' as const, assignedToSaleId: 'sale-007', deliveredAt: '2025-01-17' }, { id: 'ac-001-008', code: 'POLIZA-COT-0008', status: 'delivered' as const, assignedToSaleId: 'sale-008', deliveredAt: '2025-01-18' }, { id: 'ac-001-009', code: 'POLIZA-COT-0009', status: 'delivered' as const, assignedToSaleId: 'sale-009', deliveredAt: '2025-01-19' }, { id: 'ac-001-010', code: 'POLIZA-COT-0010', status: 'delivered' as const, assignedToSaleId: 'sale-010', deliveredAt: '2025-01-20' }, { id: 'ac-001-011', code: 'POLIZA-COT-0011', status: 'delivered' as const, assignedToSaleId: 'sale-011', deliveredAt: '2025-01-21' }, { id: 'ac-001-012', code: 'POLIZA-COT-0012', status: 'delivered' as const, assignedToSaleId: 'sale-012', deliveredAt: '2025-01-22' }, { id: 'ac-001-013', code: 'POLIZA-COT-0013', status: 'available' as const }, { id: 'ac-001-014', code: 'POLIZA-COT-0014', status: 'available' as const }, { id: 'ac-001-015', code: 'POLIZA-COT-0015', status: 'available' as const }, { id: 'ac-001-016', code: 'POLIZA-COT-0016', status: 'available' as const }, { id: 'ac-001-017', code: 'POLIZA-COT-0017', status: 'available' as const }, { id: 'ac-001-018', code: 'POLIZA-COT-0018', status: 'available' as const }, { id: 'ac-001-019', code: 'POLIZA-COT-0019', status: 'available' as const }, { id: 'ac-001-020', code: 'POLIZA-COT-0020', status: 'available' as const }, { id: 'ac-001-021', code: 'POLIZA-COT-0021', status: 'available' as const }, { id: 'ac-001-022', code: 'POLIZA-COT-0022', status: 'available' as const }, { id: 'ac-001-023', code: 'POLIZA-COT-0023', status: 'available' as const }, { id: 'ac-001-024', code: 'POLIZA-COT-0024', status: 'available' as const }, { id: 'ac-001-025', code: 'POLIZA-COT-0025', status: 'available' as const }],
+    activationCodes: Array.from({ length: 25 }, (_, i) => ({ id: `ac-001-${String(i+1).padStart(3,'0')}`, code: `POLIZA-COT-${String(i+1).padStart(4,'0')}`, status: i < 12 ? 'delivered' as const : 'available' as const, ...(i < 12 ? { assignedToSaleId: `sale-${String(i+1).padStart(3,'0')}`, deliveredAt: `2025-01-${String(11+i).padStart(2,'0')}` } : {}) })),
     createdAt: '2024-06-01' 
   },
   { 
     id: 'service-002', companyId: 'company-001', name: 'Poliza Claims Bot', 
-    description: 'Bot de IA para gestion automatica de reclamos de seguros.',
+    description: 'Bot de IA para gestión automática de reclamos de seguros.',
     category: 'IA para Seguros', priceCOP: 199000, type: 'suscripción',
-    vendorCommissionPct: 18, mensualistaPct: 8, status: 'activo',
+    vendorCommissionPct: 18, mensualistaPct: 0, status: 'activo',
     refundPolicy: { autoRefund: true, refundWindowDays: 7 }, 
     requiresTraining: true, trainingType: 'pdf', trainingUrl: 'https://example.com/poliza-claims.pdf',
     activeSubscriptions: 28,
     materials: [{ id: 'mat-002', serviceId: 'service-002', title: 'Manual Claims Bot', type: 'pdf', url: '/materials/claims-bot.pdf', uploadedAt: '2024-06-15' }], 
-    activationCodes: [{ id: 'ac-002-001', code: 'POLIZA-CLM-0001', status: 'delivered' as const, assignedToSaleId: 'sale-001', deliveredAt: '2025-01-11' }, { id: 'ac-002-002', code: 'POLIZA-CLM-0002', status: 'delivered' as const, assignedToSaleId: 'sale-002', deliveredAt: '2025-01-12' }, { id: 'ac-002-003', code: 'POLIZA-CLM-0003', status: 'delivered' as const, assignedToSaleId: 'sale-003', deliveredAt: '2025-01-13' }, { id: 'ac-002-004', code: 'POLIZA-CLM-0004', status: 'delivered' as const, assignedToSaleId: 'sale-004', deliveredAt: '2025-01-14' }, { id: 'ac-002-005', code: 'POLIZA-CLM-0005', status: 'delivered' as const, assignedToSaleId: 'sale-005', deliveredAt: '2025-01-15' }, { id: 'ac-002-006', code: 'POLIZA-CLM-0006', status: 'delivered' as const, assignedToSaleId: 'sale-006', deliveredAt: '2025-01-16' }, { id: 'ac-002-007', code: 'POLIZA-CLM-0007', status: 'delivered' as const, assignedToSaleId: 'sale-007', deliveredAt: '2025-01-17' }, { id: 'ac-002-008', code: 'POLIZA-CLM-0008', status: 'delivered' as const, assignedToSaleId: 'sale-008', deliveredAt: '2025-01-18' }, { id: 'ac-002-009', code: 'POLIZA-CLM-0009', status: 'available' as const }, { id: 'ac-002-010', code: 'POLIZA-CLM-0010', status: 'available' as const }, { id: 'ac-002-011', code: 'POLIZA-CLM-0011', status: 'available' as const }, { id: 'ac-002-012', code: 'POLIZA-CLM-0012', status: 'available' as const }, { id: 'ac-002-013', code: 'POLIZA-CLM-0013', status: 'available' as const }, { id: 'ac-002-014', code: 'POLIZA-CLM-0014', status: 'available' as const }, { id: 'ac-002-015', code: 'POLIZA-CLM-0015', status: 'available' as const }, { id: 'ac-002-016', code: 'POLIZA-CLM-0016', status: 'available' as const }, { id: 'ac-002-017', code: 'POLIZA-CLM-0017', status: 'available' as const }, { id: 'ac-002-018', code: 'POLIZA-CLM-0018', status: 'available' as const }, { id: 'ac-002-019', code: 'POLIZA-CLM-0019', status: 'available' as const }, { id: 'ac-002-020', code: 'POLIZA-CLM-0020', status: 'available' as const }, { id: 'ac-002-021', code: 'POLIZA-CLM-0021', status: 'available' as const }, { id: 'ac-002-022', code: 'POLIZA-CLM-0022', status: 'available' as const }, { id: 'ac-002-023', code: 'POLIZA-CLM-0023', status: 'available' as const }, { id: 'ac-002-024', code: 'POLIZA-CLM-0024', status: 'available' as const }, { id: 'ac-002-025', code: 'POLIZA-CLM-0025', status: 'available' as const }],
+    activationCodes: Array.from({ length: 25 }, (_, i) => ({ id: `ac-002-${String(i+1).padStart(3,'0')}`, code: `POLIZA-CLM-${String(i+1).padStart(4,'0')}`, status: i < 8 ? 'delivered' as const : 'available' as const })),
     createdAt: '2024-06-15' 
   },
-  
-  // LexIA - IA Legal
-  { 
-    id: 'service-003', companyId: 'company-002', name: 'LexIA Contratos', 
-    description: 'Generacion y revision de contratos con inteligencia artificial en minutos.',
-    category: 'IA Legal', priceCOP: 249000, type: 'suscripción',
-    vendorCommissionPct: 18, mensualistaPct: 8, status: 'activo',
-    refundPolicy: { autoRefund: false, refundWindowDays: 14 }, 
-    requiresTraining: true, trainingType: 'video', trainingUrl: 'https://example.com/lexia-training',
-    activeSubscriptions: 35,
-    materials: [{ id: 'mat-003', serviceId: 'service-003', title: 'Demo LexIA', type: 'pdf', url: '/materials/demo-lexia.pdf', uploadedAt: '2024-07-01' }], 
-    activationCodes: [{ id: 'ac-003-001', code: 'LEXIA-CTR-0001', status: 'delivered' as const, assignedToSaleId: 'sale-001', deliveredAt: '2025-01-11' }, { id: 'ac-003-002', code: 'LEXIA-CTR-0002', status: 'delivered' as const, assignedToSaleId: 'sale-002', deliveredAt: '2025-01-12' }, { id: 'ac-003-003', code: 'LEXIA-CTR-0003', status: 'delivered' as const, assignedToSaleId: 'sale-003', deliveredAt: '2025-01-13' }, { id: 'ac-003-004', code: 'LEXIA-CTR-0004', status: 'delivered' as const, assignedToSaleId: 'sale-004', deliveredAt: '2025-01-14' }, { id: 'ac-003-005', code: 'LEXIA-CTR-0005', status: 'delivered' as const, assignedToSaleId: 'sale-005', deliveredAt: '2025-01-15' }, { id: 'ac-003-006', code: 'LEXIA-CTR-0006', status: 'delivered' as const, assignedToSaleId: 'sale-006', deliveredAt: '2025-01-16' }, { id: 'ac-003-007', code: 'LEXIA-CTR-0007', status: 'available' as const }, { id: 'ac-003-008', code: 'LEXIA-CTR-0008', status: 'available' as const }, { id: 'ac-003-009', code: 'LEXIA-CTR-0009', status: 'available' as const }, { id: 'ac-003-010', code: 'LEXIA-CTR-0010', status: 'available' as const }, { id: 'ac-003-011', code: 'LEXIA-CTR-0011', status: 'available' as const }, { id: 'ac-003-012', code: 'LEXIA-CTR-0012', status: 'available' as const }, { id: 'ac-003-013', code: 'LEXIA-CTR-0013', status: 'available' as const }, { id: 'ac-003-014', code: 'LEXIA-CTR-0014', status: 'available' as const }, { id: 'ac-003-015', code: 'LEXIA-CTR-0015', status: 'available' as const }, { id: 'ac-003-016', code: 'LEXIA-CTR-0016', status: 'available' as const }, { id: 'ac-003-017', code: 'LEXIA-CTR-0017', status: 'available' as const }, { id: 'ac-003-018', code: 'LEXIA-CTR-0018', status: 'available' as const }, { id: 'ac-003-019', code: 'LEXIA-CTR-0019', status: 'available' as const }, { id: 'ac-003-020', code: 'LEXIA-CTR-0020', status: 'available' as const }, { id: 'ac-003-021', code: 'LEXIA-CTR-0021', status: 'available' as const }, { id: 'ac-003-022', code: 'LEXIA-CTR-0022', status: 'available' as const }, { id: 'ac-003-023', code: 'LEXIA-CTR-0023', status: 'available' as const }, { id: 'ac-003-024', code: 'LEXIA-CTR-0024', status: 'available' as const }, { id: 'ac-003-025', code: 'LEXIA-CTR-0025', status: 'available' as const }],
-    createdAt: '2024-07-01' 
-  },
-  { 
-    id: 'service-004', companyId: 'company-002', name: 'LexIA Due Diligence', 
-    description: 'Analisis legal automatizado para procesos de M&A y compliance.',
-    category: 'IA Legal', priceCOP: 299000, type: 'puntual',
-    vendorCommissionPct: 22, mensualistaPct: 8, status: 'activo',
-    refundPolicy: { autoRefund: false, refundWindowDays: 30 }, 
-    requiresTraining: true, trainingType: 'video', trainingUrl: 'https://example.com/due-diligence',
-    materials: [{ id: 'mat-004', serviceId: 'service-004', title: 'Proceso Due Diligence', type: 'pdf', url: '/materials/due-diligence.pdf', uploadedAt: '2024-07-15' }], 
-    activationCodes: [{ id: 'ac-004-001', code: 'LEXIA-DD-0001', status: 'delivered' as const, assignedToSaleId: 'sale-001', deliveredAt: '2025-01-11' }, { id: 'ac-004-002', code: 'LEXIA-DD-0002', status: 'delivered' as const, assignedToSaleId: 'sale-002', deliveredAt: '2025-01-12' }, { id: 'ac-004-003', code: 'LEXIA-DD-0003', status: 'delivered' as const, assignedToSaleId: 'sale-003', deliveredAt: '2025-01-13' }, { id: 'ac-004-004', code: 'LEXIA-DD-0004', status: 'available' as const }, { id: 'ac-004-005', code: 'LEXIA-DD-0005', status: 'available' as const }, { id: 'ac-004-006', code: 'LEXIA-DD-0006', status: 'available' as const }, { id: 'ac-004-007', code: 'LEXIA-DD-0007', status: 'available' as const }, { id: 'ac-004-008', code: 'LEXIA-DD-0008', status: 'available' as const }, { id: 'ac-004-009', code: 'LEXIA-DD-0009', status: 'available' as const }, { id: 'ac-004-010', code: 'LEXIA-DD-0010', status: 'available' as const }, { id: 'ac-004-011', code: 'LEXIA-DD-0011', status: 'available' as const }, { id: 'ac-004-012', code: 'LEXIA-DD-0012', status: 'available' as const }, { id: 'ac-004-013', code: 'LEXIA-DD-0013', status: 'available' as const }, { id: 'ac-004-014', code: 'LEXIA-DD-0014', status: 'available' as const }, { id: 'ac-004-015', code: 'LEXIA-DD-0015', status: 'available' as const }, { id: 'ac-004-016', code: 'LEXIA-DD-0016', status: 'available' as const }, { id: 'ac-004-017', code: 'LEXIA-DD-0017', status: 'available' as const }, { id: 'ac-004-018', code: 'LEXIA-DD-0018', status: 'available' as const }, { id: 'ac-004-019', code: 'LEXIA-DD-0019', status: 'available' as const }, { id: 'ac-004-020', code: 'LEXIA-DD-0020', status: 'available' as const }, { id: 'ac-004-021', code: 'LEXIA-DD-0021', status: 'available' as const }, { id: 'ac-004-022', code: 'LEXIA-DD-0022', status: 'available' as const }, { id: 'ac-004-023', code: 'LEXIA-DD-0023', status: 'available' as const }, { id: 'ac-004-024', code: 'LEXIA-DD-0024', status: 'available' as const }, { id: 'ac-004-025', code: 'LEXIA-DD-0025', status: 'available' as const }],
-    createdAt: '2024-07-15' 
-  },
 
+  // Cierro - IA Ventas (enterprise)
   { 
-    id: 'service-005', 
-    companyId: 'company-003', 
-    name: 'Kreativo Copywriter', 
-    description: 'IA que crea anuncios, copies y contenido de marketing automáticamente.', 
-    category: 'IA para Marketing', 
-    priceCOP: 149000, 
-    type: 'suscripción', 
-    vendorCommissionPct: 20, 
-    mensualistaPct: 8, 
-    status: 'activo', 
-    refundPolicy: { autoRefund: true, refundWindowDays: 7 }, 
-    requiresTraining: true, 
-    trainingType: 'pdf', 
-    trainingUrl: 'https://example.com/kreativo.pdf',
-    activeSubscriptions: 67,
-    materials: [{ id: 'mat-005', serviceId: 'service-005', title: 'Guía Kreativo', type: 'pdf', url: '/materials/guia-kreativo.pdf', uploadedAt: '2024-08-01' }], 
-    activationCodes: [],
-    createdAt: '2024-08-01'
-  },
-  { 
-    id: 'service-006', 
-    companyId: 'company-003', 
-    name: 'Kreativo Landing Builder', 
-    description: 'IA para crear landing pages de venta de alto impacto.', 
-    category: 'IA para Marketing', 
-    priceCOP: 300000, 
-    type: 'puntual', 
-    vendorCommissionPct: 25, 
-    mensualistaPct: 8, 
-    status: 'activo', 
-    refundPolicy: { autoRefund: false, refundWindowDays: 14 }, 
-    requiresTraining: true, 
-    trainingType: 'video', 
-    trainingUrl: 'https://example.com/landing-builder',
-    materials: [{ id: 'mat-006', serviceId: 'service-006', title: 'Demo Landing Builder', type: 'pdf', url: '/materials/landing-builder.pdf', uploadedAt: '2024-08-15' }], 
-    activationCodes: [],
-    createdAt: '2024-08-15'
-  },
-
-  // Cierro - IA Ventas
-  { 
-    id: 'service-007', 
-    companyId: 'company-004', 
-    name: 'Cierro CRM IA', 
+    id: 'service-007', companyId: 'company-004', name: 'Cierro CRM IA', 
     description: 'CRM con IA para seguimiento automático de leads y predicción de cierre.', 
-    category: 'IA para Ventas', 
-    priceCOP: 229000, 
-    type: 'suscripción', 
-    vendorCommissionPct: 18, 
-    mensualistaPct: 8, 
-    status: 'activo', 
+    category: 'IA para Ventas', priceCOP: 229000, type: 'suscripción',
+    vendorCommissionPct: 18, mensualistaPct: 0, status: 'activo',
     refundPolicy: { autoRefund: false, refundWindowDays: 14 }, 
-    requiresTraining: true, 
-    trainingType: 'video', 
-    trainingUrl: 'https://example.com/cierro-crm',
+    requiresTraining: true, trainingType: 'video', trainingUrl: 'https://example.com/cierro-crm',
     activeSubscriptions: 48,
     materials: [{ id: 'mat-007', serviceId: 'service-007', title: 'Manual Cierro CRM', type: 'pdf', url: '/materials/cierro-crm.pdf', uploadedAt: '2024-09-01' }], 
     activationCodes: [],
     createdAt: '2024-09-01'
   },
-  { 
-    id: 'service-008', 
-    companyId: 'company-004', 
-    name: 'Cierro Cotizador', 
-    description: 'IA que genera cotizaciones personalizadas automáticamente.', 
-    category: 'IA para Ventas', 
-    priceCOP: 189000, 
-    type: 'suscripción', 
-    vendorCommissionPct: 20, 
-    mensualistaPct: 8, 
-    status: 'activo', 
-    refundPolicy: { autoRefund: true, refundWindowDays: 7 }, 
-    requiresTraining: false,
-    activeSubscriptions: 33,
-    materials: [{ id: 'mat-008', serviceId: 'service-008', title: 'Guía Cotizador', type: 'pdf', url: '/materials/cotizador.pdf', uploadedAt: '2024-09-10' }], 
-    activationCodes: [],
-    createdAt: '2024-09-10'
-  },
 
-  // Asista - IA Atención
+  // Asista - IA Atención (enterprise)
   { 
-    id: 'service-009', 
-    companyId: 'company-005', 
-    name: 'Asista WhatsApp IA', 
+    id: 'service-009', companyId: 'company-005', name: 'Asista WhatsApp IA', 
     description: 'Asistente IA para WhatsApp Business que responde 24/7.', 
-    category: 'IA para Atención', 
-    priceCOP: 199000, 
-    type: 'suscripción', 
-    vendorCommissionPct: 22, 
-    mensualistaPct: 8, 
-    status: 'activo', 
+    category: 'IA para Atención', priceCOP: 199000, type: 'suscripción',
+    vendorCommissionPct: 22, mensualistaPct: 0, status: 'activo',
     refundPolicy: { autoRefund: true, refundWindowDays: 7 }, 
-    requiresTraining: true, 
-    trainingType: 'video', 
-    trainingUrl: 'https://example.com/whatsapp-ia',
+    requiresTraining: true, trainingType: 'video', trainingUrl: 'https://example.com/whatsapp-ia',
     activeSubscriptions: 89,
     materials: [{ id: 'mat-009', serviceId: 'service-009', title: 'Setup WhatsApp IA', type: 'pdf', url: '/materials/whatsapp-ia.pdf', uploadedAt: '2024-09-15' }], 
     activationCodes: [],
     createdAt: '2024-09-15'
   },
-  { 
-    id: 'service-010', 
-    companyId: 'company-005', 
-    name: 'Asista Soporte IA', 
-    description: 'IA para respuestas automáticas de soporte técnico multicanal.', 
-    category: 'IA para Atención', 
-    priceCOP: 159000, 
-    type: 'suscripción', 
-    vendorCommissionPct: 22, 
-    mensualistaPct: 8, 
-    status: 'activo', 
-    refundPolicy: { autoRefund: true, refundWindowDays: 7 }, 
-    requiresTraining: true, 
-    trainingType: 'pdf', 
-    trainingUrl: 'https://example.com/soporte-ia.pdf',
-    activeSubscriptions: 56,
-    materials: [{ id: 'mat-010', serviceId: 'service-010', title: 'Manual Soporte IA', type: 'pdf', url: '/materials/soporte-ia.pdf', uploadedAt: '2024-10-01' }], 
-    activationCodes: [],
-    createdAt: '2024-10-01'
-  },
 
-  // NumeroIA - IA Contabilidad
-  { 
-    id: 'service-011', 
-    companyId: 'company-006', 
-    name: 'NumeroIA Facturas', 
-    description: 'IA para lectura y procesamiento automático de facturas.', 
-    category: 'IA para Contabilidad', 
-    priceCOP: 269000, 
-    type: 'suscripción', 
-    vendorCommissionPct: 15, 
-    mensualistaPct: 8, 
-    status: 'activo', 
-    refundPolicy: { autoRefund: false, refundWindowDays: 14 }, 
-    requiresTraining: true, 
-    trainingType: 'video', 
-    trainingUrl: 'https://example.com/numeroia',
-    activeSubscriptions: 41,
-    materials: [{ id: 'mat-011', serviceId: 'service-011', title: 'Demo NumeroIA', type: 'pdf', url: '/materials/demo-numeroia.pdf', uploadedAt: '2024-10-10' }], 
-    activationCodes: [],
-    createdAt: '2024-10-10'
-  },
-  { 
-    id: 'service-012', 
-    companyId: 'company-006', 
-    name: 'NumeroIA Reportes',
-    description: 'Generación automática de reportes financieros con análisis IA.', 
-    category: 'IA para Contabilidad', 
-    priceCOP: 219000, 
-    type: 'suscripción', 
-    vendorCommissionPct: 17, 
-    mensualistaPct: 8, 
-    status: 'activo', 
-    refundPolicy: { autoRefund: true, refundWindowDays: 7 }, 
-    requiresTraining: true, 
-    trainingType: 'pdf', 
-    trainingUrl: 'https://example.com/reportes-ia.pdf',
-    activeSubscriptions: 27,
-    materials: [{ id: 'mat-012', serviceId: 'service-012', title: 'Guía Reportes', type: 'pdf', url: '/materials/reportes-ia.pdf', uploadedAt: '2024-10-15' }], 
-    activationCodes: [],
-    createdAt: '2024-10-15'
-  },
-
-  // Recruta - IA RRHH
-  { 
-    id: 'service-013', 
-    companyId: 'company-007', 
-    name: 'Recruta Reclutamiento', 
-    description: 'IA para filtrado automático de CVs y matching de candidatos.', 
-    category: 'IA para RRHH', 
-    priceCOP: 219000, 
-    type: 'suscripción', 
-    vendorCommissionPct: 18, 
-    mensualistaPct: 8, 
-    status: 'activo', 
-    refundPolicy: { autoRefund: false, refundWindowDays: 14 }, 
-    requiresTraining: true, 
-    trainingType: 'video', 
-    trainingUrl: 'https://example.com/recruta',
-    activeSubscriptions: 31,
-    materials: [{ id: 'mat-013', serviceId: 'service-013', title: 'Manual Recruta', type: 'pdf', url: '/materials/recruta.pdf', uploadedAt: '2024-10-20' }], 
-    activationCodes: [],
-    createdAt: '2024-10-20'
-  },
-  { 
-    id: 'service-014', 
-    companyId: 'company-007', 
-    name: 'Recruta Onboarding', 
-    description: 'Automatización del proceso de onboarding con IA.', 
-    category: 'IA para RRHH', 
-    priceCOP: 169000, 
-    type: 'suscripción', 
-    vendorCommissionPct: 20, 
-    mensualistaPct: 8, 
-    status: 'activo', 
-    refundPolicy: { autoRefund: true, refundWindowDays: 7 }, 
-    requiresTraining: false,
-    activeSubscriptions: 24,
-    materials: [{ id: 'mat-014', serviceId: 'service-014', title: 'Guía Onboarding', type: 'pdf', url: '/materials/onboarding.pdf', uploadedAt: '2024-11-01' }], 
-    activationCodes: [],
-    createdAt: '2024-11-01'
-  },
-
-  // Blindaje - IA Ciberseguridad
-  { 
-    id: 'service-015', 
-    companyId: 'company-008', 
-    name: 'Blindaje Alertas IA', 
-    description: 'IA para detección de amenazas y alertas de seguridad en tiempo real.', 
-    category: 'IA para Ciberseguridad', 
-    priceCOP: 299000, 
-    type: 'suscripción', 
-    vendorCommissionPct: 15, 
-    mensualistaPct: 8, 
-    status: 'activo', 
-    refundPolicy: { autoRefund: false, refundWindowDays: 30 }, 
-    requiresTraining: true, 
-    trainingType: 'video', 
-    trainingUrl: 'https://example.com/blindaje',
-    activeSubscriptions: 18,
-    materials: [{ id: 'mat-015', serviceId: 'service-015', title: 'Setup Blindaje', type: 'pdf', url: '/materials/blindaje.pdf', uploadedAt: '2024-11-10' }], 
-    activationCodes: [],
-    createdAt: '2024-11-10'
-  },
-  { 
-    id: 'service-016', 
-    companyId: 'company-008', 
-    name: 'Blindaje Pentesting IA', 
-    description: 'Pruebas de penetración automatizadas con inteligencia artificial.', 
-    category: 'IA para Ciberseguridad', 
-    priceCOP: 300000, 
-    type: 'puntual', 
-    vendorCommissionPct: 20, 
-    mensualistaPct: 8, 
-    status: 'activo', 
-    refundPolicy: { autoRefund: false, refundWindowDays: 30 }, 
-    requiresTraining: true, 
-    trainingType: 'pdf', 
-    trainingUrl: 'https://example.com/pentesting.pdf',
-    materials: [{ id: 'mat-016', serviceId: 'service-016', title: 'Metodología Pentest', type: 'pdf', url: '/materials/pentesting.pdf', uploadedAt: '2024-11-15' }], 
-    activationCodes: [],
-    createdAt: '2024-11-15'
-  },
-
-  // Servicios adicionales
-  { 
-    id: 'service-017', 
-    companyId: 'company-003', 
-    name: 'Kreativo Social Manager', 
-    description: 'IA para gestión y programación de redes sociales.', 
-    category: 'IA para Marketing', 
-    priceCOP: 179000, 
-    type: 'suscripción', 
-    vendorCommissionPct: 20, 
-    mensualistaPct: 8, 
-    status: 'activo', 
-    refundPolicy: { autoRefund: true, refundWindowDays: 7 }, 
-    requiresTraining: true, 
-    trainingType: 'video', 
-    trainingUrl: 'https://example.com/social-manager',
-    activeSubscriptions: 54,
-    materials: [{ id: 'mat-017', serviceId: 'service-017', title: 'Manual Social Manager', type: 'pdf', url: '/materials/social-manager.pdf', uploadedAt: '2024-11-20' }], 
-    activationCodes: [],
-    createdAt: '2024-11-20'
-  },
-  { 
-    id: 'service-018', 
-    companyId: 'company-004', 
-    name: 'Cierro Analytics', 
-    description: 'IA para análisis predictivo de ventas y reportes automáticos.', 
-    category: 'IA para Ventas', 
-    priceCOP: 139000, 
-    type: 'suscripción', 
-    vendorCommissionPct: 22, 
-    mensualistaPct: 8, 
-    status: 'activo', 
-    refundPolicy: { autoRefund: true, refundWindowDays: 7 }, 
-    requiresTraining: true, 
-    trainingType: 'pdf', 
-    trainingUrl: 'https://example.com/analytics.pdf',
-    activeSubscriptions: 38,
-    materials: [{ id: 'mat-018', serviceId: 'service-018', title: 'Guía Analytics', type: 'pdf', url: '/materials/analytics.pdf', uploadedAt: '2024-11-25' }], 
-    activationCodes: [],
-    createdAt: '2024-11-25'
-  },
-  { 
-    id: 'service-019', 
-    companyId: 'company-005', 
-    name: 'Asista Chatbot Web', 
-    description: 'Chatbot IA para sitios web con integración en minutos.', 
-    category: 'IA para Atención', 
-    priceCOP: 129000, 
-    type: 'suscripción', 
-    vendorCommissionPct: 25, 
-    mensualistaPct: 8, 
-    status: 'activo', 
-    refundPolicy: { autoRefund: true, refundWindowDays: 7 }, 
-    requiresTraining: false,
-    activeSubscriptions: 72,
-    materials: [{ id: 'mat-019', serviceId: 'service-019', title: 'Setup Chatbot', type: 'pdf', url: '/materials/chatbot-web.pdf', uploadedAt: '2024-12-01' }], 
-    activationCodes: [],
-    createdAt: '2024-12-01'
-  },
-  { 
-    id: 'service-020', 
-    companyId: 'company-001', 
-    name: 'Poliza Análisis de Riesgo', 
-    description: 'IA para análisis y scoring de riesgo en pólizas de seguros.', 
-    category: 'IA para Seguros', 
-    priceCOP: 259000, 
-    type: 'suscripción', 
-    vendorCommissionPct: 18, 
-    mensualistaPct: 8, 
-    status: 'activo', 
-    refundPolicy: { autoRefund: false, refundWindowDays: 14 }, 
-    requiresTraining: true, 
-    trainingType: 'video', 
-    trainingUrl: 'https://example.com/riesgo-ia',
-    activeSubscriptions: 19,
-    materials: [{ id: 'mat-020', serviceId: 'service-020', title: 'Manual Riesgo IA', type: 'pdf', url: '/materials/riesgo-ia.pdf', uploadedAt: '2024-12-05' }], 
-    activationCodes: [],
-    createdAt: '2024-12-05'
-  },
-  { 
-    id: 'service-021', 
-    companyId: 'company-002', 
-    name: 'LexIA Compliance', 
-    description: 'Monitoreo automático de cumplimiento normativo con IA.', 
-    category: 'IA Legal', 
-    priceCOP: 279000, 
-    type: 'suscripción', 
-    vendorCommissionPct: 17, 
-    mensualistaPct: 8, 
-    status: 'activo', 
-    refundPolicy: { autoRefund: false, refundWindowDays: 14 }, 
-    requiresTraining: true, 
-    trainingType: 'video', 
-    trainingUrl: 'https://example.com/compliance',
-    activeSubscriptions: 22,
-    materials: [{ id: 'mat-021', serviceId: 'service-021', title: 'Manual Compliance', type: 'pdf', url: '/materials/compliance.pdf', uploadedAt: '2024-12-10' }], 
-    activationCodes: [],
-    createdAt: '2024-12-10'
-  },
-  { 
-    id: 'service-022', 
-    companyId: 'company-006', 
-    name: 'NumeroIA Nómina', 
-    description: 'Automatización de nómina y cálculos de prestaciones.', 
-    category: 'IA para Contabilidad', 
-    priceCOP: 239000, 
-    type: 'suscripción', 
-    vendorCommissionPct: 16, 
-    mensualistaPct: 8, 
-    status: 'activo', 
-    refundPolicy: { autoRefund: false, refundWindowDays: 14 }, 
-    requiresTraining: true, 
-    trainingType: 'video', 
-    trainingUrl: 'https://example.com/nomina',
-    activeSubscriptions: 35,
-    materials: [{ id: 'mat-022', serviceId: 'service-022', title: 'Manual Nómina IA', type: 'pdf', url: '/materials/nomina.pdf', uploadedAt: '2024-12-15' }], 
-    activationCodes: [],
-    createdAt: '2024-12-15'
-  },
-  { 
-    id: 'service-023', 
-    companyId: 'company-007', 
-    name: 'Recruta Performance', 
-    description: 'IA para evaluación de desempeño y feedback automatizado.', 
-    category: 'IA para RRHH', 
-    priceCOP: 189000, 
-    type: 'suscripción', 
-    vendorCommissionPct: 19, 
-    mensualistaPct: 8, 
-    status: 'activo', 
-    refundPolicy: { autoRefund: true, refundWindowDays: 7 }, 
-    requiresTraining: true, 
-    trainingType: 'pdf', 
-    trainingUrl: 'https://example.com/performance.pdf',
-    activeSubscriptions: 28,
-    materials: [{ id: 'mat-023', serviceId: 'service-023', title: 'Guía Performance', type: 'pdf', url: '/materials/performance.pdf', uploadedAt: '2024-12-20' }], 
-    activationCodes: [],
-    createdAt: '2024-12-20'
-  },
-  { 
-    id: 'service-024', 
-    companyId: 'company-008', 
-    name: 'Blindaje Training IA', 
-    description: 'Capacitación en ciberseguridad con simulaciones de phishing.', 
-    category: 'IA para Ciberseguridad', 
-    priceCOP: 149000, 
-    type: 'suscripción', 
-    vendorCommissionPct: 22, 
-    mensualistaPct: 8, 
-    status: 'activo', 
-    refundPolicy: { autoRefund: true, refundWindowDays: 7 }, 
-    requiresTraining: true, 
-    trainingType: 'video', 
-    trainingUrl: 'https://example.com/cyber-training',
-    activeSubscriptions: 45,
-    materials: [{ id: 'mat-024', serviceId: 'service-024', title: 'Manual Cyber Training', type: 'pdf', url: '/materials/cyber-training.pdf', uploadedAt: '2024-12-25' }], 
-    activationCodes: [],
-    createdAt: '2024-12-25'
-  },
-
-  // =============================================================================
-  // IronHaus - Gimnasio
-  // =============================================================================
+  // IronHaus - Gimnasio (premium)
   { 
     id: 'service-025', companyId: 'company-009', name: 'Plan Full Gym Mensual', 
     description: 'Acceso ilimitado a todas las máquinas, área de peso libre y cardio. Incluye evaluación física inicial.', 
     category: 'Gimnasio', priceCOP: 189000, type: 'suscripción',
-    vendorCommissionPct: 15, mensualistaPct: 5, status: 'activo',
+    vendorCommissionPct: 15, mensualistaPct: 0, status: 'activo',
     refundPolicy: { autoRefund: false, refundWindowDays: 7 }, 
     requiresTraining: true, trainingType: 'video', trainingUrl: 'https://example.com/ironhaus-full',
     activeSubscriptions: 320,
@@ -916,7 +510,7 @@ export const services: Service[] = [
     id: 'service-026', companyId: 'company-009', name: 'Plan Premium + Entrenador', 
     description: 'Acceso full gym + 8 sesiones mensuales con entrenador personal certificado y plan de nutrición.', 
     category: 'Gimnasio', priceCOP: 349000, type: 'suscripción',
-    vendorCommissionPct: 18, mensualistaPct: 5, status: 'activo',
+    vendorCommissionPct: 18, mensualistaPct: 0, status: 'activo',
     refundPolicy: { autoRefund: false, refundWindowDays: 14 }, 
     requiresTraining: true, trainingType: 'video', trainingUrl: 'https://example.com/ironhaus-premium',
     activeSubscriptions: 85,
@@ -924,26 +518,13 @@ export const services: Service[] = [
     activationCodes: Array.from({ length: 25 }, (_, i) => ({ id: `ac-026-${String(i+1).padStart(3,'0')}`, code: `IRON-PREM-${String(i+1).padStart(4,'0')}`, status: 'available' as const })),
     createdAt: '2025-01-01' 
   },
-  { 
-    id: 'service-027', companyId: 'company-009', name: 'Pack 10 Clases Grupales', 
-    description: 'Paquete de 10 clases grupales: spinning, crossfit, funcional o HIIT. Válido por 2 meses.', 
-    category: 'Gimnasio', priceCOP: 150000, type: 'puntual',
-    vendorCommissionPct: 20, mensualistaPct: 5, status: 'activo',
-    refundPolicy: { autoRefund: true, refundWindowDays: 7 }, 
-    requiresTraining: false,
-    materials: [{ id: 'mat-027', serviceId: 'service-027', title: 'Horarios clases', type: 'pdf', url: '/materials/clases.pdf', uploadedAt: '2025-01-01' }], 
-    activationCodes: Array.from({ length: 25 }, (_, i) => ({ id: `ac-027-${String(i+1).padStart(3,'0')}`, code: `IRON-CLS-${String(i+1).padStart(4,'0')}`, status: 'available' as const })),
-    createdAt: '2025-01-01' 
-  },
 
-  // =============================================================================
-  // Prana Studio - Yoga & Bienestar
-  // =============================================================================
+  // Prana Studio - Yoga & Bienestar (premium)
   { 
     id: 'service-028', companyId: 'company-010', name: 'Membresía Prana Ilimitada', 
     description: 'Acceso ilimitado a todas las clases: Vinyasa, Hatha, Yin, Meditación y Breathwork. Incluye mat.', 
     category: 'Yoga & Bienestar', priceCOP: 220000, type: 'suscripción',
-    vendorCommissionPct: 18, mensualistaPct: 5, status: 'activo',
+    vendorCommissionPct: 18, mensualistaPct: 0, status: 'activo',
     refundPolicy: { autoRefund: false, refundWindowDays: 14 }, 
     requiresTraining: true, trainingType: 'video', trainingUrl: 'https://example.com/prana-unlimited',
     activeSubscriptions: 180,
@@ -955,61 +536,34 @@ export const services: Service[] = [
     id: 'service-029', companyId: 'company-010', name: 'Retiro Wellness 3 Días', 
     description: 'Retiro de 3 días con yoga, meditación, alimentación consciente y terapias holísticas en la naturaleza.', 
     category: 'Yoga & Bienestar', priceCOP: 890000, type: 'puntual',
-    vendorCommissionPct: 22, mensualistaPct: 5, status: 'activo',
+    vendorCommissionPct: 22, mensualistaPct: 0, status: 'activo',
     refundPolicy: { autoRefund: false, refundWindowDays: 30 }, 
     requiresTraining: true, trainingType: 'video', trainingUrl: 'https://example.com/prana-retiro',
     materials: [{ id: 'mat-029', serviceId: 'service-029', title: 'Brochure Retiro', type: 'pdf', url: '/materials/retiro.pdf', uploadedAt: '2025-01-10' }], 
     activationCodes: Array.from({ length: 25 }, (_, i) => ({ id: `ac-029-${String(i+1).padStart(3,'0')}`, code: `PRANA-RET-${String(i+1).padStart(4,'0')}`, status: 'available' as const })),
     createdAt: '2025-01-10' 
   },
-  { 
-    id: 'service-030', companyId: 'company-010', name: 'Teacher Training 200h', 
-    description: 'Formación de profesores de yoga certificada Yoga Alliance. 200 horas en 3 meses.', 
-    category: 'Yoga & Bienestar', priceCOP: 4500000, type: 'puntual',
-    vendorCommissionPct: 12, mensualistaPct: 3, status: 'activo',
-    refundPolicy: { autoRefund: false, refundWindowDays: 30 }, 
-    requiresTraining: true, trainingType: 'video', trainingUrl: 'https://example.com/prana-tt',
-    materials: [{ id: 'mat-030', serviceId: 'service-030', title: 'Programa TT200', type: 'pdf', url: '/materials/tt200.pdf', uploadedAt: '2025-01-10' }], 
-    activationCodes: Array.from({ length: 25 }, (_, i) => ({ id: `ac-030-${String(i+1).padStart(3,'0')}`, code: `PRANA-TT-${String(i+1).padStart(4,'0')}`, status: 'available' as const })),
-    createdAt: '2025-01-10' 
-  },
 
-  // =============================================================================
-  // Vitalik Wellness - Spa & Wellness
-  // =============================================================================
+  // Vitalik Wellness - Spa (freemium)
   { 
     id: 'service-031', companyId: 'company-011', name: 'Circuito Spa Premium', 
     description: 'Circuito completo: sauna, turco, jacuzzi, piscina de inmersión fría y zona de relajación. 3 horas.', 
     category: 'Spa & Wellness', priceCOP: 180000, type: 'puntual',
-    vendorCommissionPct: 20, mensualistaPct: 5, status: 'activo',
+    vendorCommissionPct: 20, mensualistaPct: 15, status: 'activo',
     refundPolicy: { autoRefund: false, refundWindowDays: 7 }, 
     requiresTraining: true, trainingType: 'video', trainingUrl: 'https://example.com/vitalik-spa',
     materials: [{ id: 'mat-031', serviceId: 'service-031', title: 'Experiencia Vitalik', type: 'pdf', url: '/materials/vitalik.pdf', uploadedAt: '2025-01-15' }], 
     activationCodes: Array.from({ length: 25 }, (_, i) => ({ id: `ac-031-${String(i+1).padStart(3,'0')}`, code: `VITAL-SPA-${String(i+1).padStart(4,'0')}`, status: 'available' as const })),
     createdAt: '2025-01-15' 
   },
-  { 
-    id: 'service-032', companyId: 'company-011', name: 'Membresía Wellness Mensual', 
-    description: 'Acceso ilimitado al circuito spa + 2 masajes terapéuticos al mes + clases de meditación.', 
-    category: 'Spa & Wellness', priceCOP: 450000, type: 'suscripción',
-    vendorCommissionPct: 16, mensualistaPct: 5, status: 'activo',
-    refundPolicy: { autoRefund: false, refundWindowDays: 14 }, 
-    requiresTraining: true, trainingType: 'video', trainingUrl: 'https://example.com/vitalik-membresia',
-    activeSubscriptions: 95,
-    materials: [{ id: 'mat-032', serviceId: 'service-032', title: 'Guía Membresía', type: 'pdf', url: '/materials/vitalik-memb.pdf', uploadedAt: '2025-01-15' }], 
-    activationCodes: Array.from({ length: 25 }, (_, i) => ({ id: `ac-032-${String(i+1).padStart(3,'0')}`, code: `VITAL-MEM-${String(i+1).padStart(4,'0')}`, status: 'available' as const })),
-    createdAt: '2025-01-15' 
-  },
 
-  // =============================================================================
-  // Salón Élite - Peluquería & Estética
-  // =============================================================================
+  // Salón Élite - Peluquería (premium)
   { 
     id: 'service-033', companyId: 'company-012', name: 'Paquete Corte + Color Premium', 
     description: 'Corte de cabello personalizado + coloración profesional con productos Wella o L\'Oréal.', 
     category: 'Peluquería & Estética', priceCOP: 280000, type: 'puntual',
-    vendorCommissionPct: 18, mensualistaPct: 5, status: 'activo',
-    refundPolicy: { autoRefund: false, refundWindowDays: 7 }, 
+    vendorCommissionPct: 18, mensualistaPct: 0, status: 'activo',
+    refundPolicy: { autoRefund: false, refundWindowDays: 0 }, 
     requiresTraining: true, trainingType: 'video', trainingUrl: 'https://example.com/elite-corte',
     materials: [{ id: 'mat-033', serviceId: 'service-033', title: 'Catálogo servicios', type: 'pdf', url: '/materials/salon-catalogo.pdf', uploadedAt: '2025-02-01' }], 
     activationCodes: Array.from({ length: 25 }, (_, i) => ({ id: `ac-033-${String(i+1).padStart(3,'0')}`, code: `ELITE-CC-${String(i+1).padStart(4,'0')}`, status: 'available' as const })),
@@ -1019,7 +573,7 @@ export const services: Service[] = [
     id: 'service-034', companyId: 'company-012', name: 'Plan Belleza Mensual', 
     description: 'Suscripción mensual: 1 corte + 1 tratamiento capilar + manicure/pedicure + facial express.', 
     category: 'Peluquería & Estética', priceCOP: 350000, type: 'suscripción',
-    vendorCommissionPct: 15, mensualistaPct: 5, status: 'activo',
+    vendorCommissionPct: 15, mensualistaPct: 0, status: 'activo',
     refundPolicy: { autoRefund: false, refundWindowDays: 14 }, 
     requiresTraining: true, trainingType: 'video', trainingUrl: 'https://example.com/elite-plan',
     activeSubscriptions: 62,
@@ -1027,24 +581,25 @@ export const services: Service[] = [
     activationCodes: Array.from({ length: 25 }, (_, i) => ({ id: `ac-034-${String(i+1).padStart(3,'0')}`, code: `ELITE-PLN-${String(i+1).padStart(4,'0')}`, status: 'available' as const })),
     createdAt: '2025-02-01' 
   },
+
+  // Arena Beach Club - Cancha de Playa (freemium)
   { 
-    id: 'service-035', companyId: 'company-012', name: 'Experiencia Novia VIP', 
-    description: 'Paquete completo para novias: prueba de peinado, maquillaje, manicure, tratamiento facial y día del evento.', 
-    category: 'Peluquería & Estética', priceCOP: 1200000, type: 'puntual',
-    vendorCommissionPct: 20, mensualistaPct: 3, status: 'activo',
-    refundPolicy: { autoRefund: false, refundWindowDays: 30 }, 
-    requiresTraining: true, trainingType: 'video', trainingUrl: 'https://example.com/elite-novia',
-    materials: [{ id: 'mat-035', serviceId: 'service-035', title: 'Brochure Novias', type: 'pdf', url: '/materials/novias.pdf', uploadedAt: '2025-02-01' }], 
-    activationCodes: Array.from({ length: 25 }, (_, i) => ({ id: `ac-035-${String(i+1).padStart(3,'0')}`, code: `ELITE-NVA-${String(i+1).padStart(4,'0')}`, status: 'available' as const })),
-    createdAt: '2025-02-01' 
-  }
+    id: 'service-036', companyId: 'company-013', name: 'Alquiler Cancha por Hora', 
+    description: 'Alquiler de cancha de vóley playa o fútbol playa por hora. Incluye balón y red.', 
+    category: 'Cancha de Playa', priceCOP: 80000, type: 'puntual',
+    vendorCommissionPct: 15, mensualistaPct: 15, status: 'activo',
+    refundPolicy: { autoRefund: true, refundWindowDays: 0 }, 
+    requiresTraining: false,
+    materials: [{ id: 'mat-036', serviceId: 'service-036', title: 'Info Canchas', type: 'pdf', url: '/materials/arena-info.pdf', uploadedAt: '2025-02-15' }], 
+    activationCodes: Array.from({ length: 25 }, (_, i) => ({ id: `ac-036-${String(i+1).padStart(3,'0')}`, code: `ARENA-HR-${String(i+1).padStart(4,'0')}`, status: 'available' as const })),
+    createdAt: '2025-02-15' 
+  },
 ];
 export const serviceRequests: ServiceRequest[] = [
   { id: 'req-001', companyId: 'company-001', serviceName: 'Poliza Telemedicina IA', category: 'IA para Seguros', serviceType: 'suscripción', priceCOP: 259000, vendorCommissionPct: 18, description: 'IA para gestión de telemedicina en seguros de salud.', countries: ['Colombia'], websiteUrl: 'https://poliza.ai/telemedicina', contactName: 'María González', contactEmail: 'maria@poliza.ai', contactWhatsApp: '+57 300 123 4567', refundPolicy: { autoRefund: true, refundWindowDays: 7 }, trainingType: 'video', status: 'aprobado', createdAt: '2024-11-01', updatedAt: '2024-11-15', adminNotes: 'Aprobado' },
-  { id: 'req-002', companyId: 'company-002', serviceName: 'LexIA Arbitraje', category: 'IA Legal', serviceType: 'suscripción', priceCOP: 299000, vendorCommissionPct: 20, description: 'IA para procesos de arbitraje automatizado.', countries: ['Colombia'], contactName: 'Roberto Mejía', contactEmail: 'roberto@lexia.co', contactWhatsApp: '+57 301 234 5678', refundPolicy: { autoRefund: false, refundWindowDays: 14 }, trainingType: 'video', status: 'reunión agendada', meetingDate: '2025-01-25', createdAt: '2024-12-20', updatedAt: '2025-01-10' },
-  { id: 'req-003', companyId: 'company-003', serviceName: 'Kreativo Video IA', category: 'IA para Marketing', serviceType: 'puntual', priceCOP: 280000, vendorCommissionPct: 24, description: 'IA para creación automática de videos promocionales.', countries: ['Colombia'], contactName: 'Lucía Fernández', contactEmail: 'lucia@kreativo.co', contactWhatsApp: '+57 302 345 6789', refundPolicy: { autoRefund: false, refundWindowDays: 14 }, trainingType: 'video', status: 'en revisión', createdAt: '2025-01-05', updatedAt: '2025-01-05' },
   { id: 'req-004', companyId: 'company-004', serviceName: 'Cierro Voice IA', category: 'IA para Ventas', serviceType: 'suscripción', priceCOP: 239000, vendorCommissionPct: 19, description: 'IA para llamadas de ventas automatizadas.', countries: ['Colombia'], contactName: 'Andrés Paredes', contactEmail: 'andres@cierro.co', contactWhatsApp: '+57 303 456 7890', refundPolicy: { autoRefund: false, refundWindowDays: 14 }, trainingType: 'video', status: 'en revisión', createdAt: '2025-01-15', updatedAt: '2025-01-15' },
-  { id: 'req-005', companyId: 'company-005', serviceName: 'Asista Email IA', category: 'IA para Atención', serviceType: 'suscripción', priceCOP: 169000, vendorCommissionPct: 21, description: 'IA para respuesta automática de emails de soporte.', countries: ['Colombia'], contactName: 'Patricia Luna', contactEmail: 'patricia@asista.co', contactWhatsApp: '+57 304 567 8901', refundPolicy: { autoRefund: true, refundWindowDays: 7 }, trainingType: 'pdf', status: 'aprobado', createdAt: '2024-10-15', updatedAt: '2024-11-01' }
+  { id: 'req-005', companyId: 'company-005', serviceName: 'Asista Email IA', category: 'IA para Atención', serviceType: 'suscripción', priceCOP: 169000, vendorCommissionPct: 21, description: 'IA para respuesta automática de emails de soporte.', countries: ['Colombia'], contactName: 'Patricia Luna', contactEmail: 'patricia@asista.co', contactWhatsApp: '+57 304 567 8901', refundPolicy: { autoRefund: true, refundWindowDays: 7 }, trainingType: 'pdf', status: 'aprobado', createdAt: '2024-10-15', updatedAt: '2024-11-01' },
+  { id: 'req-006', companyId: 'company-013', serviceName: 'Arena Torneo Mensual', category: 'Cancha de Playa', serviceType: 'puntual', priceCOP: 120000, vendorCommissionPct: 12, description: 'Torneo mensual de vóley playa con premios.', countries: ['Colombia'], contactName: 'Diego Morales', contactEmail: 'diego@arenabeach.co', contactWhatsApp: '+57 315 666 7788', refundPolicy: { autoRefund: true, refundWindowDays: 0 }, trainingType: 'pdf', status: 'en revisión', createdAt: '2025-02-20', updatedAt: '2025-02-20' }
 ];
 
 // =============================================================================

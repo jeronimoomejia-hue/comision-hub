@@ -33,7 +33,7 @@ const categoryGroups: CategoryGroup[] = [
     id: "deporte",
     label: "Deporte & Bienestar",
     icon: Dumbbell,
-    industries: ["Gimnasio", "Yoga & Bienestar"],
+    industries: ["Gimnasio", "Yoga & Bienestar", "Cancha de Playa"],
   },
   {
     id: "belleza",
@@ -43,12 +43,9 @@ const categoryGroups: CategoryGroup[] = [
   },
   {
     id: "ia",
-    label: "Inteligencia Artificial",
+    label: "Tecnología",
     icon: Sparkles,
-    industries: [
-      "IA para Seguros", "IA Legal", "IA para Marketing", "IA para Ventas",
-      "IA para Atención", "IA para Contabilidad", "IA para RRHH", "IA para Ciberseguridad",
-    ],
+    industries: ["IA para Seguros", "IA para Ventas", "IA para Atención"],
   },
 ];
 
