@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   ChevronDown, Clock, CheckCircle2, RotateCcw, MessageCircle,
   Package, User, CreditCard, Copy, Send, XCircle, ArrowRight,
-  Shield, Ban
+  Shield, Ban, FileText
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
