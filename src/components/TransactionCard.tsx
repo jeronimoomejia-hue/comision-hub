@@ -125,7 +125,7 @@ export default function TransactionCard({
   status, statusType = 'sale', date, holdEndDate, releasedDate,
   activationCode, refundDaysLeft, refundStatus, isSubscription,
   paymentId, failureReason, refundReason, refundDecision,
-  onRefund, onSupport, role = 'vendor'
+  onRefund, onSupport, onViewReceipt, role = 'vendor'
 }: TransactionCardProps) {
   const [expanded, setExpanded] = useState(false);
 
