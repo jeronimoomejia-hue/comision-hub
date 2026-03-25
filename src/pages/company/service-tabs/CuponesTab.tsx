@@ -2,10 +2,10 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
-import { Tag, Lock, Copy, Plus, X, Save } from "lucide-react";
+import { Tag, Lock, Copy, Plus, Save, ShoppingCart, Trash2 } from "lucide-react";
 import { formatCOP } from "@/data/mockData";
 import { toast } from "sonner";
+import { Switch } from "@/components/ui/switch";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
 } from "@/components/ui/dialog";
@@ -22,8 +22,8 @@ export default function CuponesTab({ service, currentPlan }: any) {
 
   if (currentPlan === 'freemium') {
     return (
-      <div className="text-center py-12 rounded-xl border border-border bg-card">
-        <Lock className="w-8 h-8 text-muted-foreground/30 mx-auto mb-3" />
+      <div className="text-center py-12 rounded-2xl border border-border bg-card">
+        <Lock className="w-8 h-8 text-muted-foreground/20 mx-auto mb-3" />
         <p className="text-sm font-medium mb-1">Cupones no disponibles</p>
         <p className="text-xs text-muted-foreground">Mejora a Premium o Enterprise para crear cupones.</p>
       </div>
@@ -47,58 +47,89 @@ export default function CuponesTab({ service, currentPlan }: any) {
     setNewCoupon({ code: '', discount: '', type: 'porcentaje', maxUses: '', expires: '' });
   };
 
+  const activeCoupons = coupons.filter(c => c.active);
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <p className="text-xs text-muted-foreground">{coupons.filter(c => c.active).length} cupones activos</p>
-        <Button size="sm" className="h-8 text-xs" onClick={() => setShowCreate(true)}>
-          <Plus className="w-3.5 h-3.5 mr-1" /> Crear cupón
+        <p className="text-xs text-muted-foreground">{activeCoupons.length} activos</p>
+        <Button size="sm" className="h-8 text-xs rounded-full" onClick={() => setShowCreate(true)}>
+          <Plus className="w-3.5 h-3.5 mr-1" /> Nuevo
         </Button>
       </div>
 
       {coupons.length > 0 ? (
         <div className="space-y-2">
-          {coupons.map(coupon => (
-            <div key={coupon.id} className={`p-4 rounded-xl border ${coupon.active ? 'border-primary/20 bg-primary/5' : 'border-border bg-muted/30 opacity-60'}`}>
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <code className="text-sm font-mono font-bold text-primary bg-card px-2.5 py-1 rounded-lg border border-border">{coupon.code}</code>
-                  <button onClick={() => { navigator.clipboard.writeText(coupon.code); toast.success("Código copiado"); }}>
-                    <Copy className="w-3.5 h-3.5 text-muted-foreground hover:text-foreground transition-colors" />
+          {coupons.map(coupon => {
+            const isExpired = new Date(coupon.expires) < new Date();
+            const usagePercent = Math.round((coupon.uses / coupon.maxUses) * 100);
+            const discountLabel = coupon.type === 'porcentaje' ? `${coupon.discount}%` : formatCOP(coupon.discount);
+            const priceWithDiscount = coupon.type === 'porcentaje'
+              ? service.priceCOP - (service.priceCOP * coupon.discount / 100)
+              : service.priceCOP - coupon.discount;
+
+            return (
+              <div
+                key={coupon.id}
+                className={`rounded-2xl border bg-card p-4 transition-all ${
+                  coupon.active && !isExpired ? 'border-border' : 'border-border/50 opacity-60'
+                }`}
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2.5">
+                    <code className="text-sm font-mono font-bold text-foreground tracking-wide">{coupon.code}</code>
+                    <span className="text-xs font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded-full">
+                      {discountLabel} off
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <button onClick={() => { navigator.clipboard.writeText(coupon.code); toast.success("Código copiado"); }}
+                      className="p-1.5 rounded-lg hover:bg-muted transition-colors">
+                      <Copy className="w-3.5 h-3.5 text-muted-foreground" />
+                    </button>
+                    <Switch checked={coupon.active}
+                      onCheckedChange={() => setCoupons(prev => prev.map(c => c.id === coupon.id ? { ...c, active: !c.active } : c))} />
+                    <button onClick={() => { setCoupons(prev => prev.filter(c => c.id !== coupon.id)); toast.success("Cupón eliminado"); }}
+                      className="p-1.5 rounded-lg hover:bg-destructive/10 transition-colors">
+                      <Trash2 className="w-3.5 h-3.5 text-muted-foreground hover:text-destructive" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Progress bar */}
+                <div className="mb-2.5">
+                  <div className="flex items-center justify-between text-[10px] text-muted-foreground mb-1">
+                    <span>{coupon.uses}/{coupon.maxUses} usos</span>
+                    <span>Vence {new Date(coupon.expires).toLocaleDateString('es-CO', { day: 'numeric', month: 'short' })}</span>
+                  </div>
+                  <div className="w-full h-1 rounded-full bg-muted overflow-hidden">
+                    <div className="h-full rounded-full bg-primary/60 transition-all" style={{ width: `${Math.min(usagePercent, 100)}%` }} />
+                  </div>
+                </div>
+
+                {/* Price preview */}
+                <div className="flex items-center gap-2 text-[11px]">
+                  <span className="text-muted-foreground">Precio con cupón:</span>
+                  <span className="font-semibold text-primary">{formatCOP(Math.max(0, priceWithDiscount))}</span>
+                  <span className="line-through text-muted-foreground/60">{formatCOP(service.priceCOP)}</span>
+                </div>
+
+                {/* Register sale with coupon */}
+                {coupon.active && !isExpired && (
+                  <button
+                    onClick={() => toast.success(`Registrar venta con cupón ${coupon.code}`, { description: 'Funcionalidad disponible para vendedores' })}
+                    className="mt-3 w-full flex items-center justify-center gap-1.5 py-2 rounded-xl border border-dashed border-border text-xs text-muted-foreground hover:text-foreground hover:border-primary/30 transition-colors"
+                  >
+                    <ShoppingCart className="w-3 h-3" /> Registrar venta con este cupón
                   </button>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Badge className={`text-[9px] border-0 ${coupon.active ? 'bg-emerald-500/10 text-emerald-600' : 'bg-muted text-muted-foreground'}`}>
-                    {coupon.active ? 'Activo' : 'Expirado'}
-                  </Badge>
-                  {coupon.active && (
-                    <Button size="sm" variant="ghost" className="h-6 text-[9px] text-destructive px-1.5"
-                      onClick={() => setCoupons(prev => prev.map(c => c.id === coupon.id ? { ...c, active: false } : c))}>
-                      Desactivar
-                    </Button>
-                  )}
-                </div>
+                )}
               </div>
-              <div className="grid grid-cols-3 gap-3 text-center">
-                <div>
-                  <p className="text-sm font-bold">{coupon.type === 'porcentaje' ? `${coupon.discount}%` : formatCOP(coupon.discount)}</p>
-                  <p className="text-[9px] text-muted-foreground">Descuento</p>
-                </div>
-                <div>
-                  <p className="text-sm font-bold">{coupon.uses}/{coupon.maxUses}</p>
-                  <p className="text-[9px] text-muted-foreground">Usos</p>
-                </div>
-                <div>
-                  <p className="text-sm font-bold">{new Date(coupon.expires).toLocaleDateString('es-CO', { day: 'numeric', month: 'short' })}</p>
-                  <p className="text-[9px] text-muted-foreground">Vence</p>
-                </div>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       ) : (
-        <div className="text-center py-12 rounded-xl border border-border bg-card">
-          <Tag className="w-8 h-8 text-muted-foreground/30 mx-auto mb-3" />
+        <div className="text-center py-12 rounded-2xl border border-border bg-card">
+          <Tag className="w-8 h-8 text-muted-foreground/20 mx-auto mb-3" />
           <p className="text-sm font-medium mb-1">Sin cupones</p>
           <p className="text-xs text-muted-foreground">Crea tu primer cupón para este producto</p>
         </div>
@@ -106,21 +137,21 @@ export default function CuponesTab({ service, currentPlan }: any) {
 
       {/* Create coupon dialog */}
       <Dialog open={showCreate} onOpenChange={setShowCreate}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-sm">
           <DialogHeader>
-            <DialogTitle className="text-base">Crear cupón — {service.name}</DialogTitle>
+            <DialogTitle className="text-base">Nuevo cupón — {service.name}</DialogTitle>
           </DialogHeader>
           <div className="space-y-3">
             <div className="space-y-1.5">
               <Label className="text-xs">Código</Label>
-              <Input className="h-9 font-mono uppercase" placeholder="PROMO20" value={newCoupon.code}
+              <Input className="h-9 font-mono uppercase text-sm" placeholder="PROMO20" value={newCoupon.code}
                 onChange={e => setNewCoupon({ ...newCoupon, code: e.target.value.toUpperCase() })} />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <Label className="text-xs">Tipo de descuento</Label>
+                <Label className="text-xs">Tipo</Label>
                 <Select value={newCoupon.type} onValueChange={v => setNewCoupon({ ...newCoupon, type: v as any })}>
-                  <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="h-9 text-xs"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="porcentaje">Porcentaje (%)</SelectItem>
                     <SelectItem value="fijo">Monto fijo (COP)</SelectItem>
@@ -129,24 +160,24 @@ export default function CuponesTab({ service, currentPlan }: any) {
               </div>
               <div className="space-y-1.5">
                 <Label className="text-xs">{newCoupon.type === 'porcentaje' ? 'Porcentaje' : 'Monto COP'}</Label>
-                <Input type="number" className="h-9" placeholder={newCoupon.type === 'porcentaje' ? '20' : '50000'}
+                <Input type="number" className="h-9 text-sm" placeholder={newCoupon.type === 'porcentaje' ? '20' : '50000'}
                   value={newCoupon.discount} onChange={e => setNewCoupon({ ...newCoupon, discount: e.target.value })} />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <Label className="text-xs">Máximo de usos</Label>
-                <Input type="number" className="h-9" placeholder="100" value={newCoupon.maxUses}
+                <Label className="text-xs">Máx. usos</Label>
+                <Input type="number" className="h-9 text-sm" placeholder="100" value={newCoupon.maxUses}
                   onChange={e => setNewCoupon({ ...newCoupon, maxUses: e.target.value })} />
               </div>
               <div className="space-y-1.5">
-                <Label className="text-xs">Fecha de expiración</Label>
-                <Input type="date" className="h-9" value={newCoupon.expires}
+                <Label className="text-xs">Expira</Label>
+                <Input type="date" className="h-9 text-sm" value={newCoupon.expires}
                   onChange={e => setNewCoupon({ ...newCoupon, expires: e.target.value })} />
               </div>
             </div>
             {newCoupon.discount && newCoupon.code && (
-              <div className="p-3 rounded-lg bg-primary/5 border border-primary/20">
+              <div className="p-3 rounded-xl bg-primary/5 border border-primary/20">
                 <p className="text-xs text-muted-foreground">
                   Precio con cupón: <span className="font-bold text-primary">
                     {formatCOP(newCoupon.type === 'porcentaje'
@@ -154,14 +185,14 @@ export default function CuponesTab({ service, currentPlan }: any) {
                       : service.priceCOP - Number(newCoupon.discount)
                     )}
                   </span>
-                  <span className="line-through ml-2 text-muted-foreground">{formatCOP(service.priceCOP)}</span>
+                  <span className="line-through ml-2 text-muted-foreground/60">{formatCOP(service.priceCOP)}</span>
                 </p>
               </div>
             )}
           </div>
           <DialogFooter>
-            <Button variant="outline" size="sm" onClick={() => setShowCreate(false)}>Cancelar</Button>
-            <Button size="sm" onClick={handleCreateCoupon}><Save className="w-3.5 h-3.5 mr-1" /> Crear cupón</Button>
+            <Button variant="outline" size="sm" className="text-xs" onClick={() => setShowCreate(false)}>Cancelar</Button>
+            <Button size="sm" className="text-xs" onClick={handleCreateCoupon}><Save className="w-3.5 h-3.5 mr-1" /> Crear</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
