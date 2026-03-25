@@ -17,7 +17,7 @@ const tabs = [
   { icon: Home, label: "Inicio", href: "/vendor" },
   { icon: ShoppingBag, label: "Productos", href: "/vendor/products" },
   { icon: Users, label: "Clientes", href: "/vendor/crm" },
-  { icon: DollarSign, label: "Pagos", href: "/vendor/payments" },
+  { icon: DollarSign, label: "Pedidos", href: "/vendor/payments" },
   { icon: User, label: "Perfil", href: "/vendor/profile" },
 ];
 

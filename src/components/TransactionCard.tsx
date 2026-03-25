@@ -15,6 +15,7 @@ interface TransactionCardProps {
   id: string;
   clientName: string;
   clientEmail?: string;
+  clientPhone?: string;
   serviceName?: string;
   serviceCategory?: string;
   serviceId?: string;
@@ -118,7 +119,7 @@ function getTimeline(
 }
 
 export default function TransactionCard({
-  id, clientName, clientEmail, serviceName, serviceCategory, serviceId,
+  id, clientName, clientEmail, clientPhone, serviceName, serviceCategory, serviceId,
   companyName, vendorName, amount, commission, platformFee, netAmount,
   status, statusType = 'sale', date, holdEndDate, releasedDate,
   activationCode, refundDaysLeft, refundStatus, isSubscription,
@@ -339,12 +340,22 @@ export default function TransactionCard({
               )}
 
               {/* Actions */}
-              <div className="flex gap-2 pt-0.5" onClick={e => e.stopPropagation()}>
+              <div className="flex gap-2 pt-0.5 flex-wrap" onClick={e => e.stopPropagation()}>
+                {clientPhone && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex-1 h-8 text-xs rounded-xl text-emerald-600 border-emerald-200 hover:bg-emerald-50 dark:border-emerald-500/20 dark:hover:bg-emerald-500/5"
+                    onClick={() => window.open(`https://wa.me/57${clientPhone.replace(/\s/g, '')}`, '_blank')}
+                  >
+                    <MessageCircle className="w-3 h-3 mr-1.5" /> Contactar cliente
+                  </Button>
+                )}
                 <Button variant="outline" size="sm" className="flex-1 h-8 text-xs rounded-xl" onClick={copyId}>
                   <Copy className="w-3 h-3 mr-1.5" /> Copiar ID
                 </Button>
                 {onSupport && (
-                  <Button variant="outline" size="sm" className="flex-1 h-8 text-xs rounded-xl text-emerald-600 border-emerald-200 hover:bg-emerald-50" onClick={onSupport}>
+                  <Button variant="outline" size="sm" className="flex-1 h-8 text-xs rounded-xl" onClick={onSupport}>
                     <MessageCircle className="w-3 h-3 mr-1.5" /> Soporte
                   </Button>
                 )}
