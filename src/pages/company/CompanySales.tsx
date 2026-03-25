@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { useDemo } from "@/contexts/DemoContext";
 import { vendors, formatCOP, CURRENT_COMPANY_ID, companies } from "@/data/mockData";
 import TransactionCard from "@/components/TransactionCard";
+import StatusGuide from "@/components/StatusGuide";
 
 export default function CompanySales() {
   const { sales, services, currentCompanyPlan } = useDemo();

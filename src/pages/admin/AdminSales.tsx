@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { sales, services, companies, vendors, formatCOP } from "@/data/mockData";
 import TransactionCard from "@/components/TransactionCard";
+import StatusGuide from "@/components/StatusGuide";
 
 export default function AdminSales() {
   const [statusFilter, setStatusFilter] = useState("all");

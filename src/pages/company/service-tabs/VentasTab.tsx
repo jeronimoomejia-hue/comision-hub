@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import { vendors, formatCOP } from "@/data/mockData";
 import TransactionCard from "@/components/TransactionCard";
+import StatusGuide from "@/components/StatusGuide";
 import { toast } from "sonner";
 
 export default function VentasTab({ service, serviceSales, commissions, refundRequests, updateRefundRequest }: any) {

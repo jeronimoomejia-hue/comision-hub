@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useDemo } from "@/contexts/DemoContext";
 import { vendors, companies, formatCOP, getServiceById } from "@/data/mockData";
 import TransactionCard from "@/components/TransactionCard";
+import StatusGuide from "@/components/StatusGuide";
 
 export default function AdminTransactions() {
   const { sales } = useDemo();
