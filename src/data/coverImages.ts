@@ -1,59 +1,39 @@
 // Shared cover image maps for all categories
 
 // Service covers
-import insuranceImg from "@/assets/service-covers/insurance-ai.jpg";
-import legalImg from "@/assets/service-covers/legal-ai.jpg";
-import marketingImg from "@/assets/service-covers/marketing-ai.jpg";
-import salesImg from "@/assets/service-covers/sales-ai.jpg";
-import supportImg from "@/assets/service-covers/support-ai.jpg";
-import accountingImg from "@/assets/service-covers/accounting-ai.jpg";
-import hrImg from "@/assets/service-covers/hr-ai.jpg";
-import securityImg from "@/assets/service-covers/security-ai.jpg";
-import gymImg from "@/assets/service-covers/gym.jpg";
-import yogaImg from "@/assets/service-covers/yoga.jpg";
-import wellnessImg from "@/assets/service-covers/wellness.jpg";
-import salonImg from "@/assets/service-covers/salon.jpg";
+import techAiServiceImg from "@/assets/service-covers/tech-ai.jpg";
+import gymServiceImg from "@/assets/service-covers/gym.jpg";
+import yogaServiceImg from "@/assets/service-covers/yoga.jpg";
+import wellnessServiceImg from "@/assets/service-covers/wellness.jpg";
+import salonServiceImg from "@/assets/service-covers/salon.jpg";
+import beachServiceImg from "@/assets/service-covers/beach-court.jpg";
 
 // Company covers
-import insuranceCover from "@/assets/company-covers/insurance-ai.jpg";
-import legalCover from "@/assets/company-covers/legal-ai.jpg";
-import marketingCover from "@/assets/company-covers/marketing-ai.jpg";
-import salesCover from "@/assets/company-covers/sales-ai.jpg";
-import supportCover from "@/assets/company-covers/support-ai.jpg";
-import accountingCover from "@/assets/company-covers/accounting-ai.jpg";
-import hrCover from "@/assets/company-covers/hr-ai.jpg";
-import securityCover from "@/assets/company-covers/security-ai.jpg";
+import techAiCover from "@/assets/company-covers/tech-ai.jpg";
 import gymCover from "@/assets/company-covers/gym.jpg";
 import yogaCover from "@/assets/company-covers/yoga.jpg";
 import wellnessCover from "@/assets/company-covers/wellness.jpg";
 import salonCover from "@/assets/company-covers/salon.jpg";
+import beachCover from "@/assets/company-covers/beach-court.jpg";
 
 export const categoryCovers: Record<string, string> = {
-  'IA para Seguros': insuranceImg,
-  'IA Legal': legalImg,
-  'IA para Marketing': marketingImg,
-  'IA para Ventas': salesImg,
-  'IA para Atención': supportImg,
-  'IA para Contabilidad': accountingImg,
-  'IA para RRHH': hrImg,
-  'IA para Ciberseguridad': securityImg,
-  'Gimnasio': gymImg,
-  'Yoga & Bienestar': yogaImg,
-  'Spa & Wellness': wellnessImg,
-  'Peluquería & Estética': salonImg,
+  'IA para Seguros': techAiServiceImg,
+  'IA para Ventas': techAiServiceImg,
+  'IA para Atención': techAiServiceImg,
+  'Gimnasio': gymServiceImg,
+  'Yoga & Bienestar': yogaServiceImg,
+  'Spa & Wellness': wellnessServiceImg,
+  'Peluquería & Estética': salonServiceImg,
+  'Cancha de Playa': beachServiceImg,
 };
 
 export const industryCover: Record<string, string> = {
-  'IA para Seguros': insuranceCover,
-  'IA Legal': legalCover,
-  'IA para Marketing': marketingCover,
-  'IA para Ventas': salesCover,
-  'IA para Atención': supportCover,
-  'IA para Contabilidad': accountingCover,
-  'IA para RRHH': hrCover,
-  'IA para Ciberseguridad': securityCover,
+  'IA para Seguros': techAiCover,
+  'IA para Ventas': techAiCover,
+  'IA para Atención': techAiCover,
   'Gimnasio': gymCover,
   'Yoga & Bienestar': yogaCover,
   'Spa & Wellness': wellnessCover,
   'Peluquería & Estética': salonCover,
+  'Cancha de Playa': beachCover,
 };
