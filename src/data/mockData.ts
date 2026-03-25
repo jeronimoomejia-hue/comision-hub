@@ -1093,7 +1093,7 @@ function generateSalesForVendor(vendorId: string, companyId: string, count: numb
     const saleDate = new Date(today);
     saleDate.setDate(saleDate.getDate() - daysAgo);
     const holdEndDate = new Date(saleDate);
-    holdEndDate.setDate(holdEndDate.getDate() + 7);
+    holdEndDate.setDate(holdEndDate.getDate() + service.refundPolicy.refundWindowDays);
 
     const service = companyServices[Math.floor(Math.random() * companyServices.length)];
     const client = clientNames[Math.floor(Math.random() * clientNames.length)];
