@@ -59,7 +59,7 @@ export default function VendorDashboard() {
     .map(l => l.companyId);
   
   const linkedCompanies = companies.filter(c => linkedCompanyIds.includes(c.id));
-  const otherCompanies = companies.filter(c => !linkedCompanyIds.includes(c.id)).slice(0, 3);
+  const otherCompanies = companies.filter(c => !linkedCompanyIds.includes(c.id)).slice(0, 4);
 
   // Mini chart data (last 6 weeks)
   const today = new Date();
