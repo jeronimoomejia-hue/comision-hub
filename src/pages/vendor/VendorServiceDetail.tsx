@@ -343,11 +343,8 @@ export default function VendorServiceDetail() {
 
 function InfoTab({ service, extended, company, isTrainingComplete }: { service: any; extended: any; company: any; isTrainingComplete: boolean }) {
   return (
-    <div className="space-y-5">
-      {/* Description */}
-      <div>
-        <p className="text-sm text-muted-foreground leading-relaxed">{extended?.shortDescription || service.description}</p>
-      </div>
+    <div className="space-y-6">
+      <p className="text-sm text-muted-foreground leading-relaxed">{extended?.shortDescription || service.description}</p>
 
       {/* Pricing */}
       <div className="grid grid-cols-2 gap-3">
@@ -356,99 +353,77 @@ function InfoTab({ service, extended, company, isTrainingComplete }: { service: 
           <p className="text-2xl font-semibold text-primary mt-1">{formatCOP(Math.round(service.priceCOP * service.vendorCommissionPct / 100))}</p>
           <p className="text-[10px] text-muted-foreground mt-0.5">{service.vendorCommissionPct}% por venta</p>
         </div>
-        <div className="p-4 rounded-xl border bg-card">
+        <div className="p-4 rounded-xl border border-border bg-card">
           <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Precio cliente</p>
           <p className="text-2xl font-semibold text-foreground mt-1">{formatCOP(service.priceCOP)}</p>
           <p className="text-[10px] text-muted-foreground mt-0.5">{service.type === 'suscripción' ? 'mensual' : 'pago único'}</p>
         </div>
       </div>
 
-      {/* Problem / Result / Audience */}
-      <div className="space-y-2">
+      {/* Key info */}
+      <div className="space-y-3">
         {[
-          { icon: AlertCircle, color: "text-destructive", label: "Problema", text: extended?.problemSolved || 'Procesos manuales.' },
-          { icon: Target, color: "text-emerald-600", label: "Resultado", text: extended?.promisedResult || 'Mayor productividad.' },
-          { icon: Users, color: "text-primary", label: "Audiencia", text: extended?.targetAudience || 'Empresas en Colombia.' },
+          { label: "Problema que resuelve", text: extended?.problemSolved || 'Procesos manuales.' },
+          { label: "Resultado prometido", text: extended?.promisedResult || 'Mayor productividad.' },
+          { label: "Audiencia ideal", text: extended?.targetAudience || 'Empresas en Colombia.' },
         ].map((item, i) => (
-          <div key={i} className="flex items-start gap-3 p-3 rounded-xl border border-border bg-card">
-            <item.icon className={`w-4 h-4 ${item.color} mt-0.5 flex-shrink-0`} />
-            <div>
-              <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">{item.label}</p>
-              <p className="text-xs text-foreground mt-0.5 leading-relaxed">{item.text}</p>
-            </div>
+          <div key={i}>
+            <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">{item.label}</p>
+            <p className="text-xs text-foreground mt-0.5 leading-relaxed">{item.text}</p>
           </div>
         ))}
       </div>
 
       {/* Pitch */}
-      <div className="p-4 rounded-xl bg-primary/5 border border-primary/10 space-y-3">
-        <div className="flex items-center gap-2">
-          <Lightbulb className="w-4 h-4 text-primary" />
-          <p className="text-xs font-medium text-foreground">Cómo venderlo</p>
-        </div>
+      <div className="border-l-2 border-primary/30 pl-4 space-y-1.5">
+        <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">Cómo venderlo</p>
         <p className="text-sm font-medium text-foreground italic">"{extended?.pitchOneLine || `${service.name} automatiza tu negocio.`}"</p>
-        <p className="text-xs text-muted-foreground leading-relaxed">{extended?.pitchThreeLines}</p>
+        {extended?.pitchThreeLines && (
+          <p className="text-xs text-muted-foreground leading-relaxed">{extended.pitchThreeLines}</p>
+        )}
       </div>
 
       {/* Objections */}
       {extended?.objections && (
-        <div className="space-y-2">
-          <p className="text-xs font-medium text-foreground flex items-center gap-2">
-            <HelpCircle className="w-3.5 h-3.5" /> Objeciones comunes
-          </p>
+        <div className="space-y-3">
+          <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">Objeciones comunes</p>
           {extended.objections.slice(0, 3).map((obj: any, i: number) => (
-            <div key={i} className="p-3 rounded-xl border border-border bg-card">
-              <p className="text-xs font-medium text-foreground">❓ {obj.objection}</p>
-              <p className="text-xs text-muted-foreground mt-1">✅ {obj.response}</p>
+            <div key={i} className="space-y-0.5">
+              <p className="text-xs font-medium text-foreground">{obj.objection}</p>
+              <p className="text-xs text-muted-foreground">{obj.response}</p>
             </div>
           ))}
         </div>
       )}
 
       {/* Training */}
-      <div className={`p-4 rounded-xl border ${isTrainingComplete ? 'bg-emerald-500/5 border-emerald-500/20' : 'bg-amber-500/5 border-amber-500/20'}`}>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            {service.trainingType === 'video' ? <Play className={`w-5 h-5 ${isTrainingComplete ? 'text-emerald-500' : 'text-amber-500'}`} /> : <FileText className={`w-5 h-5 ${isTrainingComplete ? 'text-emerald-500' : 'text-amber-500'}`} />}
-            <div>
-              <p className="text-sm font-medium">Capacitación {service.trainingType === 'video' ? 'en Video' : 'en PDF'}</p>
-              <p className="text-[10px] text-muted-foreground">~{extended?.trainingDurationMinutes || 15} min · {isTrainingComplete ? 'Completada' : 'Pendiente'}</p>
-            </div>
-          </div>
-          {isTrainingComplete ? (
-            <Badge className="bg-emerald-500/10 text-emerald-600 border-0 text-[10px]"><Check className="w-3 h-3 mr-1" /> Listo</Badge>
-          ) : (
-            <Badge variant="outline" className="text-[10px] text-amber-600 border-amber-400"><BookOpen className="w-3 h-3 mr-1" /> Pendiente</Badge>
-          )}
+      <div className="flex items-center justify-between py-3 border-t border-border">
+        <div>
+          <p className="text-xs font-medium text-foreground">Capacitación ({service.trainingType === 'video' ? 'Video' : 'PDF'})</p>
+          <p className="text-[10px] text-muted-foreground">~{extended?.trainingDurationMinutes || 15} min</p>
         </div>
+        <span className={`text-[10px] font-medium ${isTrainingComplete ? 'text-emerald-600' : 'text-amber-600'}`}>
+          {isTrainingComplete ? 'Completada' : 'Pendiente'}
+        </span>
       </div>
 
       {/* Refund Policy */}
-      <div className="p-4 rounded-xl border border-border bg-card">
-        <p className="text-xs font-medium text-foreground flex items-center gap-2 mb-2">
-          <Shield className="w-3.5 h-3.5" /> Política de devoluciones
+      <div className="flex items-center justify-between py-3 border-t border-border">
+        <p className="text-xs font-medium text-foreground">Devoluciones</p>
+        <p className="text-xs text-muted-foreground">
+          {service.refundPolicy.autoRefund ? 'Automática' : 'Requiere aprobación'} · {service.refundPolicy.refundWindowDays} días
         </p>
-        <div className="flex items-center gap-4 text-xs text-muted-foreground">
-          <span>{service.refundPolicy.autoRefund ? 'Automática' : 'Requiere aprobación'}</span>
-          <span>·</span>
-          <span>{service.refundPolicy.refundWindowDays} días</span>
-        </div>
       </div>
 
       {/* Materials */}
       {service.materials.length > 0 && (
-        <div className="space-y-2">
-          <p className="text-xs font-medium text-foreground flex items-center gap-2">
-            <Download className="w-3.5 h-3.5" /> Materiales
-          </p>
+        <div className="space-y-2 pt-1">
+          <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">Materiales</p>
           {service.materials.map((m: any) => (
-            <div key={m.id} className="flex items-center justify-between p-3 rounded-xl border border-border bg-card">
-              <div className="flex items-center gap-2">
-                <FileText className="w-4 h-4 text-muted-foreground" />
-                <span className="text-xs text-foreground">{m.title}</span>
-              </div>
-              <Button variant="ghost" size="sm" className="text-[10px] h-7" onClick={() => toast.success(`Descargando: ${m.title}`)}>
-                <Download className="w-3 h-3 mr-1" /> PDF
+            <div key={m.id} className="flex items-center justify-between">
+              <span className="text-xs text-foreground">{m.title}</span>
+              <Button variant="ghost" size="sm" className="text-[10px] h-7 text-muted-foreground" onClick={() => toast.success(`Descargando: ${m.title}`)}>
+                Descargar
               </Button>
             </div>
           ))}
