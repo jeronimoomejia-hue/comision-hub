@@ -160,7 +160,7 @@ export default function VendorPayments() {
   };
 
   return (
-    <DashboardLayout role="vendor" userName={vendor?.name}>
+    <VendorTabLayout>
       <div className="space-y-6">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold">Mis Ventas y Pagos</h1>
@@ -656,6 +656,6 @@ export default function VendorPayments() {
           )}
         </DialogContent>
       </Dialog>
-    </DashboardLayout>
+    </VendorTabLayout>
   );
 }

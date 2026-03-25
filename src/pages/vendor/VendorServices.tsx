@@ -69,7 +69,7 @@ export default function VendorServices() {
   const totalPending = vendorServices.filter(s => !s.isActive).length;
 
   return (
-    <DashboardLayout role="vendor" userName="Carlos Mendoza">
+    <VendorTabLayout>
       <div className="space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2">
@@ -233,6 +233,6 @@ export default function VendorServices() {
           onClose={() => setSelectedServiceId(null)}
         />
       )}
-    </DashboardLayout>
+    </VendorTabLayout>
   );
 }

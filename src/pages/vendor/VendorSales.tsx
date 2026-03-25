@@ -217,7 +217,7 @@ export default function VendorSales() {
   const scheduledPayments = myPayments.filter(p => p.status === 'programado');
 
   return (
-    <DashboardLayout role="vendor" userName={vendor?.name}>
+    <VendorTabLayout>
       <div className="space-y-6">
         <PageTutorial
           pageId="vendor-sales"
@@ -717,6 +717,6 @@ export default function VendorSales() {
           )}
         </DialogContent>
       </Dialog>
-    </DashboardLayout>
+    </VendorTabLayout>
   );
 }

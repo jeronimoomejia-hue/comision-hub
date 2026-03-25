@@ -54,7 +54,7 @@ export default function VendorTrainings() {
   };
 
   return (
-    <DashboardLayout role="vendor" userName="Carlos Mendoza">
+    <VendorTabLayout>
       <div className="space-y-6">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold">Capacitaciones</h1>
@@ -197,6 +197,6 @@ export default function VendorTrainings() {
           </TabsContent>
         </Tabs>
       </div>
-    </DashboardLayout>
+    </VendorTabLayout>
   );
 }

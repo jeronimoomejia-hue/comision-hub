@@ -20,7 +20,7 @@ export default function VendorSupport() {
   // Chat only available for Premium/Enterprise
   if (currentCompanyPlan === 'freemium') {
     return (
-      <DashboardLayout role="vendor" userName={vendor?.name}>
+      <VendorTabLayout>
         <div className="flex flex-col items-center justify-center py-20 text-center">
           <Lock className="w-12 h-12 text-muted-foreground/30 mb-4" />
           <h2 className="text-lg font-semibold mb-2">Chat no disponible</h2>
@@ -29,7 +29,7 @@ export default function VendorSupport() {
             Contacta a {company?.name} directamente.
           </p>
         </div>
-      </DashboardLayout>
+      </VendorTabLayout>
     );
   }
 
@@ -38,7 +38,7 @@ export default function VendorSupport() {
   const whatsappLink = `https://wa.me/${whatsappNumber}?text=${message}`;
 
   return (
-    <DashboardLayout role="vendor" userName={vendor?.name}>
+    <VendorTabLayout>
       <div className="space-y-6">
         <div>
           <h1 className="text-2xl font-bold">Chat con {company?.name}</h1>
@@ -100,6 +100,6 @@ export default function VendorSupport() {
           </div>
         </div>
       </div>
-    </DashboardLayout>
+    </VendorTabLayout>
   );
 }
