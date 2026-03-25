@@ -358,12 +358,15 @@ export interface VendorCompanyLink {
 }
 
 export const vendorCompanyLinks: VendorCompanyLink[] = [
-  // vendor-001 linked to 5 companies (enterprise, premium, freemium mix)
+  // vendor-001 linked to 8 companies (enterprise, premium, freemium mix)
   { vendorId: 'vendor-001', companyId: 'company-001', joinedAt: '2024-06-01', status: 'active' },
   { vendorId: 'vendor-001', companyId: 'company-002', joinedAt: '2024-08-15', status: 'active' },
   { vendorId: 'vendor-001', companyId: 'company-005', joinedAt: '2024-10-01', status: 'active' },
   { vendorId: 'vendor-001', companyId: 'company-004', joinedAt: '2024-11-01', status: 'active' },
   { vendorId: 'vendor-001', companyId: 'company-006', joinedAt: '2024-12-01', status: 'active' },
+  { vendorId: 'vendor-001', companyId: 'company-009', joinedAt: '2025-01-10', status: 'active' },
+  { vendorId: 'vendor-001', companyId: 'company-010', joinedAt: '2025-01-15', status: 'active' },
+  { vendorId: 'vendor-001', companyId: 'company-012', joinedAt: '2025-02-01', status: 'active' },
   // other vendors
   { vendorId: 'vendor-002', companyId: 'company-001', joinedAt: '2024-07-01', status: 'active' },
   { vendorId: 'vendor-003', companyId: 'company-003', joinedAt: '2024-08-01', status: 'active' },
@@ -386,7 +389,7 @@ export const adminUser: User = {
   status: 'active'
 };
 
-// Companies (8) - Empresas de IA y SaaS
+// Companies (12) - Empresas de IA, SaaS, Fitness, Belleza
 export const companies: Company[] = [
   { id: 'company-001', name: 'Poliza.ai', industry: 'IA para Seguros', country: 'Colombia', status: 'active', plan: 'enterprise', pendingPaymentCOP: 45200000, nextPaymentDate: '2025-01-24', contactEmail: 'contacto@poliza.ai', contactPhone: '+57 300 123 4567', websiteUrl: 'https://poliza.ai', customDomain: 'ventas.poliza.ai', primaryColor: '#5B6FE0', secondaryColor: '#4A5BC7' },
   { id: 'company-002', name: 'LexIA', industry: 'IA Legal', country: 'Colombia', status: 'active', plan: 'premium', pendingPaymentCOP: 78500000, nextPaymentDate: '2025-01-24', contactEmail: 'ventas@lexia.co', contactPhone: '+57 301 234 5678', websiteUrl: 'https://lexia.co', primaryColor: '#00B87A', secondaryColor: '#009965' },
@@ -395,7 +398,12 @@ export const companies: Company[] = [
   { id: 'company-005', name: 'Asista', industry: 'IA para Atención', country: 'Colombia', status: 'active', plan: 'enterprise', pendingPaymentCOP: 95200000, nextPaymentDate: '2025-01-24', contactEmail: 'soporte@asista.co', contactPhone: '+57 304 567 8901', websiteUrl: 'https://asista.co', customDomain: 'vendedores.asista.co', primaryColor: '#5007FA', secondaryColor: '#3D04C2' },
   { id: 'company-006', name: 'NumeroIA', industry: 'IA para Contabilidad', country: 'Colombia', status: 'active', plan: 'freemium', pendingPaymentCOP: 18900000, nextPaymentDate: '2025-01-24', contactEmail: 'contacto@numeroia.co', contactPhone: '+57 305 678 9012', websiteUrl: 'https://numeroia.co', primaryColor: '#6366F1', secondaryColor: '#4F46E5' },
   { id: 'company-007', name: 'Recruta', industry: 'IA para RRHH', country: 'Colombia', status: 'active', plan: 'premium', pendingPaymentCOP: 28400000, nextPaymentDate: '2025-01-24', contactEmail: 'admin@recruta.co', contactPhone: '+57 306 789 0123', websiteUrl: 'https://recruta.co', primaryColor: '#EC4899', secondaryColor: '#DB2777' },
-  { id: 'company-008', name: 'Blindaje', industry: 'IA para Ciberseguridad', country: 'Colombia', status: 'active', plan: 'enterprise', pendingPaymentCOP: 67800000, nextPaymentDate: '2025-01-24', contactEmail: 'info@blindaje.co', contactPhone: '+57 307 890 1234', websiteUrl: 'https://blindaje.co', customDomain: 'red.blindaje.co', primaryColor: '#10B981', secondaryColor: '#059669' }
+  { id: 'company-008', name: 'Blindaje', industry: 'IA para Ciberseguridad', country: 'Colombia', status: 'active', plan: 'enterprise', pendingPaymentCOP: 67800000, nextPaymentDate: '2025-01-24', contactEmail: 'info@blindaje.co', contactPhone: '+57 307 890 1234', websiteUrl: 'https://blindaje.co', customDomain: 'red.blindaje.co', primaryColor: '#10B981', secondaryColor: '#059669' },
+  // Fitness, Yoga, Wellness, Peluquería
+  { id: 'company-009', name: 'IronHaus', industry: 'Gimnasio', country: 'Colombia', status: 'active', plan: 'premium', pendingPaymentCOP: 32500000, nextPaymentDate: '2025-02-01', contactEmail: 'admin@ironhaus.co', contactPhone: '+57 310 111 2233', websiteUrl: 'https://ironhaus.co', primaryColor: '#1A1A2E', secondaryColor: '#16213E' },
+  { id: 'company-010', name: 'Prana Studio', industry: 'Yoga & Bienestar', country: 'Colombia', status: 'active', plan: 'enterprise', pendingPaymentCOP: 28700000, nextPaymentDate: '2025-02-01', contactEmail: 'hola@pranastudio.co', contactPhone: '+57 311 222 3344', websiteUrl: 'https://pranastudio.co', customDomain: 'ventas.pranastudio.co', primaryColor: '#B45309', secondaryColor: '#92400E' },
+  { id: 'company-011', name: 'Vitalik Wellness', industry: 'Spa & Wellness', country: 'Colombia', status: 'active', plan: 'premium', pendingPaymentCOP: 41200000, nextPaymentDate: '2025-02-01', contactEmail: 'reservas@vitalik.co', contactPhone: '+57 312 333 4455', websiteUrl: 'https://vitalik.co', primaryColor: '#7C3AED', secondaryColor: '#6D28D9' },
+  { id: 'company-012', name: 'Salón Élite', industry: 'Peluquería & Estética', country: 'Colombia', status: 'active', plan: 'enterprise', pendingPaymentCOP: 19800000, nextPaymentDate: '2025-02-01', contactEmail: 'citas@salonelite.co', contactPhone: '+57 313 444 5566', websiteUrl: 'https://salonelite.co', customDomain: 'agenda.salonelite.co', primaryColor: '#D4A574', secondaryColor: '#B8956A' },
 ];
 
 // Company Users (8)
