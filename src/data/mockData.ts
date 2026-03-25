@@ -896,10 +896,150 @@ export const services: Service[] = [
     materials: [{ id: 'mat-024', serviceId: 'service-024', title: 'Manual Cyber Training', type: 'pdf', url: '/materials/cyber-training.pdf', uploadedAt: '2024-12-25' }], 
     activationCodes: [],
     createdAt: '2024-12-25'
+  },
+
+  // =============================================================================
+  // IronHaus - Gimnasio
+  // =============================================================================
+  { 
+    id: 'service-025', companyId: 'company-009', name: 'Plan Full Gym Mensual', 
+    description: 'Acceso ilimitado a todas las máquinas, área de peso libre y cardio. Incluye evaluación física inicial.', 
+    category: 'Gimnasio', priceCOP: 189000, type: 'suscripción',
+    vendorCommissionPct: 15, mensualistaPct: 5, status: 'activo',
+    refundPolicy: { autoRefund: false, refundWindowDays: 7 }, 
+    requiresTraining: true, trainingType: 'video', trainingUrl: 'https://example.com/ironhaus-full',
+    activeSubscriptions: 320,
+    materials: [{ id: 'mat-025', serviceId: 'service-025', title: 'Guía de planes IronHaus', type: 'pdf', url: '/materials/ironhaus.pdf', uploadedAt: '2025-01-01' }], 
+    activationCodes: Array.from({ length: 25 }, (_, i) => ({ id: `ac-025-${String(i+1).padStart(3,'0')}`, code: `IRON-FULL-${String(i+1).padStart(4,'0')}`, status: 'available' as const })),
+    createdAt: '2025-01-01' 
+  },
+  { 
+    id: 'service-026', companyId: 'company-009', name: 'Plan Premium + Entrenador', 
+    description: 'Acceso full gym + 8 sesiones mensuales con entrenador personal certificado y plan de nutrición.', 
+    category: 'Gimnasio', priceCOP: 349000, type: 'suscripción',
+    vendorCommissionPct: 18, mensualistaPct: 5, status: 'activo',
+    refundPolicy: { autoRefund: false, refundWindowDays: 14 }, 
+    requiresTraining: true, trainingType: 'video', trainingUrl: 'https://example.com/ironhaus-premium',
+    activeSubscriptions: 85,
+    materials: [{ id: 'mat-026', serviceId: 'service-026', title: 'Argumentario Premium', type: 'pdf', url: '/materials/ironhaus-premium.pdf', uploadedAt: '2025-01-01' }], 
+    activationCodes: Array.from({ length: 25 }, (_, i) => ({ id: `ac-026-${String(i+1).padStart(3,'0')}`, code: `IRON-PREM-${String(i+1).padStart(4,'0')}`, status: 'available' as const })),
+    createdAt: '2025-01-01' 
+  },
+  { 
+    id: 'service-027', companyId: 'company-009', name: 'Pack 10 Clases Grupales', 
+    description: 'Paquete de 10 clases grupales: spinning, crossfit, funcional o HIIT. Válido por 2 meses.', 
+    category: 'Gimnasio', priceCOP: 150000, type: 'puntual',
+    vendorCommissionPct: 20, mensualistaPct: 5, status: 'activo',
+    refundPolicy: { autoRefund: true, refundWindowDays: 7 }, 
+    requiresTraining: false,
+    materials: [{ id: 'mat-027', serviceId: 'service-027', title: 'Horarios clases', type: 'pdf', url: '/materials/clases.pdf', uploadedAt: '2025-01-01' }], 
+    activationCodes: Array.from({ length: 25 }, (_, i) => ({ id: `ac-027-${String(i+1).padStart(3,'0')}`, code: `IRON-CLS-${String(i+1).padStart(4,'0')}`, status: 'available' as const })),
+    createdAt: '2025-01-01' 
+  },
+
+  // =============================================================================
+  // Prana Studio - Yoga & Bienestar
+  // =============================================================================
+  { 
+    id: 'service-028', companyId: 'company-010', name: 'Membresía Prana Ilimitada', 
+    description: 'Acceso ilimitado a todas las clases: Vinyasa, Hatha, Yin, Meditación y Breathwork. Incluye mat.', 
+    category: 'Yoga & Bienestar', priceCOP: 220000, type: 'suscripción',
+    vendorCommissionPct: 18, mensualistaPct: 5, status: 'activo',
+    refundPolicy: { autoRefund: false, refundWindowDays: 14 }, 
+    requiresTraining: true, trainingType: 'video', trainingUrl: 'https://example.com/prana-unlimited',
+    activeSubscriptions: 180,
+    materials: [{ id: 'mat-028', serviceId: 'service-028', title: 'Manual Prana Studio', type: 'pdf', url: '/materials/prana.pdf', uploadedAt: '2025-01-10' }], 
+    activationCodes: Array.from({ length: 25 }, (_, i) => ({ id: `ac-028-${String(i+1).padStart(3,'0')}`, code: `PRANA-UNL-${String(i+1).padStart(4,'0')}`, status: 'available' as const })),
+    createdAt: '2025-01-10' 
+  },
+  { 
+    id: 'service-029', companyId: 'company-010', name: 'Retiro Wellness 3 Días', 
+    description: 'Retiro de 3 días con yoga, meditación, alimentación consciente y terapias holísticas en la naturaleza.', 
+    category: 'Yoga & Bienestar', priceCOP: 890000, type: 'puntual',
+    vendorCommissionPct: 22, mensualistaPct: 5, status: 'activo',
+    refundPolicy: { autoRefund: false, refundWindowDays: 30 }, 
+    requiresTraining: true, trainingType: 'video', trainingUrl: 'https://example.com/prana-retiro',
+    materials: [{ id: 'mat-029', serviceId: 'service-029', title: 'Brochure Retiro', type: 'pdf', url: '/materials/retiro.pdf', uploadedAt: '2025-01-10' }], 
+    activationCodes: Array.from({ length: 25 }, (_, i) => ({ id: `ac-029-${String(i+1).padStart(3,'0')}`, code: `PRANA-RET-${String(i+1).padStart(4,'0')}`, status: 'available' as const })),
+    createdAt: '2025-01-10' 
+  },
+  { 
+    id: 'service-030', companyId: 'company-010', name: 'Teacher Training 200h', 
+    description: 'Formación de profesores de yoga certificada Yoga Alliance. 200 horas en 3 meses.', 
+    category: 'Yoga & Bienestar', priceCOP: 4500000, type: 'puntual',
+    vendorCommissionPct: 12, mensualistaPct: 3, status: 'activo',
+    refundPolicy: { autoRefund: false, refundWindowDays: 30 }, 
+    requiresTraining: true, trainingType: 'video', trainingUrl: 'https://example.com/prana-tt',
+    materials: [{ id: 'mat-030', serviceId: 'service-030', title: 'Programa TT200', type: 'pdf', url: '/materials/tt200.pdf', uploadedAt: '2025-01-10' }], 
+    activationCodes: Array.from({ length: 25 }, (_, i) => ({ id: `ac-030-${String(i+1).padStart(3,'0')}`, code: `PRANA-TT-${String(i+1).padStart(4,'0')}`, status: 'available' as const })),
+    createdAt: '2025-01-10' 
+  },
+
+  // =============================================================================
+  // Vitalik Wellness - Spa & Wellness
+  // =============================================================================
+  { 
+    id: 'service-031', companyId: 'company-011', name: 'Circuito Spa Premium', 
+    description: 'Circuito completo: sauna, turco, jacuzzi, piscina de inmersión fría y zona de relajación. 3 horas.', 
+    category: 'Spa & Wellness', priceCOP: 180000, type: 'puntual',
+    vendorCommissionPct: 20, mensualistaPct: 5, status: 'activo',
+    refundPolicy: { autoRefund: false, refundWindowDays: 7 }, 
+    requiresTraining: true, trainingType: 'video', trainingUrl: 'https://example.com/vitalik-spa',
+    materials: [{ id: 'mat-031', serviceId: 'service-031', title: 'Experiencia Vitalik', type: 'pdf', url: '/materials/vitalik.pdf', uploadedAt: '2025-01-15' }], 
+    activationCodes: Array.from({ length: 25 }, (_, i) => ({ id: `ac-031-${String(i+1).padStart(3,'0')}`, code: `VITAL-SPA-${String(i+1).padStart(4,'0')}`, status: 'available' as const })),
+    createdAt: '2025-01-15' 
+  },
+  { 
+    id: 'service-032', companyId: 'company-011', name: 'Membresía Wellness Mensual', 
+    description: 'Acceso ilimitado al circuito spa + 2 masajes terapéuticos al mes + clases de meditación.', 
+    category: 'Spa & Wellness', priceCOP: 450000, type: 'suscripción',
+    vendorCommissionPct: 16, mensualistaPct: 5, status: 'activo',
+    refundPolicy: { autoRefund: false, refundWindowDays: 14 }, 
+    requiresTraining: true, trainingType: 'video', trainingUrl: 'https://example.com/vitalik-membresia',
+    activeSubscriptions: 95,
+    materials: [{ id: 'mat-032', serviceId: 'service-032', title: 'Guía Membresía', type: 'pdf', url: '/materials/vitalik-memb.pdf', uploadedAt: '2025-01-15' }], 
+    activationCodes: Array.from({ length: 25 }, (_, i) => ({ id: `ac-032-${String(i+1).padStart(3,'0')}`, code: `VITAL-MEM-${String(i+1).padStart(4,'0')}`, status: 'available' as const })),
+    createdAt: '2025-01-15' 
+  },
+
+  // =============================================================================
+  // Salón Élite - Peluquería & Estética
+  // =============================================================================
+  { 
+    id: 'service-033', companyId: 'company-012', name: 'Paquete Corte + Color Premium', 
+    description: 'Corte de cabello personalizado + coloración profesional con productos Wella o L\'Oréal.', 
+    category: 'Peluquería & Estética', priceCOP: 280000, type: 'puntual',
+    vendorCommissionPct: 18, mensualistaPct: 5, status: 'activo',
+    refundPolicy: { autoRefund: false, refundWindowDays: 7 }, 
+    requiresTraining: true, trainingType: 'video', trainingUrl: 'https://example.com/elite-corte',
+    materials: [{ id: 'mat-033', serviceId: 'service-033', title: 'Catálogo servicios', type: 'pdf', url: '/materials/salon-catalogo.pdf', uploadedAt: '2025-02-01' }], 
+    activationCodes: Array.from({ length: 25 }, (_, i) => ({ id: `ac-033-${String(i+1).padStart(3,'0')}`, code: `ELITE-CC-${String(i+1).padStart(4,'0')}`, status: 'available' as const })),
+    createdAt: '2025-02-01' 
+  },
+  { 
+    id: 'service-034', companyId: 'company-012', name: 'Plan Belleza Mensual', 
+    description: 'Suscripción mensual: 1 corte + 1 tratamiento capilar + manicure/pedicure + facial express.', 
+    category: 'Peluquería & Estética', priceCOP: 350000, type: 'suscripción',
+    vendorCommissionPct: 15, mensualistaPct: 5, status: 'activo',
+    refundPolicy: { autoRefund: false, refundWindowDays: 14 }, 
+    requiresTraining: true, trainingType: 'video', trainingUrl: 'https://example.com/elite-plan',
+    activeSubscriptions: 62,
+    materials: [{ id: 'mat-034', serviceId: 'service-034', title: 'Plan Belleza', type: 'pdf', url: '/materials/plan-belleza.pdf', uploadedAt: '2025-02-01' }], 
+    activationCodes: Array.from({ length: 25 }, (_, i) => ({ id: `ac-034-${String(i+1).padStart(3,'0')}`, code: `ELITE-PLN-${String(i+1).padStart(4,'0')}`, status: 'available' as const })),
+    createdAt: '2025-02-01' 
+  },
+  { 
+    id: 'service-035', companyId: 'company-012', name: 'Experiencia Novia VIP', 
+    description: 'Paquete completo para novias: prueba de peinado, maquillaje, manicure, tratamiento facial y día del evento.', 
+    category: 'Peluquería & Estética', priceCOP: 1200000, type: 'puntual',
+    vendorCommissionPct: 20, mensualistaPct: 3, status: 'activo',
+    refundPolicy: { autoRefund: false, refundWindowDays: 30 }, 
+    requiresTraining: true, trainingType: 'video', trainingUrl: 'https://example.com/elite-novia',
+    materials: [{ id: 'mat-035', serviceId: 'service-035', title: 'Brochure Novias', type: 'pdf', url: '/materials/novias.pdf', uploadedAt: '2025-02-01' }], 
+    activationCodes: Array.from({ length: 25 }, (_, i) => ({ id: `ac-035-${String(i+1).padStart(3,'0')}`, code: `ELITE-NVA-${String(i+1).padStart(4,'0')}`, status: 'available' as const })),
+    createdAt: '2025-02-01' 
   }
 ];
-
-// Service Requests
 export const serviceRequests: ServiceRequest[] = [
   { id: 'req-001', companyId: 'company-001', serviceName: 'Poliza Telemedicina IA', category: 'IA para Seguros', serviceType: 'suscripción', priceCOP: 259000, vendorCommissionPct: 18, description: 'IA para gestión de telemedicina en seguros de salud.', countries: ['Colombia'], websiteUrl: 'https://poliza.ai/telemedicina', contactName: 'María González', contactEmail: 'maria@poliza.ai', contactWhatsApp: '+57 300 123 4567', refundPolicy: { autoRefund: true, refundWindowDays: 7 }, trainingType: 'video', status: 'aprobado', createdAt: '2024-11-01', updatedAt: '2024-11-15', adminNotes: 'Aprobado' },
   { id: 'req-002', companyId: 'company-002', serviceName: 'LexIA Arbitraje', category: 'IA Legal', serviceType: 'suscripción', priceCOP: 299000, vendorCommissionPct: 20, description: 'IA para procesos de arbitraje automatizado.', countries: ['Colombia'], contactName: 'Roberto Mejía', contactEmail: 'roberto@lexia.co', contactWhatsApp: '+57 301 234 5678', refundPolicy: { autoRefund: false, refundWindowDays: 14 }, trainingType: 'video', status: 'reunión agendada', meetingDate: '2025-01-25', createdAt: '2024-12-20', updatedAt: '2025-01-10' },
