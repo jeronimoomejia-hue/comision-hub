@@ -182,7 +182,7 @@ export interface Commission {
   saleId: string;
   vendorId: string;
   amountCOP: number;
-  status: 'HELD' | 'COMPLETED' | 'REFUNDED';
+  status: 'HELD' | 'COMPLETED' | 'REFUNDED' | 'CANCELLED';
   paymentDate?: string;
   createdAt: string;
 }
