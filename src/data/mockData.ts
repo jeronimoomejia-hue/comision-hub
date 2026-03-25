@@ -406,14 +406,14 @@ export const companies: Company[] = [
   { id: 'company-012', name: 'Salón Élite', industry: 'Peluquería & Estética', country: 'Colombia', status: 'active', plan: 'enterprise', pendingPaymentCOP: 19800000, nextPaymentDate: '2025-02-01', contactEmail: 'citas@salonelite.co', contactPhone: '+57 313 444 5566', websiteUrl: 'https://salonelite.co', customDomain: 'agenda.salonelite.co', primaryColor: '#D4A574', secondaryColor: '#B8956A' },
 ];
 
-// Company Users (8)
+// Company Users (12)
 export const companyUsers: User[] = companies.map((c, i) => ({
   id: `company-user-${String(i + 1).padStart(3, '0')}`,
   role: 'company' as const,
-  name: ['María González', 'Roberto Mejía', 'Lucía Fernández', 'Andrés Paredes', 'Patricia Luna', 'Jorge Quispe', 'Carolina Vélez', 'Fernando Reyes'][i],
-  email: ['maria@poliza.ai', 'roberto@lexia.co', 'lucia@kreativo.co', 'andres@cierro.co', 'patricia@asista.co', 'jorge@numeroia.co', 'carolina@recruta.co', 'fernando@blindaje.co'][i],
+  name: ['María González', 'Roberto Mejía', 'Lucía Fernández', 'Andrés Paredes', 'Patricia Luna', 'Jorge Quispe', 'Carolina Vélez', 'Fernando Reyes', 'Santiago Durán', 'Camila Rojas', 'Daniela Vargas', 'Valentina Torres'][i] || `Admin ${c.name}`,
+  email: ['maria@poliza.ai', 'roberto@lexia.co', 'lucia@kreativo.co', 'andres@cierro.co', 'patricia@asista.co', 'jorge@numeroia.co', 'carolina@recruta.co', 'fernando@blindaje.co', 'santiago@ironhaus.co', 'camila@pranastudio.co', 'daniela@vitalik.co', 'valentina@salonelite.co'][i] || `admin@${c.name.toLowerCase()}.co`,
   country: 'Colombia',
-  createdAt: ['2024-03-15', '2024-04-10', '2024-05-20', '2024-06-05', '2024-04-25', '2024-07-15', '2024-08-01', '2024-05-10'][i],
+  createdAt: ['2024-03-15', '2024-04-10', '2024-05-20', '2024-06-05', '2024-04-25', '2024-07-15', '2024-08-01', '2024-05-10', '2024-09-01', '2024-09-15', '2024-10-01', '2024-10-15'][i] || '2024-01-01',
   status: c.status as 'active' | 'paused' | 'blocked',
   companyId: c.id
 }));
