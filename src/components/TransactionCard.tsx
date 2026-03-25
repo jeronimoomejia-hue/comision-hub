@@ -103,8 +103,8 @@ function getTimeline(
   // Has refund window?
   if (refundWindowDays && refundWindowDays > 0) {
     if (saleStatus === 'HELD') {
-      steps.push({ label: `En retención (${refundWindowDays}d)`, date: holdEndDate ? `hasta ${new Date(holdEndDate).toLocaleDateString('es-CO', { day: 'numeric', month: 'short' })}` : undefined, icon: Clock, status: 'active' });
-      steps.push({ label: 'Dinero liberado', icon: CheckCircle2, status: 'upcoming' });
+      steps.push({ label: `Periodo de devolución (${refundWindowDays} días)`, date: holdEndDate ? `El cliente puede pedir devolución hasta el ${new Date(holdEndDate).toLocaleDateString('es-CO', { day: 'numeric', month: 'short' })}` : undefined, icon: Clock, status: 'active' });
+      steps.push({ label: 'Dinero liberado a tu cuenta', icon: CheckCircle2, status: 'upcoming' });
     } else {
       steps.push({ label: `Retención completada`, icon: Clock, status: 'done' });
       steps.push({ label: 'Dinero liberado', date: releasedDate, icon: CheckCircle2, status: 'done' });
@@ -250,6 +250,20 @@ export default function TransactionCard({
                         </div>
                       );
                     })}
+                  </div>
+                </div>
+              )}
+
+              {/* HELD explanation banner */}
+              {status === 'HELD' && holdEndDate && role === 'vendor' && (
+                <div className="flex items-start gap-2.5 p-3 rounded-xl bg-amber-50 dark:bg-amber-500/5 border border-amber-200 dark:border-amber-500/15">
+                  <Clock className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="text-xs font-semibold text-amber-800 dark:text-amber-400">Periodo de devolución activo</p>
+                    <p className="text-[11px] text-amber-700/80 dark:text-amber-400/70 mt-1 leading-relaxed">
+                      El cliente tiene hasta el <strong>{new Date(holdEndDate).toLocaleDateString('es-CO', { day: 'numeric', month: 'long' })}</strong> para solicitar devolución. 
+                      Si no la solicita, tu comisión de <strong>{commission ? formatCOP(commission) : ''}</strong> se libera automáticamente.
+                    </p>
                   </div>
                 </div>
               )}
