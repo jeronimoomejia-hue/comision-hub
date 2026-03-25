@@ -13,7 +13,8 @@ import {
   Shield, MessageSquare, ChevronRight, Star, Play, Info
 } from "lucide-react";
 import { useDemo } from "@/contexts/DemoContext";
-import { formatCOP, formatDate, CURRENT_VENDOR_ID } from "@/data/mockData";
+import { formatCOP, formatDate, CURRENT_VENDOR_ID, services as allServices } from "@/data/mockData";
+import TransactionCard from "@/components/TransactionCard";
 import { extendedServiceDetails } from "@/data/extendedServiceData";
 import {
   Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
@@ -481,39 +482,37 @@ function VentasTab({ serviceSales, getStatusConfig, commissions, isEligibleForRe
       <p className="text-xs text-muted-foreground">{activeSales.length} venta{activeSales.length !== 1 ? 's' : ''} activa{activeSales.length !== 1 ? 's' : ''}</p>
 
       {serviceSales.length > 0 ? (
-        <div className="divide-y divide-border rounded-xl border border-border bg-card overflow-hidden">
+        <div className="space-y-2">
           {serviceSales.map((sale: any) => {
-            const sc = getStatusConfig(sale.status);
             const eligible = isEligibleForRefund(sale);
             const existingRefund = refundRequests.find((r: any) => r.saleId === sale.id);
+            const service = allServices.find((s: any) => s.id === sale.serviceId);
 
             return (
-              <div key={sale.id} className="p-3 space-y-2">
-                <div className="flex items-center justify-between gap-3">
-                  <div className="min-w-0">
-                    <p className="text-sm font-medium truncate">{sale.clientName}</p>
-                    <p className="text-[10px] text-muted-foreground">{sale.clientEmail} · {new Date(sale.createdAt).toLocaleDateString('es-CO', { month: 'short', day: 'numeric' })}</p>
-                  </div>
-                  <div className="flex items-center gap-2 flex-shrink-0">
-                    <span className="text-xs font-semibold">{formatCOP(sale.sellerCommissionAmount)}</span>
-                    <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-medium ${sc.cls}`}>{sc.label}</span>
-                  </div>
-                </div>
-                {sale.activationCode && (
-                  <p className="text-[10px] text-muted-foreground">Código: <code className="bg-muted px-1 rounded font-mono">{sale.activationCode}</code></p>
-                )}
-                {eligible && !existingRefund && (
-                  <button 
-                    onClick={() => onRefundClick(sale)}
-                    className="text-[10px] font-medium text-destructive hover:underline flex items-center gap-1"
-                  >
-                    <RotateCcw className="w-3 h-3" /> Solicitar devolución ({getDaysRemaining(sale)}d restantes)
-                  </button>
-                )}
-                {existingRefund && (
-                  <p className="text-[10px] text-muted-foreground">Devolución: {existingRefund.status}</p>
-                )}
-              </div>
+              <TransactionCard
+                key={sale.id}
+                id={sale.id}
+                clientName={sale.clientName}
+                clientEmail={sale.clientEmail}
+                serviceName={service?.name}
+                serviceCategory={service?.category}
+                amount={sale.grossAmount}
+                commission={sale.sellerCommissionAmount}
+                platformFee={sale.mensualistaFeeAmount}
+                netAmount={sale.providerNetAmount}
+                status={sale.status}
+                statusType="sale"
+                date={sale.createdAt}
+                holdEndDate={sale.holdEndAt}
+                releasedDate={sale.releasedAt}
+                activationCode={sale.activationCode}
+                isSubscription={sale.isSubscription}
+                paymentId={sale.mpPaymentId}
+                refundDaysLeft={eligible ? getDaysRemaining(sale) : undefined}
+                refundStatus={existingRefund?.status}
+                onRefund={eligible && !existingRefund ? () => onRefundClick(sale) : undefined}
+                role="vendor"
+              />
             );
           })}
         </div>
@@ -534,23 +533,28 @@ function DevolucionesTab({ serviceSales, refundRequests }: { serviceSales: Array
   return (
     <div className="space-y-3">
       {serviceRefunds.length > 0 ? (
-        <div className="divide-y divide-border rounded-xl border border-border bg-card overflow-hidden">
+        <div className="space-y-2">
           {serviceRefunds.map((refund: any) => {
             const sale = serviceSales.find((s: any) => s.id === refund.saleId);
+            const service = sale ? allServices.find((s: any) => s.id === sale.serviceId) : null;
+
             return (
-              <div key={refund.id} className="flex items-center justify-between p-3 gap-3">
-                <div className="min-w-0">
-                  <p className="text-sm font-medium truncate">{sale?.clientName || 'Cliente'}</p>
-                  <p className="text-[10px] text-muted-foreground truncate">{refund.reason}</p>
-                </div>
-                <Badge variant="outline" className={`text-[9px] ${
-                  refund.status === 'pendiente' ? 'border-amber-400 text-amber-600' :
-                  refund.status === 'aprobado' || refund.status === 'automático' ? 'border-emerald-400 text-emerald-600' :
-                  'border-destructive text-destructive'
-                }`}>
-                  {refund.status}
-                </Badge>
-              </div>
+              <TransactionCard
+                key={refund.id}
+                id={refund.id}
+                clientName={sale?.clientName || 'Cliente'}
+                clientEmail={sale?.clientEmail}
+                serviceName={service?.name}
+                serviceCategory={service?.category}
+                amount={sale?.grossAmount || 0}
+                commission={sale?.sellerCommissionAmount}
+                status={refund.status}
+                statusType="refund"
+                date={refund.createdAt}
+                refundReason={refund.reason}
+                refundDecision={refund.decisionBy === 'sistema' ? 'Sistema (Auto)' : refund.decisionBy === 'empresa' ? 'Empresa' : undefined}
+                role="vendor"
+              />
             );
           })}
         </div>
