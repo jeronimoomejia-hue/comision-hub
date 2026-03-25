@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import VendorTabLayout from "@/components/layout/VendorTabLayout";
 import { useDemo } from "@/contexts/DemoContext";
 import { companies, services as allServices, formatCOP, CURRENT_VENDOR_ID } from "@/data/mockData";
-import { Search, Package, Star, RefreshCw, Zap, Lock, Clock, Shield, AlertTriangle, BookOpen, MessageCircle, Tag, ShoppingCart, RotateCcw, ChevronRight, Send, Copy, Percent } from "lucide-react";
+import { Search, Package, Star, RefreshCw, Zap, Lock, Clock, Shield, AlertTriangle, BookOpen, MessageCircle, Tag, ShoppingCart, RotateCcw, ChevronRight, Send, Copy, Percent, Info, Globe, Mail, Phone, MapPin, Building2, ExternalLink, Users } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -30,14 +30,14 @@ const categoryCovers: Record<string, string> = {
   'IA para Ciberseguridad': securityImg,
 };
 
-type CompanyTab = 'servicios' | 'ventas' | 'devoluciones' | 'cupones' | 'chat';
+type CompanyTab = 'acerca' | 'servicios' | 'ventas' | 'devoluciones' | 'cupones' | 'chat';
 
 export default function VendorCompanyDetail() {
   const { companyId } = useParams<{ companyId: string }>();
   const { sales, trainingProgress, commissions, refundRequests, currentVendorId } = useDemo();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeTab, setActiveTab] = useState<CompanyTab>('servicios');
+  const [activeTab, setActiveTab] = useState<CompanyTab>('acerca');
 
   const company = companies.find(c => c.id === companyId);
   if (!company) return <VendorTabLayout backTo="/vendor" backLabel="Inicio"><p>Empresa no encontrada</p></VendorTabLayout>;
@@ -75,6 +75,7 @@ export default function VendorCompanyDetail() {
   }).length;
 
   const tabs: { id: CompanyTab; label: string; icon: React.ElementType; planRequired?: boolean }[] = [
+    { id: 'acerca', label: 'Acerca de', icon: Info },
     { id: 'servicios', label: 'Servicios', icon: Package },
     { id: 'ventas', label: 'Ventas', icon: ShoppingCart },
     { id: 'devoluciones', label: 'Devoluciones', icon: RotateCcw },
@@ -147,6 +148,10 @@ export default function VendorCompanyDetail() {
         </div>
 
         {/* Tab Content */}
+        {activeTab === 'acerca' && (
+          <AcercaTab company={company} companyServices={companyServices} vendorSales={vendorSales} />
+        )}
+
         {activeTab === 'servicios' && (
           <ServiciosTab
             searchQuery={searchQuery}
@@ -184,6 +189,114 @@ export default function VendorCompanyDetail() {
 }
 
 /* =========== Sub-components =========== */
+
+const companyDescriptions: Record<string, { tagline: string; description: string; founded: string; employees: string; highlights: string[] }> = {
+  'company-001': { tagline: 'Transformando el sector asegurador con inteligencia artificial', description: 'Poliza.ai automatiza la cotización, emisión y gestión de pólizas usando modelos de IA entrenados con datos del mercado colombiano. Reducimos el tiempo de cotización de horas a segundos.', founded: '2023', employees: '45', highlights: ['Motor de cotización con IA', 'Integración con aseguradoras top', 'Dashboard de análisis predictivo', 'Soporte 24/7 en español'] },
+  'company-002': { tagline: 'IA legal que simplifica lo complejo', description: 'LexIA utiliza procesamiento de lenguaje natural para analizar contratos, generar documentos legales y automatizar consultas jurídicas. Más de 500 firmas ya confían en nosotros.', founded: '2022', employees: '32', highlights: ['Análisis de contratos en segundos', 'Generación automática de documentos', 'Base de datos jurisprudencial', 'Cumplimiento normativo automatizado'] },
+  'company-003': { tagline: 'Marketing potenciado por datos e inteligencia artificial', description: 'Kreativo genera contenido, optimiza campañas y analiza audiencias usando IA generativa adaptada al mercado latinoamericano.', founded: '2023', employees: '28', highlights: ['Generador de contenido multicanal', 'Optimización de campañas en tiempo real', 'Análisis de sentiment de marca', 'A/B testing automatizado'] },
+  'company-004': { tagline: 'Cierra más ventas con asistencia inteligente', description: 'Cierro es un copiloto de ventas que analiza conversaciones, sugiere respuestas y predice el cierre de deals usando machine learning.', founded: '2024', employees: '15', highlights: ['Copiloto de ventas en tiempo real', 'Predicción de cierre de deals', 'Análisis de objeciones', 'CRM integrado con IA'] },
+  'company-005': { tagline: 'Atención al cliente que nunca duerme', description: 'Asista despliega agentes de IA que atienden consultas, resuelven problemas y escalan inteligentemente. Reducimos costos de soporte un 60%.', founded: '2022', employees: '52', highlights: ['Agentes conversacionales 24/7', 'Escalamiento inteligente', 'Análisis de satisfacción', 'Integración omnicanal'] },
+  'company-006': { tagline: 'Contabilidad inteligente para PyMEs', description: 'NumeroIA automatiza la contabilidad, facturación y reportes fiscales usando IA. Compatible con la normativa tributaria colombiana.', founded: '2023', employees: '20', highlights: ['Facturación electrónica automática', 'Reportes DIAN automatizados', 'Conciliación bancaria con IA', 'Alertas fiscales inteligentes'] },
+  'company-007': { tagline: 'Reclutamiento inteligente y sin sesgos', description: 'Recruta analiza perfiles, filtra candidatos y programa entrevistas usando IA. Reduce el tiempo de contratación un 70%.', founded: '2023', employees: '25', highlights: ['Filtrado inteligente de CVs', 'Evaluaciones con IA sin sesgos', 'Programación automática de entrevistas', 'Analytics de diversidad'] },
+  'company-008': { tagline: 'Ciberseguridad proactiva con IA', description: 'Blindaje detecta amenazas, analiza vulnerabilidades y responde a incidentes en tiempo real usando machine learning avanzado.', founded: '2022', employees: '38', highlights: ['Detección de amenazas en tiempo real', 'Análisis de vulnerabilidades', 'Respuesta automatizada a incidentes', 'Compliance y auditoría'] },
+};
+
+function AcercaTab({ company, companyServices, vendorSales }: { company: any; companyServices: Array<any>; vendorSales: Array<any> }) {
+  const coverImg = categoryCovers[company.industry];
+  const info = companyDescriptions[company.id] || { tagline: `Soluciones de ${company.industry}`, description: `${company.name} ofrece soluciones innovadoras en el sector de ${company.industry}.`, founded: '2023', employees: '20+', highlights: ['Tecnología de punta', 'Soporte dedicado', 'Resultados medibles'] };
+
+  return (
+    <div className="space-y-5">
+      {/* Hero image */}
+      {coverImg && (
+        <div className="rounded-xl overflow-hidden aspect-[2.4/1] relative">
+          <img src={coverImg} alt={company.name} className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+          <div className="absolute bottom-4 left-4">
+            <p className="text-white/80 text-xs font-medium">{company.industry}</p>
+            <p className="text-white text-lg font-bold leading-tight mt-0.5">{info.tagline}</p>
+          </div>
+        </div>
+      )}
+
+      {/* Description */}
+      <div>
+        <p className="text-sm text-foreground leading-relaxed">{info.description}</p>
+      </div>
+
+      {/* Company details grid */}
+      <div className="grid grid-cols-2 gap-2">
+        <div className="p-3 rounded-xl border border-border bg-card">
+          <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Fundada</p>
+          <p className="text-sm font-semibold text-foreground mt-0.5">{info.founded}</p>
+        </div>
+        <div className="p-3 rounded-xl border border-border bg-card">
+          <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Equipo</p>
+          <p className="text-sm font-semibold text-foreground mt-0.5">{info.employees} personas</p>
+        </div>
+        <div className="p-3 rounded-xl border border-border bg-card">
+          <p className="text-[10px] text-muted-foreground uppercase tracking-wider">País</p>
+          <p className="text-sm font-semibold text-foreground mt-0.5">{company.country}</p>
+        </div>
+        <div className="p-3 rounded-xl border border-border bg-card">
+          <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Plan</p>
+          <p className="text-sm font-semibold text-foreground mt-0.5 capitalize">{company.plan}</p>
+        </div>
+      </div>
+
+      {/* Highlights */}
+      <div className="p-3 rounded-xl border border-border bg-card space-y-2">
+        <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">Lo que ofrece</p>
+        <div className="grid grid-cols-1 gap-1.5">
+          {info.highlights.map((h: string, i: number) => (
+            <div key={i} className="flex items-start gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
+              <p className="text-xs text-foreground">{h}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Contact info */}
+      <div className="space-y-2">
+        <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">Contacto</p>
+        <div className="space-y-1.5">
+          {company.contactEmail && (
+            <div className="flex items-center gap-2.5 p-2.5 rounded-xl border border-border bg-card">
+              <Mail className="w-3.5 h-3.5 text-muted-foreground" />
+              <span className="text-xs text-foreground">{company.contactEmail}</span>
+            </div>
+          )}
+          {company.contactPhone && (
+            <div className="flex items-center gap-2.5 p-2.5 rounded-xl border border-border bg-card">
+              <Phone className="w-3.5 h-3.5 text-muted-foreground" />
+              <span className="text-xs text-foreground">{company.contactPhone}</span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Website link */}
+      {company.websiteUrl && (
+        <a
+          href={company.websiteUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-between p-3 rounded-xl border border-border bg-card group hover:border-primary/30 transition-colors"
+        >
+          <div className="flex items-center gap-2.5">
+            <Globe className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+            <div>
+              <p className="text-xs font-medium text-foreground">Visitar sitio web</p>
+              <p className="text-[10px] text-muted-foreground">{company.websiteUrl}</p>
+            </div>
+          </div>
+          <ExternalLink className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary transition-colors" />
+        </a>
+      )}
+    </div>
+  );
+}
 
 function ServiciosTab({ searchQuery, setSearchQuery, filteredServices, topServiceIds, onServiceClick }: {
   searchQuery: string;
