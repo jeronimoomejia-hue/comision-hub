@@ -10,7 +10,7 @@ import {
   ShoppingCart, RotateCcw, Clock, DollarSign, Plus, User, Mail,
   RefreshCw, Zap, Lock, Check, BookOpen, FileText, Download,
   Lightbulb, HelpCircle, AlertCircle, Target, Users, Package,
-  Shield, MessageSquare, ChevronRight, Star, Play, Info
+  Shield, MessageSquare, ChevronRight, Star, Play, Info, ExternalLink
 } from "lucide-react";
 import { useDemo } from "@/contexts/DemoContext";
 import { formatCOP, formatDate, CURRENT_VENDOR_ID, services as allServices } from "@/data/mockData";
