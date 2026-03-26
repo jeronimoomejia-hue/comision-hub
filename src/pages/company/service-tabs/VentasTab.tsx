@@ -12,7 +12,7 @@ import { toast } from "sonner";
 export default function VentasTab({ service, serviceSales, commissions, refundRequests, updateRefundRequest }: any) {
   const [filter, setFilter] = useState('todos');
   const filters = ['todos', 'HELD', 'COMPLETED', 'REFUNDED'];
-  const filterLabels: Record<string, string> = { todos: 'Todos', HELD: 'Retenidas', RELEASED: 'Liberadas', REFUNDED: 'Devueltas' };
+  const filterLabels: Record<string, string> = { todos: 'Todos', HELD: 'Tiempo de devolución', RELEASED: 'Liberadas', REFUNDED: 'Devueltas' };
   const filtered = filter === 'todos' ? serviceSales : serviceSales.filter((s: any) => s.status === filter);
 
   const pendingRefunds = refundRequests.filter((r: any) => r.serviceId === service.id && r.status === 'pendiente');

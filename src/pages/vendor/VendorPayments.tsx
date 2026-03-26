@@ -27,7 +27,7 @@ type ViewMode = 'sales' | 'payments';
 const STATUS_TABS = [
   { key: 'all' as const,       label: 'Todas',           icon: Package },
   { key: 'PENDING' as const,   label: 'Pendientes',      icon: Send },
-  { key: 'HELD' as const,      label: 'En retención',    icon: Clock },
+  { key: 'HELD' as const,      label: 'Tiempo de devolución',    icon: Clock },
   { key: 'COMPLETED' as const, label: 'Completadas',     icon: CheckCircle2 },
   { key: 'REFUNDED' as const,  label: 'Devueltas',       icon: RotateCcw },
   { key: 'CANCELLED' as const, label: 'Canceladas',      icon: XCircle },
@@ -202,7 +202,7 @@ export default function VendorPayments() {
                     </div>
                   </div>
                   <p className="text-lg font-bold text-foreground">{formatCOP(totalHeld)}</p>
-                  <p className="text-[10px] text-muted-foreground mt-0.5">Retenido · {heldSales.length}</p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5">En devolución · {heldSales.length}</p>
                 </div>
                 <div className="rounded-2xl border border-border bg-card p-4">
                   <div className="flex items-center gap-2 mb-2">

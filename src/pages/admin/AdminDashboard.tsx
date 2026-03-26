@@ -45,7 +45,7 @@ export default function AdminDashboard() {
 
   const getStatusConfig = (status: string) => {
     const map: Record<string, { cls: string; label: string }> = {
-      'HELD': { cls: "text-amber-600 bg-amber-50", label: "Retenida" },
+      'HELD': { cls: "text-amber-600 bg-amber-50", label: "Tiempo de devolución" },
       'COMPLETED': { cls: "text-emerald-600 bg-emerald-50", label: "Liberada" },
       'REFUNDED': { cls: "text-red-600 bg-red-50", label: "Devuelta" },
     };
@@ -87,7 +87,7 @@ export default function AdminDashboard() {
         {/* Financial summary */}
         <div className="grid grid-cols-2 gap-2">
           <div className="rounded-xl border border-amber-200 bg-amber-50/50 p-3">
-            <p className="text-[10px] text-amber-700 uppercase tracking-wide">En retención</p>
+            <p className="text-[10px] text-amber-700 uppercase tracking-wide">Tiempo de devolución</p>
             <p className="text-lg font-bold text-amber-700 mt-0.5">{formatCOP(heldAmount)}</p>
           </div>
           <div className="rounded-xl border border-emerald-200 bg-emerald-50/50 p-3">

@@ -6,7 +6,7 @@ import { useDemo } from "@/contexts/DemoContext";
 import { Link } from "react-router-dom";
 
 const faqs = [
-  { q: "¿Cuánto tarda en liberarse mi comisión?", a: "Cada producto tiene su propia ventana de retención (7, 14 o 30 días), configurada por la empresa. El pago se transfiere automáticamente al cumplirse." },
+  { q: "¿Cuánto tarda en liberarse mi comisión?", a: "Cada producto tiene su propio tiempo de devolución (7, 14 o 30 días), configurado por la empresa. El pago se transfiere automáticamente al cumplirse." },
   { q: "¿Cómo retiro mis comisiones?", a: "Las transferencias son automáticas a tu cuenta bancaria configurada en tu perfil." },
   { q: "¿Qué pasa si rechazan mi venta?", a: "Recibirás una notificación con el motivo. Puedes corregir y volver a enviar." },
   { q: "¿Puedo usar cupones de descuento?", a: "Si la empresa tiene plan Premium o Enterprise, podrás aplicar cupones al registrar ventas." }

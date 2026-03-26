@@ -326,7 +326,7 @@ export function formatCurrency(amount: number, currency: string = 'COP'): string
 export function getStatusLabel(status: TransactionStatus): string {
   const labels: Record<TransactionStatus, string> = {
     'PENDING': 'Pendiente de pago',
-    'HELD': 'En retención',
+    'HELD': 'Tiempo de devolución',
     'COMPLETED': 'Completada',
     'REFUNDED': 'Devuelta',
     'CANCELLED': 'Cancelada'
@@ -613,7 +613,7 @@ export const serviceRequests: ServiceRequest[] = [
 
 export const notifications: Notification[] = [
   { id: 'notif-001', targetRole: 'vendor', title: '¡Nuevos productos disponibles!', body: 'Se han añadido 3 nuevos productos de IA para que puedas vender. Revisa el marketplace.', type: 'system', isActive: true, createdAt: '2025-01-20' },
-  { id: 'notif-002', targetRole: 'vendor', title: 'Pagos automáticos mejorados', body: 'Ahora tus comisiones se liberan automáticamente después del período de retención.', type: 'payment', isActive: true, createdAt: '2025-01-18' },
+  { id: 'notif-002', targetRole: 'vendor', title: 'Pagos automáticos mejorados', body: 'Ahora tus comisiones se liberan automáticamente después del tiempo de devolución.', type: 'payment', isActive: true, createdAt: '2025-01-18' },
   { id: 'notif-003', targetRole: 'company', title: 'Nuevas métricas de vendedores', body: 'Ahora puedes ver estadísticas detalladas de ventas en tu panel.', type: 'system', isActive: true, createdAt: '2025-01-19' },
   { id: 'notif-004', targetRole: 'all', title: 'Mantenimiento programado', body: 'El sistema estará en mantenimiento el domingo 26 de enero de 2-4am.', type: 'system', isActive: true, createdAt: '2025-01-21' },
 ];
@@ -1087,7 +1087,7 @@ export const salesByCategory = [
 
 export const salesStatusDistribution = [
   { status: 'Liberadas', value: 63, fill: 'hsl(142, 76%, 36%)' },
-  { status: 'En retención', value: 29, fill: 'hsl(45, 93%, 47%)' },
+  { status: 'Tiempo de devolución', value: 29, fill: 'hsl(45, 93%, 47%)' },
   { status: 'Devueltas', value: 8, fill: 'hsl(0, 84%, 60%)' }
 ];
 

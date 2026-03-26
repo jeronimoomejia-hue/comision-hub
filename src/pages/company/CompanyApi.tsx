@@ -100,7 +100,7 @@ export default function CompanyApi() {
             <div className="space-y-1.5">
               {[
                 { event: 'sale.created', desc: 'Nueva venta registrada' },
-                { event: 'sale.released', desc: 'Venta liberada (fin retención)' },
+                { event: 'sale.released', desc: 'Venta liberada (fin tiempo de devolución)' },
                 { event: 'sale.refunded', desc: 'Venta devuelta' },
                 { event: 'vendor.joined', desc: 'Nuevo vendedor en la red' },
               ].map(e => (

@@ -106,7 +106,7 @@ export default function VendorDashboard() {
             <p className="text-[9px] opacity-50 tracking-wide uppercase">Comisiones del mes</p>
             <p className="text-3xl font-bold tracking-tight mt-1">{formatCOP(commissionsThisMonth)}</p>
             <div className="flex items-center gap-4 text-[10px] opacity-60 mt-2">
-              <span>{formatCOP(heldCommissions)} retenidas</span>
+              <span>{formatCOP(heldCommissions)} en devolución</span>
               <span>{formatCOP(releasedCommissions)} liberadas</span>
             </div>
           </div>
@@ -120,7 +120,7 @@ export default function VendorDashboard() {
           </div>
           <div className="rounded-xl border border-border bg-card p-3 text-center">
             <p className="text-sm font-bold text-foreground">{formatCOP(heldCommissions)}</p>
-            <p className="text-[9px] text-muted-foreground">En retención</p>
+            <p className="text-[9px] text-muted-foreground">Tiempo de devolución</p>
           </div>
           <div className="rounded-xl border border-border bg-card p-3 text-center">
             <p className="text-sm font-bold text-foreground">{formatCOP(releasedCommissions)}</p>
@@ -151,7 +151,7 @@ export default function VendorDashboard() {
                 <div className="grid grid-cols-3 gap-2">
                   {[
                     { label: "Ventas brutas", value: formatCOP(totalSalesAmount) },
-                    { label: "Retención", value: totalSales > 0 ? `${conversionRate}%` : "—" },
+                    { label: "Conversión", value: totalSales > 0 ? `${conversionRate}%` : "—" },
                     { label: "Devoluciones", value: String(refundedCount) },
                   ].map((m, i) => (
                     <div key={i} className="rounded-xl border border-border bg-card p-2.5 text-center">

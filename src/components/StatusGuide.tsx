@@ -2,7 +2,7 @@ import { Send, Clock, CheckCircle2, RotateCcw, XCircle } from "lucide-react";
 
 const STATUS_ITEMS = [
   { icon: Send, label: 'Pendiente', desc: 'Link enviado, esperando pago', color: 'text-blue-600' },
-  { icon: Clock, label: 'En retención', desc: 'Pagado. El cliente puede pedir devolución durante este periodo', color: 'text-amber-600' },
+  { icon: Clock, label: 'Tiempo de devolución', desc: 'Pagado. El cliente puede pedir devolución durante este periodo', color: 'text-amber-600' },
   { icon: CheckCircle2, label: 'Completada', desc: 'Dinero liberado a tu cuenta', color: 'text-emerald-600' },
   { icon: RotateCcw, label: 'Devuelta', desc: 'Reembolso al cliente', color: 'text-red-500' },
   { icon: XCircle, label: 'Cancelada', desc: 'Link expirado o rechazado', color: 'text-muted-foreground' },
