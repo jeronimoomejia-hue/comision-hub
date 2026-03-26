@@ -213,25 +213,14 @@ export default function CompanySettings() {
 
         {/* Enterprise features */}
         {currentCompanyPlan === 'enterprise' && (
-          <>
-            <Section title="Dominio personalizado" icon={Globe}>
-              <div className="space-y-3">
-                <FieldRow label="Tu dominio">
-                  <Input defaultValue={company?.customDomain || 'ventas.tuempresa.com'} className="h-9 text-sm font-mono" />
-                </FieldRow>
-                <p className="text-[10px] text-muted-foreground">Configura un CNAME apuntando a app.mensualista.com</p>
-              </div>
-            </Section>
-
-            <Section title="Integraciones API" icon={Code}>
-              <div className="space-y-3">
-                <p className="text-[11px] text-muted-foreground">Conecta tu sistema para activación automática de códigos.</p>
-                <FieldRow label="API Key">
-                  <Input defaultValue="mk_live_****************************" readOnly className="h-9 text-xs font-mono" />
-                </FieldRow>
-              </div>
-            </Section>
-          </>
+          <Section title="Integraciones API" icon={Code}>
+            <div className="space-y-3">
+              <p className="text-[11px] text-muted-foreground">Conecta tu sistema para activación automática de códigos.</p>
+              <FieldRow label="API Key">
+                <Input defaultValue="mk_live_****************************" readOnly className="h-9 text-xs font-mono" />
+              </FieldRow>
+            </div>
+          </Section>
         )}
 
         <div className="flex justify-end">

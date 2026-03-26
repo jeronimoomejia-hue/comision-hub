@@ -92,9 +92,11 @@ function getCompanyNav(plan: CompanyPlan) {
     base.push({ icon: MessageCircle, label: "Chat", href: "/company/chat" });
   }
 
-  // Enterprise: Dominio & API
+  // All plans: Leads
+  base.push({ icon: Users, label: "Leads", href: "/company/leads" });
+
+  // Enterprise: API
   if (plan === 'enterprise') {
-    base.push({ icon: Globe, label: "Dominio", href: "/company/domain" });
     base.push({ icon: Code, label: "API", href: "/company/api" });
   }
 
