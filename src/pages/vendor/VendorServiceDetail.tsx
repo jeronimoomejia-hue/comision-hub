@@ -228,7 +228,7 @@ export default function VendorServiceDetail() {
 
         {/* Tab Content */}
         {activeTab === 'info' && (
-          <InfoTab service={service} extended={extended} company={company} isTrainingComplete={isTrainingComplete} />
+          <InfoTab service={service} extended={extended} company={company} isTrainingComplete={isTrainingComplete} onRegisterSale={() => setSaleDialogOpen(true)} />
         )}
 
         {activeTab === 'ventas' && (
