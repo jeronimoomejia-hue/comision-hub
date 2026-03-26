@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, Building2, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import HeroFlowAnimation from "./HeroFlowAnimation";
+import logoMensualista from "@/assets/logo.png";
 
 export const HeroFullScreen = () => {
   const scrollToContent = () => {
@@ -19,9 +20,7 @@ export const HeroFullScreen = () => {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <Link to="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-lg">M</span>
-              </div>
+              <img src={logoMensualista} alt="Mensualista" className="w-8 h-8 object-contain" />
               <span className="font-bold text-xl">Mensualista</span>
             </Link>
             

@@ -12,7 +12,7 @@ import {
   vendors, companies, services, CURRENT_VENDOR_ID, formatCOP 
 } from "@/data/mockData";
 import { categoryCovers } from "@/data/coverImages";
-import logoMensualista from "@/assets/logo-mensualista.png";
+import logoMensualista from "@/assets/logo.png";
 
 export default function VendorHome() {
   const navigate = useNavigate();

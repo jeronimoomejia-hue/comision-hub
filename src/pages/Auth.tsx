@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
+import logoMensualista from "@/assets/logo.png";
 
 const Auth = () => {
   const [searchParams] = useSearchParams();
@@ -52,9 +53,7 @@ const Auth = () => {
             
             {/* Logo */}
             <div className="flex items-center gap-2 mb-8">
-              <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-xl">M</span>
-              </div>
+              <img src={logoMensualista} alt="Mensualista" className="w-10 h-10 object-contain" />
               <span className="font-bold text-2xl text-foreground">Mensualista</span>
             </div>
             
@@ -257,7 +256,7 @@ const Auth = () => {
           className="relative text-primary-foreground max-w-lg"
         >
           <div className="w-20 h-20 rounded-2xl bg-primary-foreground/20 backdrop-blur-sm flex items-center justify-center mb-8">
-            <span className="text-4xl font-bold">M</span>
+            <img src={logoMensualista} alt="Mensualista" className="w-14 h-14 object-contain brightness-0 invert" />
           </div>
           
           <h2 className="text-3xl sm:text-4xl font-bold mb-6">
