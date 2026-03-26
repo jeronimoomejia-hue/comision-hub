@@ -1,6 +1,5 @@
 import { ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { motion } from "framer-motion";
 import { Home, DollarSign, User, Bell, LogOut, ChevronLeft, ShoppingBag, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useDemo } from "@/contexts/DemoContext";
@@ -33,9 +32,9 @@ export default function VendorTabLayout({ children, backTo, backLabel }: VendorT
   };
 
   return (
-    <div className="min-h-screen bg-background pb-20">
+    <div className="h-screen flex flex-col bg-background overflow-hidden">
       {/* Top Header */}
-      <header className="sticky top-0 z-50 bg-background/92 backdrop-blur-xl border-b border-border">
+      <header className="flex-shrink-0 bg-background/92 backdrop-blur-xl border-b border-border z-50">
         <div className="flex items-center justify-between h-14 px-4 sm:px-6 max-w-5xl mx-auto">
           <div className="flex items-center gap-3">
             {backTo ? (
@@ -72,19 +71,15 @@ export default function VendorTabLayout({ children, backTo, backLabel }: VendorT
         </div>
       </header>
 
-      {/* Page Content */}
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-6">
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.25 }}
-        >
+      {/* Page Content - fills remaining space, internal scroll */}
+      <main className="flex-1 overflow-y-auto">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4">
           {children}
-        </motion.div>
+        </div>
       </main>
 
       {/* Bottom Tab Bar */}
-      <nav className="fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-xl border-t border-border safe-area-bottom">
+      <nav className="flex-shrink-0 bg-background/95 backdrop-blur-xl border-t border-border z-50 safe-area-bottom">
         <div className="max-w-5xl mx-auto flex items-center justify-around h-16 px-2">
           {tabs.map((tab) => {
             const active = isTabActive(tab.href);
