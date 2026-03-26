@@ -230,6 +230,28 @@ export default function VendorServiceDetail() {
         )}
       </div>
 
+      {/* Sticky bottom: Register sale or Train */}
+      <div className="sticky bottom-16 z-40 pt-3 pb-1 bg-gradient-to-t from-background via-background to-transparent -mx-4 px-4 sm:-mx-6 sm:px-6">
+        {isTrainingComplete ? (
+          <Button className="w-full h-10 text-xs font-semibold rounded-xl" onClick={() => setSaleDialogOpen(true)}>
+            <Plus className="w-3.5 h-3.5 mr-1.5" /> Registrar venta
+          </Button>
+        ) : (
+          <div className="flex items-center gap-2">
+            <Button className="flex-1 h-10 text-xs rounded-xl" disabled>
+              <Lock className="w-3 h-3 mr-1.5" /> Registrar venta
+            </Button>
+            <Button
+              variant="outline"
+              className="h-10 text-xs rounded-xl border-amber-400 text-amber-700"
+              onClick={() => navigate(`/vendor/trainings/${serviceId}`)}
+            >
+              <BookOpen className="w-3 h-3 mr-1.5" /> Capacitarse
+            </Button>
+          </div>
+        )}
+      </div>
+
       {/* Sale Dialog */}
       <Dialog open={saleDialogOpen} onOpenChange={setSaleDialogOpen}>
         <DialogContent className="sm:max-w-md">
