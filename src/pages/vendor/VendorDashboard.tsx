@@ -101,9 +101,13 @@ export default function VendorDashboard() {
             <h1 className="text-xl font-bold text-foreground tracking-tight">{firstName}</h1>
           </div>
           <Link to="/vendor/payments">
-            <div className="text-right">
-              <p className="text-[9px] text-muted-foreground uppercase tracking-wider">Este mes</p>
-              <p className="text-lg font-bold text-foreground">{formatCOP(commissionsThisMonth)}</p>
+            <div className="rounded-2xl bg-foreground p-4 text-background hover:opacity-95 active:scale-[0.99] transition-all">
+              <p className="text-[9px] opacity-50 tracking-wide uppercase">Comisiones del mes</p>
+              <p className="text-2xl font-bold tracking-tight mt-0.5">{formatCOP(commissionsThisMonth)}</p>
+              <div className="flex items-center gap-3 text-[10px] opacity-60 mt-1">
+                <span>{formatCOP(heldCommissions)} retenidas</span>
+                <span>{formatCOP(releasedCommissions)} liberadas</span>
+              </div>
             </div>
           </Link>
         </div>
@@ -229,13 +233,7 @@ export default function VendorDashboard() {
                 return (
                   <div
                     key={service.id}
-                    onClick={() => {
-                      if (service.isActive) {
-                        navigate(`/vendor/company/${service.companyId}/service/${service.id}`);
-                      } else {
-                        navigate(`/vendor/trainings/${service.id}`);
-                      }
-                    }}
+                    onClick={() => navigate(`/vendor/company/${service.companyId}/service/${service.id}`)}
                     className={`rounded-2xl border border-border bg-card overflow-hidden cursor-pointer group hover:shadow-md hover:border-primary/20 transition-all duration-300 ${
                       !service.isActive ? 'opacity-60' : ''
                     }`}
