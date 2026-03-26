@@ -26,6 +26,7 @@ import VendorCRM from "./pages/vendor/VendorCRM";
 import CompanyDashboard from "./pages/company/CompanyDashboard";
 import CompanyServices from "./pages/company/CompanyServices";
 import CompanyServiceDetail from "./pages/company/CompanyServiceDetail";
+import CompanyNewService from "./pages/company/CompanyNewService";
 import CompanySales from "./pages/company/CompanySales";
 import CompanyVendors from "./pages/company/CompanyVendors";
 import CompanyPayments from "./pages/company/CompanyPayments";
@@ -82,6 +83,7 @@ const App = () => (
             {/* Company Routes */}
             <Route path="/company" element={<CompanyDashboard />} />
             <Route path="/company/services" element={<CompanyServices />} />
+            <Route path="/company/services/new" element={<CompanyNewService />} />
             <Route path="/company/services/:serviceId" element={<CompanyServiceDetail />} />
             <Route path="/company/gigs" element={<CompanyServices />} />
             <Route path="/company/sales" element={<CompanySales />} />

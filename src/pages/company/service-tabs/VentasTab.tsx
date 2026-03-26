@@ -42,7 +42,7 @@ export default function VentasTab({ service, serviceSales, commissions, refundRe
             const existingRefund = refundRequests.find((r: any) => r.saleId === sale.id);
             return (
               <TransactionCard key={sale.id} id={sale.id}
-                clientName={sale.clientName} clientEmail={sale.clientEmail}
+                clientName={sale.clientName} clientEmail={sale.clientEmail} clientPhone={sale.clientPhone}
                 serviceName={service.name} serviceCategory={service.category}
                 vendorName={vendor?.name || sale.vendorId}
                 amount={sale.grossAmount} commission={sale.sellerCommissionAmount}
