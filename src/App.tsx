@@ -26,6 +26,7 @@ import VendorCRM from "./pages/vendor/VendorCRM";
 import CompanyDashboard from "./pages/company/CompanyDashboard";
 import CompanyServices from "./pages/company/CompanyServices";
 import CompanyServiceDetail from "./pages/company/CompanyServiceDetail";
+import CompanyNewService from "./pages/company/CompanyNewService";
 import CompanySales from "./pages/company/CompanySales";
 import CompanyVendors from "./pages/company/CompanyVendors";
 import CompanyPayments from "./pages/company/CompanyPayments";

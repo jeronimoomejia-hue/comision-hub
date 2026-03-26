@@ -84,7 +84,7 @@ export default function CompanyServices() {
           </div>
           <Button
             size="sm" className="h-9 text-xs"
-            onClick={() => canAddMore ? setShowNewService(true) : toast.error("Límite alcanzado. Mejora tu plan.")}
+            onClick={() => canAddMore ? navigate('/company/services/new') : toast.error("Límite alcanzado. Mejora tu plan.")}
           >
             <Plus className="w-3.5 h-3.5 mr-1.5" /> Nuevo producto
           </Button>
