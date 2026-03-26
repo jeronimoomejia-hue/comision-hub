@@ -132,6 +132,7 @@ export default function CompanySales() {
                 id={sale.id}
                 clientName={sale.clientName}
                 clientEmail={sale.clientEmail}
+                clientPhone={sale.clientPhone}
                 serviceName={service?.name}
                 serviceCategory={service?.category}
                 vendorName={vendor?.name}
