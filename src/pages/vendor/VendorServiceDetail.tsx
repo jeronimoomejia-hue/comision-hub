@@ -191,12 +191,7 @@ export default function VendorServiceDetail() {
           </div>
         </div>
 
-        {/* Action buttons */}
-        {!isTrainingComplete && (
-          <Button size="sm" variant="outline" className="w-full border-amber-400 text-amber-700" onClick={() => navigate(`/vendor/trainings/${serviceId}`)}>
-            <BookOpen className="w-3.5 h-3.5 mr-1.5" /> Capacitarme primero
-          </Button>
-        )}
+        {/* Action buttons - removed, now sticky at bottom */}
 
         {/* Internal Tabs */}
         <div className="flex gap-1 overflow-x-auto pb-1 scrollbar-hide border-b border-border">
@@ -232,6 +227,28 @@ export default function VendorServiceDetail() {
             onNewSale={() => setSaleDialogOpen(true)}
             isTrainingComplete={isTrainingComplete}
           />
+        )}
+      </div>
+
+      {/* Sticky bottom: Register sale or Train */}
+      <div className="sticky bottom-16 z-40 pt-3 pb-1 bg-gradient-to-t from-background via-background to-transparent -mx-4 px-4 sm:-mx-6 sm:px-6">
+        {isTrainingComplete ? (
+          <Button className="w-full h-10 text-xs font-semibold rounded-xl" onClick={() => setSaleDialogOpen(true)}>
+            <Plus className="w-3.5 h-3.5 mr-1.5" /> Registrar venta
+          </Button>
+        ) : (
+          <div className="flex items-center gap-2">
+            <Button className="flex-1 h-10 text-xs rounded-xl" disabled>
+              <Lock className="w-3 h-3 mr-1.5" /> Registrar venta
+            </Button>
+            <Button
+              variant="outline"
+              className="h-10 text-xs rounded-xl border-amber-400 text-amber-700"
+              onClick={() => navigate(`/vendor/trainings/${serviceId}`)}
+            >
+              <BookOpen className="w-3 h-3 mr-1.5" /> Capacitarse
+            </Button>
+          </div>
         )}
       </div>
 
