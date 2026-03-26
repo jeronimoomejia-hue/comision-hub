@@ -24,7 +24,7 @@ export default function AdminSales() {
             <SelectTrigger className="w-[130px] h-8 text-xs"><SelectValue placeholder="Estado" /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Todos</SelectItem>
-              <SelectItem value="HELD">Retenida</SelectItem>
+              <SelectItem value="HELD">Tiempo de devolución</SelectItem>
               <SelectItem value="COMPLETED">Liberada</SelectItem>
               <SelectItem value="REFUNDED">Devuelta</SelectItem>
             </SelectContent>

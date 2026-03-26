@@ -503,7 +503,7 @@ export default function VendorCRM() {
                     <span className="font-bold text-primary">{formatCOP(comm)}</span>
                   </div>
                   {service.refundPolicy.refundWindowDays > 0 && (
-                    <p className="text-[10px] text-muted-foreground">{service.refundPolicy.refundWindowDays} días de retención</p>
+                    <p className="text-[10px] text-muted-foreground">{service.refundPolicy.refundWindowDays} días de devolución</p>
                   )}
                   {service.refundPolicy.refundWindowDays === 0 && (
                     <p className="text-[10px] text-emerald-600">Liberación inmediata</p>

@@ -20,7 +20,7 @@ export default function AdminCommissions() {
       'REFUNDED': "bg-red-500/10 text-red-500"
     };
     const labels: Record<string, string> = {
-      'HELD': 'En retención',
+      'HELD': 'Tiempo de devolución',
       'COMPLETED': 'Liberada',
       'REFUNDED': 'Revertida'
     };
@@ -33,7 +33,7 @@ export default function AdminCommissions() {
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-bold">Comisiones</h1>
-            <p className="text-muted-foreground">Las comisiones se liberan automáticamente al finalizar la retención</p>
+            <p className="text-muted-foreground">Las comisiones se liberan automáticamente al finalizar el tiempo de devolución</p>
           </div>
           <Button variant="outline">Exportar</Button>
         </div>
@@ -46,7 +46,7 @@ export default function AdminCommissions() {
         </div>
 
         <div className="grid sm:grid-cols-4 gap-4">
-          <StatCard title="En retención" value={formatCOP(totalPending)} icon={Clock} tooltip="Comisiones HELD" />
+          <StatCard title="Tiempo de devolución" value={formatCOP(totalPending)} icon={Clock} tooltip="Comisiones HELD" />
           <StatCard title="Liberadas" value={formatCOP(totalPaid)} icon={CheckCircle} />
           <StatCard title="Revertidas" value={reverted.length} icon={DollarSign} />
           <StatCard title="Total transacciones" value={commissions.length} icon={ArrowRightLeft} />
