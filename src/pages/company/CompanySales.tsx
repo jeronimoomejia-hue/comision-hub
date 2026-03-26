@@ -44,7 +44,7 @@ export default function CompanySales() {
 
   return (
     <DashboardLayout role="company" userName={company?.name}>
-      <div className="space-y-6 max-w-4xl">
+      <div className="space-y-6">
         {/* Header */}
         <div>
           <h1 className="text-xl font-bold text-foreground">Ventas</h1>
