@@ -191,12 +191,7 @@ export default function VendorServiceDetail() {
           </div>
         </div>
 
-        {/* Action buttons */}
-        {!isTrainingComplete && (
-          <Button size="sm" variant="outline" className="w-full border-amber-400 text-amber-700" onClick={() => navigate(`/vendor/trainings/${serviceId}`)}>
-            <BookOpen className="w-3.5 h-3.5 mr-1.5" /> Capacitarme primero
-          </Button>
-        )}
+        {/* Action buttons - removed, now sticky at bottom */}
 
         {/* Internal Tabs */}
         <div className="flex gap-1 overflow-x-auto pb-1 scrollbar-hide border-b border-border">
