@@ -141,7 +141,7 @@ export default function CompanyDashboard() {
                   {[
                     { label: "GMV total", value: formatCOP(totalGMV) },
                     { label: "Neto empresa", value: formatCOP(totalNet) },
-                    { label: "Retenidas", value: String(heldCount) },
+                    { label: "Tiempo de devolución", value: String(heldCount) },
                     { label: "Devoluciones", value: String(refundedCount) },
                   ].map((m, i) => (
                     <div key={i} className="rounded-xl border border-border bg-card p-3 text-center">

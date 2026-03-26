@@ -46,7 +46,7 @@ interface TransactionCardProps {
 
 const statusConfig: Record<string, { icon: typeof Clock; color: string; bg: string; label: string; textColor: string }> = {
   'PENDING':   { icon: Send,         color: "text-blue-600",    bg: "bg-blue-50 dark:bg-blue-500/10",       label: "Esperando pago",   textColor: "text-blue-700 dark:text-blue-400" },
-  'HELD':      { icon: Clock,        color: "text-amber-600",   bg: "bg-amber-50 dark:bg-amber-500/10",     label: "En retención",     textColor: "text-amber-700 dark:text-amber-400" },
+  'HELD':      { icon: Clock,        color: "text-amber-600",   bg: "bg-amber-50 dark:bg-amber-500/10",     label: "Tiempo de devolución",     textColor: "text-amber-700 dark:text-amber-400" },
   'COMPLETED': { icon: CheckCircle2, color: "text-emerald-600", bg: "bg-emerald-50 dark:bg-emerald-500/10", label: "Completada",       textColor: "text-emerald-700 dark:text-emerald-400" },
   'REFUNDED':  { icon: RotateCcw,    color: "text-red-600",     bg: "bg-red-50 dark:bg-red-500/10",         label: "Devuelta",         textColor: "text-red-700 dark:text-red-400" },
   'CANCELLED': { icon: XCircle,      color: "text-gray-500",    bg: "bg-gray-100 dark:bg-gray-500/10",      label: "Cancelada",        textColor: "text-gray-600 dark:text-gray-400" },
@@ -85,7 +85,7 @@ function getTimeline(
     steps.push({ label: 'Link enviado', date, icon: Send, status: 'active' });
     steps.push({ label: 'Esperando pago', icon: CreditCard, status: 'upcoming' });
     if (refundWindowDays && refundWindowDays > 0) {
-      steps.push({ label: `Retención (${refundWindowDays}d)`, icon: Clock, status: 'upcoming' });
+      steps.push({ label: `Tiempo de devolución (${refundWindowDays}d)`, icon: Clock, status: 'upcoming' });
     }
     steps.push({ label: 'Pago completado', icon: CheckCircle2, status: 'upcoming' });
     return steps;
@@ -96,7 +96,7 @@ function getTimeline(
 
   if (saleStatus === 'REFUNDED') {
     if (refundWindowDays && refundWindowDays > 0) {
-      steps.push({ label: `Retención (${refundWindowDays}d)`, icon: Clock, status: 'done' });
+      steps.push({ label: `Tiempo de devolución (${refundWindowDays}d)`, icon: Clock, status: 'done' });
     }
     steps.push({ label: 'Devuelta al cliente', date: releasedDate, icon: RotateCcw, status: 'failed' });
     return steps;
@@ -108,7 +108,7 @@ function getTimeline(
       steps.push({ label: `Periodo de devolución (${refundWindowDays} días)`, date: holdEndDate ? `El cliente puede pedir devolución hasta el ${new Date(holdEndDate).toLocaleDateString('es-CO', { day: 'numeric', month: 'short' })}` : undefined, icon: Clock, status: 'active' });
       steps.push({ label: 'Dinero liberado a tu cuenta', icon: CheckCircle2, status: 'upcoming' });
     } else {
-      steps.push({ label: `Retención completada`, icon: Clock, status: 'done' });
+      steps.push({ label: `Tiempo de devolución completado`, icon: Clock, status: 'done' });
       steps.push({ label: 'Dinero liberado', date: releasedDate, icon: CheckCircle2, status: 'done' });
     }
   } else {

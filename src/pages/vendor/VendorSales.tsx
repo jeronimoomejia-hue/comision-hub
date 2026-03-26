@@ -28,7 +28,7 @@ import type { Sale, VendorPayment } from "@/data/mockData";
 // Status display helpers
 const getStatusBadge = (status: string) => {
   const map: Record<string, { className: string; label: string }> = {
-    'HELD': { className: "bg-yellow-500/10 text-yellow-600 border-yellow-500/20", label: 'En retención' },
+    'HELD': { className: "bg-yellow-500/10 text-yellow-600 border-yellow-500/20", label: 'Tiempo de devolución' },
     'COMPLETED': { className: "bg-green-500/10 text-green-600 border-green-500/20", label: 'Liberado' },
     'REFUNDED': { className: "bg-red-500/10 text-red-600 border-red-500/20", label: 'Reembolsado' },
   };
@@ -199,7 +199,7 @@ export default function VendorSales() {
       amountCOP: grossAmount, holdStartAt: new Date().toISOString(), holdEndAt: new Date(Date.now() + service.refundPolicy.refundWindowDays * 24 * 60 * 60 * 1000).toISOString(),
       paymentProvider: 'MercadoPago', mpPaymentId: `MP-${Date.now()}`
     });
-    toast.success("¡Venta registrada!", { description: `Comisión en retención ${service.refundPolicy.refundWindowDays} días.` });
+    toast.success("¡Venta registrada!", { description: `Tiempo de devolución: ${service.refundPolicy.refundWindowDays} días.` });
     setFormData({ serviceId: "", clientName: "", clientEmail: "", clientPhone: "", notes: "" });
     setIsLoading(false);
     setIsDialogOpen(false);
@@ -261,7 +261,7 @@ export default function VendorSales() {
         {/* Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <StatCard title="Total ventas" value={mySales.length} icon={ShoppingCart} subtitle={`${uniqueServices.length} productos`} />
-          <StatCard title="En retención" value={formatCOP(totalHeld)} icon={Clock} subtitle={`${heldSales.length} ventas`} variant="warning" />
+          <StatCard title="Tiempo de devolución" value={formatCOP(totalHeld)} icon={Clock} subtitle={`${heldSales.length} ventas`} variant="warning" />
           <StatCard title="Liberadas" value={formatCOP(totalReleased)} icon={CheckCircle2} subtitle={`${releasedSales.length} ventas`} variant="success" />
           <StatCard title="Devoluciones" value={myRefunds.length} icon={RotateCcw} variant={myRefunds.length > 0 ? "error" : "default"} />
         </div>
@@ -288,8 +288,8 @@ export default function VendorSales() {
             {/* Info */}
             <div className="card-premium p-4 bg-muted/30 border-l-4 border-primary">
               <p className="text-sm">
-                <strong>¿Cómo funciona?</strong> Cada venta entra en <strong>retención</strong> (7 días). 
-                Al liberarse, tu comisión se transfiere automáticamente. 
+                <strong>¿Cómo funciona?</strong> Cada venta tiene un <strong>tiempo de devolución</strong> (7-30 días). 
+                Al completarse, tu comisión se transfiere automáticamente. 
                 Puedes pedir devolución si estás dentro del período de gracia.
               </p>
             </div>
@@ -343,7 +343,7 @@ export default function VendorSales() {
                                 <th className="text-right p-3 font-medium text-muted-foreground">Venta</th>
                                 <th className="text-right p-3 font-medium text-muted-foreground">Comisión</th>
                                 <th className="text-center p-3 font-medium text-muted-foreground">Estado</th>
-                                <th className="text-center p-3 font-medium text-muted-foreground">Retención</th>
+                                <th className="text-center p-3 font-medium text-muted-foreground">Devolución</th>
                                 <th className="text-right p-3 font-medium text-muted-foreground">Acciones</th>
                               </tr>
                             </thead>

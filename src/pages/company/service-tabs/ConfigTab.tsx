@@ -116,7 +116,7 @@ export default function ConfigTab({ service, updateService }: any) {
                     ))}
                   </div>
                   <p className="text-[10px] text-muted-foreground flex items-center gap-1">
-                    <Info className="w-3 h-3" /> La ventana de devolución también define los días de retención de comisiones del vendedor.
+                    <Info className="w-3 h-3" /> La ventana de devolución también define el tiempo de devolución de comisiones del vendedor.
                   </p>
                 </div>
 
@@ -148,7 +148,7 @@ export default function ConfigTab({ service, updateService }: any) {
                   <Clock className="w-4 h-4 text-muted-foreground mb-2" />
                   <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-medium">Ventana</p>
                   <p className="text-2xl font-bold mt-1">{refundWindowDays} <span className="text-sm font-normal text-muted-foreground">días</span></p>
-                  <p className="text-[10px] text-muted-foreground mt-1">Retención de comisiones</p>
+                  <p className="text-[10px] text-muted-foreground mt-1">Tiempo de devolución</p>
                 </div>
                 <div className="p-4 rounded-xl border bg-muted/30">
                   {service.refundPolicy.autoRefund ? <Check className="w-4 h-4 text-emerald-500 mb-2" /> : <AlertTriangle className="w-4 h-4 text-amber-500 mb-2" />}

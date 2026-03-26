@@ -187,7 +187,7 @@ export default function ServiceEditModal({ service, sales, onClose, onSave }: Se
               <div className="p-3 rounded-xl border text-center">
                 <Calendar className="w-4 h-4 text-amber-500 mx-auto mb-1" />
                 <p className="text-lg font-bold">{metrics.heldCount}</p>
-                <p className="text-[10px] text-muted-foreground">En retención</p>
+                <p className="text-[10px] text-muted-foreground">Tiempo de devolución</p>
               </div>
             </div>
 
@@ -488,7 +488,7 @@ export default function ServiceEditModal({ service, sales, onClose, onSave }: Se
                       <div className="text-right">
                         <p className="font-medium">{formatCOP(sale.amountCOP || sale.grossAmount)}</p>
                         <Badge className={`text-[9px] ${sale.status === 'COMPLETED' ? 'bg-green-500/10 text-green-600' : sale.status === 'HELD' ? 'bg-yellow-500/10 text-yellow-600' : 'bg-purple-500/10 text-purple-600'}`}>
-                          {sale.status === 'COMPLETED' ? 'Liberada' : sale.status === 'HELD' ? 'Retenida' : 'Devuelta'}
+                          {sale.status === 'COMPLETED' ? 'Liberada' : sale.status === 'HELD' ? 'En devolución' : 'Devuelta'}
                         </Badge>
                       </div>
                     </div>

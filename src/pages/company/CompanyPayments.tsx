@@ -51,7 +51,7 @@ export default function CompanyPayments() {
 
   const salesStatusTabs = [
     { key: 'all' as const, label: 'Todas', count: companySales.length },
-    { key: 'HELD' as const, label: 'Retenidas', count: heldCount },
+    { key: 'HELD' as const, label: 'Tiempo de devolución', count: heldCount },
     { key: 'COMPLETED' as const, label: 'Liberadas', count: releasedCount },
     { key: 'REFUNDED' as const, label: 'Devueltas', count: refundedCount },
   ];
@@ -106,7 +106,7 @@ export default function CompanyPayments() {
               </div>
               <div className="rounded-xl border border-border bg-card p-4">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[10px] text-muted-foreground uppercase tracking-wide">Retenidas</span>
+                  <span className="text-[10px] text-muted-foreground uppercase tracking-wide">Tiempo de devolución</span>
                   <Clock className="w-3.5 h-3.5 text-amber-500" />
                 </div>
                 <p className="text-lg font-bold text-foreground">{heldCount}</p>
