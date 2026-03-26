@@ -94,23 +94,23 @@ export default function VendorDashboard() {
   return (
     <VendorTabLayout>
       <div className="space-y-5">
-        {/* Header row */}
-        <div className="flex items-start justify-between">
-          <div>
-            <p className="text-[11px] text-muted-foreground">{greetingTime}</p>
-            <h1 className="text-xl font-bold text-foreground tracking-tight">{firstName}</h1>
-          </div>
-          <Link to="/vendor/payments">
-            <div className="rounded-2xl bg-foreground p-4 text-background hover:opacity-95 active:scale-[0.99] transition-all">
-              <p className="text-[9px] opacity-50 tracking-wide uppercase">Comisiones del mes</p>
-              <p className="text-2xl font-bold tracking-tight mt-0.5">{formatCOP(commissionsThisMonth)}</p>
-              <div className="flex items-center gap-3 text-[10px] opacity-60 mt-1">
-                <span>{formatCOP(heldCommissions)} retenidas</span>
-                <span>{formatCOP(releasedCommissions)} liberadas</span>
-              </div>
-            </div>
-          </Link>
+        {/* Greeting */}
+        <div>
+          <p className="text-xs text-muted-foreground">{greetingTime}</p>
+          <h1 className="text-2xl font-bold text-foreground tracking-tight mt-0.5">{firstName}</h1>
         </div>
+
+        {/* Balance card — full width */}
+        <Link to="/vendor/payments">
+          <div className="rounded-2xl bg-foreground p-5 text-background hover:opacity-95 active:scale-[0.99] transition-all">
+            <p className="text-[9px] opacity-50 tracking-wide uppercase">Comisiones del mes</p>
+            <p className="text-3xl font-bold tracking-tight mt-1">{formatCOP(commissionsThisMonth)}</p>
+            <div className="flex items-center gap-4 text-[10px] opacity-60 mt-2">
+              <span>{formatCOP(heldCommissions)} retenidas</span>
+              <span>{formatCOP(releasedCommissions)} liberadas</span>
+            </div>
+          </div>
+        </Link>
 
         {/* Balance + metrics strip */}
         <div className="grid grid-cols-3 gap-2">
