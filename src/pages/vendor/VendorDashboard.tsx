@@ -233,13 +233,7 @@ export default function VendorDashboard() {
                 return (
                   <div
                     key={service.id}
-                    onClick={() => {
-                      if (service.isActive) {
-                        navigate(`/vendor/company/${service.companyId}/service/${service.id}`);
-                      } else {
-                        navigate(`/vendor/trainings/${service.id}`);
-                      }
-                    }}
+                    onClick={() => navigate(`/vendor/company/${service.companyId}/service/${service.id}`)}
                     className={`rounded-2xl border border-border bg-card overflow-hidden cursor-pointer group hover:shadow-md hover:border-primary/20 transition-all duration-300 ${
                       !service.isActive ? 'opacity-60' : ''
                     }`}
