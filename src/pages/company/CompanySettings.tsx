@@ -80,6 +80,21 @@ export default function CompanySettings() {
               <p className="text-[10px] text-muted-foreground mt-0.5">Esta información es lo que los vendedores ven cuando visitan tu empresa en su panel</p>
             </div>
 
+            {/* Cover image upload */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-medium text-muted-foreground">Imagen de portada</label>
+              <div
+                className="relative rounded-xl border border-dashed border-border bg-muted/20 h-32 flex items-center justify-center cursor-pointer hover:bg-muted/30 transition-colors overflow-hidden"
+                onClick={() => toast.success("Selector de imagen abierto (demo)")}
+              >
+                <div className="text-center">
+                  <Upload className="w-6 h-6 text-muted-foreground/40 mx-auto mb-1.5" />
+                  <p className="text-xs font-medium text-foreground">Subir imagen</p>
+                  <p className="text-[10px] text-muted-foreground">JPG, PNG hasta 5MB · Recomendado: 1200×400</p>
+                </div>
+              </div>
+            </div>
+
             <FieldRow label="Descripción de la empresa">
               <Textarea className="text-sm" rows={3} placeholder="Describe tu empresa, qué ofrecen y por qué deberían vender tus productos..." value={gig.description} onChange={e => updateGig('description', e.target.value)} />
             </FieldRow>
