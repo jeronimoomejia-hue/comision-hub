@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import VendorTabLayout from "@/components/layout/VendorTabLayout";
 import { useDemo } from "@/contexts/DemoContext";
 import { companies, services as allServices, formatCOP, CURRENT_VENDOR_ID } from "@/data/mockData";
-import { Search, Package, Star, RefreshCw, Zap, Lock, Clock, Shield, BookOpen, MessageCircle, Tag, ShoppingCart, ChevronRight, ChevronDown, Send, Copy, Info, Globe, Mail, Phone, Building2, ExternalLink, Users, Plus } from "lucide-react";
+import { Search, Package, Star, RefreshCw, Zap, Lock, Clock, Shield, BookOpen, MessageCircle, Tag, ShoppingCart, ChevronRight, ChevronDown, Send, Copy, Info, Globe, MapPin, Instagram, Facebook, Building2, ExternalLink } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -16,11 +16,10 @@ type CompanyTab = 'acerca' | 'productos' | 'ventas' | 'cupones' | 'chat';
 
 export default function VendorCompanyDetail() {
   const { companyId } = useParams<{ companyId: string }>();
-  const { sales, trainingProgress, commissions, refundRequests, currentVendorId, addSale } = useDemo();
+  const { sales, trainingProgress, commissions, refundRequests, currentVendorId } = useDemo();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState<CompanyTab>('acerca');
-  const [saleDialogService, setSaleDialogService] = useState<string | null>(null);
 
   const company = companies.find(c => c.id === companyId);
   if (!company) return <VendorTabLayout backTo="/vendor" backLabel="Inicio"><p>Empresa no encontrada</p></VendorTabLayout>;
@@ -51,9 +50,6 @@ export default function VendorCompanyDetail() {
   );
 
   const totalSalesAmount = vendorSales.filter(s => s.status !== 'REFUNDED').reduce((a, s) => a + s.sellerCommissionAmount, 0);
-
-  // Check if vendor has ANY trained product
-  const hasAnyTrainedProduct = vendorServices.some(s => s.isActive);
 
   const tabs: { id: CompanyTab; label: string; icon: React.ElementType; planRequired?: boolean }[] = [
     { id: 'acerca', label: 'Acerca de', icon: Info },
@@ -146,65 +142,54 @@ export default function VendorCompanyDetail() {
           <ChatTab companyName={company.name} />
         )}
       </div>
-
-      {/* Sticky bottom: Register sale or Train */}
-      <div className="sticky bottom-16 z-40 pt-3 pb-1 bg-gradient-to-t from-background via-background to-transparent -mx-4 px-4 sm:-mx-6 sm:px-6">
-        {hasAnyTrainedProduct ? (
-          <Button
-            className="w-full h-10 text-xs font-semibold rounded-xl"
-            onClick={() => {
-              const firstActive = vendorServices.find(s => s.isActive);
-              if (firstActive) navigate(`/vendor/company/${companyId}/service/${firstActive.id}`);
-            }}
-          >
-            <Plus className="w-3.5 h-3.5 mr-1.5" /> Registrar venta
-          </Button>
-        ) : (
-          <div className="flex items-center gap-2">
-            <Button className="flex-1 h-10 text-xs rounded-xl" disabled>
-              <Lock className="w-3 h-3 mr-1.5" /> Registrar venta
-            </Button>
-            <Button
-              variant="outline"
-              className="h-10 text-xs rounded-xl border-amber-400 text-amber-700"
-              onClick={() => {
-                const firstService = companyServices[0];
-                if (firstService) navigate(`/vendor/trainings/${firstService.id}`);
-              }}
-            >
-              <BookOpen className="w-3 h-3 mr-1.5" /> Capacitarse
-            </Button>
-          </div>
-        )}
-      </div>
     </VendorTabLayout>
   );
 }
 
 /* =========== Sub-components =========== */
 
-const companyDescriptions: Record<string, { tagline: string; description: string; founded: string; employees: string; highlights: string[]; communication: string; communicationNote: string }> = {
-  'company-001': { tagline: 'Transformando el sector asegurador con IA', description: 'Poliza.ai automatiza la cotización, emisión y gestión de pólizas usando modelos de IA entrenados con datos del mercado colombiano. Reducimos el tiempo de cotización de horas a segundos.', founded: '2023', employees: '45', highlights: ['Motor de cotización con IA', 'Integración con aseguradoras top', 'Dashboard de análisis predictivo'], communication: 'WhatsApp', communicationNote: 'Los clientes prefieren WhatsApp para consultas rápidas de cotización' },
-  'company-004': { tagline: 'Cierra más ventas con asistencia inteligente', description: 'Cierro es un copiloto de ventas que analiza conversaciones, sugiere respuestas y predice el cierre de deals usando machine learning.', founded: '2024', employees: '15', highlights: ['Copiloto de ventas en tiempo real', 'Predicción de cierre de deals', 'CRM integrado con IA'], communication: 'Email', communicationNote: 'Los prospectos corporativos responden mejor por email profesional' },
-  'company-005': { tagline: 'Atención al cliente que nunca duerme', description: 'Asista despliega agentes de IA que atienden consultas, resuelven problemas y escalan inteligentemente. Reducimos costos de soporte un 60%.', founded: '2022', employees: '52', highlights: ['Agentes conversacionales 24/7', 'Escalamiento inteligente', 'Integración omnicanal'], communication: 'Video llamada', communicationNote: 'Demos en vivo por video aumentan la conversión un 40%' },
-  'company-009': { tagline: 'El gimnasio boutique que transforma', description: 'IronHaus es un gimnasio premium con equipos de última generación, entrenadores certificados y programas personalizados. Más de 2,000 miembros activos en Bogotá.', founded: '2020', employees: '35', highlights: ['Equipos Technogym de última generación', 'Entrenadores certificados NSCA', 'Clases grupales y personalizadas'], communication: 'WhatsApp', communicationNote: 'Los clientes del gimnasio prefieren WhatsApp para agendar clases y membresías' },
-  'company-010': { tagline: 'Conecta con tu cuerpo, transforma tu vida', description: 'Prana Studio ofrece clases de yoga, meditación y bienestar en espacios diseñados para la calma. Retiros en la naturaleza y formación de profesores certificada Yoga Alliance.', founded: '2019', employees: '22', highlights: ['Clases: Vinyasa, Hatha, Yin, Meditación', 'Retiros wellness de 3 y 7 días', 'Teacher Training 200h certificado'], communication: 'Instagram DM', communicationNote: 'La comunidad de yoga se mueve mayormente por Instagram' },
-  'company-011': { tagline: 'Tu santuario de bienestar y relajación', description: 'Vitalik Wellness combina terapias ancestrales con tecnología moderna. Circuitos de spa, masajes terapéuticos y programas de desintoxicación en un ambiente de lujo.', founded: '2021', employees: '28', highlights: ['Circuito spa completo', 'Masajes terapéuticos y relajantes', 'Programas de detox y nutrición'], communication: 'Teléfono', communicationNote: 'Los clientes de spa prefieren llamar para agendar citas' },
-  'company-012': { tagline: 'Belleza premium, experiencia única', description: 'Salón Élite redefine la experiencia de belleza con estilistas internacionales, productos de lujo y un ambiente exclusivo. Especialistas en novias, color y tratamientos capilares.', founded: '2018', employees: '18', highlights: ['Estilistas con formación internacional', 'Productos Wella y L\'Oréal Professionnel', 'Experiencia VIP para novias'], communication: 'WhatsApp', communicationNote: 'Agendamiento rápido por WhatsApp para citas de belleza' },
-  'company-013': { tagline: 'Deporte, sol y arena', description: 'Arena Beach Club ofrece canchas de vóley playa y fútbol playa con bar y zona lounge. Torneos semanales y clases para principiantes.', founded: '2022', employees: '12', highlights: ['Canchas profesionales', 'Torneos semanales', 'Bar y zona lounge'], communication: 'WhatsApp', communicationNote: 'Reservas de canchas rápidas por WhatsApp' },
+const companyInfo: Record<string, {
+  tagline: string; description: string; founded: string; employees: string;
+  highlights: string[]; communication: string; communicationNote: string;
+  address?: string; socialLinks: { type: string; url: string; label: string }[];
+}> = {
+  'company-001': { tagline: 'Transformando el sector asegurador con IA', description: 'Poliza.ai automatiza la cotización, emisión y gestión de pólizas usando modelos de IA entrenados con datos del mercado colombiano.', founded: '2023', employees: '45', highlights: ['Motor de cotización con IA', 'Integración con aseguradoras top', 'Dashboard predictivo'], communication: 'WhatsApp', communicationNote: 'Consultas rápidas de cotización', address: undefined, socialLinks: [{ type: 'web', url: 'https://poliza.ai', label: 'poliza.ai' }, { type: 'instagram', url: 'https://instagram.com/poliza.ai', label: '@poliza.ai' }] },
+  'company-004': { tagline: 'Cierra más ventas con asistencia inteligente', description: 'Cierro es un copiloto de ventas que analiza conversaciones, sugiere respuestas y predice el cierre de deals.', founded: '2024', employees: '15', highlights: ['Copiloto en tiempo real', 'Predicción de cierre', 'CRM con IA'], communication: 'Email', communicationNote: 'Prospectos corporativos', address: undefined, socialLinks: [{ type: 'web', url: 'https://cierro.co', label: 'cierro.co' }, { type: 'instagram', url: 'https://instagram.com/cierro.co', label: '@cierro.co' }] },
+  'company-005': { tagline: 'Atención al cliente que nunca duerme', description: 'Asista despliega agentes de IA para atención al cliente. Reducimos costos de soporte un 60%.', founded: '2022', employees: '52', highlights: ['Agentes 24/7', 'Escalamiento inteligente', 'Omnicanal'], communication: 'Video llamada', communicationNote: 'Demos en vivo por video', address: undefined, socialLinks: [{ type: 'web', url: 'https://asista.co', label: 'asista.co' }, { type: 'facebook', url: 'https://facebook.com/asista', label: 'Asista' }] },
+  'company-009': { tagline: 'El gimnasio boutique que transforma', description: 'IronHaus es un gimnasio premium con equipos de última generación, entrenadores certificados y programas personalizados. Más de 2,000 miembros activos.', founded: '2020', employees: '35', highlights: ['Equipos Technogym', 'Entrenadores NSCA', 'Clases grupales'], communication: 'WhatsApp', communicationNote: 'Agendamiento de clases y membresías', address: 'Calle 85 #11-53, Bogotá', socialLinks: [{ type: 'web', url: 'https://ironhaus.co', label: 'ironhaus.co' }, { type: 'instagram', url: 'https://instagram.com/ironhaus.co', label: '@ironhaus.co' }, { type: 'facebook', url: 'https://facebook.com/ironhausgym', label: 'IronHaus Gym' }] },
+  'company-010': { tagline: 'Conecta con tu cuerpo, transforma tu vida', description: 'Prana Studio ofrece clases de yoga, meditación y bienestar. Retiros en la naturaleza y formación certificada Yoga Alliance.', founded: '2019', employees: '22', highlights: ['Vinyasa, Hatha, Yin', 'Retiros de 3 y 7 días', 'Teacher Training 200h'], communication: 'Instagram DM', communicationNote: 'La comunidad se mueve por Instagram', address: 'Carrera 7 #67-21, Bogotá', socialLinks: [{ type: 'web', url: 'https://pranastudio.co', label: 'pranastudio.co' }, { type: 'instagram', url: 'https://instagram.com/pranastudio', label: '@pranastudio' }] },
+  'company-011': { tagline: 'Tu santuario de bienestar', description: 'Vitalik Wellness combina terapias ancestrales con tecnología moderna. Spa, masajes y programas de desintoxicación en ambiente de lujo.', founded: '2021', employees: '28', highlights: ['Circuito spa completo', 'Masajes terapéuticos', 'Programas detox'], communication: 'Teléfono', communicationNote: 'Citas por llamada telefónica', address: 'Calle 93 #14-20, Bogotá', socialLinks: [{ type: 'web', url: 'https://vitalik.co', label: 'vitalik.co' }, { type: 'instagram', url: 'https://instagram.com/vitalikwellness', label: '@vitalikwellness' }] },
+  'company-012': { tagline: 'Belleza premium, experiencia única', description: 'Salón Élite redefine la experiencia de belleza con estilistas internacionales y productos de lujo. Especialistas en novias y color.', founded: '2018', employees: '18', highlights: ['Formación internacional', 'Wella y L\'Oréal Pro', 'VIP para novias'], communication: 'WhatsApp', communicationNote: 'Citas de belleza por WhatsApp', address: 'Av. 19 #120-71, Bogotá', socialLinks: [{ type: 'web', url: 'https://salonelite.co', label: 'salonelite.co' }, { type: 'instagram', url: 'https://instagram.com/salonelite', label: '@salonelite' }, { type: 'facebook', url: 'https://facebook.com/salonelitebog', label: 'Salón Élite' }] },
+  'company-013': { tagline: 'Deporte, sol y arena', description: 'Arena Beach Club ofrece canchas de vóley playa y fútbol playa con bar y zona lounge. Torneos semanales y clases.', founded: '2022', employees: '12', highlights: ['Canchas profesionales', 'Torneos semanales', 'Bar y lounge'], communication: 'WhatsApp', communicationNote: 'Reservas rápidas por WhatsApp', address: 'Km 5 vía La Calera', socialLinks: [{ type: 'web', url: 'https://arenabeach.co', label: 'arenabeach.co' }, { type: 'instagram', url: 'https://instagram.com/arenabeachclub', label: '@arenabeachclub' }] },
 };
 
 function AcercaTab({ company, companyServices }: { company: any; companyServices: Array<any> }) {
-  const info = companyDescriptions[company.id] || { tagline: `Soluciones de ${company.industry}`, description: `${company.name} ofrece soluciones innovadoras en el sector de ${company.industry}.`, founded: '2023', employees: '20+', highlights: ['Tecnología de punta', 'Soporte dedicado', 'Resultados medibles'], communication: 'WhatsApp', communicationNote: 'Canal principal de comunicación' };
+  const info = companyInfo[company.id] || {
+    tagline: `Soluciones de ${company.industry}`,
+    description: `${company.name} ofrece soluciones innovadoras en el sector de ${company.industry}.`,
+    founded: '2023', employees: '20+',
+    highlights: ['Tecnología de punta', 'Soporte dedicado', 'Resultados medibles'],
+    communication: 'WhatsApp', communicationNote: 'Canal principal',
+    address: undefined as string | undefined,
+    socialLinks: company.websiteUrl ? [{ type: 'web', url: company.websiteUrl, label: company.websiteUrl.replace('https://', '') }] : [],
+  };
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
   const toggleSection = (id: string) => setExpandedSection(prev => prev === id ? null : id);
   const coverImg = industryCover[company.industry];
+
+  const getSocialIcon = (type: string) => {
+    switch (type) {
+      case 'instagram': return Instagram;
+      case 'facebook': return Facebook;
+      default: return Globe;
+    }
+  };
 
   return (
     <div className="space-y-3">
       {/* Hero image + description */}
       <div className="rounded-xl border border-border bg-card overflow-hidden">
-        <div className="relative h-36 overflow-hidden">
+        <div className="relative h-32 overflow-hidden">
           <img src={coverImg} alt={company.name} className="w-full h-full object-cover" loading="lazy" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
           <div className="absolute bottom-3 left-3 right-3">
@@ -215,6 +200,37 @@ function AcercaTab({ company, companyServices }: { company: any; companyServices
         <div className="p-3.5">
           <p className="text-xs text-muted-foreground leading-relaxed">{info.description}</p>
         </div>
+      </div>
+
+      {/* Social links + address */}
+      <div className="rounded-xl border border-border bg-card p-3.5 space-y-2.5">
+        <p className="text-[9px] text-muted-foreground uppercase tracking-wider font-medium">Redes y presencia</p>
+        
+        <div className="flex flex-wrap gap-1.5">
+          {info.socialLinks.map((link, i) => {
+            const Icon = getSocialIcon(link.type);
+            return (
+              <a
+                key={i}
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-border bg-background hover:border-primary/30 hover:text-primary transition-colors text-[11px] text-foreground"
+              >
+                <Icon className="w-3 h-3" />
+                {link.label}
+                <ExternalLink className="w-2 h-2 opacity-40" />
+              </a>
+            );
+          })}
+        </div>
+
+        {info.address && (
+          <div className="flex items-start gap-2 pt-1.5 border-t border-border/50">
+            <MapPin className="w-3 h-3 text-muted-foreground mt-0.5 flex-shrink-0" />
+            <span className="text-[11px] text-muted-foreground">{info.address}</span>
+          </div>
+        )}
       </div>
 
       {/* Communication mode */}
@@ -251,7 +267,7 @@ function AcercaTab({ company, companyServices }: { company: any; companyServices
       >
         <div className="flex items-center gap-2">
           <Building2 className="w-3.5 h-3.5 text-muted-foreground" />
-          <span className="text-xs font-medium text-foreground">Detalles</span>
+          <span className="text-xs font-medium text-foreground">Detalles de la empresa</span>
         </div>
         <ChevronDown className={`w-3.5 h-3.5 text-muted-foreground transition-transform ${expandedSection === 'details' ? 'rotate-180' : ''}`} />
       </button>
@@ -281,44 +297,6 @@ function AcercaTab({ company, companyServices }: { company: any; companyServices
           </div>
         </div>
       )}
-
-      {/* Contact - collapsible */}
-      <button
-        onClick={() => toggleSection('contact')}
-        className="w-full flex items-center justify-between p-3 rounded-xl border border-border bg-card hover:bg-muted/30 transition-colors"
-      >
-        <div className="flex items-center gap-2">
-          <Mail className="w-3.5 h-3.5 text-muted-foreground" />
-          <span className="text-xs font-medium text-foreground">Contacto</span>
-        </div>
-        <ChevronDown className={`w-3.5 h-3.5 text-muted-foreground transition-transform ${expandedSection === 'contact' ? 'rotate-180' : ''}`} />
-      </button>
-      {expandedSection === 'contact' && (
-        <div className="space-y-1.5 animate-in fade-in slide-in-from-top-2 duration-200">
-          {company.contactEmail && (
-            <div className="flex items-center gap-2 p-2.5 rounded-xl border border-border bg-card">
-              <Mail className="w-3 h-3 text-muted-foreground" />
-              <span className="text-[11px] text-foreground">{company.contactEmail}</span>
-            </div>
-          )}
-          {company.contactPhone && (
-            <div className="flex items-center gap-2 p-2.5 rounded-xl border border-border bg-card">
-              <Phone className="w-3 h-3 text-muted-foreground" />
-              <span className="text-[11px] text-foreground">{company.contactPhone}</span>
-            </div>
-          )}
-          {company.websiteUrl && (
-            <a href={company.websiteUrl} target="_blank" rel="noopener noreferrer"
-              className="flex items-center justify-between p-2.5 rounded-xl border border-border bg-card group hover:border-primary/30 transition-colors">
-              <div className="flex items-center gap-2">
-                <Globe className="w-3 h-3 text-muted-foreground group-hover:text-primary" />
-                <span className="text-[11px] text-foreground">{company.websiteUrl}</span>
-              </div>
-              <ExternalLink className="w-3 h-3 text-muted-foreground group-hover:text-primary" />
-            </a>
-          )}
-        </div>
-      )}
     </div>
   );
 }
@@ -331,7 +309,6 @@ function ProductosTab({ searchQuery, setSearchQuery, filteredServices, topServic
   companyId: string;
 }) {
   const navigate = useNavigate();
-  const [expandedPreview, setExpandedPreview] = useState<string | null>(null);
 
   return (
     <div className="space-y-3">
@@ -346,100 +323,82 @@ function ProductosTab({ searchQuery, setSearchQuery, filteredServices, topServic
       </div>
 
       {filteredServices.length > 0 ? (
-        <div className="space-y-2.5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
           {filteredServices.map((service) => {
             const isPopular = topServiceIds.includes(service.id);
             const earningsPerSale = Math.round(service.priceCOP * service.vendorCommissionPct / 100);
             const coverImg = categoryCovers[service.category];
+            const availableCodes = service.activationCodes.filter((c: any) => c.status === 'available').length;
             const isRecurring = service.type === 'suscripción';
-            const isPreviewOpen = expandedPreview === service.id;
 
             return (
-              <div key={service.id} className="rounded-xl border border-border bg-card overflow-hidden">
-                <div
-                  onClick={() => {
-                    if (service.isActive) {
-                      navigate(`/vendor/company/${companyId}/service/${service.id}`);
-                    } else {
-                      setExpandedPreview(isPreviewOpen ? null : service.id);
-                    }
-                  }}
-                  className={`flex gap-0 cursor-pointer group hover:bg-muted/20 transition-colors ${
-                    !service.isActive ? 'opacity-80' : ''
-                  }`}
-                >
-                  <div className="relative w-20 sm:w-24 flex-shrink-0 overflow-hidden">
-                    <img src={coverImg} alt={service.category} className="w-full h-full object-cover min-h-[72px]" loading="lazy" />
-                    {!service.isActive && (
-                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                        <Lock className="w-3.5 h-3.5 text-white" />
-                      </div>
+              <div
+                key={service.id}
+                onClick={() => {
+                  if (service.isActive) {
+                    navigate(`/vendor/company/${companyId}/service/${service.id}`);
+                  } else {
+                    navigate(`/vendor/company/${companyId}/service/${service.id}`);
+                  }
+                }}
+                className={`rounded-xl border border-border bg-card overflow-hidden cursor-pointer group hover:shadow-md hover:border-primary/20 transition-all duration-300 ${
+                  !service.isActive ? 'grayscale opacity-75' : ''
+                }`}
+              >
+                <div className="relative h-28 overflow-hidden">
+                  <img src={coverImg} alt={service.category} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                  
+                  {!service.isActive && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                      <span className="inline-flex items-center gap-1 text-[9px] font-semibold px-2 py-0.5 rounded-full bg-black/70 text-white border border-white/20">
+                        <Lock className="w-2.5 h-2.5" /> Sin activar
+                      </span>
+                    </div>
+                  )}
+
+                  <div className="absolute top-2 left-2 flex items-center gap-1">
+                    {isPopular && (
+                      <span className="inline-flex items-center gap-0.5 text-[8px] font-semibold px-1.5 py-0.5 rounded-full bg-amber-500 text-white">
+                        <Star className="w-2 h-2" fill="currentColor" /> Top
+                      </span>
                     )}
-                  </div>
-                  <div className="flex-1 p-3 min-w-0">
-                    <div className="flex items-center gap-1.5 flex-wrap">
-                      <h3 className="text-xs font-semibold text-foreground truncate group-hover:text-primary transition-colors">{service.name}</h3>
-                      {isPopular && (
-                        <span className="inline-flex items-center gap-0.5 text-[8px] font-semibold px-1 py-0.5 rounded-full bg-amber-500/10 text-amber-600">
-                          <Star className="w-2 h-2" fill="currentColor" /> Top
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-[10px] text-muted-foreground line-clamp-1 mt-0.5">{service.description}</p>
-                    <div className="flex items-center gap-2 mt-1.5">
-                      {isRecurring ? (
-                        <span className="inline-flex items-center gap-0.5 text-[9px] font-medium text-blue-600 bg-blue-500/10 px-1.5 py-0.5 rounded-full">
-                          <RefreshCw className="w-2 h-2" /> Mensual
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-0.5 text-[9px] font-medium text-muted-foreground bg-muted px-1.5 py-0.5 rounded-full">
-                          <Zap className="w-2 h-2" /> Único
-                        </span>
-                      )}
-                      <span className="text-[11px] font-bold text-primary">{formatCOP(earningsPerSale)}</span>
-                      <span className="text-[9px] text-muted-foreground">/venta</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center pr-3">
-                    {service.isActive ? (
-                      <ChevronRight className="w-3.5 h-3.5 text-muted-foreground/40" />
+                    {isRecurring ? (
+                      <span className="inline-flex items-center gap-0.5 text-[8px] font-medium px-1.5 py-0.5 rounded-full bg-blue-500/90 text-white">
+                        <RefreshCw className="w-2 h-2" /> Mensual
+                      </span>
                     ) : (
-                      <ChevronDown className={`w-3.5 h-3.5 text-muted-foreground/40 transition-transform ${isPreviewOpen ? 'rotate-180' : ''}`} />
+                      <span className="inline-flex items-center gap-0.5 text-[8px] font-medium px-1.5 py-0.5 rounded-full bg-white/20 text-white backdrop-blur-sm">
+                        <Zap className="w-2 h-2" /> Único
+                      </span>
                     )}
+                  </div>
+
+                  {availableCodes === 0 && (
+                    <div className="absolute top-2 right-2">
+                      <span className="text-[8px] font-medium px-1.5 py-0.5 rounded-full bg-destructive text-destructive-foreground">Agotado</span>
+                    </div>
+                  )}
+
+                  <div className="absolute bottom-2 right-2 text-right">
+                    <p className="text-xs font-bold text-white drop-shadow-md">{formatCOP(earningsPerSale)}</p>
                   </div>
                 </div>
 
-                {/* Expanded preview for inactive products */}
-                {!service.isActive && isPreviewOpen && (
-                  <div className="border-t border-border p-3 space-y-2.5 animate-in fade-in slide-in-from-top-2 duration-200 bg-muted/10">
-                    <p className="text-[11px] text-muted-foreground leading-relaxed">{service.description}</p>
-                    <div className="grid grid-cols-2 gap-2">
-                      <div className="p-2 rounded-lg border border-border bg-card">
-                        <p className="text-[9px] text-muted-foreground uppercase">Precio</p>
-                        <p className="text-xs font-semibold text-foreground">{formatCOP(service.priceCOP)}{isRecurring ? '/mes' : ''}</p>
-                      </div>
-                      <div className="p-2 rounded-lg border border-border bg-card">
-                        <p className="text-[9px] text-muted-foreground uppercase">Tu comisión</p>
-                        <p className="text-xs font-semibold text-primary">{formatCOP(earningsPerSale)} ({service.vendorCommissionPct}%)</p>
-                      </div>
-                      <div className="p-2 rounded-lg border border-border bg-card">
-                        <p className="text-[9px] text-muted-foreground uppercase">Devolución</p>
-                        <p className="text-xs font-medium text-foreground">{service.refundPolicy.refundWindowDays} días · {service.refundPolicy.autoRefund ? 'Auto' : 'Manual'}</p>
-                      </div>
-                      <div className="p-2 rounded-lg border border-border bg-card">
-                        <p className="text-[9px] text-muted-foreground uppercase">Entrenamiento</p>
-                        <p className="text-xs font-medium text-foreground">{service.trainingType === 'video' ? 'Video' : 'PDF'}</p>
-                      </div>
+                <div className="p-2.5 space-y-1">
+                  <h3 className="font-semibold text-xs text-foreground leading-snug line-clamp-1 group-hover:text-primary transition-colors">
+                    {service.name}
+                  </h3>
+                  <p className="text-[10px] text-muted-foreground leading-relaxed line-clamp-2">{service.description}</p>
+                  <div className="flex items-center justify-between pt-1.5 border-t border-border/50">
+                    <div className="flex items-center gap-2 text-[9px] text-muted-foreground">
+                      <span className="flex items-center gap-0.5"><Clock className="w-2.5 h-2.5" /> {service.refundPolicy.refundWindowDays}d</span>
+                      <span className="flex items-center gap-0.5"><Shield className="w-2.5 h-2.5" /> {service.refundPolicy.autoRefund ? 'Auto' : 'Aprob.'}</span>
+                      {service.salesCount > 0 && <span>{service.salesCount} venta{service.salesCount !== 1 ? 's' : ''}</span>}
                     </div>
-                    <Button
-                      size="sm"
-                      className="w-full h-8 text-[11px] rounded-lg"
-                      onClick={(e) => { e.stopPropagation(); navigate(`/vendor/trainings/${service.id}`); }}
-                    >
-                      <BookOpen className="w-3 h-3 mr-1.5" /> Iniciar capacitación
-                    </Button>
+                    <p className="text-[9px] text-muted-foreground">{formatCOP(service.priceCOP)}{isRecurring ? '/mes' : ''}</p>
                   </div>
-                )}
+                </div>
               </div>
             );
           })}
