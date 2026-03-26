@@ -4,7 +4,7 @@ import { Home, DollarSign, User, Bell, LogOut, ChevronLeft, ShoppingBag, Users }
 import { Button } from "@/components/ui/button";
 import { useDemo } from "@/contexts/DemoContext";
 import { vendors, CURRENT_VENDOR_ID } from "@/data/mockData";
-import logoMensualista from "@/assets/logo-mensualista.png";
+import logoMensualista from "@/assets/logo.png";
 
 interface VendorTabLayoutProps {
   children: ReactNode;

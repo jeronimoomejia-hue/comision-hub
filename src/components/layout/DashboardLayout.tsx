@@ -40,6 +40,7 @@ import {
 import { useDemo } from "@/contexts/DemoContext";
 import { Badge } from "@/components/ui/badge";
 import type { CompanyPlan } from "@/data/mockData";
+import logoMensualista from "@/assets/logo.png";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -156,9 +157,7 @@ export default function DashboardLayout({ children, role, userName = "Usuario" }
                 </>
               ) : (
                 <>
-                  <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-                    <span className="text-primary-foreground font-bold text-lg">M</span>
-                  </div>
+                  <img src={logoMensualista} alt="Mensualista" className="w-8 h-8 object-contain" />
                   <span className="font-bold text-lg text-foreground">Mensualista</span>
                 </>
               )}

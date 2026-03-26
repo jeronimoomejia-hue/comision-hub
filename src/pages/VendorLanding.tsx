@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import dashboardMockup from "@/assets/mockups/vendor-dashboard-mockup.jpg";
 import mobileMockup from "@/assets/mockups/vendor-mobile-mockup.jpg";
 import companiesMockup from "@/assets/mockups/vendor-companies-mockup.jpg";
-import logoMensualista from "@/assets/logo-mensualista.png";
+import logoMensualista from "@/assets/logo.png";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },

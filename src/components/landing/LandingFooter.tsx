@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import logoMensualista from "@/assets/logo.png";
 import { Instagram, Twitter, Linkedin, Youtube, Mail, MessageCircle } from "lucide-react";
 
 export const LandingFooter = () => {
@@ -40,10 +41,8 @@ export const LandingFooter = () => {
       <div className="container mx-auto max-w-6xl">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
           <div className="col-span-2 md:col-span-1">
-            <Link to="/" className="flex items-center gap-2.5 mb-4">
-              <div className="w-9 h-9 rounded-full bg-primary flex items-center justify-center">
-                <span className="text-white font-bold text-lg">M</span>
-              </div>
+             <Link to="/" className="flex items-center gap-2.5 mb-4">
+              <img src={logoMensualista} alt="Mensualista" className="w-9 h-9 object-contain" />
               <span className="font-bold text-xl text-white">Mensualista</span>
             </Link>
             <p className="text-[#524D63] text-sm mb-4">
