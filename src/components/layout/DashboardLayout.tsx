@@ -81,8 +81,8 @@ function getCompanyNav(plan: CompanyPlan) {
   const base = [
     { icon: LayoutDashboard, label: "Dashboard", href: "/company" },
     { icon: Package, label: "Productos", href: "/company/services" },
+    { icon: ShoppingCart, label: "Ventas", href: "/company/payments" },
     { icon: Users, label: "Vendedores", href: "/company/vendors" },
-    { icon: DollarSign, label: "Pagos", href: "/company/payments" },
     { icon: Settings, label: "Configuración", href: "/company/settings" },
   ];
 
