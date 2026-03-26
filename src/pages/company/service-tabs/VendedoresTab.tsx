@@ -26,7 +26,7 @@ export default function VendedoresTab({ service, serviceSales, trainingProgress,
     const lastSaleDate = vSales.length > 0 ? vSales.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0].createdAt : null;
     return {
       id: vendorId, name: vendor?.name || vendorId, email: vendor?.email || '',
-      phone: vendor?.phone || '3001234567',
+      phone: '3001234567',
       salesMonth: monthSales.length, totalSales: vSales.length, gmv, activeSubs,
       heldSales, completedSales, trainingStatus, lastSaleDate,
       joinDate: vendor?.createdAt || '2024-06-01',
