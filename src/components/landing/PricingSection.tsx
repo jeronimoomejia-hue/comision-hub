@@ -77,10 +77,9 @@ const comparisonData: ComparisonGroup[] = [
     ],
   },
   {
-    category: "Marca",
+    category: "Integraciones",
     rows: [
-      { feature: "Personalización", freemium: "Básica", premium: "Completa", enterprise: "Completa" },
-      { feature: "Dominio personalizado", freemium: false, premium: false, enterprise: true },
+      { feature: "Venta de leads", freemium: true, premium: true, enterprise: true },
       { feature: "Integraciones API", freemium: false, premium: false, enterprise: true },
     ],
   },

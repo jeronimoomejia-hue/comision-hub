@@ -34,8 +34,8 @@ import CompanySettings from "./pages/company/CompanySettings";
 import CompanyProfile from "./pages/company/CompanyProfile";
 import CompanyChat from "./pages/company/CompanyChat";
 import CompanyCoupons from "./pages/company/CompanyCoupons";
-import CompanyDomain from "./pages/company/CompanyDomain";
 import CompanyApi from "./pages/company/CompanyApi";
+import CompanyLeads from "./pages/company/CompanyLeads";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminVendors from "./pages/admin/AdminVendors";
@@ -93,7 +93,7 @@ const App = () => (
             <Route path="/company/profile" element={<CompanyProfile />} />
             <Route path="/company/chat" element={<CompanyChat />} />
             <Route path="/company/coupons" element={<CompanyCoupons />} />
-            <Route path="/company/domain" element={<CompanyDomain />} />
+            <Route path="/company/leads" element={<CompanyLeads />} />
             <Route path="/company/api" element={<CompanyApi />} />
             <Route path="/company/trainings" element={<CompanyTrainings />} />
             
