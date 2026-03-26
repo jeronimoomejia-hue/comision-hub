@@ -1,7 +1,9 @@
 import DashboardLayout from "@/components/layout/DashboardLayout";
-import { Crown, Building2, Lock, Tag, Globe, Code, Palette, Mail, Save, Settings, CheckCircle, Zap } from "lucide-react";
+import { useState } from "react";
+import { Crown, Building2, Lock, Tag, Globe, Code, Palette, Mail, Save, Settings, CheckCircle, Zap, StickyNote, MapPin, Phone, Instagram, Facebook, ExternalLink, MessageCircle, FileText, Upload, Trash2, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { companies, CURRENT_COMPANY_ID, type CompanyPlan } from "@/data/mockData";
@@ -19,14 +21,28 @@ export default function CompanySettings() {
   const company = companies.find(c => c.id === CURRENT_COMPANY_ID);
   const plan = planDetails[currentCompanyPlan];
 
+  const [gig, setGig] = useState({
+    description: company?.industry ? `Somos una empresa líder en ${company.industry.toLowerCase()} con presencia en ${company?.country}. Ofrecemos soluciones innovadoras para empresas y profesionales.` : '',
+    preferredChannel: 'whatsapp',
+    whatsapp: company?.contactPhone || '',
+    instagram: '',
+    facebook: '',
+    website: '',
+    address: '',
+    supportHours: 'Lun-Vie 8:00-18:00',
+    slaResponse: '24 horas hábiles',
+  });
+
+  const updateGig = (key: string, value: string) => setGig(prev => ({ ...prev, [key]: value }));
+
   const handleSave = () => toast.success("Configuración guardada");
 
   return (
     <DashboardLayout role="company" userName={company?.name}>
-      <div className="space-y-8 max-w-2xl">
+      <div className="space-y-8">
         <div>
           <h1 className="text-xl font-bold text-foreground">Configuración</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">Tu plan y personalización de marca</p>
+          <p className="text-sm text-muted-foreground mt-0.5">Tu plan, perfil público y datos de empresa</p>
         </div>
 
         {/* Current plan */}
@@ -56,29 +72,75 @@ export default function CompanySettings() {
           </div>
         </Section>
 
-        {/* Brand customization */}
+        {/* Company Gig — what vendors see */}
         <Section title="Personalización de marca" icon={Palette}>
           <div className="space-y-4">
-            <p className="text-[11px] text-muted-foreground leading-relaxed">
-              Personaliza cómo ven los vendedores tu plataforma. Logo y colores corporativos.
-            </p>
+            <div className="rounded-lg border border-primary/15 bg-primary/5 p-3">
+              <p className="text-xs text-foreground font-medium">Perfil público de tu empresa</p>
+              <p className="text-[10px] text-muted-foreground mt-0.5">Esta información es lo que los vendedores ven cuando visitan tu empresa en su panel</p>
+            </div>
+
+            <FieldRow label="Descripción de la empresa">
+              <Textarea className="text-sm" rows={3} placeholder="Describe tu empresa, qué ofrecen y por qué deberían vender tus productos..." value={gig.description} onChange={e => updateGig('description', e.target.value)} />
+            </FieldRow>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-medium text-muted-foreground">Canal de comunicación preferido</label>
+              <Select value={gig.preferredChannel} onValueChange={v => updateGig('preferredChannel', v)}>
+                <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="whatsapp">
+                    <span className="flex items-center gap-1.5"><MessageCircle className="w-3 h-3" /> WhatsApp</span>
+                  </SelectItem>
+                  <SelectItem value="email">
+                    <span className="flex items-center gap-1.5"><Mail className="w-3 h-3" /> Email</span>
+                  </SelectItem>
+                  <SelectItem value="phone">
+                    <span className="flex items-center gap-1.5"><Phone className="w-3 h-3" /> Teléfono</span>
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium pt-2">Redes sociales y presencia</p>
+
             <div className="grid grid-cols-2 gap-3">
-              <FieldRow label="Logo de la empresa">
-                <Input type="file" accept="image/*" className="h-9 text-sm" />
+              <FieldRow label="Instagram">
+                <div className="flex items-center gap-2">
+                  <Instagram className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                  <Input className="h-9 text-sm" placeholder="@tuempresa" value={gig.instagram} onChange={e => updateGig('instagram', e.target.value)} />
+                </div>
               </FieldRow>
-              <FieldRow label="Color principal">
-                <div className="flex gap-2">
-                  <Input type="color" defaultValue={company?.primaryColor || '#7c3aed'} className="w-10 h-9 p-1" />
-                  <Input defaultValue={company?.primaryColor || '#7c3aed'} className="h-9 text-sm font-mono flex-1" />
+              <FieldRow label="Facebook">
+                <div className="flex items-center gap-2">
+                  <Facebook className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                  <Input className="h-9 text-sm" placeholder="facebook.com/tuempresa" value={gig.facebook} onChange={e => updateGig('facebook', e.target.value)} />
                 </div>
               </FieldRow>
             </div>
-            <FieldRow label="Color secundario">
-              <div className="flex gap-2 max-w-xs">
-                <Input type="color" defaultValue={company?.secondaryColor || '#a78bfa'} className="w-10 h-9 p-1" />
-                <Input defaultValue={company?.secondaryColor || '#a78bfa'} className="h-9 text-sm font-mono flex-1" />
+
+            <FieldRow label="Sitio web">
+              <div className="flex items-center gap-2">
+                <ExternalLink className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                <Input className="h-9 text-sm" placeholder="https://tuempresa.com" value={gig.website} onChange={e => updateGig('website', e.target.value)} />
               </div>
             </FieldRow>
+
+            <FieldRow label="Dirección física">
+              <div className="flex items-center gap-2">
+                <MapPin className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                <Input className="h-9 text-sm" placeholder="Calle 100 #15-20, Bogotá" value={gig.address} onChange={e => updateGig('address', e.target.value)} />
+              </div>
+            </FieldRow>
+
+            <div className="grid grid-cols-2 gap-3">
+              <FieldRow label="Horario de atención">
+                <Input className="h-9 text-sm" placeholder="Lun-Vie 8:00-18:00" value={gig.supportHours} onChange={e => updateGig('supportHours', e.target.value)} />
+              </FieldRow>
+              <FieldRow label="Tiempo de respuesta">
+                <Input className="h-9 text-sm" placeholder="24 horas hábiles" value={gig.slaResponse} onChange={e => updateGig('slaResponse', e.target.value)} />
+              </FieldRow>
+            </div>
           </div>
         </Section>
 
