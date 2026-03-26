@@ -228,7 +228,7 @@ export default function VendorServiceDetail() {
 
         {/* Tab Content */}
         {activeTab === 'info' && (
-          <InfoTab service={service} extended={extended} company={company} isTrainingComplete={isTrainingComplete} />
+          <InfoTab service={service} extended={extended} company={company} isTrainingComplete={isTrainingComplete} onRegisterSale={() => setSaleDialogOpen(true)} />
         )}
 
         {activeTab === 'ventas' && (
@@ -325,11 +325,11 @@ export default function VendorServiceDetail() {
 
 /* =========== Sub-components =========== */
 
-function InfoTab({ service, extended, company, isTrainingComplete }: { service: any; extended: any; company: any; isTrainingComplete: boolean }) {
-  const navigate = useNavigate();
-  const [expandedSection, setExpandedSection] = useState<string | null>(null);
+type InfoSection = 'resumen' | 'incluye' | 'audiencia' | 'ventas_tips' | 'materiales' | 'cupones';
 
-  const toggleSection = (id: string) => setExpandedSection(prev => prev === id ? null : id);
+function InfoTab({ service, extended, company, isTrainingComplete, onRegisterSale }: { service: any; extended: any; company: any; isTrainingComplete: boolean; onRegisterSale: () => void }) {
+  const navigate = useNavigate();
+  const [activeSection, setActiveSection] = useState<InfoSection>('resumen');
 
   const activeCoupons = [
     { code: 'NUEVO20', discount: '20%', expires: '2026-04-30', description: 'Descuento para nuevos clientes' },
@@ -340,215 +340,281 @@ function InfoTab({ service, extended, company, isTrainingComplete }: { service: 
   const mensualistaFee = Math.round(service.priceCOP * service.mensualistaPct / 100);
   const providerNet = service.priceCOP - estimatedCommission - mensualistaFee;
   const isRecurring = service.type === 'suscripción';
-  
+
+  const sections: { id: InfoSection; label: string; icon: React.ElementType }[] = [
+    { id: 'resumen', label: 'Resumen', icon: Info },
+    { id: 'incluye', label: 'Incluye', icon: Package },
+    { id: 'audiencia', label: 'Audiencia', icon: Users },
+    { id: 'ventas_tips', label: 'Venta', icon: Lightbulb },
+    { id: 'materiales', label: 'Materiales', icon: Download },
+    { id: 'cupones', label: 'Cupones', icon: Tag },
+  ];
+
   return (
     <div className="space-y-3">
-      {/* Review training link */}
-      {isTrainingComplete && (
-        <button
-          onClick={() => navigate(`/vendor/trainings/${service.id}`)}
-          className="flex items-center justify-between w-full p-3 rounded-xl border border-border bg-card group hover:border-primary/30 transition-colors"
-        >
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-              <Play className="w-3.5 h-3.5 text-primary" />
-            </div>
-            <div className="text-left">
-              <p className="text-xs font-medium text-foreground">Revisar entrenamiento</p>
-              <p className="text-[10px] text-muted-foreground">Vuelve a ver el material de venta</p>
-            </div>
-          </div>
-          <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
-        </button>
-      )}
-
-      {/* Description - compact, no hero image */}
-      <div className="rounded-xl border border-border bg-card p-4">
-        <p className="text-sm text-foreground leading-relaxed">{extended?.shortDescription || service.description}</p>
-        {extended?.pitchThreeLines && (
-          <p className="text-xs text-muted-foreground leading-relaxed mt-2">{extended.pitchThreeLines}</p>
-        )}
-      </div>
-
-      {/* Price breakdown card */}
-      <div className="rounded-xl border border-border bg-card p-4 space-y-2.5">
-        <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">Desglose de la venta</p>
-        <div className="space-y-1.5">
-          <div className="flex justify-between text-xs">
-            <span className="text-muted-foreground">Precio del producto</span>
-            <span className="font-medium text-foreground">{formatCOP(service.priceCOP)}{isRecurring ? '/mes' : ''}</span>
-          </div>
-          <div className="h-px bg-border" />
-          <div className="flex justify-between text-xs">
-            <span className="text-muted-foreground">Tu comisión ({service.vendorCommissionPct}%)</span>
-            <span className="font-semibold text-primary">{formatCOP(estimatedCommission)}</span>
-          </div>
-          <div className="flex justify-between text-xs">
-            <span className="text-muted-foreground">Fee plataforma ({service.mensualistaPct}%)</span>
-            <span className="text-muted-foreground">{formatCOP(mensualistaFee)}</span>
-          </div>
-          <div className="flex justify-between text-xs">
-            <span className="text-muted-foreground">Neto empresa</span>
-            <span className="text-muted-foreground">{formatCOP(providerNet)}</span>
-          </div>
-        </div>
-        {isRecurring && (
-          <p className="text-[10px] text-blue-600 bg-blue-500/5 px-2 py-1 rounded-lg">
-            Cobro recurrente mensual. Recibes comisión cada mes mientras el cliente mantenga su suscripción.
-          </p>
-        )}
-      </div>
-
-      {/* Key info grid */}
-      <div className="grid grid-cols-2 gap-2">
-        <div className="p-3 rounded-xl border border-border bg-card">
-          <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Entrenamiento</p>
-          <p className="text-xs font-medium text-foreground mt-0.5">{service.trainingType === 'video' ? 'Video' : 'PDF'}</p>
-          <p className={`text-[10px] font-medium mt-0.5 ${isTrainingComplete ? 'text-emerald-600' : 'text-amber-600'}`}>
-            {isTrainingComplete ? 'Completada' : 'Pendiente'} · ~{extended?.trainingDurationMinutes || 15} min
-          </p>
-        </div>
-        <div className="p-3 rounded-xl border border-border bg-card">
-          <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Devoluciones</p>
-          <p className="text-xs font-medium text-foreground mt-0.5">{service.refundPolicy.refundWindowDays} días</p>
-          <p className="text-[10px] text-muted-foreground">{service.refundPolicy.autoRefund ? 'Automática' : 'Con aprobación'}</p>
-        </div>
-      </div>
-
-      {/* Visit service page */}
-      {extended?.websiteUrl && (
-        <a href={extended.websiteUrl} target="_blank" rel="noopener noreferrer"
-          className="flex items-center justify-between p-3 rounded-xl border border-border bg-card group hover:border-primary/30 transition-colors cursor-pointer">
-          <div>
-            <p className="text-xs font-medium text-foreground">Conocer más sobre este producto</p>
-            <p className="text-[10px] text-muted-foreground">{extended.websiteUrl}</p>
-          </div>
-          <ExternalLink className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
-        </a>
-      )}
-
-      {/* Collapsible sections */}
-      {extended?.features && (
-        <>
-          <button onClick={() => toggleSection('features')}
-            className="w-full flex items-center justify-between p-3.5 rounded-xl border border-border bg-card hover:bg-muted/30 transition-colors">
-            <span className="text-xs font-medium text-foreground">Qué incluye</span>
-            <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${expandedSection === 'features' ? 'rotate-180' : ''}`} />
+      {/* Internal sub-menu */}
+      <div className="flex gap-1 overflow-x-auto scrollbar-hide">
+        {sections.map(sec => (
+          <button
+            key={sec.id}
+            onClick={() => setActiveSection(sec.id)}
+            className={`flex items-center gap-1.5 px-3 py-2 text-[11px] font-medium whitespace-nowrap rounded-lg transition-colors ${
+              activeSection === sec.id
+                ? 'bg-primary text-primary-foreground'
+                : 'bg-muted/50 text-muted-foreground hover:bg-muted'
+            }`}
+          >
+            <sec.icon className="w-3 h-3" />
+            {sec.label}
           </button>
-          {expandedSection === 'features' && (
-            <div className="p-3 rounded-xl border border-border bg-card space-y-1.5 animate-in fade-in slide-in-from-top-2 duration-200">
-              {extended.features.slice(0, 6).map((f: string, i: number) => (
-                <div key={i} className="flex items-start gap-2">
-                  <Check className="w-3 h-3 text-primary mt-0.5 flex-shrink-0" />
-                  <p className="text-xs text-foreground">{f}</p>
+        ))}
+      </div>
+
+      {/* Section Content */}
+      <div className="animate-in fade-in duration-200">
+        {activeSection === 'resumen' && (
+          <div className="space-y-3">
+            {/* Review training link */}
+            {isTrainingComplete && (
+              <button
+                onClick={() => navigate(`/vendor/trainings/${service.id}`)}
+                className="flex items-center justify-between w-full p-3 rounded-xl border border-border bg-card group hover:border-primary/30 transition-colors"
+              >
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <Play className="w-3.5 h-3.5 text-primary" />
+                  </div>
+                  <div className="text-left">
+                    <p className="text-xs font-medium text-foreground">Revisar entrenamiento</p>
+                    <p className="text-[10px] text-muted-foreground">Vuelve a ver el material</p>
+                  </div>
                 </div>
-              ))}
+                <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+              </button>
+            )}
+
+            {/* Description */}
+            <div className="rounded-xl border border-border bg-card p-4">
+              <p className="text-sm text-foreground leading-relaxed">{extended?.shortDescription || service.description}</p>
+              {extended?.pitchThreeLines && (
+                <p className="text-xs text-muted-foreground leading-relaxed mt-2">{extended.pitchThreeLines}</p>
+              )}
             </div>
-          )}
-        </>
-      )}
 
-      {/* Audience, Problem, Result */}
-      <button onClick={() => toggleSection('audience')}
-        className="w-full flex items-center justify-between p-3.5 rounded-xl border border-border bg-card hover:bg-muted/30 transition-colors">
-        <span className="text-xs font-medium text-foreground">Audiencia y problema</span>
-        <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${expandedSection === 'audience' ? 'rotate-180' : ''}`} />
-      </button>
-      {expandedSection === 'audience' && (
-        <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-200">
-          {[
-            { label: "Audiencia ideal", text: extended?.targetAudience || 'Empresas en Colombia.' },
-            { label: "Problema que resuelve", text: extended?.problemSolved || 'Procesos manuales.' },
-            { label: "Resultado", text: extended?.promisedResult || 'Mayor productividad.' },
-          ].map((item, i) => (
-            <div key={i} className="p-3 rounded-xl border border-border bg-card">
-              <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">{item.label}</p>
-              <p className="text-xs text-foreground mt-0.5 leading-relaxed">{item.text}</p>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Pitch */}
-      <div className="p-3 rounded-xl border border-primary/20 bg-primary/5">
-        <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">Cómo venderlo</p>
-        <p className="text-sm font-medium text-foreground mt-1 italic">"{extended?.pitchOneLine || `${service.name} automatiza tu negocio.`}"</p>
-      </div>
-
-      {/* Objections */}
-      {extended?.objections && (
-        <>
-          <button onClick={() => toggleSection('objections')}
-            className="w-full flex items-center justify-between p-3.5 rounded-xl border border-border bg-card hover:bg-muted/30 transition-colors">
-            <span className="text-xs font-medium text-foreground">Objeciones comunes</span>
-            <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${expandedSection === 'objections' ? 'rotate-180' : ''}`} />
-          </button>
-          {expandedSection === 'objections' && (
-            <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-200">
-              {extended.objections.slice(0, 3).map((obj: any, i: number) => (
-                <div key={i} className="p-3 rounded-xl border border-border bg-card">
-                  <p className="text-xs font-medium text-foreground">{obj.objection}</p>
-                  <p className="text-xs text-muted-foreground mt-1">{obj.response}</p>
+            {/* Price breakdown */}
+            <div className="rounded-xl border border-border bg-card p-4 space-y-2.5">
+              <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">Desglose de la venta</p>
+              <div className="space-y-1.5">
+                <div className="flex justify-between text-xs">
+                  <span className="text-muted-foreground">Precio del producto</span>
+                  <span className="font-medium text-foreground">{formatCOP(service.priceCOP)}{isRecurring ? '/mes' : ''}</span>
                 </div>
-              ))}
+                <div className="h-px bg-border" />
+                <div className="flex justify-between text-xs">
+                  <span className="text-muted-foreground">Tu comisión ({service.vendorCommissionPct}%)</span>
+                  <span className="font-semibold text-primary">{formatCOP(estimatedCommission)}</span>
+                </div>
+                <div className="flex justify-between text-xs">
+                  <span className="text-muted-foreground">Fee plataforma ({service.mensualistaPct}%)</span>
+                  <span className="text-muted-foreground">{formatCOP(mensualistaFee)}</span>
+                </div>
+                <div className="flex justify-between text-xs">
+                  <span className="text-muted-foreground">Neto empresa</span>
+                  <span className="text-muted-foreground">{formatCOP(providerNet)}</span>
+                </div>
+              </div>
+              {isRecurring && (
+                <p className="text-[10px] text-blue-600 bg-blue-500/5 px-2 py-1 rounded-lg">
+                  Cobro recurrente mensual. Recibes comisión cada mes mientras el cliente mantenga su suscripción.
+                </p>
+              )}
             </div>
-          )}
-        </>
-      )}
 
-      {/* Materials */}
-      {service.materials.length > 0 && (
-        <>
-          <button onClick={() => toggleSection('materials')}
-            className="w-full flex items-center justify-between p-3.5 rounded-xl border border-border bg-card hover:bg-muted/30 transition-colors">
-            <span className="text-xs font-medium text-foreground">Materiales de venta</span>
-            <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${expandedSection === 'materials' ? 'rotate-180' : ''}`} />
-          </button>
-          {expandedSection === 'materials' && (
-            <div className="space-y-1.5 animate-in fade-in slide-in-from-top-2 duration-200">
-              {service.materials.map((m: any) => (
+            {/* Key info grid */}
+            <div className="grid grid-cols-2 gap-2">
+              <div className="p-3 rounded-xl border border-border bg-card">
+                <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Entrenamiento</p>
+                <p className="text-xs font-medium text-foreground mt-0.5">{service.trainingType === 'video' ? 'Video' : 'PDF'}</p>
+                <p className={`text-[10px] font-medium mt-0.5 ${isTrainingComplete ? 'text-emerald-600' : 'text-amber-600'}`}>
+                  {isTrainingComplete ? 'Completada' : 'Pendiente'} · ~{extended?.trainingDurationMinutes || 15} min
+                </p>
+              </div>
+              <div className="p-3 rounded-xl border border-border bg-card">
+                <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Devoluciones</p>
+                <p className="text-xs font-medium text-foreground mt-0.5">{service.refundPolicy.refundWindowDays} días</p>
+                <p className="text-[10px] text-muted-foreground">{service.refundPolicy.autoRefund ? 'Automática' : 'Con aprobación'}</p>
+              </div>
+            </div>
+
+            {extended?.websiteUrl && (
+              <a href={extended.websiteUrl} target="_blank" rel="noopener noreferrer"
+                className="flex items-center justify-between p-3 rounded-xl border border-border bg-card group hover:border-primary/30 transition-colors cursor-pointer">
+                <div>
+                  <p className="text-xs font-medium text-foreground">Conocer más</p>
+                  <p className="text-[10px] text-muted-foreground">{extended.websiteUrl}</p>
+                </div>
+                <ExternalLink className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+              </a>
+            )}
+          </div>
+        )}
+
+        {activeSection === 'incluye' && (
+          <div className="space-y-2">
+            {(extended?.features || [
+              'Acceso completo a la plataforma',
+              'Soporte técnico',
+              'Actualizaciones automáticas',
+              'Panel de administración',
+            ]).map((f: string, i: number) => (
+              <div key={i} className="flex items-start gap-2.5 p-3 rounded-xl border border-border bg-card">
+                <Check className="w-3.5 h-3.5 text-primary mt-0.5 flex-shrink-0" />
+                <p className="text-xs text-foreground">{f}</p>
+              </div>
+            ))}
+            {extended?.notIncluded && extended.notIncluded.length > 0 && (
+              <div className="pt-2">
+                <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium mb-2">No incluye</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {extended.notIncluded.map((item: string, i: number) => (
+                    <span key={i} className="text-[10px] text-muted-foreground bg-muted px-2.5 py-1 rounded-full">{item}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeSection === 'audiencia' && (
+          <div className="space-y-2">
+            {[
+              { label: "Audiencia ideal", text: extended?.targetAudience || 'Empresas en Colombia.', icon: Users, color: 'text-blue-600' },
+              { label: "Problema que resuelve", text: extended?.problemSolved || 'Procesos manuales.', icon: AlertCircle, color: 'text-destructive' },
+              { label: "Resultado", text: extended?.promisedResult || 'Mayor productividad.', icon: Target, color: 'text-emerald-600' },
+              { label: "Cliente ideal", text: extended?.idealClient || 'Empresas medianas y pequeñas.', icon: Star, color: 'text-amber-600' },
+            ].map((item, i) => (
+              <div key={i} className="p-3 rounded-xl border border-border bg-card">
+                <div className="flex items-center gap-1.5 mb-1">
+                  <item.icon className={`w-3.5 h-3.5 ${item.color}`} />
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">{item.label}</p>
+                </div>
+                <p className="text-xs text-foreground leading-relaxed">{item.text}</p>
+              </div>
+            ))}
+            {extended?.useCases && (
+              <div className="p-3 rounded-xl border border-border bg-card">
+                <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium mb-1.5">Casos de uso</p>
+                <ul className="space-y-1">
+                  {extended.useCases.map((uc: string, i: number) => (
+                    <li key={i} className="flex items-center gap-2 text-xs text-foreground">
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
+                      {uc}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeSection === 'ventas_tips' && (
+          <div className="space-y-3">
+            {/* Pitch */}
+            <div className="p-4 rounded-xl border border-primary/20 bg-primary/5">
+              <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">Pitch en una frase</p>
+              <p className="text-sm font-medium text-foreground mt-1 italic">"{extended?.pitchOneLine || `${service.name} automatiza tu negocio.`}"</p>
+            </div>
+
+            {extended?.pitchThreeLines && (
+              <div className="p-3 rounded-xl border border-border bg-card">
+                <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium mb-1">Guión corto</p>
+                <p className="text-xs text-muted-foreground leading-relaxed">{extended.pitchThreeLines}</p>
+              </div>
+            )}
+
+            {/* Objections */}
+            {extended?.objections && (
+              <div className="space-y-2">
+                <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">Objeciones comunes</p>
+                {extended.objections.slice(0, 4).map((obj: any, i: number) => (
+                  <div key={i} className="p-3 rounded-xl border border-border bg-card">
+                    <p className="text-xs font-medium text-foreground">{obj.objection}</p>
+                    <p className="text-xs text-muted-foreground mt-1">{obj.response}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeSection === 'materiales' && (
+          <div className="space-y-2">
+            {service.materials.length > 0 ? (
+              service.materials.map((m: any) => (
                 <div key={m.id} className="flex items-center justify-between p-3 rounded-xl border border-border bg-card">
-                  <span className="text-xs text-foreground">{m.title}</span>
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
+                      <FileText className="w-3.5 h-3.5 text-muted-foreground" />
+                    </div>
+                    <span className="text-xs text-foreground">{m.title}</span>
+                  </div>
                   <Button variant="ghost" size="sm" className="text-[10px] h-7 text-muted-foreground" onClick={() => toast.success(`Descargando: ${m.title}`)}>
                     <Download className="w-3 h-3 mr-1" /> Descargar
                   </Button>
                 </div>
-              ))}
-            </div>
-          )}
-        </>
-      )}
-
-      {/* Active Coupons */}
-      {activeCoupons.length > 0 && (
-        <div className="space-y-2">
-          <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">Ofertas activas</p>
-          {activeCoupons.map((coupon, i) => (
-            <div key={i} className="flex items-center justify-between p-3 rounded-xl border border-primary/15 bg-primary/5">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <Tag className="w-3.5 h-3.5 text-primary" />
-                </div>
-                <div>
-                  <p className="text-xs font-medium text-foreground">{coupon.description}</p>
-                  <p className="text-[10px] text-muted-foreground">Vence {new Date(coupon.expires).toLocaleDateString('es-CO', { day: 'numeric', month: 'short' })}</p>
-                </div>
+              ))
+            ) : (
+              <div className="text-center py-8 rounded-xl border border-border bg-card">
+                <Download className="w-6 h-6 text-muted-foreground/30 mx-auto mb-2" />
+                <p className="text-xs text-muted-foreground">Sin materiales disponibles</p>
               </div>
-              <div className="text-right">
-                <code className="text-xs font-mono font-semibold text-primary bg-card px-2 py-0.5 rounded border border-border">{coupon.code}</code>
-                <p className="text-[10px] font-medium text-primary mt-0.5">{coupon.discount} OFF</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+            )}
+          </div>
+        )}
 
-      {/* Contact */}
-      {extended?.contactEmail && (
-        <div className="p-3 rounded-xl border border-border bg-card">
-          <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">Contacto del producto</p>
-          <p className="text-xs text-foreground mt-1">{extended.contactName}</p>
-          <p className="text-[10px] text-muted-foreground">{extended.contactEmail}</p>
+        {activeSection === 'cupones' && (
+          <div className="space-y-2">
+            {activeCoupons.length > 0 ? (
+              activeCoupons.map((coupon, i) => (
+                <div key={i} className="p-3 rounded-xl border border-primary/15 bg-primary/5">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                        <Tag className="w-3.5 h-3.5 text-primary" />
+                      </div>
+                      <div>
+                        <p className="text-xs font-medium text-foreground">{coupon.description}</p>
+                        <p className="text-[10px] text-muted-foreground">Vence {new Date(coupon.expires).toLocaleDateString('es-CO', { day: 'numeric', month: 'short' })}</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <code className="text-xs font-mono font-semibold text-primary bg-card px-2 py-0.5 rounded border border-border">{coupon.code}</code>
+                      <p className="text-[10px] font-medium text-primary mt-0.5">{coupon.discount} OFF</p>
+                    </div>
+                  </div>
+                  {isTrainingComplete && (
+                    <Button size="sm" variant="outline" className="w-full mt-2.5 h-8 text-[11px]" onClick={onRegisterSale}>
+                      <ShoppingCart className="w-3 h-3 mr-1.5" /> Vender con este cupón
+                    </Button>
+                  )}
+                </div>
+              ))
+            ) : (
+              <div className="text-center py-8 rounded-xl border border-border bg-card">
+                <Tag className="w-6 h-6 text-muted-foreground/30 mx-auto mb-2" />
+                <p className="text-xs text-muted-foreground">Sin cupones activos</p>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Fixed register sale button */}
+      {isTrainingComplete && (
+        <div className="sticky bottom-0 pt-3 pb-1 bg-gradient-to-t from-background via-background to-transparent -mx-1 px-1">
+          <Button className="w-full h-11 text-xs font-semibold rounded-xl" onClick={onRegisterSale}>
+            <ShoppingCart className="w-4 h-4 mr-2" /> Registrar venta
+          </Button>
         </div>
       )}
     </div>
