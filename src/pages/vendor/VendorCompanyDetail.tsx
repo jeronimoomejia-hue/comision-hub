@@ -170,6 +170,7 @@ function AcercaTab({ company, companyServices }: { company: any; companyServices
     founded: '2023', employees: '20+',
     highlights: ['Tecnología de punta', 'Soporte dedicado', 'Resultados medibles'],
     communication: 'WhatsApp', communicationNote: 'Canal principal',
+    address: undefined as string | undefined,
     socialLinks: company.websiteUrl ? [{ type: 'web', url: company.websiteUrl, label: company.websiteUrl.replace('https://', '') }] : [],
   };
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
