@@ -333,7 +333,6 @@ function ProductosTab({ searchQuery, setSearchQuery, filteredServices, topServic
               ? Math.round(service.priceCOP * vendorTier.commissionPct / 100)
               : Math.round(service.priceCOP * service.vendorCommissionPct / 100);
             const coverImg = categoryCovers[service.category];
-            const coverImg = categoryCovers[service.category];
             const availableCodes = service.activationCodes.filter((c: any) => c.status === 'available').length;
             const isRecurring = service.type === 'suscripción';
 
