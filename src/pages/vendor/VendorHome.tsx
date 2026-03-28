@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { 
   DollarSign, ShoppingCart, UserX, Building2, 
   ChevronRight, LogOut, Bell, Plus, Search,
-  TrendingUp, Star, ArrowUpRight
+  TrendingUp, Star, ArrowUpRight, Crown, Shield
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -16,7 +16,7 @@ import logoMensualista from "@/assets/logo.png";
 
 export default function VendorHome() {
   const navigate = useNavigate();
-  const { sales, commissions, currentVendorId } = useDemo();
+  const { sales, commissions, currentVendorId, getVendorTier } = useDemo();
   const vendor = vendors.find(v => v.id === (currentVendorId || CURRENT_VENDOR_ID));
   const firstName = vendor?.name.split(' ')[0] || 'Vendedor';
 
@@ -168,37 +168,44 @@ export default function VendorHome() {
               <div className="space-y-2.5">
                 {topServices.map(({ service, company, count }, i) => {
                   const coverImg = categoryCovers[service!.category];
-                  const earnings = Math.round(service!.priceCOP * service!.vendorCommissionPct / 100);
+                  const vendorTier = getVendorTier(CURRENT_VENDOR_ID, service!.id);
+                  const earnings = vendorTier 
+                    ? Math.round(service!.priceCOP * vendorTier.commissionPct / 100)
+                    : Math.round(service!.priceCOP * service!.vendorCommissionPct / 100);
+                  
+                  const tierBadge = vendorTier ? (
+                    vendorTier.tierOrder === 3 ? (
+                      <Badge className="text-[8px] bg-primary/10 text-primary border-0 animate-pulse"><Crown className="w-2 h-2 mr-0.5" /> Elite</Badge>
+                    ) : vendorTier.tierOrder === 2 ? (
+                      <Badge className="text-[8px] bg-amber-500/10 text-amber-600 border-0"><Star className="w-2 h-2 mr-0.5" /> Premium</Badge>
+                    ) : null
+                  ) : null;
+
                   return (
                     <button
                       key={service!.id}
                       onClick={() => navigate(`/vendor/company/${service!.companyId}/service/${service!.id}`)}
                       className="flex items-center gap-3 w-full p-2.5 rounded-lg hover:bg-muted/50 transition-colors group text-left"
                     >
-                      {/* Rank */}
                       <span className="text-xs font-bold text-muted-foreground w-5 text-center">{i + 1}</span>
-                      
-                      {/* Thumbnail */}
                       <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0">
                         <img src={coverImg} alt="" className="w-full h-full object-cover" />
                       </div>
-
-                      {/* Info */}
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-foreground truncate group-hover:text-primary transition-colors">
-                          {service!.name}
-                        </p>
+                        <div className="flex items-center gap-1.5">
+                          <p className="text-sm font-medium text-foreground truncate group-hover:text-primary transition-colors">
+                            {service!.name}
+                          </p>
+                          {tierBadge}
+                        </div>
                         <p className="text-[10px] text-muted-foreground truncate">
                           {company?.name} · {formatCOP(earnings)} por venta
                         </p>
                       </div>
-
-                      {/* Sales count */}
                       <div className="text-right flex-shrink-0">
                         <p className="text-sm font-bold text-foreground">{count}</p>
                         <p className="text-[9px] text-muted-foreground">ventas</p>
                       </div>
-
                       <ArrowUpRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary transition-colors flex-shrink-0" />
                     </button>
                   );
