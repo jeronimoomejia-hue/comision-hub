@@ -156,7 +156,28 @@ export default function VendedoresTab({ service, serviceSales, trainingProgress,
                           </div>
                         </div>
 
-                        {/* Contact info — Premium/Enterprise only */}
+                        {/* Tier assignment */}
+                        {serviceTiers.length > 0 && (
+                          <div className="pt-1" onClick={e => e.stopPropagation()}>
+                            <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium mb-1.5">Nivel de comisión</p>
+                            <Select
+                              value={getVendorTier(v.id, service.id)?.id || ''}
+                              onValueChange={(tierId) => assignVendorTier(v.id, service.id, tierId)}
+                            >
+                              <SelectTrigger className="h-8 text-xs">
+                                <SelectValue placeholder="Asignar nivel" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {serviceTiers.map(tier => (
+                                  <SelectItem key={tier.id} value={tier.id} className="text-xs">
+                                    {tier.tierOrder === 3 ? '👑 ' : tier.tierOrder === 2 ? '⭐ ' : '🛡️ '}
+                                    {tier.name} — {tier.commissionPct}%
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        )}
                         {showContact && (
                           <div className="space-y-2 pt-1">
                             <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">Contacto</p>
