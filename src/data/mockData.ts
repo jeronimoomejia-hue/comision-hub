@@ -89,6 +89,25 @@ export interface Service {
   activeSubscriptions?: number;
   activationCodes: ActivationCode[];
   createdAt: string;
+  commissionTiers?: CommissionTier[];
+}
+
+export interface CommissionTier {
+  id: string;
+  serviceId: string;
+  name: string;
+  commissionPct: number;
+  isPublic: boolean;
+  tierOrder: 1 | 2 | 3;
+  createdAt: string;
+}
+
+export interface VendorCommissionAssignment {
+  id: string;
+  vendorId: string;
+  serviceId: string;
+  tierId: string;
+  assignedAt: string;
 }
 
 export interface ServiceRequest {
