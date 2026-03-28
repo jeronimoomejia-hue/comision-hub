@@ -156,7 +156,7 @@ export default function VendorServiceDetail() {
             <div className="flex-1 p-4 min-w-0">
               <h1 className="text-lg font-semibold text-foreground leading-tight">{service.name}</h1>
               <p className="text-xs text-muted-foreground mt-0.5">{company.name}</p>
-              <div className="flex items-center gap-2 mt-2">
+              <div className="flex items-center gap-2 mt-2 flex-wrap">
                 {isRecurring ? (
                   <span className="inline-flex items-center gap-1 text-[10px] font-medium text-blue-600 bg-blue-500/10 px-2 py-0.5 rounded-full">
                     <RefreshCw className="w-2.5 h-2.5" /> Mensual
@@ -170,6 +170,21 @@ export default function VendorServiceDetail() {
                   <Badge className="bg-emerald-500/10 text-emerald-600 border-0 text-[9px]"><Check className="w-2.5 h-2.5 mr-0.5" /> Activo</Badge>
                 ) : (
                   <Badge variant="outline" className="text-[9px] text-muted-foreground"><Lock className="w-2.5 h-2.5 mr-0.5" /> Sin activar</Badge>
+                )}
+                {vendorTier && vendorTier.tierOrder === 3 && (
+                  <Badge className="text-[9px] bg-primary/10 text-primary border-0 shadow-[0_0_8px_hsl(var(--primary)/0.3)]">
+                    <Crown className="w-2.5 h-2.5 mr-0.5" /> Elite
+                  </Badge>
+                )}
+                {vendorTier && vendorTier.tierOrder === 2 && (
+                  <Badge className="text-[9px] bg-amber-500/10 text-amber-600 border-0">
+                    <Star className="w-2.5 h-2.5 mr-0.5" /> Premium
+                  </Badge>
+                )}
+                {vendorTier && vendorTier.tierOrder === 1 && (
+                  <Badge variant="outline" className="text-[9px]">
+                    <Shield className="w-2.5 h-2.5 mr-0.5" /> Básico
+                  </Badge>
                 )}
               </div>
               <div className="flex items-baseline gap-2 mt-2">
