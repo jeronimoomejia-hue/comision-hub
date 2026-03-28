@@ -14,6 +14,7 @@ export default function VendedoresTab({ service, serviceSales, trainingProgress,
   const { currentCompanyPlan, commissionTiers, vendorCommissionAssignments, assignVendorTier, getVendorTier } = useDemo();
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const monthAgo = new Date(); monthAgo.setMonth(monthAgo.getMonth() - 1);
+  const serviceTiers = commissionTiers.filter(t => t.serviceId === service.id).sort((a, b) => a.tierOrder - b.tierOrder);
 
   const vendorData = Array.from(allVendorIds as Set<string>).map(vendorId => {
     const vendor = vendors.find(v => v.id === vendorId);
@@ -85,6 +86,13 @@ export default function VendedoresTab({ service, serviceSales, trainingProgress,
                      v.trainingStatus === 'en progreso' ? <><BookOpen className="w-2.5 h-2.5 mr-0.5" /> En progreso</> :
                      <><Clock className="w-2.5 h-2.5 mr-0.5" /> Pendiente</>}
                   </Badge>
+                  {(() => {
+                    const vTier = getVendorTier(v.id, service.id);
+                    if (!vTier) return null;
+                    if (vTier.tierOrder === 3) return <Badge className="text-[8px] bg-primary/10 text-primary border-0"><Crown className="w-2 h-2 mr-0.5" /> Elite</Badge>;
+                    if (vTier.tierOrder === 2) return <Badge className="text-[8px] bg-amber-500/10 text-amber-600 border-0"><Star className="w-2 h-2 mr-0.5" /> Premium</Badge>;
+                    return <Badge variant="outline" className="text-[8px]"><Shield className="w-2 h-2 mr-0.5" /> Básico</Badge>;
+                  })()}
                   <ChevronDown className={cn("w-4 h-4 text-muted-foreground/30 transition-transform", isExpanded && "rotate-180")} />
                 </div>
 
