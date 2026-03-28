@@ -293,7 +293,7 @@ export default function VendorServiceDetail() {
             </div>
             <div className="p-3 bg-muted/30 rounded-xl text-xs space-y-1">
               <div className="flex justify-between"><span className="text-muted-foreground">Precio</span><span className="font-medium">{formatCOP(service.priceCOP)}</span></div>
-              <div className="flex justify-between"><span className="text-muted-foreground">Tu comisión ({service.vendorCommissionPct}%)</span><span className="font-medium text-primary">{formatCOP(estimatedCommission)}</span></div>
+              <div className="flex justify-between"><span className="text-muted-foreground">Tu comisión ({effectiveCommissionPct}%)</span><span className="font-medium text-primary">{formatCOP(estimatedCommission)}</span></div>
             </div>
             <DialogFooter>
               <Button type="button" variant="outline" size="sm" onClick={() => setSaleDialogOpen(false)}>Cancelar</Button>
