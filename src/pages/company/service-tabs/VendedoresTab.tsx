@@ -2,13 +2,16 @@ import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { AnimatePresence, motion } from "framer-motion";
-import { Users, Star, Clock, UserCheck, BookOpen, ChevronDown, Mail, Phone, MessageCircle, ShoppingCart, TrendingUp, Calendar } from "lucide-react";
+import { Users, Star, Clock, UserCheck, BookOpen, ChevronDown, Mail, Phone, MessageCircle, ShoppingCart, TrendingUp, Calendar, Crown, Shield } from "lucide-react";
 import { vendors, formatCOP } from "@/data/mockData";
 import { useDemo } from "@/contexts/DemoContext";
 import { cn } from "@/lib/utils";
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from "@/components/ui/select";
 
 export default function VendedoresTab({ service, serviceSales, trainingProgress, allVendorIds }: any) {
-  const { currentCompanyPlan } = useDemo();
+  const { currentCompanyPlan, commissionTiers, vendorCommissionAssignments, assignVendorTier, getVendorTier } = useDemo();
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const monthAgo = new Date(); monthAgo.setMonth(monthAgo.getMonth() - 1);
 
