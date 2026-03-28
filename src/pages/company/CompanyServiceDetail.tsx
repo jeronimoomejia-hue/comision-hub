@@ -17,8 +17,10 @@ import CapacitacionTab from "./service-tabs/CapacitacionTab";
 import CuponesTab from "./service-tabs/CuponesTab";
 import CodigosTab from "./service-tabs/CodigosTab";
 import ConfigTab from "./service-tabs/ConfigTab";
+import ComisionesTab from "./service-tabs/ComisionesTab";
+import { Crown } from "lucide-react";
 
-type ServiceTab = 'resumen' | 'ventas' | 'vendedores' | 'capacitacion' | 'cupones' | 'codigos' | 'config';
+type ServiceTab = 'resumen' | 'ventas' | 'vendedores' | 'comisiones' | 'capacitacion' | 'cupones' | 'codigos' | 'config';
 
 export default function CompanyServiceDetail() {
   const { serviceId } = useParams<{ serviceId: string }>();
@@ -62,6 +64,7 @@ export default function CompanyServiceDetail() {
     { id: 'resumen', label: 'Resumen', icon: Info },
     { id: 'ventas', label: 'Ventas', icon: ShoppingCart, badge: serviceSales.length },
     { id: 'vendedores', label: 'Vendedores', icon: Users, badge: allVendorIds.size },
+    { id: 'comisiones', label: 'Comisiones', icon: Crown },
     { id: 'capacitacion', label: 'Entrenamiento', icon: BookOpen },
     { id: 'cupones', label: 'Cupones', icon: Tag },
     { id: 'codigos', label: 'Códigos', icon: Key, badge: codesAvailable },
@@ -123,6 +126,7 @@ export default function CompanyServiceDetail() {
         {activeTab === 'resumen' && <ResumenTab service={service} sales={serviceSales} activeSubscriptions={activeSubscriptions} vendorCount={allVendorIds.size} updateService={updateService} />}
         {activeTab === 'ventas' && <VentasTab service={service} serviceSales={serviceSales} commissions={commissions} refundRequests={refundRequests} updateRefundRequest={updateRefundRequest} />}
         {activeTab === 'vendedores' && <VendedoresTab service={service} serviceSales={serviceSales} trainingProgress={trainingProgress} allVendorIds={allVendorIds} />}
+        {activeTab === 'comisiones' && <ComisionesTab service={service} />}
         {activeTab === 'capacitacion' && <CapacitacionTab service={service} trainingProgress={trainingProgress} />}
         {activeTab === 'cupones' && <CuponesTab service={service} currentPlan={currentCompanyPlan} />}
         {activeTab === 'codigos' && <CodigosTab service={service} addActivationCodes={addActivationCodes} currentPlan={currentCompanyPlan} />}

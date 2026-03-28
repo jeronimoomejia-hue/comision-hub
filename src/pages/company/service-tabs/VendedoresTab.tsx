@@ -2,15 +2,19 @@ import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { AnimatePresence, motion } from "framer-motion";
-import { Users, Star, Clock, UserCheck, BookOpen, ChevronDown, Mail, Phone, MessageCircle, ShoppingCart, TrendingUp, Calendar } from "lucide-react";
+import { Users, Star, Clock, UserCheck, BookOpen, ChevronDown, Mail, Phone, MessageCircle, ShoppingCart, TrendingUp, Calendar, Crown, Shield } from "lucide-react";
 import { vendors, formatCOP } from "@/data/mockData";
 import { useDemo } from "@/contexts/DemoContext";
 import { cn } from "@/lib/utils";
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from "@/components/ui/select";
 
 export default function VendedoresTab({ service, serviceSales, trainingProgress, allVendorIds }: any) {
-  const { currentCompanyPlan } = useDemo();
+  const { currentCompanyPlan, commissionTiers, vendorCommissionAssignments, assignVendorTier, getVendorTier } = useDemo();
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const monthAgo = new Date(); monthAgo.setMonth(monthAgo.getMonth() - 1);
+  const serviceTiers = commissionTiers.filter(t => t.serviceId === service.id).sort((a, b) => a.tierOrder - b.tierOrder);
 
   const vendorData = Array.from(allVendorIds as Set<string>).map(vendorId => {
     const vendor = vendors.find(v => v.id === vendorId);
@@ -82,6 +86,13 @@ export default function VendedoresTab({ service, serviceSales, trainingProgress,
                      v.trainingStatus === 'en progreso' ? <><BookOpen className="w-2.5 h-2.5 mr-0.5" /> En progreso</> :
                      <><Clock className="w-2.5 h-2.5 mr-0.5" /> Pendiente</>}
                   </Badge>
+                  {(() => {
+                    const vTier = getVendorTier(v.id, service.id);
+                    if (!vTier) return null;
+                    if (vTier.tierOrder === 3) return <Badge className="text-[8px] bg-primary/10 text-primary border-0"><Crown className="w-2 h-2 mr-0.5" /> Elite</Badge>;
+                    if (vTier.tierOrder === 2) return <Badge className="text-[8px] bg-amber-500/10 text-amber-600 border-0"><Star className="w-2 h-2 mr-0.5" /> Premium</Badge>;
+                    return <Badge variant="outline" className="text-[8px]"><Shield className="w-2 h-2 mr-0.5" /> Básico</Badge>;
+                  })()}
                   <ChevronDown className={cn("w-4 h-4 text-muted-foreground/30 transition-transform", isExpanded && "rotate-180")} />
                 </div>
 
@@ -145,7 +156,28 @@ export default function VendedoresTab({ service, serviceSales, trainingProgress,
                           </div>
                         </div>
 
-                        {/* Contact info — Premium/Enterprise only */}
+                        {/* Tier assignment */}
+                        {serviceTiers.length > 0 && (
+                          <div className="pt-1" onClick={e => e.stopPropagation()}>
+                            <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium mb-1.5">Nivel de comisión</p>
+                            <Select
+                              value={getVendorTier(v.id, service.id)?.id || ''}
+                              onValueChange={(tierId) => assignVendorTier(v.id, service.id, tierId)}
+                            >
+                              <SelectTrigger className="h-8 text-xs">
+                                <SelectValue placeholder="Asignar nivel" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {serviceTiers.map(tier => (
+                                  <SelectItem key={tier.id} value={tier.id} className="text-xs">
+                                    {tier.tierOrder === 3 ? '👑 ' : tier.tierOrder === 2 ? '⭐ ' : '🛡️ '}
+                                    {tier.name} — {tier.commissionPct}%
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        )}
                         {showContact && (
                           <div className="space-y-2 pt-1">
                             <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">Contacto</p>

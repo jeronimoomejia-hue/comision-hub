@@ -10,7 +10,7 @@ import {
   ShoppingCart, RotateCcw, Clock, DollarSign, Plus, User, Mail, Phone, Tag,
   RefreshCw, Zap, Lock, Check, BookOpen, FileText, Download,
   Lightbulb, HelpCircle, AlertCircle, Target, Users, Package,
-  Shield, MessageSquare, ChevronRight, ChevronDown, Star, Play, Info, ExternalLink
+  Shield, MessageSquare, ChevronRight, ChevronDown, Star, Play, Info, ExternalLink, Crown
 } from "lucide-react";
 import { useDemo } from "@/contexts/DemoContext";
 import { formatCOP, formatDate, CURRENT_VENDOR_ID, services as allServices } from "@/data/mockData";
@@ -40,7 +40,7 @@ export default function VendorServiceDetail() {
   const navigate = useNavigate();
   const {
     services, sales, commissions, companies, trainingProgress,
-    currentVendorId, addRefundRequest, addSale, refundRequests
+    currentVendorId, addRefundRequest, addSale, refundRequests, getVendorTier
   } = useDemo();
 
   const [activeTab, setActiveTab] = useState<ServiceTab>('info');
@@ -70,7 +70,9 @@ export default function VendorServiceDetail() {
   }
 
   const coverImg = categoryCovers[service.category];
-  const estimatedCommission = Math.round(service.priceCOP * service.vendorCommissionPct / 100);
+  const vendorTier = getVendorTier(vendorId, serviceId!);
+  const effectiveCommissionPct = vendorTier?.commissionPct ?? service.vendorCommissionPct;
+  const estimatedCommission = Math.round(service.priceCOP * effectiveCommissionPct / 100);
   const vendorTraining = trainingProgress.find(tp => tp.vendorId === vendorId && tp.serviceId === serviceId);
   const isTrainingComplete = vendorTraining?.status === 'declared_completed';
   const backPath = companyId ? `/vendor/company/${companyId}` : "/vendor";
@@ -101,7 +103,7 @@ export default function VendorServiceDetail() {
     setSaleLoading(true);
     await new Promise(r => setTimeout(r, 600));
     const grossAmount = service.priceCOP;
-    const sellerCommissionAmount = Math.round(grossAmount * service.vendorCommissionPct / 100);
+    const sellerCommissionAmount = Math.round(grossAmount * effectiveCommissionPct / 100);
     const mensualistaFeeAmount = Math.round(grossAmount * service.mensualistaPct / 100);
     const providerNetAmount = grossAmount - sellerCommissionAmount - mensualistaFeeAmount;
     addSale({
@@ -154,7 +156,7 @@ export default function VendorServiceDetail() {
             <div className="flex-1 p-4 min-w-0">
               <h1 className="text-lg font-semibold text-foreground leading-tight">{service.name}</h1>
               <p className="text-xs text-muted-foreground mt-0.5">{company.name}</p>
-              <div className="flex items-center gap-2 mt-2">
+              <div className="flex items-center gap-2 mt-2 flex-wrap">
                 {isRecurring ? (
                   <span className="inline-flex items-center gap-1 text-[10px] font-medium text-blue-600 bg-blue-500/10 px-2 py-0.5 rounded-full">
                     <RefreshCw className="w-2.5 h-2.5" /> Mensual
@@ -168,6 +170,21 @@ export default function VendorServiceDetail() {
                   <Badge className="bg-emerald-500/10 text-emerald-600 border-0 text-[9px]"><Check className="w-2.5 h-2.5 mr-0.5" /> Activo</Badge>
                 ) : (
                   <Badge variant="outline" className="text-[9px] text-muted-foreground"><Lock className="w-2.5 h-2.5 mr-0.5" /> Sin activar</Badge>
+                )}
+                {vendorTier && vendorTier.tierOrder === 3 && (
+                  <Badge className="text-[9px] bg-primary/10 text-primary border-0 shadow-[0_0_8px_hsl(var(--primary)/0.3)]">
+                    <Crown className="w-2.5 h-2.5 mr-0.5" /> Elite
+                  </Badge>
+                )}
+                {vendorTier && vendorTier.tierOrder === 2 && (
+                  <Badge className="text-[9px] bg-amber-500/10 text-amber-600 border-0">
+                    <Star className="w-2.5 h-2.5 mr-0.5" /> Premium
+                  </Badge>
+                )}
+                {vendorTier && vendorTier.tierOrder === 1 && (
+                  <Badge variant="outline" className="text-[9px]">
+                    <Shield className="w-2.5 h-2.5 mr-0.5" /> Básico
+                  </Badge>
                 )}
               </div>
               <div className="flex items-baseline gap-2 mt-2">
@@ -276,7 +293,7 @@ export default function VendorServiceDetail() {
             </div>
             <div className="p-3 bg-muted/30 rounded-xl text-xs space-y-1">
               <div className="flex justify-between"><span className="text-muted-foreground">Precio</span><span className="font-medium">{formatCOP(service.priceCOP)}</span></div>
-              <div className="flex justify-between"><span className="text-muted-foreground">Tu comisión ({service.vendorCommissionPct}%)</span><span className="font-medium text-primary">{formatCOP(estimatedCommission)}</span></div>
+              <div className="flex justify-between"><span className="text-muted-foreground">Tu comisión ({effectiveCommissionPct}%)</span><span className="font-medium text-primary">{formatCOP(estimatedCommission)}</span></div>
             </div>
             <DialogFooter>
               <Button type="button" variant="outline" size="sm" onClick={() => setSaleDialogOpen(false)}>Cancelar</Button>

@@ -61,6 +61,44 @@ export type Database = {
           },
         ]
       }
+      commission_tiers: {
+        Row: {
+          commission_pct: number
+          created_at: string
+          id: string
+          is_public: boolean
+          name: string
+          service_id: string
+          tier_order: number
+        }
+        Insert: {
+          commission_pct?: number
+          created_at?: string
+          id?: string
+          is_public?: boolean
+          name?: string
+          service_id: string
+          tier_order?: number
+        }
+        Update: {
+          commission_pct?: number
+          created_at?: string
+          id?: string
+          is_public?: boolean
+          name?: string
+          service_id?: string
+          tier_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "commission_tiers_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       companies: {
         Row: {
           address: string | null
@@ -412,6 +450,7 @@ export type Database = {
           client_email: string | null
           client_name: string
           client_phone: string | null
+          commission_tier_id: string | null
           company_id: string
           coupon_code: string | null
           coupon_discount_pct: number | null
@@ -437,6 +476,7 @@ export type Database = {
           client_email?: string | null
           client_name: string
           client_phone?: string | null
+          commission_tier_id?: string | null
           company_id: string
           coupon_code?: string | null
           coupon_discount_pct?: number | null
@@ -462,6 +502,7 @@ export type Database = {
           client_email?: string | null
           client_name?: string
           client_phone?: string | null
+          commission_tier_id?: string | null
           company_id?: string
           coupon_code?: string | null
           coupon_discount_pct?: number | null
@@ -488,6 +529,13 @@ export type Database = {
             columns: ["activation_code_id"]
             isOneToOne: false
             referencedRelation: "activation_codes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_commission_tier_id_fkey"
+            columns: ["commission_tier_id"]
+            isOneToOne: false
+            referencedRelation: "commission_tiers"
             referencedColumns: ["id"]
           },
           {
@@ -638,6 +686,45 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      vendor_commission_assignments: {
+        Row: {
+          assigned_at: string
+          id: string
+          service_id: string
+          tier_id: string
+          vendor_id: string
+        }
+        Insert: {
+          assigned_at?: string
+          id?: string
+          service_id: string
+          tier_id: string
+          vendor_id: string
+        }
+        Update: {
+          assigned_at?: string
+          id?: string
+          service_id?: string
+          tier_id?: string
+          vendor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_commission_assignments_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_commission_assignments_tier_id_fkey"
+            columns: ["tier_id"]
+            isOneToOne: false
+            referencedRelation: "commission_tiers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       vendor_company_links: {
         Row: {

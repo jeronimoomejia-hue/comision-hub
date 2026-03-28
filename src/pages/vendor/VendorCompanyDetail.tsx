@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import VendorTabLayout from "@/components/layout/VendorTabLayout";
 import { useDemo } from "@/contexts/DemoContext";
 import { companies, services as allServices, formatCOP, CURRENT_VENDOR_ID } from "@/data/mockData";
-import { Search, Package, Star, RefreshCw, Zap, Lock, Clock, Shield, BookOpen, MessageCircle, Tag, ShoppingCart, ChevronRight, ChevronDown, Send, Copy, Info, Globe, MapPin, Instagram, Facebook, Building2, ExternalLink } from "lucide-react";
+import { Search, Package, Star, RefreshCw, Zap, Lock, Clock, Shield, BookOpen, MessageCircle, Tag, ShoppingCart, ChevronRight, ChevronDown, Send, Copy, Info, Globe, MapPin, Instagram, Facebook, Building2, ExternalLink, Crown } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -309,6 +309,8 @@ function ProductosTab({ searchQuery, setSearchQuery, filteredServices, topServic
   companyId: string;
 }) {
   const navigate = useNavigate();
+  const { getVendorTier, currentVendorId } = useDemo();
+  const vendorId = currentVendorId || 'vendor-001';
 
   return (
     <div className="space-y-3">
@@ -326,7 +328,10 @@ function ProductosTab({ searchQuery, setSearchQuery, filteredServices, topServic
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
           {filteredServices.map((service) => {
             const isPopular = topServiceIds.includes(service.id);
-            const earningsPerSale = Math.round(service.priceCOP * service.vendorCommissionPct / 100);
+            const vendorTier = getVendorTier(vendorId, service.id);
+            const earningsPerSale = vendorTier 
+              ? Math.round(service.priceCOP * vendorTier.commissionPct / 100)
+              : Math.round(service.priceCOP * service.vendorCommissionPct / 100);
             const coverImg = categoryCovers[service.category];
             const availableCodes = service.activationCodes.filter((c: any) => c.status === 'available').length;
             const isRecurring = service.type === 'suscripción';
@@ -357,10 +362,20 @@ function ProductosTab({ searchQuery, setSearchQuery, filteredServices, topServic
                     </div>
                   )}
 
-                  <div className="absolute top-2 left-2 flex items-center gap-1">
+                  <div className="absolute top-2 left-2 flex items-center gap-1 flex-wrap">
                     {isPopular && (
                       <span className="inline-flex items-center gap-0.5 text-[8px] font-semibold px-1.5 py-0.5 rounded-full bg-amber-500 text-white">
                         <Star className="w-2 h-2" fill="currentColor" /> Top
+                      </span>
+                    )}
+                    {vendorTier && vendorTier.tierOrder === 3 && (
+                      <span className="inline-flex items-center gap-0.5 text-[8px] font-semibold px-1.5 py-0.5 rounded-full bg-primary text-primary-foreground">
+                        <Crown className="w-2 h-2" /> Elite
+                      </span>
+                    )}
+                    {vendorTier && vendorTier.tierOrder === 2 && (
+                      <span className="inline-flex items-center gap-0.5 text-[8px] font-semibold px-1.5 py-0.5 rounded-full bg-amber-500/90 text-white">
+                        <Star className="w-2 h-2" /> Premium
                       </span>
                     )}
                     {isRecurring ? (
