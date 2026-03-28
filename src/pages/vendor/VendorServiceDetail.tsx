@@ -10,7 +10,7 @@ import {
   ShoppingCart, RotateCcw, Clock, DollarSign, Plus, User, Mail, Phone, Tag,
   RefreshCw, Zap, Lock, Check, BookOpen, FileText, Download,
   Lightbulb, HelpCircle, AlertCircle, Target, Users, Package,
-  Shield, MessageSquare, ChevronRight, ChevronDown, Star, Play, Info, ExternalLink
+  Shield, MessageSquare, ChevronRight, ChevronDown, Star, Play, Info, ExternalLink, Crown
 } from "lucide-react";
 import { useDemo } from "@/contexts/DemoContext";
 import { formatCOP, formatDate, CURRENT_VENDOR_ID, services as allServices } from "@/data/mockData";
@@ -40,7 +40,7 @@ export default function VendorServiceDetail() {
   const navigate = useNavigate();
   const {
     services, sales, commissions, companies, trainingProgress,
-    currentVendorId, addRefundRequest, addSale, refundRequests
+    currentVendorId, addRefundRequest, addSale, refundRequests, getVendorTier
   } = useDemo();
 
   const [activeTab, setActiveTab] = useState<ServiceTab>('info');
@@ -70,7 +70,9 @@ export default function VendorServiceDetail() {
   }
 
   const coverImg = categoryCovers[service.category];
-  const estimatedCommission = Math.round(service.priceCOP * service.vendorCommissionPct / 100);
+  const vendorTier = getVendorTier(vendorId, serviceId!);
+  const effectiveCommissionPct = vendorTier?.commissionPct ?? service.vendorCommissionPct;
+  const estimatedCommission = Math.round(service.priceCOP * effectiveCommissionPct / 100);
   const vendorTraining = trainingProgress.find(tp => tp.vendorId === vendorId && tp.serviceId === serviceId);
   const isTrainingComplete = vendorTraining?.status === 'declared_completed';
   const backPath = companyId ? `/vendor/company/${companyId}` : "/vendor";
@@ -101,7 +103,7 @@ export default function VendorServiceDetail() {
     setSaleLoading(true);
     await new Promise(r => setTimeout(r, 600));
     const grossAmount = service.priceCOP;
-    const sellerCommissionAmount = Math.round(grossAmount * service.vendorCommissionPct / 100);
+    const sellerCommissionAmount = Math.round(grossAmount * effectiveCommissionPct / 100);
     const mensualistaFeeAmount = Math.round(grossAmount * service.mensualistaPct / 100);
     const providerNetAmount = grossAmount - sellerCommissionAmount - mensualistaFeeAmount;
     addSale({
