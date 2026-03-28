@@ -12,6 +12,8 @@ import {
   RefundRequest,
   ServiceRequest,
   TransactionStatus,
+  CommissionTier,
+  VendorCommissionAssignment,
   sales as initialSales,
   commissions as initialCommissions,
   vendorPayments as initialVendorPayments,
@@ -21,7 +23,9 @@ import {
   companies as initialCompanies,
   subscriptions as initialSubscriptions,
   refundRequests as initialRefunds,
-  serviceRequests as initialServiceRequests
+  serviceRequests as initialServiceRequests,
+  commissionTiers as initialCommissionTiers,
+  vendorCommissionAssignments as initialVCA
 } from '@/data/mockData';
 
 interface DemoContextType {
@@ -35,6 +39,8 @@ interface DemoContextType {
   subscriptions: Subscription[];
   refundRequests: RefundRequest[];
   serviceRequests: ServiceRequest[];
+  commissionTiers: CommissionTier[];
+  vendorCommissionAssignments: VendorCommissionAssignment[];
   pinnedServices: string[];
   demoMode: boolean;
   currentVendorId: string;
@@ -59,6 +65,11 @@ interface DemoContextType {
   updateRefundRequest: (refundId: string, updates: Partial<RefundRequest>) => void;
   addServiceRequest: (request: Omit<ServiceRequest, 'id' | 'createdAt' | 'updatedAt'>) => void;
   updateServiceRequest: (requestId: string, updates: Partial<ServiceRequest>) => void;
+  addCommissionTier: (tier: Omit<CommissionTier, 'id' | 'createdAt'>) => void;
+  updateCommissionTier: (tierId: string, updates: Partial<CommissionTier>) => void;
+  removeCommissionTier: (tierId: string) => void;
+  assignVendorTier: (vendorId: string, serviceId: string, tierId: string) => void;
+  getVendorTier: (vendorId: string, serviceId: string) => CommissionTier | null;
   resetDemoData: () => void;
 }
 
@@ -75,13 +86,14 @@ export function DemoProvider({ children }: { children: ReactNode }) {
   const [subs] = useState<Subscription[]>(initialSubscriptions);
   const [refundRequests, setRefundRequests] = useState<RefundRequest[]>(initialRefunds);
   const [serviceRequests, setServiceRequests] = useState<ServiceRequest[]>(initialServiceRequests);
+  const [commissionTiersState, setCommissionTiers] = useState<CommissionTier[]>(initialCommissionTiers);
+  const [vcaState, setVCA] = useState<VendorCommissionAssignment[]>(initialVCA);
   
   const [currentRole, setCurrentRole] = useState<'vendor' | 'company' | 'admin'>('vendor');
   const [currentVendorId, setCurrentVendorId] = useState('vendor-001');
   const [currentCompanyId, setCurrentCompanyId] = useState('company-009');
   const [currentCompanyPlan, setCurrentCompanyPlan] = useState<CompanyPlan>('premium');
   
-  // Pinned services - initial: services where vendor has training (completed or in progress)
   const [pinnedServices, setPinnedServices] = useState<string[]>(() => {
     return initialTrainings
       .filter(tp => tp.vendorId === 'vendor-001')
@@ -106,7 +118,6 @@ export function DemoProvider({ children }: { children: ReactNode }) {
       createdAt: new Date().toISOString().split('T')[0]
     };
     
-    // Auto-deliver activation code from the service's pool
     const service = services.find(s => s.id === saleData.serviceId);
     if (service) {
       const availableCode = service.activationCodes.find(c => c.status === 'available');
@@ -276,6 +287,46 @@ export function DemoProvider({ children }: { children: ReactNode }) {
         : r
     ));
   };
+
+  // Commission Tiers CRUD
+  const addCommissionTier = (tierData: Omit<CommissionTier, 'id' | 'createdAt'>) => {
+    const newTier: CommissionTier = {
+      ...tierData,
+      id: `tier-${Date.now()}`,
+      createdAt: new Date().toISOString().split('T')[0]
+    };
+    setCommissionTiers(prev => [...prev, newTier]);
+  };
+
+  const updateCommissionTier = (tierId: string, updates: Partial<CommissionTier>) => {
+    setCommissionTiers(prev => prev.map(t =>
+      t.id === tierId ? { ...t, ...updates } : t
+    ));
+  };
+
+  const removeCommissionTier = (tierId: string) => {
+    setCommissionTiers(prev => prev.filter(t => t.id !== tierId));
+    setVCA(prev => prev.filter(a => a.tierId !== tierId));
+  };
+
+  const assignVendorTier = (vendorId: string, serviceId: string, tierId: string) => {
+    setVCA(prev => {
+      const existing = prev.find(a => a.vendorId === vendorId && a.serviceId === serviceId);
+      if (existing) {
+        return prev.map(a => a.id === existing.id ? { ...a, tierId, assignedAt: new Date().toISOString().split('T')[0] } : a);
+      }
+      return [...prev, { id: `vca-${Date.now()}`, vendorId, serviceId, tierId, assignedAt: new Date().toISOString().split('T')[0] }];
+    });
+  };
+
+  const getVendorTier = (vendorId: string, serviceId: string): CommissionTier | null => {
+    const assignment = vcaState.find(a => a.vendorId === vendorId && a.serviceId === serviceId);
+    if (assignment) {
+      return commissionTiersState.find(t => t.id === assignment.tierId) || null;
+    }
+    // Default: return the public tier for this service
+    return commissionTiersState.find(t => t.serviceId === serviceId && t.isPublic) || null;
+  };
   
   const resetDemoData = () => {
     setSales(initialSales);
@@ -286,6 +337,8 @@ export function DemoProvider({ children }: { children: ReactNode }) {
     setServices(initialServices);
     setRefundRequests(initialRefunds);
     setServiceRequests(initialServiceRequests);
+    setCommissionTiers(initialCommissionTiers);
+    setVCA(initialVCA);
   };
   
   return (
@@ -300,6 +353,8 @@ export function DemoProvider({ children }: { children: ReactNode }) {
       subscriptions: subs,
       refundRequests,
       serviceRequests,
+      commissionTiers: commissionTiersState,
+      vendorCommissionAssignments: vcaState,
       pinnedServices,
       demoMode,
       currentVendorId,
@@ -324,6 +379,11 @@ export function DemoProvider({ children }: { children: ReactNode }) {
       updateRefundRequest,
       addServiceRequest,
       updateServiceRequest,
+      addCommissionTier,
+      updateCommissionTier,
+      removeCommissionTier,
+      assignVendorTier,
+      getVendorTier,
       resetDemoData
     }}>
       {children}

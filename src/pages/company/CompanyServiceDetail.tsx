@@ -17,6 +17,8 @@ import CapacitacionTab from "./service-tabs/CapacitacionTab";
 import CuponesTab from "./service-tabs/CuponesTab";
 import CodigosTab from "./service-tabs/CodigosTab";
 import ConfigTab from "./service-tabs/ConfigTab";
+import ComisionesTab from "./service-tabs/ComisionesTab";
+import { Crown } from "lucide-react";
 
 type ServiceTab = 'resumen' | 'ventas' | 'vendedores' | 'capacitacion' | 'cupones' | 'codigos' | 'config';
 
