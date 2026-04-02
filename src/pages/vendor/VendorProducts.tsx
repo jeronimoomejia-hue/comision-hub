@@ -50,7 +50,7 @@ const categoryGroups: CategoryGroup[] = [
 ];
 
 export default function VendorProducts() {
-  const { currentVendorId, sales, trainingProgress } = useDemo();
+  const { currentVendorId, sales, trainingProgress, getVendorTier } = useDemo();
   const vendorId = currentVendorId || CURRENT_VENDOR_ID;
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<string>("todos");
