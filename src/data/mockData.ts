@@ -1102,14 +1102,14 @@ export const weeklyGMV = Array.from({ length: 12 }, (_, i) => {
 });
 
 export const salesByCategory = [
+  { category: 'Gimnasio', sales: 65 },
+  { category: 'Yoga & Bienestar', sales: 38 },
   { category: 'IA Seguros', sales: 42 },
-  { category: 'IA Legal', sales: 35 },
-  { category: 'IA Marketing', sales: 48 },
-  { category: 'IA Ventas', sales: 55 },
-  { category: 'IA Atención', sales: 62 },
-  { category: 'IA Contabilidad', sales: 28 },
-  { category: 'IA RRHH', sales: 24 },
-  { category: 'IA Ciberseguridad', sales: 18 }
+  { category: 'IA Ventas', sales: 35 },
+  { category: 'IA Atención', sales: 48 },
+  { category: 'Spa & Wellness', sales: 22 },
+  { category: 'Peluquería', sales: 30 },
+  { category: 'Cancha de Playa', sales: 15 }
 ];
 
 export const salesStatusDistribution = [
