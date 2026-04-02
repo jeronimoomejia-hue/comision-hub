@@ -106,8 +106,16 @@ export const PricingSection = () => {
   const [currency, setCurrency] = useState<Currency>("COP");
 
   const formatPrice = (plan: (typeof plans)[0]) => {
+    if (plan.id === "enterprise") return "A medida";
     if (plan.priceEUR === 0) return "Gratis";
     if (currency === "EUR") return `€${plan.priceEUR}`;
+    return new Intl.NumberFormat("es-CO", {
+      style: "currency",
+      currency: "COP",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(plan.priceCOP);
+  };
     return new Intl.NumberFormat("es-CO", {
       style: "currency",
       currency: "COP",

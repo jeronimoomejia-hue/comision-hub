@@ -299,8 +299,8 @@ export default function CompanyDashboard() {
                 </p>
                 <p className="text-[11px] text-muted-foreground">
                   {plan === 'freemium'
-                    ? 'Productos ilimitados, cupones, chat y sin fee del 15%'
-                    : 'Dominio propio, marca blanca, integración API'}
+                    ? 'Productos ilimitados, cupones, chat y 0% fee de plataforma'
+                    : 'Integración API, calendario de horarios, soporte dedicado'}
                 </p>
               </div>
               <Button size="sm" className="text-xs gap-1" onClick={() => setCurrentCompanyPlan(plan === 'freemium' ? 'premium' : 'enterprise')}>
