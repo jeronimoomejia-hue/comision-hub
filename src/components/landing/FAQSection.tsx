@@ -16,11 +16,11 @@ const faqData: Record<FAQCategory, { question: string; answer: string }[]> = {
     },
     {
       question: "¿Qué diferencia hay entre los planes?",
-      answer: "Freemium: hasta 5 productos, códigos manuales, fee del 15%. Premium (€100/mes): productos ilimitados, sin fee del 15%, cupones de descuento y chat vendedor-empresa. Enterprise (€300/mes): todo lo de Premium + integración automática de códigos, dominio personalizado y marca blanca.",
+      answer: "Freemium: hasta 5 productos, 12% + 3% por transacción. Premium ($305.000 COP/mes): productos ilimitados, 0% + 3% por transacción, cupones y chat con vendedores. Enterprise: todo Premium + integración API, calendario de horarios y soporte dedicado.",
     },
     {
-      question: "¿Mis vendedores ven la marca de Mensualista?",
-      answer: "En los planes Premium y Enterprise, la experiencia es completamente personalizada con tu marca. En el plan Freemium también puedes configurar tu logo y colores, aunque la plataforma muestra la marca Mensualista en algunas partes. En Enterprise es marca blanca completa con dominio propio.",
+      question: "¿Qué incluye el plan Enterprise?",
+      answer: "El plan Enterprise incluye integración API para conectar tus sistemas, calendario de horarios para servicios por cita, y soporte dedicado con un ejecutivo asignado. Contacta a ventas para un plan personalizado.",
     },
   ],
   vendedores: [

@@ -94,7 +94,7 @@ export const LandingHero = () => {
             className="text-center mb-6"
           >
             <p className="text-sm text-muted-foreground">
-              Tu empresa tiene su <span className="text-primary font-semibold">panel personalizado</span> con logo, colores y dominio propio.
+              Tu empresa tiene su <span className="text-primary font-semibold">panel personalizado</span> para gestionar vendedores, ventas y comisiones.
             </p>
           </motion.div>
 

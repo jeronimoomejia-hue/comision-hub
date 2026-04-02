@@ -8,7 +8,7 @@ const features = [
   { icon: Shield, title: "Códigos de activación", description: "Gestiona la activación de productos con códigos manuales o integración automática." },
   { icon: Tag, title: "Cupones de descuento", description: "Crea cupones para incentivar a tus vendedores a cerrar más ventas. (Premium+)" },
   { icon: MessageCircle, title: "Chat empresa-vendedor", description: "Comunicación directa con tus vendedores para resolver dudas y dar soporte. (Premium+)" },
-  { icon: Globe, title: "Dominio personalizado", description: "Tu plataforma con tu propio dominio. Marca blanca completa. (Enterprise)" },
+  { icon: Globe, title: "Calendario de horarios", description: "Gestiona reservas y citas con un calendario integrado para tus servicios. (Enterprise)" },
   { icon: Code, title: "Integraciones API", description: "Conecta la activación de códigos con tu sistema existente. (Enterprise)" },
 ];
 
