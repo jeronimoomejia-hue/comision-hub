@@ -167,6 +167,7 @@ export interface Sale {
   subscriptionActive?: boolean;
   notes?: string;
   activationCode?: string; // Code delivered to client
+  commissionTierId?: string; // Which tier was used for this sale
   createdAt: string;
   // Legacy compatibility
   amountCOP?: number;
