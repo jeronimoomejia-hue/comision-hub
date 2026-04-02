@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import {
   DollarSign, TrendingUp, Users, Crown, Zap, Building2,
   ArrowRight, Package, ChevronRight, RefreshCw, ChevronDown, BarChart3,
-  CreditCard, ShoppingCart, Tag, MessageCircle
+  ShoppingCart, Tag, MessageCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -154,7 +154,7 @@ export default function CompanyDashboard() {
           </Link>
 
           {/* Cupones mini */}
-          <Link to="/company/coupons" className="rounded-xl border border-border bg-card p-3 hover:border-primary/20 transition-colors group">
+          <Link to="/company/services" className="rounded-xl border border-border bg-card p-3 hover:border-primary/20 transition-colors group">
             <div className="flex items-center justify-between mb-2">
               <Tag className="w-4 h-4 text-muted-foreground" />
               <ChevronRight className="w-3 h-3 text-muted-foreground/30 group-hover:text-primary transition-colors" />
@@ -216,7 +216,7 @@ export default function CompanyDashboard() {
           </div>
         </div>
 
-        {/* Recent sales */}
+        {/* Recent sales — no client contact for company */}
         <div>
           <div className="flex items-center justify-between mb-3">
             <span className="text-sm font-semibold text-foreground">Ventas recientes</span>
@@ -234,7 +234,6 @@ export default function CompanyDashboard() {
                   key={sale.id}
                   id={sale.id}
                   clientName={sale.clientName}
-                  clientEmail={sale.clientEmail}
                   serviceName={service?.name}
                   serviceCategory={service?.category}
                   vendorName={vendor?.name}
