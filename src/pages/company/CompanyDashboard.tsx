@@ -7,6 +7,7 @@ import {
   CreditCard, ShoppingCart
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Link, useNavigate } from "react-router-dom";
 import { useDemo } from "@/contexts/DemoContext";
 import {
