@@ -293,7 +293,6 @@ export default function CompanyVendors() {
           {selectedVendor && (() => {
             const d = selectedVendor.data;
             const sc = statusConfig[d.status];
-            const [tab, setTab] = useState<'ventas' | 'servicios' | 'capacitacion'>('ventas');
 
             return (
               <>
