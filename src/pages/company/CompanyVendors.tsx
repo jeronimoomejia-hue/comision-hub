@@ -288,7 +288,7 @@ export default function CompanyVendors() {
       </div>
 
       {/* ====== VENDOR DETAIL MODAL ====== */}
-      <Dialog open={!!selectedVendor} onOpenChange={() => setSelectedVendor(null)}>
+      <Dialog open={!!selectedVendor} onOpenChange={(open) => { if (!open) setSelectedVendor(null); }}>
         <DialogContent className="max-w-md p-0 gap-0 overflow-hidden rounded-2xl border-border">
           {selectedVendor && (() => {
             const d = selectedVendor.data;
