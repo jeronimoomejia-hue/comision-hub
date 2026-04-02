@@ -40,6 +40,7 @@ function Section({ title, icon: Icon, children, onEdit, isEditing, onSave, onCan
 }
 
 export default function ResumenTab({ service, sales, activeSubscriptions, vendorCount, updateService }: any) {
+  const { commissionTiers, vendorCommissionAssignments } = useDemo();
   const extended = extendedServiceDetails[service.id];
 
   // Section-level editing states
