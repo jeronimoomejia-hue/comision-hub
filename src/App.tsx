@@ -75,9 +75,7 @@ const App = () => (
             <Route path="/company/services/:serviceId" element={<CompanyServiceDetail />} />
             <Route path="/company/payments" element={<CompanyPayments />} />
             <Route path="/company/vendors" element={<CompanyVendors />} />
-            <Route path="/company/coupons" element={<CompanyCoupons />} />
             <Route path="/company/chat" element={<CompanyChat />} />
-            <Route path="/company/trainings" element={<CompanyTrainings />} />
             <Route path="/company/settings" element={<CompanySettings />} />
             <Route path="/company/profile" element={<CompanyProfile />} />
             
