@@ -126,10 +126,8 @@ export default function CompanyVendorDetail() {
   });
 
   const handleTierChange = (serviceId: string, newTierId: string) => {
-    if (updateVendorCommissionAssignment) {
-      updateVendorCommissionAssignment(vendorId!, serviceId, newTierId);
-      toast.success("Nivel de comisión actualizado");
-    }
+    assignVendorTier(vendorId!, serviceId, newTierId);
+    toast.success("Nivel de comisión actualizado");
   };
 
   const allSales = vendorSales

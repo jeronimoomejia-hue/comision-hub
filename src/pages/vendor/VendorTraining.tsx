@@ -57,7 +57,7 @@ function getQuizForService(serviceId: string): QuizQuestion[] {
 export default function VendorTraining() {
   const { serviceId } = useParams<{ serviceId: string }>();
   const navigate = useNavigate();
-  const { trainingProgress, updateTrainingProgress, services, currentVendorId } = useDemo();
+  const { trainingProgress, completeTraining, services, currentVendorId } = useDemo();
 
   const vendorId = currentVendorId || CURRENT_VENDOR_ID;
   const service = services.find(s => s.id === serviceId);
