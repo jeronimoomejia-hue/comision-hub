@@ -1003,10 +1003,12 @@ export const companyPayouts: CompanyPayout[] = companyPayments.map(p => ({
 // =============================================================================
 
 export const refundRequests: RefundRequest[] = [
-  // Vendor-001 has no refunds (new user)
-  { id: 'refund-002', saleId: 'sale-068', vendorId: 'vendor-002', companyId: 'company-002', serviceId: 'service-003', reason: 'No le gustó el producto', createdAt: '2025-01-05', status: 'aprobado', decisionBy: 'empresa', decidedAt: '2025-01-06' },
-  { id: 'refund-003', saleId: 'sale-069', vendorId: 'vendor-003', companyId: 'company-003', serviceId: 'service-005', reason: 'Problema técnico', createdAt: '2025-01-03', status: 'automático', decisionBy: 'sistema', decidedAt: '2025-01-03' },
-  { id: 'refund-004', saleId: 'sale-070', vendorId: 'vendor-004', companyId: 'company-004', serviceId: 'service-007', reason: 'Cliente duplicó compra', createdAt: '2025-01-08', status: 'aprobado', decisionBy: 'empresa', decidedAt: '2025-01-09' }
+  // Vendor-001 has 1 refund (the Prana Retiro sale)
+  { id: 'refund-001', saleId: 'sale-v1-8', vendorId: 'vendor-001', companyId: 'company-010', serviceId: 'service-029', reason: 'El cliente no pudo asistir al retiro por motivos de salud', createdAt: '2025-03-05', status: 'aprobado', decisionBy: 'empresa', decidedAt: '2025-03-06' },
+  // Other vendors
+  { id: 'refund-002', saleId: 'sale-v2d-006', vendorId: 'vendor-002', companyId: 'company-009', serviceId: 'service-025', reason: 'Cliente cambió de gimnasio', createdAt: '2025-01-05', status: 'aprobado', decisionBy: 'empresa', decidedAt: '2025-01-06' },
+  { id: 'refund-003', saleId: 'sale-v3d-004', vendorId: 'vendor-003', companyId: 'company-009', serviceId: 'service-026', reason: 'Problema con horarios del entrenador', createdAt: '2025-01-03', status: 'aprobado', decisionBy: 'empresa', decidedAt: '2025-01-04' },
+  { id: 'refund-004', saleId: 'sale-v4d-003', vendorId: 'vendor-004', companyId: 'company-009', serviceId: 'service-025', reason: 'Cliente duplicó compra', createdAt: '2025-01-08', status: 'aprobado', decisionBy: 'empresa', decidedAt: '2025-01-09' }
 ];
 
 // =============================================================================
