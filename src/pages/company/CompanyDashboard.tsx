@@ -20,8 +20,8 @@ import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, CartesianGrid } fro
 
 const planConfig: Record<CompanyPlan, { label: string; icon: React.ElementType; price: string }> = {
   freemium: { label: "Freemium", icon: Zap, price: "Gratis" },
-  premium: { label: "Premium", icon: Crown, price: "€100/mes" },
-  enterprise: { label: "Enterprise", icon: Building2, price: "€300/mes" },
+  premium: { label: "Premium", icon: Crown, price: "$305.000/mes" },
+  enterprise: { label: "Enterprise", icon: Building2, price: "Personalizado" },
 };
 
 const allPlans: CompanyPlan[] = ['freemium', 'premium', 'enterprise'];
