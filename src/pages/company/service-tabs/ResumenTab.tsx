@@ -7,9 +7,10 @@ import { Badge } from "@/components/ui/badge";
 import {
   DollarSign, ShoppingCart, RefreshCw, Users, CheckCircle2, Calendar,
   BarChart3, AlertCircle, Target, Lightbulb, Edit3, Save, X, Plus, Trash2,
-  HelpCircle, FileText, Download, MessageSquare
+  HelpCircle, FileText, Download, MessageSquare, Crown, Star, Shield, Eye, EyeOff
 } from "lucide-react";
 import { formatCOP } from "@/data/mockData";
+import { useDemo } from "@/contexts/DemoContext";
 import { extendedServiceDetails } from "@/data/extendedServiceData";
 import { toast } from "sonner";
 import {
