@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   ShoppingCart, RotateCcw, Check, X
 } from "lucide-react";
-import { vendors, formatCOP } from "@/data/mockData";
+import { vendors, formatCOP, commissionTiers as allTiers } from "@/data/mockData";
 import TransactionCard from "@/components/TransactionCard";
 import StatusGuide from "@/components/StatusGuide";
 import { toast } from "sonner";
