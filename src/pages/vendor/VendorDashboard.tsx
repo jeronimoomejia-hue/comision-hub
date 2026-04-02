@@ -90,7 +90,7 @@ export default function VendorDashboard() {
 
   const renderServiceCard = (service: typeof vendorServices[0], showPrivateBadge = false) => {
     const coverImg = categoryCovers[service.category];
-    const isRecurring = service.type === 'suscripcion';
+    const isRecurring = service.type === 'suscripción';
 
     return (
       <div

@@ -116,7 +116,7 @@ export default function VendorCRM() {
           holdStartAt: new Date().toISOString().split('T')[0], holdEndAt: holdEnd.toISOString().split('T')[0],
           status: service.refundPolicy.refundWindowDays === 0 ? 'COMPLETED' : 'HELD',
           paymentProvider: 'Stripe', mpPaymentId: `STR-QS-${Date.now()}`,
-          isSubscription: service.type === 'suscripcion', subscriptionActive: service.type === 'suscripcion', amountCOP: gross,
+          isSubscription: service.type === 'suscripción', subscriptionActive: service.type === 'suscripción', amountCOP: gross,
         });
         toast.success(`Venta registrada — Comision: ${formatCOP(comm)}`);
       }

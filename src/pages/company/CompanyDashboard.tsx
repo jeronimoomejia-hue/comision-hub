@@ -193,7 +193,7 @@ export default function CompanyDashboard() {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                     <div className="absolute bottom-3 left-3 right-3">
                       <h3 className="text-sm font-semibold text-white leading-tight">{service.name}</h3>
-                      <p className="text-[10px] text-white/70 mt-0.5">{formatCOP(service.priceCOP)}{service.type === 'suscripcion' ? '/mes' : ''}</p>
+                      <p className="text-[10px] text-white/70 mt-0.5">{formatCOP(service.priceCOP)}{service.type === 'suscripción' ? '/mes' : ''}</p>
                     </div>
                   </div>
                   <div className="p-3 flex items-center justify-between">
