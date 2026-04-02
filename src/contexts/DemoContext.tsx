@@ -95,6 +95,7 @@ export function DemoProvider({ children }: { children: ReactNode }) {
   const [currentVendorId, setCurrentVendorId] = useState('vendor-001');
   const [currentCompanyId, setCurrentCompanyId] = useState('company-009');
   const [currentCompanyPlan, setCurrentCompanyPlan] = useState<CompanyPlan>('premium');
+  const [isTutorialMode, setIsTutorialMode] = useState(false);
   
   const [pinnedServices, setPinnedServices] = useState<string[]>(() => {
     return initialTrainings
