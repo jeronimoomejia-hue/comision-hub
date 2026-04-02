@@ -1014,15 +1014,21 @@ export const refundRequests: RefundRequest[] = [
 // =============================================================================
 
 export const trainingProgress: TrainingProgress[] = [
-  // Vendor-001 is a new user — no training progress yet
-  // Otros vendedores
-  { id: 'tp-008', vendorId: 'vendor-002', serviceId: 'service-003', status: 'declared_completed', lastAccessedAt: '2024-11-20', completedAt: '2024-11-20' },
-  { id: 'tp-009', vendorId: 'vendor-002', serviceId: 'service-005', status: 'in_progress', lastAccessedAt: '2025-01-12' },
-  { id: 'tp-010', vendorId: 'vendor-003', serviceId: 'service-007', status: 'declared_completed', lastAccessedAt: '2024-12-15', completedAt: '2024-12-15' },
-  { id: 'tp-011', vendorId: 'vendor-003', serviceId: 'service-009', status: 'in_progress', lastAccessedAt: '2025-01-16' },
-  { id: 'tp-012', vendorId: 'vendor-004', serviceId: 'service-011', status: 'declared_completed', lastAccessedAt: '2024-11-25', completedAt: '2024-11-25' },
-  { id: 'tp-013', vendorId: 'vendor-005', serviceId: 'service-013', status: 'declared_completed', lastAccessedAt: '2024-12-20', completedAt: '2024-12-20' },
-  { id: 'tp-014', vendorId: 'vendor-006', serviceId: 'service-015', status: 'in_progress', lastAccessedAt: '2025-01-14' }
+// Vendor-001 — completed training on services they sell
+  { id: 'tp-001', vendorId: 'vendor-001', serviceId: 'service-025', status: 'declared_completed', lastAccessedAt: '2025-03-22', completedAt: '2025-03-22' },
+  { id: 'tp-002', vendorId: 'vendor-001', serviceId: 'service-026', status: 'declared_completed', lastAccessedAt: '2025-03-23', completedAt: '2025-03-23' },
+  { id: 'tp-003', vendorId: 'vendor-001', serviceId: 'service-028', status: 'declared_completed', lastAccessedAt: '2025-03-24', completedAt: '2025-03-24' },
+  { id: 'tp-004', vendorId: 'vendor-001', serviceId: 'service-033', status: 'declared_completed', lastAccessedAt: '2025-03-25', completedAt: '2025-03-25' },
+  { id: 'tp-005', vendorId: 'vendor-001', serviceId: 'service-034', status: 'in_progress', lastAccessedAt: '2025-03-28' },
+  { id: 'tp-006', vendorId: 'vendor-001', serviceId: 'service-029', status: 'declared_completed', lastAccessedAt: '2025-03-26', completedAt: '2025-03-26' },
+  // Other vendors
+  { id: 'tp-008', vendorId: 'vendor-002', serviceId: 'service-025', status: 'declared_completed', lastAccessedAt: '2025-01-20', completedAt: '2025-01-20' },
+  { id: 'tp-009', vendorId: 'vendor-002', serviceId: 'service-026', status: 'in_progress', lastAccessedAt: '2025-01-12' },
+  { id: 'tp-010', vendorId: 'vendor-003', serviceId: 'service-025', status: 'declared_completed', lastAccessedAt: '2025-01-15', completedAt: '2025-01-15' },
+  { id: 'tp-011', vendorId: 'vendor-003', serviceId: 'service-009', status: 'declared_completed', lastAccessedAt: '2025-01-16', completedAt: '2025-01-16' },
+  { id: 'tp-012', vendorId: 'vendor-004', serviceId: 'service-007', status: 'declared_completed', lastAccessedAt: '2025-01-25', completedAt: '2025-01-25' },
+  { id: 'tp-013', vendorId: 'vendor-005', serviceId: 'service-009', status: 'declared_completed', lastAccessedAt: '2025-01-20', completedAt: '2025-01-20' },
+  { id: 'tp-014', vendorId: 'vendor-004', serviceId: 'service-025', status: 'in_progress', lastAccessedAt: '2025-01-14' }
 ];
 
 // =============================================================================
