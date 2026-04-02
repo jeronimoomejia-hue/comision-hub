@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import VendorTabLayout from "@/components/layout/VendorTabLayout";
-import { Plus, MessageCircle, Repeat, GripVertical, StickyNote, Zap, Calendar, X, ChevronDown, Users, Package, ShoppingCart, Phone, Mail, ArrowLeft } from "lucide-react";
+import { Plus, MessageCircle, GripVertical, StickyNote, Zap, Calendar, X, ChevronDown, Users, Phone, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -19,7 +19,6 @@ import { es } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 
 type Stage = 'sin_contactar' | 'contactado' | 'interesado' | 'negociando' | 'cerrado';
-type View = 'crm' | 'store';
 
 interface Note {
   id: string;
@@ -38,18 +37,6 @@ interface Prospect {
   createdAt: string;
   notes: Note[];
   followUpDate?: string;
-  fromLeadPackage?: boolean;
-}
-
-interface LeadPackageStore {
-  id: string;
-  companyName: string;
-  companyColor: string;
-  name: string;
-  description: string;
-  priceCOP: number;
-  leadCount: number;
-  leads: { name: string; phone: string; email?: string; context: string }[];
 }
 
 const STAGES: { key: Stage; label: string; color: string; bg: string; dotColor: string; border: string }[] = [
@@ -63,60 +50,22 @@ const STAGES: { key: Stage; label: string; color: string; bg: string; dotColor: 
 const INITIAL_PROSPECTS: Prospect[] = [
   { id: 'p1', name: 'Andrea Ruiz', phone: '300 123 4567', serviceId: 'service-025', stage: 'interesado', createdAt: '2026-03-23', notes: [{ id: 'n1', text: 'Quiere plan gym para ella y su esposo', date: '2026-03-23' }], followUpDate: '2026-03-27' },
   { id: 'p2', name: 'Felipe Mora', phone: '311 987 6543', serviceId: 'service-028', stage: 'contactado', createdAt: '2026-03-24', notes: [] },
-  { id: 'p3', name: 'Juliana Castro', serviceId: 'service-034', stage: 'negociando', createdAt: '2026-03-20', notes: [{ id: 'n2', text: 'Pidió descuento del 10%', date: '2026-03-20' }, { id: 'n3', text: 'Le mandé propuesta con cupón', date: '2026-03-22' }] },
+  { id: 'p3', name: 'Juliana Castro', serviceId: 'service-034', stage: 'negociando', createdAt: '2026-03-20', notes: [{ id: 'n2', text: 'Pidio descuento del 10%', date: '2026-03-20' }, { id: 'n3', text: 'Le mande propuesta con cupon', date: '2026-03-22' }] },
   { id: 'p4', name: 'Roberto Henao', phone: '315 456 7890', serviceId: 'service-033', stage: 'cerrado', createdAt: '2026-03-18', notes: [{ id: 'n4', text: 'Cerrado — Paquete corte + color', date: '2026-03-18' }] },
-];
-
-const LEAD_STORE: LeadPackageStore[] = [
-  {
-    id: 'ls1',
-    companyName: 'FitLife Gym',
-    companyColor: '#22c55e',
-    name: 'Pack Fitness - Marzo',
-    description: 'Leads interesados en planes de gimnasio y bienestar en Bogotá. Todos han mostrado interés en los últimos 30 días.',
-    priceCOP: 150000,
-    leadCount: 5,
-    leads: [
-      { name: 'Carolina Méndez', phone: '300 111 2233', email: 'carolina@email.com', context: 'Preguntó por planes mensuales de gimnasio. Zona norte.' },
-      { name: 'Andrés Patiño', phone: '311 444 5566', context: 'Interesado en plan familiar. Tiene 2 hijos.' },
-      { name: 'Valentina Ríos', phone: '315 777 8899', email: 'val.rios@email.com', context: 'Busca gimnasio con piscina. Presupuesto $200.000/mes.' },
-      { name: 'Diego Morales', phone: '320 222 3344', context: 'Quiere empezar a entrenar. Primera vez en un gimnasio.' },
-      { name: 'Sofía Herrera', phone: '318 666 7788', email: 'sofia.h@email.com', context: 'Interesada en clases de yoga y pilates.' },
-    ],
-  },
-  {
-    id: 'ls2',
-    companyName: 'StyleCuts',
-    companyColor: '#a855f7',
-    name: 'Pack Belleza Abril',
-    description: 'Clientes potenciales para servicios de peluquería y estética. Perfiles verificados.',
-    priceCOP: 120000,
-    leadCount: 3,
-    leads: [
-      { name: 'Mariana López', phone: '312 333 4455', context: 'Busca colorista profesional para rubio platino.' },
-      { name: 'Camila Ortiz', phone: '316 555 6677', context: 'Quiere tratamiento capilar. Cabello maltratado.' },
-      { name: 'Laura Gómez', phone: '310 888 9900', context: 'Corte y alisado para evento especial.' },
-    ],
-  },
 ];
 
 export default function VendorCRM() {
   const { currentVendorId, addSale } = useDemo();
-  const [view, setView] = useState<View>('crm');
   const [crmEnabled, setCrmEnabled] = useState(true);
   const [prospects, setProspects] = useState<Prospect[]>(INITIAL_PROSPECTS);
   const [showAdd, setShowAdd] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [newNoteText, setNewNoteText] = useState("");
-  const [selectedPackage, setSelectedPackage] = useState<LeadPackageStore | null>(null);
 
   const [newName, setNewName] = useState("");
   const [newPhone, setNewPhone] = useState("");
   const [newService, setNewService] = useState("");
   const [quickSale, setQuickSale] = useState(false);
-
-  const [dragId, setDragId] = useState<string | null>(null);
-  const [dragOverStage, setDragOverStage] = useState<Stage | null>(null);
 
   const linkedCompanyIds = vendorCompanyLinks
     .filter(l => l.vendorId === (currentVendorId || CURRENT_VENDOR_ID) && l.status === 'active')
@@ -128,20 +77,6 @@ export default function VendorCRM() {
     const company = service ? companies.find(c => c.id === service.companyId) : null;
     return { service, company };
   };
-
-  const handleDragStart = (e: React.DragEvent, id: string) => {
-    setDragId(id);
-    e.dataTransfer.effectAllowed = 'move';
-  };
-  const handleDragOver = (e: React.DragEvent, stage: Stage) => { e.preventDefault(); setDragOverStage(stage); };
-  const handleDragLeave = () => setDragOverStage(null);
-  const handleDrop = (e: React.DragEvent, stage: Stage) => {
-    e.preventDefault();
-    if (!dragId) return;
-    setProspects(prev => prev.map(p => p.id === dragId ? { ...p, stage } : p));
-    setDragId(null); setDragOverStage(null);
-  };
-  const handleDragEnd = () => { setDragId(null); setDragOverStage(null); };
 
   const addNote = (prospectId: string) => {
     if (!newNoteText.trim()) return;
@@ -157,6 +92,10 @@ export default function VendorCRM() {
       p.id === prospectId ? { ...p, followUpDate: date ? date.toISOString().split('T')[0] : undefined } : p
     ));
     if (date) toast.success(`Seguimiento: ${format(date, "d 'de' MMMM", { locale: es })}`);
+  };
+
+  const changeStage = (prospectId: string, stage: Stage) => {
+    setProspects(prev => prev.map(p => p.id === prospectId ? { ...p, stage } : p));
   };
 
   const handleAdd = () => {
@@ -177,9 +116,9 @@ export default function VendorCRM() {
           holdStartAt: new Date().toISOString().split('T')[0], holdEndAt: holdEnd.toISOString().split('T')[0],
           status: service.refundPolicy.refundWindowDays === 0 ? 'COMPLETED' : 'HELD',
           paymentProvider: 'Stripe', mpPaymentId: `STR-QS-${Date.now()}`,
-          isSubscription: service.type === 'suscripción', subscriptionActive: service.type === 'suscripción', amountCOP: gross,
+          isSubscription: service.type === 'suscripcion', subscriptionActive: service.type === 'suscripcion', amountCOP: gross,
         });
-        toast.success(`Venta registrada — Comisión: ${formatCOP(comm)}`);
+        toast.success(`Venta registrada — Comision: ${formatCOP(comm)}`);
       }
     } else {
       const prospect: Prospect = {
@@ -193,27 +132,6 @@ export default function VendorCRM() {
   };
 
   const removeProspect = (id: string) => { setProspects(prev => prev.filter(p => p.id !== id)); toast.success("Eliminado"); };
-
-  const buyLeadPackage = (pkg: LeadPackageStore) => {
-    const defaultService = availableServices[0];
-    if (!defaultService) { toast.error("No tienes servicios activos"); return; }
-    const newProspects: Prospect[] = pkg.leads.map((lead, i) => ({
-      id: `lead-${Date.now()}-${i}`,
-      name: lead.name,
-      phone: lead.phone,
-      email: lead.email,
-      context: lead.context,
-      serviceId: defaultService.id,
-      stage: 'sin_contactar' as Stage,
-      createdAt: new Date().toISOString().split('T')[0],
-      notes: [{ id: `ln-${Date.now()}-${i}`, text: `Lead comprado: ${lead.context}`, date: new Date().toISOString().split('T')[0] }],
-      fromLeadPackage: true,
-    }));
-    setProspects(prev => [...newProspects, ...prev]);
-    toast.success(`${pkg.leadCount} leads agregados a tu CRM`);
-    setSelectedPackage(null);
-    setView('crm');
-  };
 
   const prospectsByStage = STAGES.map(stage => ({
     ...stage,
@@ -231,415 +149,259 @@ export default function VendorCRM() {
     <VendorTabLayout>
       <div className="max-w-5xl mx-auto space-y-5">
         {/* Header */}
-        <div className="text-center space-y-1">
-          <h1 className="text-xl font-bold text-foreground tracking-tight">Clientes</h1>
-          <p className="text-xs text-muted-foreground">
-            {prospects.length} prospectos · {formatCOP(totalValue)} potencial
-          </p>
-        </div>
-
-        {/* View toggle */}
-        <div className="flex items-center justify-center">
-          <div className="inline-flex items-center gap-1 p-1 rounded-xl bg-muted/30 border border-border/30">
-            <button
-              onClick={() => setView('crm')}
-              className={cn(
-                "px-4 py-2 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5",
-                view === 'crm' ? "bg-card shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground"
-              )}
-            >
-              <Users className="w-3.5 h-3.5" /> Mis Clientes
-            </button>
-            <button
-              onClick={() => setView('store')}
-              className={cn(
-                "px-4 py-2 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5",
-                view === 'store' ? "bg-card shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground"
-              )}
-            >
-              <ShoppingCart className="w-3.5 h-3.5" /> Tienda de Leads
-            </button>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-xl font-bold text-foreground tracking-tight">Mis Clientes</h1>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              {prospects.length} prospectos · {formatCOP(totalValue)} potencial
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" className="rounded-full h-8 px-4 gap-1.5 text-[11px] font-medium" onClick={() => { setQuickSale(true); setShowAdd(true); }}>
+              <Zap className="w-3 h-3" /> Venta rapida
+            </Button>
+            <Button size="sm" className="rounded-full h-8 px-4 gap-1.5 text-[11px] font-medium" onClick={() => setShowAdd(true)}>
+              <Plus className="w-3 h-3" /> Agregar
+            </Button>
           </div>
         </div>
 
-        <AnimatePresence mode="wait">
-          {view === 'store' ? (
-            <motion.div
-              key="store"
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              className="space-y-4"
-            >
-              <div className="text-center space-y-1 py-2">
-                <p className="text-sm font-semibold text-foreground">Paquetes de leads disponibles</p>
-                <p className="text-[11px] text-muted-foreground max-w-md mx-auto">Compra leads verificados de tus empresas. Se agregan automáticamente a tu CRM como "Sin contactar".</p>
-              </div>
+        {/* CRM toggle */}
+        <div className="flex items-center gap-3">
+          <Switch checked={crmEnabled} onCheckedChange={setCrmEnabled} />
+          <div>
+            <p className="text-xs font-medium text-foreground">Panel de clientes</p>
+            <p className="text-[10px] text-muted-foreground">Opcional — organiza tus prospectos</p>
+          </div>
+        </div>
 
-              <div className="grid gap-4 sm:grid-cols-2">
-                {LEAD_STORE.map(pkg => (
-                  <motion.div
-                    key={pkg.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="rounded-2xl border border-border bg-card overflow-hidden hover:shadow-md transition-shadow"
-                  >
-                    {/* Header bar */}
-                    <div className="h-1.5 w-full" style={{ backgroundColor: pkg.companyColor }} />
-
-                    <div className="p-5 space-y-4">
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <p className="text-sm font-bold text-foreground">{pkg.name}</p>
-                          <p className="text-[11px] text-muted-foreground mt-0.5">{pkg.companyName}</p>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-lg font-bold text-foreground">{formatCOP(pkg.priceCOP)}</p>
-                          <p className="text-[10px] text-muted-foreground">{pkg.leadCount} leads</p>
-                        </div>
-                      </div>
-
-                      <p className="text-[11px] text-muted-foreground leading-relaxed">{pkg.description}</p>
-
-                      {/* Preview leads */}
-                      <div className="space-y-1.5">
-                        {pkg.leads.slice(0, 2).map((lead, i) => (
-                          <div key={i} className="flex items-center gap-2 rounded-lg bg-muted/20 px-3 py-2">
-                            <div className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-white" style={{ backgroundColor: pkg.companyColor }}>
-                              {lead.name[0]}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <p className="text-[11px] font-medium text-foreground truncate">{lead.name}</p>
-                              <p className="text-[9px] text-muted-foreground truncate">{lead.context}</p>
-                            </div>
-                          </div>
-                        ))}
-                        {pkg.leadCount > 2 && (
-                          <p className="text-[10px] text-muted-foreground text-center">+{pkg.leadCount - 2} leads más incluidos</p>
-                        )}
-                      </div>
-
-                      <Button
-                        className="w-full rounded-full h-9 text-xs font-semibold gap-1.5"
-                        onClick={() => setSelectedPackage(pkg)}
-                      >
-                        <ShoppingCart className="w-3.5 h-3.5" /> Comprar paquete
-                      </Button>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-
-              {LEAD_STORE.length === 0 && (
-                <div className="text-center py-16">
-                  <Package className="w-10 h-10 text-muted-foreground/20 mx-auto mb-3" />
-                  <p className="text-sm text-muted-foreground">No hay paquetes disponibles</p>
-                </div>
-              )}
-            </motion.div>
-          ) : (
-            <motion.div
-              key="crm"
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-            >
-              {/* Toggle + Actions */}
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  <Switch checked={crmEnabled} onCheckedChange={setCrmEnabled} />
-                  <div>
-                    <p className="text-xs font-medium text-foreground">Panel de clientes</p>
-                    <p className="text-[10px] text-muted-foreground">Opcional — organiza tus prospectos</p>
-                  </div>
-                </div>
-                {crmEnabled && (
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="sm" className="rounded-full h-8 px-4 gap-1.5 text-[11px] font-medium" onClick={() => { setQuickSale(true); setShowAdd(true); }}>
-                      <Zap className="w-3 h-3" /> Venta rápida
-                    </Button>
-                    <Button size="sm" className="rounded-full h-8 px-4 gap-1.5 text-[11px] font-medium" onClick={() => { setQuickSale(false); setShowAdd(true); }}>
-                      <Plus className="w-3 h-3" /> Prospecto
-                    </Button>
-                  </div>
-                )}
-              </div>
-
-              <AnimatePresence mode="wait">
-                {crmEnabled ? (
-                  <motion.div key="crm-on" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                    {prospects.length === 0 ? (
-                      <div className="flex flex-col items-center justify-center py-20 text-center">
-                        <div className="w-12 h-12 rounded-2xl bg-muted/50 flex items-center justify-center mb-3">
-                          <Users className="w-5 h-5 text-muted-foreground/40" />
-                        </div>
-                        <p className="text-sm font-medium text-foreground mb-1">Sin prospectos</p>
-                        <p className="text-[11px] text-muted-foreground mb-4">Agrega tu primer cliente potencial o compra un paquete de leads</p>
-                        <div className="flex gap-2">
-                          <Button size="sm" className="rounded-full h-8 px-5 text-[11px]" onClick={() => setShowAdd(true)}>
-                            <Plus className="w-3 h-3 mr-1" /> Agregar
-                          </Button>
-                          <Button variant="outline" size="sm" className="rounded-full h-8 px-5 text-[11px]" onClick={() => setView('store')}>
-                            <ShoppingCart className="w-3 h-3 mr-1" /> Comprar leads
-                          </Button>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="grid grid-cols-5 gap-2.5">
-                        {prospectsByStage.map(stage => (
-                          <div
-                            key={stage.key}
-                            className={cn(
-                              "rounded-2xl border transition-all min-h-[140px]",
-                              dragOverStage === stage.key ? `${stage.border} ${stage.bg} scale-[1.01]` : "border-border/40 bg-muted/5"
-                            )}
-                            onDragOver={(e) => handleDragOver(e, stage.key)}
-                            onDragLeave={handleDragLeave}
-                            onDrop={(e) => handleDrop(e, stage.key)}
-                          >
-                            <div className="p-3 pb-2 text-center">
-                              <div className={cn("w-2 h-2 rounded-full mx-auto mb-1.5", stage.dotColor)} />
-                              <p className={cn("text-[9px] font-semibold uppercase tracking-widest", stage.color)}>{stage.label}</p>
-                              <p className="text-base font-bold text-foreground mt-0.5">{stage.prospects.length}</p>
-                            </div>
-                            <div className="px-1.5 pb-2 space-y-1.5">
-                              {stage.prospects.map(prospect => {
-                                const { service, company } = getServiceInfo(prospect.serviceId);
-                                const coverImg = service?.category ? categoryCovers[service.category] : null;
-                                const isExpanded = expandedId === prospect.id;
-                                const isDragging = dragId === prospect.id;
-
-                                return (
-                                  <div
-                                    key={prospect.id}
-                                    draggable
-                                    onDragStart={(e) => handleDragStart(e, prospect.id)}
-                                    onDragEnd={handleDragEnd}
-                                    className={cn(
-                                      "rounded-xl border border-border/60 bg-card cursor-grab active:cursor-grabbing transition-all",
-                                      isDragging ? "opacity-30 scale-95" : "hover:shadow-sm",
-                                      prospect.fromLeadPackage && "border-l-2 border-l-primary"
-                                    )}
-                                  >
-                                    <div className="flex items-center gap-2 p-2.5" onClick={() => setExpandedId(isExpanded ? null : prospect.id)}>
-                                      <GripVertical className="w-3 h-3 text-muted-foreground/20 flex-shrink-0" />
-                                      <div className="w-6 h-6 rounded-lg overflow-hidden bg-muted/50 flex-shrink-0">
-                                        {coverImg ? <img src={coverImg} alt="" className="w-full h-full object-cover" /> : <div className="w-full h-full bg-muted/50" />}
-                                      </div>
-                                      <div className="flex-1 min-w-0">
-                                        <p className="text-[10px] font-semibold text-foreground truncate">{prospect.name}</p>
-                                        <p className="text-[8px] text-muted-foreground truncate">{company?.name}</p>
-                                      </div>
-                                      <ChevronDown className={cn("w-3 h-3 text-muted-foreground/30 flex-shrink-0 transition-transform", isExpanded && "rotate-180")} />
-                                    </div>
-
-                                    <AnimatePresence>
-                                      {isExpanded && (
-                                        <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.2 }} className="overflow-hidden">
-                                          <div className="px-2.5 pb-2.5 space-y-2 border-t border-border/20 pt-2" onClick={e => e.stopPropagation()}>
-                                            {prospect.context && (
-                                              <p className="text-[9px] text-muted-foreground bg-muted/20 rounded-lg px-2 py-1.5">{prospect.context}</p>
-                                            )}
-
-                                            <div className="flex justify-between text-[9px]">
-                                              <span className="text-muted-foreground">{service?.name}</span>
-                                              <span className="font-semibold text-primary">
-                                                {service ? formatCOP(Math.round(service.priceCOP * service.vendorCommissionPct / 100)) : ''}
-                                              </span>
-                                            </div>
-
-                                            <div className="flex items-center gap-1 flex-wrap">
-                                              <Popover>
-                                                <PopoverTrigger asChild>
-                                                  <button className={cn(
-                                                    "flex items-center gap-1 text-[8px] px-2 py-0.5 rounded-full border transition-colors",
-                                                    prospect.followUpDate ? "border-primary/20 bg-primary/5 text-primary font-medium" : "border-border/50 text-muted-foreground hover:bg-muted/30"
-                                                  )}>
-                                                    <Calendar className="w-2 h-2" />
-                                                    {prospect.followUpDate ? format(new Date(prospect.followUpDate), "d MMM", { locale: es }) : "Seguimiento"}
-                                                  </button>
-                                                </PopoverTrigger>
-                                                <PopoverContent className="w-auto p-0" align="start">
-                                                  <CalendarUI mode="single" selected={prospect.followUpDate ? new Date(prospect.followUpDate) : undefined} onSelect={(d) => setFollowUp(prospect.id, d)} className="p-3 pointer-events-auto" />
-                                                </PopoverContent>
-                                              </Popover>
-
-                                              {prospect.phone && (
-                                                <button onClick={() => window.open(`https://wa.me/57${prospect.phone?.replace(/\s/g, '')}`, '_blank')} className="flex items-center gap-0.5 text-[8px] px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-500/20 text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-500/5 transition-colors">
-                                                  <MessageCircle className="w-2 h-2" /> WA
-                                                </button>
-                                              )}
-                                              {prospect.email && (
-                                                <button onClick={() => window.open(`mailto:${prospect.email}`, '_blank')} className="flex items-center gap-0.5 text-[8px] px-2 py-0.5 rounded-full border border-blue-200 dark:border-blue-500/20 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-500/5 transition-colors">
-                                                  <Mail className="w-2 h-2" /> Email
-                                                </button>
-                                              )}
-
-                                              <button onClick={() => removeProspect(prospect.id)} className="ml-auto flex items-center text-[8px] px-1.5 py-0.5 rounded-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors">
-                                                <X className="w-2.5 h-2.5" />
-                                              </button>
-                                            </div>
-
-                                            {prospect.notes.length > 0 && (
-                                              <div className="space-y-0.5">
-                                                {prospect.notes.map(note => (
-                                                  <div key={note.id} className="flex gap-1 text-[8px]">
-                                                    <span className="text-muted-foreground/40 flex-shrink-0">{format(new Date(note.date), "d/M", { locale: es })}</span>
-                                                    <span className="text-muted-foreground">{note.text}</span>
-                                                  </div>
-                                                ))}
-                                              </div>
-                                            )}
-
-                                            <div className="flex gap-1">
-                                              <Input placeholder="Nota..." value={expandedId === prospect.id ? newNoteText : ""} onChange={(e) => setNewNoteText(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') addNote(prospect.id); }} className="h-6 text-[9px] rounded-full border-border/40 bg-muted/20 px-2.5" />
-                                              <Button variant="ghost" size="icon" className="h-6 w-6 flex-shrink-0 rounded-full" onClick={() => addNote(prospect.id)} disabled={!newNoteText.trim()}>
-                                                <StickyNote className="w-2.5 h-2.5" />
-                                              </Button>
-                                            </div>
-                                          </div>
-                                        </motion.div>
-                                      )}
-                                    </AnimatePresence>
-                                  </div>
-                                );
-                              })}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </motion.div>
-                ) : (
-                  <motion.div key="crm-off" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex flex-col items-center justify-center py-24 text-center">
-                    <div className="w-14 h-14 rounded-2xl bg-muted/30 flex items-center justify-center mb-4">
-                      <Users className="w-6 h-6 text-muted-foreground/30" />
-                    </div>
-                    <p className="text-sm font-medium text-foreground mb-1">Panel desactivado</p>
-                    <p className="text-[11px] text-muted-foreground max-w-[240px]">Activa el panel de clientes para organizar tus prospectos.</p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-
-      {/* Add prospect dialog */}
-      <Dialog open={showAdd} onOpenChange={(open) => { setShowAdd(open); if (!open) setQuickSale(false); }}>
-        <DialogContent className="max-w-sm rounded-2xl">
-          <DialogHeader>
-            <DialogTitle className="text-base font-semibold flex items-center gap-2">
-              {quickSale ? <><Zap className="w-4 h-4 text-primary" /> Registrar venta</> : <><Plus className="w-4 h-4 text-muted-foreground" /> Nuevo prospecto</>}
-            </DialogTitle>
-          </DialogHeader>
-          <div className="space-y-3">
-            <Input placeholder="Nombre del cliente" value={newName} onChange={(e) => setNewName(e.target.value)} className="rounded-full h-10 px-4" autoFocus />
-            <Input placeholder="Teléfono (opcional)" value={newPhone} onChange={(e) => setNewPhone(e.target.value)} className="rounded-full h-10 px-4" />
-            <Select value={newService} onValueChange={setNewService}>
-              <SelectTrigger className="rounded-full h-10 px-4"><SelectValue placeholder="Producto" /></SelectTrigger>
-              <SelectContent>
-                {availableServices.map(s => {
-                  const company = companies.find(c => c.id === s.companyId);
-                  return (
-                    <SelectItem key={s.id} value={s.id}>
-                      <div className="flex items-center gap-2">
-                        <span>{s.name}</span>
-                        {s.type === 'suscripción' && <Repeat className="w-3 h-3 text-primary" />}
-                        <span className="text-muted-foreground text-[10px]">{company?.name}</span>
-                      </div>
-                    </SelectItem>
-                  );
-                })}
-              </SelectContent>
-            </Select>
-
-            {quickSale && newService && (() => {
-              const service = allServices.find(s => s.id === newService);
-              if (!service) return null;
-              const comm = Math.round(service.priceCOP * service.vendorCommissionPct / 100);
+        {crmEnabled && (
+          <div className="space-y-4">
+            {prospectsByStage.map(stage => {
+              if (stage.prospects.length === 0) return null;
               return (
-                <div className="rounded-2xl bg-primary/[0.03] border border-primary/10 p-4 space-y-2">
-                  <div className="flex justify-between text-xs">
-                    <span className="text-muted-foreground">Precio</span>
-                    <span className="font-medium text-foreground">{formatCOP(service.priceCOP)}</span>
+                <div key={stage.key}>
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className={cn("w-2 h-2 rounded-full", stage.dotColor)} />
+                    <span className={cn("text-xs font-semibold", stage.color)}>{stage.label}</span>
+                    <span className="text-[10px] text-muted-foreground">({stage.prospects.length})</span>
                   </div>
-                  <div className="flex justify-between text-xs">
-                    <span className="text-muted-foreground">Tu comisión ({service.vendorCommissionPct}%)</span>
-                    <span className="font-bold text-primary">{formatCOP(comm)}</span>
+
+                  <div className="space-y-2">
+                    {stage.prospects.map(prospect => {
+                      const { service, company } = getServiceInfo(prospect.serviceId);
+                      const coverImg = service?.category ? categoryCovers[service.category] : null;
+                      const potentialEarning = service ? Math.round(service.priceCOP * service.vendorCommissionPct / 100) : 0;
+                      const isExpanded = expandedId === prospect.id;
+                      const daysSinceCreated = Math.floor((Date.now() - new Date(prospect.createdAt).getTime()) / (1000 * 60 * 60 * 24));
+
+                      return (
+                        <motion.div
+                          key={prospect.id}
+                          layout
+                          className={cn("rounded-xl border bg-card overflow-hidden", stage.border)}
+                        >
+                          {/* Main row */}
+                          <div
+                            className="flex items-center gap-3 p-4 cursor-pointer hover:bg-muted/20 transition-colors"
+                            onClick={() => setExpandedId(isExpanded ? null : prospect.id)}
+                          >
+                            {/* Avatar */}
+                            <div className={cn("w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0", stage.bg)}>
+                              <span className={cn("text-sm font-bold", stage.color)}>{prospect.name[0]}</span>
+                            </div>
+
+                            {/* Info */}
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2">
+                                <p className="text-sm font-semibold text-foreground truncate">{prospect.name}</p>
+                                {prospect.followUpDate && (
+                                  <Badge variant="outline" className="text-[8px] gap-0.5 px-1.5">
+                                    <Calendar className="w-2 h-2" />
+                                    {format(new Date(prospect.followUpDate), "d MMM", { locale: es })}
+                                  </Badge>
+                                )}
+                              </div>
+                              <p className="text-[10px] text-muted-foreground truncate mt-0.5">
+                                {service?.name} · {company?.name}
+                              </p>
+                            </div>
+
+                            {/* Right metrics */}
+                            <div className="flex items-center gap-3 flex-shrink-0">
+                              <div className="text-right">
+                                <p className="text-xs font-bold text-primary">{formatCOP(potentialEarning)}</p>
+                                <p className="text-[9px] text-muted-foreground">{daysSinceCreated}d</p>
+                              </div>
+                              {prospect.phone && (
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="w-8 h-8 text-emerald-600 hover:bg-emerald-50"
+                                  onClick={(e) => { e.stopPropagation(); window.open(`https://wa.me/57${prospect.phone?.replace(/\s/g, '')}`, '_blank'); }}
+                                >
+                                  <MessageCircle className="w-3.5 h-3.5" />
+                                </Button>
+                              )}
+                              <ChevronDown className={cn("w-3.5 h-3.5 text-muted-foreground/30 transition-transform", isExpanded && "rotate-180")} />
+                            </div>
+                          </div>
+
+                          {/* Expanded detail */}
+                          <AnimatePresence>
+                            {isExpanded && (
+                              <motion.div
+                                initial={{ height: 0, opacity: 0 }}
+                                animate={{ height: "auto", opacity: 1 }}
+                                exit={{ height: 0, opacity: 0 }}
+                                transition={{ duration: 0.2 }}
+                                className="overflow-hidden"
+                              >
+                                <div className="px-4 pb-4 space-y-3 border-t border-border/30 pt-3">
+                                  {/* Contact info */}
+                                  <div className="grid grid-cols-2 gap-2 text-[10px]">
+                                    {prospect.phone && (
+                                      <div className="flex items-center gap-1.5">
+                                        <Phone className="w-2.5 h-2.5 text-muted-foreground" />
+                                        <span className="text-foreground">{prospect.phone}</span>
+                                      </div>
+                                    )}
+                                    {prospect.email && (
+                                      <div className="flex items-center gap-1.5">
+                                        <Mail className="w-2.5 h-2.5 text-muted-foreground" />
+                                        <span className="text-foreground">{prospect.email}</span>
+                                      </div>
+                                    )}
+                                    <div><span className="text-muted-foreground">Creado:</span> <span className="font-medium">{prospect.createdAt}</span></div>
+                                    <div><span className="text-muted-foreground">Comision:</span> <span className="font-medium text-primary">{service?.vendorCommissionPct}%</span></div>
+                                  </div>
+
+                                  {/* Stage selector */}
+                                  <div className="flex gap-1 overflow-x-auto">
+                                    {STAGES.map(s => (
+                                      <button
+                                        key={s.key}
+                                        onClick={() => changeStage(prospect.id, s.key)}
+                                        className={cn(
+                                          "px-2.5 py-1 rounded-full text-[9px] font-medium whitespace-nowrap transition-colors",
+                                          prospect.stage === s.key
+                                            ? `${s.bg} ${s.color} border ${s.border}`
+                                            : "text-muted-foreground hover:bg-muted/30"
+                                        )}
+                                      >
+                                        {s.label}
+                                      </button>
+                                    ))}
+                                  </div>
+
+                                  {/* Notes */}
+                                  {prospect.notes.length > 0 && (
+                                    <div className="space-y-1">
+                                      {prospect.notes.map(note => (
+                                        <div key={note.id} className="flex items-start gap-2 text-[10px]">
+                                          <StickyNote className="w-2.5 h-2.5 text-muted-foreground mt-0.5 flex-shrink-0" />
+                                          <div>
+                                            <span className="text-foreground">{note.text}</span>
+                                            <span className="text-muted-foreground ml-1.5">{note.date}</span>
+                                          </div>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  )}
+
+                                  {/* Add note */}
+                                  <div className="flex gap-2">
+                                    <Input
+                                      placeholder="Agregar nota..."
+                                      value={expandedId === prospect.id ? newNoteText : ""}
+                                      onChange={e => setNewNoteText(e.target.value)}
+                                      className="h-7 text-[10px] rounded-lg flex-1"
+                                      onKeyDown={e => { if (e.key === 'Enter') addNote(prospect.id); }}
+                                    />
+                                    <Button size="sm" variant="outline" className="h-7 text-[9px] px-2 rounded-lg" onClick={() => addNote(prospect.id)}>
+                                      Nota
+                                    </Button>
+                                  </div>
+
+                                  {/* Actions */}
+                                  <div className="flex gap-2">
+                                    <Popover>
+                                      <PopoverTrigger asChild>
+                                        <Button variant="outline" size="sm" className="h-7 text-[10px] rounded-full flex-1 gap-1">
+                                          <Calendar className="w-3 h-3" /> Seguimiento
+                                        </Button>
+                                      </PopoverTrigger>
+                                      <PopoverContent className="w-auto p-0" align="start">
+                                        <CalendarUI
+                                          mode="single"
+                                          selected={prospect.followUpDate ? new Date(prospect.followUpDate) : undefined}
+                                          onSelect={(date) => setFollowUp(prospect.id, date)}
+                                          locale={es}
+                                        />
+                                      </PopoverContent>
+                                    </Popover>
+                                    {prospect.phone && (
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="h-7 text-[10px] rounded-full flex-1 gap-1 text-emerald-600 border-emerald-200"
+                                        onClick={() => window.open(`https://wa.me/57${prospect.phone?.replace(/\s/g, '')}`, '_blank')}
+                                      >
+                                        <MessageCircle className="w-3 h-3" /> WhatsApp
+                                      </Button>
+                                    )}
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      className="h-7 text-[10px] px-2 text-destructive hover:text-destructive"
+                                      onClick={() => removeProspect(prospect.id)}
+                                    >
+                                      <X className="w-3 h-3" />
+                                    </Button>
+                                  </div>
+                                </div>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </motion.div>
+                      );
+                    })}
                   </div>
-                  {service.refundPolicy.refundWindowDays > 0 && <p className="text-[10px] text-muted-foreground">{service.refundPolicy.refundWindowDays} días de devolución</p>}
-                  {service.refundPolicy.refundWindowDays === 0 && <p className="text-[10px] text-emerald-600">Liberación inmediata</p>}
                 </div>
               );
-            })()}
-
-            <Button className="w-full rounded-full h-10 gap-2 text-[11px] font-semibold" onClick={handleAdd} disabled={!newName.trim() || !newService}>
-              {quickSale ? <><Zap className="w-3.5 h-3.5" /> Registrar venta</> : "Agregar prospecto"}
-            </Button>
-
-            {!quickSale && (
-              <button onClick={() => setQuickSale(true)} className="w-full text-center text-[10px] text-muted-foreground hover:text-primary transition-colors py-1">
-                Ya cerraste la venta? — Registrar venta rápida
-              </button>
-            )}
+            })}
           </div>
-        </DialogContent>
-      </Dialog>
+        )}
 
-      {/* Buy package confirmation */}
-      <Dialog open={!!selectedPackage} onOpenChange={() => setSelectedPackage(null)}>
-        <DialogContent className="max-w-md rounded-2xl max-h-[85vh] overflow-y-auto">
-          {selectedPackage && (
-            <>
-              <DialogHeader>
-                <DialogTitle className="text-base font-semibold flex items-center gap-2">
-                  <ShoppingCart className="w-4 h-4 text-primary" /> Comprar paquete
-                </DialogTitle>
-              </DialogHeader>
-              <div className="space-y-4">
-                <div className="rounded-2xl border border-border bg-muted/5 p-4 space-y-3">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <p className="text-sm font-bold text-foreground">{selectedPackage.name}</p>
-                      <p className="text-[11px] text-muted-foreground">{selectedPackage.companyName}</p>
-                    </div>
-                    <p className="text-lg font-bold text-foreground">{formatCOP(selectedPackage.priceCOP)}</p>
-                  </div>
-                  <p className="text-[11px] text-muted-foreground">{selectedPackage.description}</p>
-                </div>
-
-                <div className="space-y-2">
-                  <p className="text-xs font-semibold text-foreground">{selectedPackage.leadCount} leads incluidos</p>
-                  {selectedPackage.leads.map((lead, i) => (
-                    <div key={i} className="flex items-center gap-3 rounded-xl border border-border/50 bg-card p-3">
-                      <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white" style={{ backgroundColor: selectedPackage.companyColor }}>
-                        {lead.name[0]}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs font-semibold text-foreground">{lead.name}</p>
-                        <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
-                          <Phone className="w-2.5 h-2.5" /> {lead.phone}
-                        </div>
-                        <p className="text-[9px] text-muted-foreground mt-0.5">{lead.context}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="rounded-xl bg-primary/[0.03] border border-primary/10 p-3 text-center">
-                  <p className="text-[10px] text-muted-foreground">Los leads se agregarán a tu CRM como</p>
-                  <Badge variant="outline" className="mt-1 text-[10px]">Sin contactar</Badge>
-                </div>
-
-                <Button className="w-full rounded-full h-10 text-xs font-semibold gap-1.5" onClick={() => buyLeadPackage(selectedPackage)}>
-                  <ShoppingCart className="w-3.5 h-3.5" /> Comprar por {formatCOP(selectedPackage.priceCOP)}
-                </Button>
+        {/* Add dialog */}
+        <Dialog open={showAdd} onOpenChange={setShowAdd}>
+          <DialogContent className="max-w-sm">
+            <DialogHeader>
+              <DialogTitle className="text-sm">{quickSale ? 'Venta rapida' : 'Nuevo prospecto'}</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-3">
+              <Input placeholder="Nombre del cliente" value={newName} onChange={e => setNewName(e.target.value)} className="h-9 text-sm" />
+              <Input placeholder="Telefono (opcional)" value={newPhone} onChange={e => setNewPhone(e.target.value)} className="h-9 text-sm" />
+              <Select value={newService} onValueChange={setNewService}>
+                <SelectTrigger className="h-9 text-xs"><SelectValue placeholder="Producto" /></SelectTrigger>
+                <SelectContent>
+                  {availableServices.map(s => {
+                    const company = companies.find(c => c.id === s.companyId);
+                    return <SelectItem key={s.id} value={s.id} className="text-xs">{s.name} · {company?.name}</SelectItem>;
+                  })}
+                </SelectContent>
+              </Select>
+              <div className="flex items-center gap-2">
+                <Switch checked={quickSale} onCheckedChange={setQuickSale} />
+                <span className="text-[11px] text-muted-foreground">Registrar como venta directa</span>
               </div>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
+              <Button className="w-full h-9 text-xs rounded-full" onClick={handleAdd} disabled={!newName.trim() || !newService}>
+                {quickSale ? 'Registrar venta' : 'Agregar prospecto'}
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </div>
     </VendorTabLayout>
   );
 }
