@@ -51,7 +51,7 @@ const saleStatusCls: Record<string, string> = {
 export default function CompanyVendorDetail() {
   const { vendorId } = useParams<{ vendorId: string }>();
   const navigate = useNavigate();
-  const { trainingProgress, updateVendorCommissionAssignment } = useDemo();
+  const { trainingProgress, assignVendorTier } = useDemo();
   const [activeTab, setActiveTab] = useState<'ventas' | 'servicios' | 'capacitacion'>('servicios');
 
   const company = companies.find(c => c.id === CURRENT_COMPANY_ID);
