@@ -136,7 +136,7 @@ export interface ServiceRequest {
   updatedAt: string;
 }
 
-// VENTA/TRANSACCIÓN - Modelo Mercado Pago con SPLIT y RETENCIÓN
+// VENTA/TRANSACCIÓN - Modelo Stripe con SPLIT y RETENCIÓN
 export type TransactionStatus = 'PENDING' | 'HELD' | 'COMPLETED' | 'REFUNDED' | 'CANCELLED';
 
 export interface Sale {
@@ -161,7 +161,7 @@ export interface Sale {
   refundedAt?: string;
   // Estado MP
   status: TransactionStatus;
-  paymentProvider: 'MercadoPago';
+  paymentProvider: 'Stripe';
   mpPaymentId: string;
   isSubscription: boolean;
   subscriptionActive?: boolean;
@@ -698,8 +698,8 @@ function generateSalesForVendor(vendorId: string, companyId: string, count: numb
       releasedAt: status === 'COMPLETED' ? holdEndDate.toISOString().split('T')[0] : undefined,
       refundedAt: status === 'REFUNDED' ? saleDate.toISOString().split('T')[0] : undefined,
       status,
-      paymentProvider: 'MercadoPago',
-      mpPaymentId: `MP-${Date.now()}-${prefix}${i}`,
+      paymentProvider: 'Stripe',
+      mpPaymentId: `STR-${Date.now()}-${prefix}${i}`,
       isSubscription: service.type === 'suscripción',
       subscriptionActive: status !== 'REFUNDED' && service.type === 'suscripción',
       createdAt: saleDate.toISOString().split('T')[0],
@@ -751,8 +751,8 @@ function generateSales(): Sale[] {
       holdEndAt: holdEnd.toISOString().split('T')[0],
       releasedAt: vs.status === 'COMPLETED' ? holdEnd.toISOString().split('T')[0] : undefined,
       status: vs.status,
-      paymentProvider: 'MercadoPago',
-      mpPaymentId: `MP-V1-${idx + 1}`,
+      paymentProvider: 'Stripe',
+      mpPaymentId: `STR-V1-${idx + 1}`,
       isSubscription: service.type === 'suscripción',
       subscriptionActive: vs.status !== 'REFUNDED' && service.type === 'suscripción',
       createdAt: saleDate.toISOString().split('T')[0],
@@ -808,8 +808,8 @@ function generateSales(): Sale[] {
       releasedAt: status === 'COMPLETED' ? holdEndDate.toISOString().split('T')[0] : undefined,
       refundedAt: status === 'REFUNDED' ? saleDate.toISOString().split('T')[0] : undefined,
       status,
-      paymentProvider: 'MercadoPago',
-      mpPaymentId: `MP-${Date.now()}-O${i}`,
+      paymentProvider: 'Stripe',
+      mpPaymentId: `STR-${Date.now()}-O${i}`,
       isSubscription: service.type === 'suscripción',
       subscriptionActive: status !== 'REFUNDED' && service.type === 'suscripción',
       createdAt: saleDate.toISOString().split('T')[0],

@@ -21,12 +21,9 @@ import {
   UserCheck,
   MessageCircle,
   Tag,
-  Globe,
-  Code,
   Crown,
   Zap,
-  Lock,
-  Palette
+  Wallet
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -41,6 +38,7 @@ import { useDemo } from "@/contexts/DemoContext";
 import { Badge } from "@/components/ui/badge";
 import type { CompanyPlan } from "@/data/mockData";
 import logoMensualista from "@/assets/logo.png";
+import LanguageSelector from "@/components/LanguageSelector";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -60,58 +58,51 @@ const roleLabels = {
   admin: "Administrador",
 };
 
-function getVendorNav(plan: CompanyPlan) {
-  const base = [
-    { icon: LayoutDashboard, label: "Dashboard", href: "/vendor" },
-    { icon: Package, label: "Productos", href: "/vendor/services" },
-    { icon: ShoppingCart, label: "Mis Ventas", href: "/vendor/sales" },
-    { icon: DollarSign, label: "Pagos", href: "/vendor/payments" },
+function getVendorNav() {
+  return [
+    { icon: LayoutDashboard, label: "Inicio", href: "/vendor" },
+    { icon: Package, label: "Mis Servicios", href: "/vendor/products" },
     { icon: BookOpen, label: "Entrenamientos", href: "/vendor/trainings" },
+    { icon: ShoppingCart, label: "Mis Ventas", href: "/vendor/sales" },
+    { icon: DollarSign, label: "Comisiones", href: "/vendor/payments" },
+    { icon: Wallet, label: "Mi Cartera", href: "/vendor/subscriptions" },
+    { icon: Users, label: "CRM", href: "/vendor/crm" },
+    { icon: HelpCircle, label: "Soporte", href: "/vendor/support" },
     { icon: User, label: "Mi Perfil", href: "/vendor/profile" },
   ];
-
-  // Premium & Enterprise: Chat con empresa
-  if (plan !== 'freemium') {
-    base.push({ icon: MessageCircle, label: "Chat Empresa", href: "/vendor/support" });
-  }
-
-  return base;
 }
 
 function getCompanyNav(plan: CompanyPlan) {
   const base = [
     { icon: LayoutDashboard, label: "Dashboard", href: "/company" },
-    { icon: Package, label: "Productos", href: "/company/services" },
+    { icon: Package, label: "Mis Servicios", href: "/company/services" },
     { icon: ShoppingCart, label: "Ventas", href: "/company/payments" },
-    { icon: Users, label: "Vendedores", href: "/company/vendors" },
-    { icon: Settings, label: "Configuración", href: "/company/settings" },
+    { icon: Users, label: "Mi Red", href: "/company/vendors" },
+    { icon: Tag, label: "Cupones", href: "/company/coupons" },
   ];
 
-  // Premium & Enterprise: Chat
   if (plan !== 'freemium') {
     base.push({ icon: MessageCircle, label: "Chat", href: "/company/chat" });
   }
 
-  // All plans: Leads
-  base.push({ icon: Users, label: "Leads", href: "/company/leads" });
-
-  // Enterprise: API
-  if (plan === 'enterprise') {
-    base.push({ icon: Code, label: "API", href: "/company/api" });
-  }
+  base.push(
+    { icon: BookOpen, label: "Entrenamientos", href: "/company/trainings" },
+    { icon: Settings, label: "Configuración", href: "/company/settings" },
+  );
 
   return base;
 }
 
 const adminNav = [
   { icon: LayoutDashboard, label: "Dashboard", href: "/admin" },
-  { icon: UserCheck, label: "Vendedores", href: "/admin/vendors" },
   { icon: Building2, label: "Empresas", href: "/admin/companies" },
+  { icon: UserCheck, label: "Vendedores", href: "/admin/vendors" },
   { icon: Activity, label: "Transacciones", href: "/admin/transactions" },
   { icon: Package, label: "Productos", href: "/admin/services" },
   { icon: BookOpen, label: "Entrenamientos", href: "/admin/trainings" },
   { icon: ShoppingCart, label: "Ventas", href: "/admin/sales" },
-  { icon: DollarSign, label: "Pagos", href: "/admin/payments" },
+  { icon: DollarSign, label: "Comisiones", href: "/admin/payments" },
+  { icon: MessageCircle, label: "Soporte", href: "/admin/support" },
   { icon: Users, label: "Usuarios", href: "/admin/users" },
   { icon: Settings, label: "Configuración", href: "/admin/settings" },
 ];
@@ -128,7 +119,7 @@ export default function DashboardLayout({ children, role, userName = "Usuario" }
     ? adminNav
     : role === 'company'
       ? getCompanyNav(currentCompanyPlan)
-      : getVendorNav(currentCompanyPlan);
+      : getVendorNav();
 
   return (
     <div className="min-h-screen bg-background">
@@ -268,16 +259,11 @@ export default function DashboardLayout({ children, role, userName = "Usuario" }
             </div>
             
             <div className="flex items-center gap-3">
+              <LanguageSelector />
               <Button variant="ghost" size="icon" className="relative">
                 <Bell className="w-5 h-5" />
                 <span className="absolute top-1 right-1 w-2 h-2 bg-primary rounded-full" />
               </Button>
-              
-              <Link to="/">
-                <Button variant="outline" size="sm" className="hidden sm:flex">
-                  Ir al inicio
-                </Button>
-              </Link>
             </div>
           </div>
         </header>

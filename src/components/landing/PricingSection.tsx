@@ -15,7 +15,7 @@ const plans = [
     priceCOP: 0,
     period: "Gratis siempre",
     badge: null,
-    feesShort: "15% + pasarela",
+    feesShort: "12% + 3% pasarela",
     cta: "Empezar gratis",
     variant: "outline" as const,
   },
@@ -23,11 +23,11 @@ const plans = [
     id: "premium",
     name: "Premium",
     icon: Crown,
-    priceEUR: 100,
-    priceCOP: 460000,
+    priceEUR: 70,
+    priceCOP: 305000,
     period: "/mes",
     badge: "Más popular",
-    feesShort: "Solo pasarela",
+    feesShort: "0% + 3% pasarela",
     cta: "Elegir Premium",
     variant: "default" as const,
   },
@@ -35,12 +35,12 @@ const plans = [
     id: "enterprise",
     name: "Enterprise",
     icon: Building2,
-    priceEUR: 300,
-    priceCOP: 1380000,
-    period: "/mes",
+    priceEUR: 0,
+    priceCOP: 0,
+    period: "Personalizado",
     badge: "Más completo",
-    feesShort: "Solo pasarela",
-    cta: "Elegir Enterprise",
+    feesShort: "0% + 3% pasarela",
+    cta: "Contactar ventas",
     variant: "default" as const,
   },
 ];
@@ -64,8 +64,7 @@ const comparisonData: ComparisonGroup[] = [
     category: "Productos",
     rows: [
       { feature: "Límite de productos", freemium: "5", premium: "Ilimitados", enterprise: "Ilimitados" },
-      { feature: "Códigos de activación manuales", freemium: true, premium: true, enterprise: true },
-      { feature: "Códigos automáticos (API)", freemium: false, premium: false, enterprise: true },
+      { feature: "Códigos de activación", freemium: true, premium: true, enterprise: true },
     ],
   },
   {
@@ -79,15 +78,15 @@ const comparisonData: ComparisonGroup[] = [
   {
     category: "Integraciones",
     rows: [
-      { feature: "Venta de leads", freemium: true, premium: true, enterprise: true },
-      { feature: "Integraciones API", freemium: false, premium: false, enterprise: true },
+      { feature: "Calendario de horarios", freemium: false, premium: false, enterprise: true },
+      { feature: "Integración API", freemium: false, premium: false, enterprise: true },
     ],
   },
   {
     category: "Comisiones",
     rows: [
-      { feature: "Fee Mensualista", freemium: "15%", premium: "0%", enterprise: "0%" },
-      { feature: "Costos de pasarela", freemium: "3% + $1.000", premium: "3% + $1.000", enterprise: "3% + $1.000" },
+      { feature: "Fee Mensualista", freemium: "12%", premium: "0%", enterprise: "0%" },
+      { feature: "Costos de pasarela", freemium: "3%", premium: "3%", enterprise: "3%" },
     ],
   },
 ];
@@ -107,8 +106,16 @@ export const PricingSection = () => {
   const [currency, setCurrency] = useState<Currency>("COP");
 
   const formatPrice = (plan: (typeof plans)[0]) => {
+    if (plan.id === "enterprise") return "A medida";
     if (plan.priceEUR === 0) return "Gratis";
     if (currency === "EUR") return `€${plan.priceEUR}`;
+    return new Intl.NumberFormat("es-CO", {
+      style: "currency",
+      currency: "COP",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(plan.priceCOP);
+  };
     return new Intl.NumberFormat("es-CO", {
       style: "currency",
       currency: "COP",
