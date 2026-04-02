@@ -360,6 +360,8 @@ export function DemoProvider({ children }: { children: ReactNode }) {
       vendorCommissionAssignments: vcaState,
       pinnedServices,
       demoMode,
+      isTutorialMode,
+      setIsTutorialMode,
       currentVendorId,
       currentCompanyId,
       currentRole,
