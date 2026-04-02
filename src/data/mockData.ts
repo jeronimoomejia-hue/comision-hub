@@ -167,6 +167,7 @@ export interface Sale {
   subscriptionActive?: boolean;
   notes?: string;
   activationCode?: string; // Code delivered to client
+  commissionTierId?: string; // Which tier was used for this sale
   createdAt: string;
   // Legacy compatibility
   amountCOP?: number;
@@ -726,6 +727,14 @@ function generateSales(): Sale[] {
     { serviceId: 'service-025', companyId: 'company-009', client: v1Clients[6], daysAgo: 25, status: 'CANCELLED' },
     { serviceId: 'service-029', companyId: 'company-010', client: v1Clients[7], daysAgo: 30, status: 'REFUNDED' },
   ];
+  // Map vendor-001's tier assignments for commission calculation
+  const v1TierMap: Record<string, { tierId: string; pct: number }> = {
+    'service-025': { tierId: 'tier-002', pct: 15 }, // Premium tier
+    'service-026': { tierId: 'tier-005', pct: 18 }, // Avanzado tier
+    'service-028': { tierId: 'tier-006', pct: 12 }, // Básico tier
+    'service-033': { tierId: 'tier-008', pct: 18 }, // Estándar tier
+  };
+
   v1Sales.forEach((vs, idx) => {
     const service = services.find(s => s.id === vs.serviceId)!;
     const saleDate = new Date(today);
@@ -733,7 +742,9 @@ function generateSales(): Sale[] {
     const holdEnd = new Date(saleDate);
     holdEnd.setDate(holdEnd.getDate() + service.refundPolicy.refundWindowDays);
     const gross = service.priceCOP;
-    const sellerComm = Math.round(gross * (service.vendorCommissionPct / 100));
+    const tierInfo = v1TierMap[vs.serviceId];
+    const effectivePct = tierInfo?.pct ?? service.vendorCommissionPct;
+    const sellerComm = Math.round(gross * (effectivePct / 100));
     const mFee = Math.round(gross * ((service as any).mensualistaPct || 0) / 100);
     salesList.push({
       id: `sale-v1-${idx + 1}`,
@@ -755,6 +766,7 @@ function generateSales(): Sale[] {
       mpPaymentId: `STR-V1-${idx + 1}`,
       isSubscription: service.type === 'suscripción',
       subscriptionActive: vs.status !== 'REFUNDED' && service.type === 'suscripción',
+      commissionTierId: tierInfo?.tierId,
       createdAt: saleDate.toISOString().split('T')[0],
       amountCOP: gross
     });

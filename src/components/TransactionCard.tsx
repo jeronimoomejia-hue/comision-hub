@@ -38,6 +38,8 @@ interface TransactionCardProps {
   failureReason?: string;
   refundReason?: string;
   refundDecision?: string;
+  tierName?: string;
+  tierOrder?: number;
   onRefund?: () => void;
   onSupport?: () => void;
   onViewReceipt?: () => void;
@@ -125,6 +127,7 @@ export default function TransactionCard({
   status, statusType = 'sale', date, holdEndDate, releasedDate,
   activationCode, refundDaysLeft, refundStatus, isSubscription,
   paymentId, failureReason, refundReason, refundDecision,
+  tierName, tierOrder,
   onRefund, onSupport, onViewReceipt, role = 'vendor'
 }: TransactionCardProps) {
   const [expanded, setExpanded] = useState(false);
@@ -175,11 +178,18 @@ export default function TransactionCard({
         </div>
 
         {/* Info */}
-        <div className="flex-1 min-w-0">
+          <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
             <p className="text-sm font-semibold text-foreground truncate">{clientName}</p>
             {isSubscription && (
               <span className="text-[8px] font-bold px-1.5 py-0.5 rounded-full bg-primary/10 text-primary uppercase tracking-wider">Rec</span>
+            )}
+            {tierName && (
+              <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider ${
+                tierOrder === 3 ? 'bg-primary/10 text-primary' :
+                tierOrder === 2 ? 'bg-amber-500/10 text-amber-600' :
+                'bg-muted text-muted-foreground'
+              }`}>{tierName}</span>
             )}
           </div>
           <p className="text-[11px] text-muted-foreground truncate mt-0.5">
