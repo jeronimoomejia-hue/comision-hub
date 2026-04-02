@@ -38,6 +38,8 @@ interface TransactionCardProps {
   failureReason?: string;
   refundReason?: string;
   refundDecision?: string;
+  tierName?: string;
+  tierOrder?: number;
   onRefund?: () => void;
   onSupport?: () => void;
   onViewReceipt?: () => void;
