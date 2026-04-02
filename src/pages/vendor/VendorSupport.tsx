@@ -1,100 +1,131 @@
+import { useState } from "react";
 import VendorTabLayout from "@/components/layout/VendorTabLayout";
-import { MessageCircle, Clock, HelpCircle, ExternalLink, Lock } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { vendors, companies, CURRENT_VENDOR_ID, CURRENT_COMPANY_ID } from "@/data/mockData";
+import { Send, Paperclip, HelpCircle } from "lucide-react";
+import { vendors, CURRENT_VENDOR_ID } from "@/data/mockData";
 import { useDemo } from "@/contexts/DemoContext";
-import { Link } from "react-router-dom";
+import { cn } from "@/lib/utils";
+
+interface ChatMessage {
+  id: string;
+  sender: "vendor" | "support";
+  text: string;
+  time: string;
+}
+
+const initialMessages: ChatMessage[] = [
+  { id: "m1", sender: "vendor", text: "Hola, tengo una pregunta sobre mi comisión del servicio IronHaus", time: "10:30" },
+  { id: "m2", sender: "support", text: "Hola Juan, claro. Cuéntame, ¿qué necesitas saber?", time: "10:32" },
+  { id: "m3", sender: "vendor", text: "Mi comisión del mes pasado aparece como retenida pero ya pasaron los 14 días", time: "10:33" },
+  { id: "m4", sender: "support", text: "Déjame revisar... Tienes razón, voy a escalar esto al equipo financiero. Te aviso en máximo 24 horas.", time: "10:35" },
+];
 
 const faqs = [
-  { q: "¿Cuánto tarda en liberarse mi comisión?", a: "Cada producto tiene su propio tiempo de devolución (7, 14 o 30 días), configurado por la empresa. El pago se transfiere automáticamente al cumplirse." },
-  { q: "¿Cómo retiro mis comisiones?", a: "Las transferencias son automáticas a tu cuenta bancaria configurada en tu perfil." },
-  { q: "¿Qué pasa si rechazan mi venta?", a: "Recibirás una notificación con el motivo. Puedes corregir y volver a enviar." },
-  { q: "¿Puedo usar cupones de descuento?", a: "Si la empresa tiene plan Premium o Enterprise, podrás aplicar cupones al registrar ventas." }
+  { q: "¿Cuánto tarda en liberarse mi comisión?", a: "Depende del tiempo de devolución de cada producto (7, 14 o 30 días)." },
+  { q: "¿Cómo retiro mis comisiones?", a: "Las transferencias son automáticas a tu cuenta bancaria." },
+  { q: "¿Puedo usar cupones de descuento?", a: "Sí, si la empresa tiene plan Premium o Enterprise." },
 ];
 
 export default function VendorSupport() {
-  const { currentCompanyPlan } = useDemo();
-  const vendor = vendors.find(v => v.id === CURRENT_VENDOR_ID);
-  const company = companies.find(c => c.id === CURRENT_COMPANY_ID);
+  const { currentVendorId } = useDemo();
+  const vendor = vendors.find(v => v.id === (currentVendorId || CURRENT_VENDOR_ID));
+  const firstName = vendor?.name.split(" ")[0] || "Vendedor";
 
-  // Chat only available for Premium/Enterprise
-  if (currentCompanyPlan === 'freemium') {
-    return (
-      <VendorTabLayout>
-        <div className="flex flex-col items-center justify-center py-20 text-center">
-          <Lock className="w-12 h-12 text-muted-foreground/30 mb-4" />
-          <h2 className="text-lg font-semibold mb-2">Chat no disponible</h2>
-          <p className="text-sm text-muted-foreground max-w-md">
-            El chat con la empresa no está disponible en el plan Freemium. 
-            Contacta a {company?.name} directamente.
-          </p>
-        </div>
-      </VendorTabLayout>
-    );
-  }
+  const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
+  const [newMessage, setNewMessage] = useState("");
 
-  const whatsappNumber = company?.contactPhone?.replace(/\D/g, '') || "573001234567";
-  const message = encodeURIComponent(`Hola ${company?.name}, soy ${vendor?.name} (vendedor). Tengo una consulta: `);
-  const whatsappLink = `https://wa.me/${whatsappNumber}?text=${message}`;
+  const handleSend = () => {
+    if (!newMessage.trim()) return;
+    const msg: ChatMessage = {
+      id: `m-${Date.now()}`,
+      sender: "vendor",
+      text: newMessage,
+      time: new Date().toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" }),
+    };
+    setMessages(prev => [...prev, msg]);
+    setNewMessage("");
+
+    // Simulate support response
+    setTimeout(() => {
+      setMessages(prev => [
+        ...prev,
+        {
+          id: `m-${Date.now()}-r`,
+          sender: "support",
+          text: "Gracias por tu mensaje. Un agente de soporte revisará tu consulta pronto.",
+          time: new Date().toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" }),
+        },
+      ]);
+    }, 1500);
+  };
 
   return (
     <VendorTabLayout>
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-2xl font-bold">Chat con {company?.name}</h1>
-          <p className="text-muted-foreground">Comunícate directamente con tu empresa</p>
+      <div className="flex flex-col" style={{ height: "calc(100vh - 180px)" }}>
+        {/* Header */}
+        <div className="flex items-center justify-between pb-4 border-b border-border mb-4 flex-shrink-0">
+          <div>
+            <h1 className="text-lg font-bold text-foreground">Soporte Mensualista</h1>
+            <p className="text-[10px] text-muted-foreground">Escríbenos y te responderemos lo antes posible</p>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-emerald-500" />
+            <span className="text-[10px] text-muted-foreground">En línea</span>
+          </div>
         </div>
 
-        {/* Chat placeholder */}
-        <div className="card-premium p-6 text-center bg-gradient-to-br from-primary/5 to-primary/10">
-          <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
-            <MessageCircle className="w-6 h-6 text-primary" />
-          </div>
-          <h2 className="text-base font-bold mb-2">Chat en vivo</h2>
-          <p className="text-sm text-muted-foreground mb-4">
-            Escribe directamente a {company?.name} para resolver dudas sobre productos, ventas o comisiones.
-          </p>
-          <div className="rounded-xl border border-border bg-card p-8 mb-4">
-            <p className="text-xs text-muted-foreground">💬 El chat se habilitará con la integración real. Por ahora, usa WhatsApp:</p>
-          </div>
-          <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
-            <Button className="bg-green-500 hover:bg-green-600 text-white">
-              <MessageCircle className="w-5 h-5 mr-2" />
-              WhatsApp con {company?.name}
-              <ExternalLink className="w-4 h-4 ml-2" />
+        {/* Messages */}
+        <div className="flex-1 overflow-y-auto space-y-3 mb-4">
+          {messages.map(msg => (
+            <div key={msg.id} className={cn("flex", msg.sender === "vendor" ? "justify-end" : "justify-start")}>
+              <div
+                className={cn(
+                  "max-w-[75%] rounded-2xl px-3.5 py-2.5",
+                  msg.sender === "vendor"
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-muted/60 text-foreground border border-border/50"
+                )}
+              >
+                <p className="text-xs leading-relaxed">{msg.text}</p>
+                <p className={cn("text-[9px] mt-1", msg.sender === "vendor" ? "opacity-60" : "text-muted-foreground")}>
+                  {msg.time}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Input */}
+        <div className="flex-shrink-0 border-t border-border pt-3">
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="icon" className="w-9 h-9 flex-shrink-0 text-muted-foreground">
+              <Paperclip className="w-4 h-4" />
             </Button>
-          </a>
-        </div>
-
-        {/* Horarios */}
-        <div className="card-premium p-6">
-          <div className="flex items-center gap-3 mb-4">
-            <Clock className="w-5 h-5 text-primary" />
-            <h3 className="font-semibold">Horarios de atención</h3>
-          </div>
-          <div className="grid sm:grid-cols-2 gap-4 text-sm">
-            <div className="flex justify-between p-3 bg-muted/50 rounded-lg">
-              <span>Lunes a Viernes</span>
-              <span className="font-medium">9:00 AM - 7:00 PM</span>
-            </div>
-            <div className="flex justify-between p-3 bg-muted/50 rounded-lg">
-              <span>Sábados</span>
-              <span className="font-medium">10:00 AM - 2:00 PM</span>
-            </div>
+            <Input
+              placeholder="Escribe un mensaje..."
+              className="h-10 text-xs rounded-xl bg-muted/20 border-border/40"
+              value={newMessage}
+              onChange={e => setNewMessage(e.target.value)}
+              onKeyDown={e => e.key === "Enter" && handleSend()}
+            />
+            <Button size="icon" className="w-10 h-10 rounded-xl flex-shrink-0" onClick={handleSend} disabled={!newMessage.trim()}>
+              <Send className="w-4 h-4" />
+            </Button>
           </div>
         </div>
 
-        {/* FAQs */}
-        <div className="card-premium p-6">
-          <div className="flex items-center gap-3 mb-4">
-            <HelpCircle className="w-5 h-5 text-primary" />
-            <h3 className="font-semibold">Preguntas frecuentes</h3>
+        {/* FAQs collapsed */}
+        <div className="flex-shrink-0 mt-4 pt-3 border-t border-border/30">
+          <div className="flex items-center gap-1.5 mb-2">
+            <HelpCircle className="w-3 h-3 text-muted-foreground" />
+            <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Preguntas frecuentes</span>
           </div>
-          <div className="space-y-4">
+          <div className="space-y-1.5">
             {faqs.map((faq, i) => (
-              <div key={i} className="border-b border-border/50 pb-4 last:border-0 last:pb-0">
-                <p className="font-medium mb-1">{faq.q}</p>
-                <p className="text-sm text-muted-foreground">{faq.a}</p>
+              <div key={i} className="rounded-lg bg-muted/20 p-2.5">
+                <p className="text-[11px] font-medium text-foreground">{faq.q}</p>
+                <p className="text-[10px] text-muted-foreground mt-0.5">{faq.a}</p>
               </div>
             ))}
           </div>
