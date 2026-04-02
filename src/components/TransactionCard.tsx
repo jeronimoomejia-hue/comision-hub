@@ -303,7 +303,7 @@ export default function TransactionCard({
 
               {/* Extra info */}
               <div className="flex flex-wrap gap-x-4 gap-y-1.5">
-                {clientEmail && (
+                {clientEmail && role !== 'company' && (
                   <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
                     <User className="w-3 h-3" />
                     <span className="truncate">{clientEmail}</span>
