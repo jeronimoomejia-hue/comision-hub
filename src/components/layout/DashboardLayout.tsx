@@ -119,7 +119,7 @@ export default function DashboardLayout({ children, role, userName = "Usuario" }
     ? adminNav
     : role === 'company'
       ? getCompanyNav(currentCompanyPlan)
-      : getVendorNav(currentCompanyPlan);
+      : getVendorNav();
 
   return (
     <div className="min-h-screen bg-background">
