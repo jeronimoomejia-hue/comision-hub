@@ -104,7 +104,51 @@ export default function ResumenTab({ service, sales, activeSubscriptions, vendor
         ))}
       </div>
 
-      {/* Chart */}
+      {/* Commission Tiers Summary */}
+      {(() => {
+        const serviceTiers = commissionTiers.filter(t => t.serviceId === service.id).sort((a, b) => a.tierOrder - b.tierOrder);
+        if (serviceTiers.length === 0) return null;
+        const tierIcons = { 1: Shield, 2: Star, 3: Crown };
+        const tierColors = {
+          1: { bg: 'bg-muted/30', border: 'border-border', text: 'text-muted-foreground' },
+          2: { bg: 'bg-amber-500/5', border: 'border-amber-400/30', text: 'text-amber-600' },
+          3: { bg: 'bg-primary/5', border: 'border-primary/30', text: 'text-primary' },
+        };
+        return (
+          <div className="rounded-xl border border-border p-4 space-y-3">
+            <h3 className="text-sm font-semibold flex items-center gap-2">
+              <Crown className="w-4 h-4 text-primary" /> Niveles de comisión
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              {serviceTiers.map(tier => {
+                const TIcon = tierIcons[tier.tierOrder as 1|2|3] || Shield;
+                const colors = tierColors[tier.tierOrder as 1|2|3] || tierColors[1];
+                const assignedCount = vendorCommissionAssignments.filter(a => a.tierId === tier.id).length;
+                const tierSales = sales.filter((s: any) => s.commissionTierId === tier.id);
+                return (
+                  <div key={tier.id} className={`p-3 rounded-xl border ${colors.border} ${colors.bg}`}>
+                    <div className="flex items-center gap-2 mb-2">
+                      <TIcon className={`w-3.5 h-3.5 ${colors.text}`} />
+                      <span className="text-xs font-semibold">{tier.name}</span>
+                      {tier.isPublic ? (
+                        <Badge className="text-[8px] bg-emerald-500/10 text-emerald-600 border-0 ml-auto"><Eye className="w-2 h-2 mr-0.5" />Público</Badge>
+                      ) : (
+                        <Badge variant="outline" className="text-[8px] ml-auto"><EyeOff className="w-2 h-2 mr-0.5" />Privado</Badge>
+                      )}
+                    </div>
+                    <p className={`text-xl font-bold ${colors.text}`}>{tier.commissionPct}%</p>
+                    <div className="flex items-center gap-3 mt-1.5 text-[10px] text-muted-foreground">
+                      <span><Users className="w-2.5 h-2.5 inline mr-0.5" />{assignedCount} vendedores</span>
+                      <span><ShoppingCart className="w-2.5 h-2.5 inline mr-0.5" />{tierSales.length} ventas</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })()}
+
       {metrics.total > 0 && (
         <div className="p-4 rounded-xl border border-border">
           <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
