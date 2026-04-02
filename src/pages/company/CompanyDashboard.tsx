@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import {
   DollarSign, TrendingUp, Users, Crown, Zap, Building2,
   ArrowRight, Package, ChevronRight, RefreshCw, ChevronDown, BarChart3,
-  CreditCard, ShoppingCart
+  CreditCard, ShoppingCart, Tag, MessageCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -23,8 +23,6 @@ const planConfig: Record<CompanyPlan, { label: string; icon: React.ElementType; 
   premium: { label: "Premium", icon: Crown, price: "$305.000/mes" },
   enterprise: { label: "Enterprise", icon: Building2, price: "Personalizado" },
 };
-
-const allPlans: CompanyPlan[] = ['freemium', 'premium', 'enterprise'];
 
 export default function CompanyDashboard() {
   const navigate = useNavigate();
@@ -46,7 +44,6 @@ export default function CompanyDashboard() {
   const totalGMV = companySales.reduce((s, sale) => s + (sale.amountCOP || sale.grossAmount || 0), 0);
   const totalNet = companySales.filter(s => s.status !== 'REFUNDED').reduce((s, sale) => s + sale.providerNetAmount, 0);
   const heldCount = companySales.filter(s => s.status === 'HELD').length;
-  const releasedCount = companySales.filter(s => s.status === 'COMPLETED').length;
   const refundedCount = companySales.filter(s => s.status === 'REFUNDED').length;
 
   const [showMetrics, setShowMetrics] = useState(false);
@@ -68,10 +65,6 @@ export default function CompanyDashboard() {
     return months;
   })();
 
-  const myPayments = companyPayments.filter(p => p.companyId === CURRENT_COMPANY_ID && p.status === 'enviado')
-    .sort((a, b) => new Date(b.scheduledDate).getTime() - new Date(a.scheduledDate).getTime())
-    .slice(0, 3);
-
   return (
     <DashboardLayout role="company" userName={company?.name}>
       <div className="space-y-6">
@@ -87,7 +80,7 @@ export default function CompanyDashboard() {
           {[
             { label: "Ventas este mes", value: formatCOP(gmvThisMonth), sub: `${salesThisMonth.length} transacciones`, icon: DollarSign },
             { label: "Suscripciones activas", value: totalSubscriptions.toLocaleString(), sub: "recurrentes", icon: RefreshCw },
-            { label: "Productos activos", value: companyServices.filter(s => s.status === 'activo').length, sub: plan === 'freemium' ? 'máx. 5' : 'ilimitados', icon: Package },
+            { label: "Productos activos", value: companyServices.filter(s => s.status === 'activo').length, sub: plan === 'freemium' ? 'max. 5' : 'ilimitados', icon: Package },
             { label: "Vendedores", value: uniqueVendors, sub: "en tu red", icon: Users },
           ].map(stat => (
             <div key={stat.label} className="rounded-xl border border-border bg-card p-4">
@@ -104,28 +97,22 @@ export default function CompanyDashboard() {
         {/* Metrics toggle */}
         <button
           onClick={() => setShowMetrics(!showMetrics)}
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-purple-500/10 text-purple-600 text-xs font-medium hover:bg-purple-500/15 transition-colors"
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary/10 text-primary text-xs font-medium hover:bg-primary/15 transition-colors"
         >
           <BarChart3 className="w-3.5 h-3.5" />
-          Ver métricas
+          Ver metricas
           <ChevronDown className={`w-3 h-3 transition-transform ${showMetrics ? 'rotate-180' : ''}`} />
         </button>
 
         <AnimatePresence>
           {showMetrics && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.25 }}
-              className="overflow-hidden"
-            >
+            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.25 }} className="overflow-hidden">
               <div className="space-y-3">
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   {[
                     { label: "GMV total", value: formatCOP(totalGMV) },
                     { label: "Neto empresa", value: formatCOP(totalNet) },
-                    { label: "Tiempo de devolución", value: String(heldCount) },
+                    { label: "En devolucion", value: String(heldCount) },
                     { label: "Devoluciones", value: String(refundedCount) },
                   ].map((m, i) => (
                     <div key={i} className="rounded-xl border border-border bg-card p-3 text-center">
@@ -134,62 +121,58 @@ export default function CompanyDashboard() {
                     </div>
                   ))}
                 </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {/* Chart */}
-                  <div className="rounded-xl border border-border bg-card p-4">
-                    <p className="text-xs font-semibold text-foreground flex items-center gap-1.5 mb-3">
-                      <TrendingUp className="w-3 h-3 text-primary" /> Ventas · 6 meses
-                    </p>
-                    <div className="h-32">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={chartData}>
-                          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
-                          <XAxis dataKey="name" tick={{ fontSize: 9 }} axisLine={false} tickLine={false} />
-                          <Tooltip
-                            contentStyle={{ fontSize: 10, borderRadius: 8, border: '1px solid hsl(var(--border))' }}
-                            formatter={(value: number, name: string) => [
-                              name === 'ingresos' ? formatCOP(value) : value,
-                              name === 'ingresos' ? 'Neto' : 'Ventas'
-                            ]}
-                          />
-                          <Bar dataKey="ventas" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
-                        </BarChart>
-                      </ResponsiveContainer>
-                    </div>
-                  </div>
-
-                  {/* Recent payments */}
-                  <div className="rounded-xl border border-border bg-card p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <p className="text-xs font-semibold text-foreground flex items-center gap-1.5">
-                        <CreditCard className="w-3 h-3 text-primary" /> Últimos pagos
-                      </p>
-                      <Link to="/company/payments" className="text-[10px] text-primary hover:underline flex items-center gap-0.5">
-                        Ver todos <ChevronRight className="w-2.5 h-2.5" />
-                      </Link>
-                    </div>
-                    {myPayments.length > 0 ? (
-                      <div className="space-y-2">
-                        {myPayments.map(p => (
-                          <div key={p.id} className="flex items-center justify-between py-1.5 border-b border-border/50 last:border-0">
-                            <div>
-                              <p className="text-xs font-medium text-foreground">{formatCOP(p.amountCOP)}</p>
-                              <p className="text-[10px] text-muted-foreground">{new Date(p.scheduledDate).toLocaleDateString('es-CO', { day: 'numeric', month: 'short' })}</p>
-                            </div>
-                            <span className="text-[9px] font-medium text-emerald-600 bg-emerald-500/10 px-1.5 py-0.5 rounded-full">Depositado</span>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="text-[11px] text-muted-foreground py-4 text-center">Sin pagos recientes</p>
-                    )}
+                <div className="rounded-xl border border-border bg-card p-4">
+                  <p className="text-xs font-semibold text-foreground flex items-center gap-1.5 mb-3">
+                    <TrendingUp className="w-3 h-3 text-primary" /> Ventas · 6 meses
+                  </p>
+                  <div className="h-32">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={chartData}>
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
+                        <XAxis dataKey="name" tick={{ fontSize: 9 }} axisLine={false} tickLine={false} />
+                        <Tooltip contentStyle={{ fontSize: 10, borderRadius: 8, border: '1px solid hsl(var(--border))' }} formatter={(value: number, name: string) => [name === 'ingresos' ? formatCOP(value) : value, name === 'ingresos' ? 'Neto' : 'Ventas']} />
+                        <Bar dataKey="ventas" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
                   </div>
                 </div>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* Mini sections row */}
+        <div className="grid grid-cols-3 gap-3">
+          {/* Mi Red mini */}
+          <Link to="/company/vendors" className="rounded-xl border border-border bg-card p-3 hover:border-primary/20 transition-colors group">
+            <div className="flex items-center justify-between mb-2">
+              <Users className="w-4 h-4 text-muted-foreground" />
+              <ChevronRight className="w-3 h-3 text-muted-foreground/30 group-hover:text-primary transition-colors" />
+            </div>
+            <p className="text-lg font-bold text-foreground">{uniqueVendors}</p>
+            <p className="text-[9px] text-muted-foreground">Vendedores</p>
+          </Link>
+
+          {/* Cupones mini */}
+          <Link to="/company/coupons" className="rounded-xl border border-border bg-card p-3 hover:border-primary/20 transition-colors group">
+            <div className="flex items-center justify-between mb-2">
+              <Tag className="w-4 h-4 text-muted-foreground" />
+              <ChevronRight className="w-3 h-3 text-muted-foreground/30 group-hover:text-primary transition-colors" />
+            </div>
+            <p className="text-lg font-bold text-foreground">{plan === 'freemium' ? '0' : '3'}</p>
+            <p className="text-[9px] text-muted-foreground">Cupones activos</p>
+          </Link>
+
+          {/* Chat mini */}
+          <Link to={plan !== 'freemium' ? "/company/chat" : "#"} className={`rounded-xl border bg-card p-3 transition-colors group ${plan !== 'freemium' ? 'border-border hover:border-primary/20' : 'border-border/50 opacity-50'}`}>
+            <div className="flex items-center justify-between mb-2">
+              <MessageCircle className="w-4 h-4 text-muted-foreground" />
+              <ChevronRight className="w-3 h-3 text-muted-foreground/30 group-hover:text-primary transition-colors" />
+            </div>
+            <p className="text-lg font-bold text-foreground">{plan !== 'freemium' ? '2' : '--'}</p>
+            <p className="text-[9px] text-muted-foreground">{plan !== 'freemium' ? 'Chats activos' : 'Solo Premium'}</p>
+          </Link>
+        </div>
 
         {/* Services section */}
         <div>
@@ -199,18 +182,12 @@ export default function CompanyDashboard() {
               Ver todos <ChevronRight className="w-3 h-3" />
             </Link>
           </div>
-
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {companyServices.slice(0, 3).map(service => {
               const serviceSales = companySales.filter(s => s.serviceId === service.id);
               const coverImg = categoryCovers[service.category];
-
               return (
-                <div
-                  key={service.id}
-                  onClick={() => navigate(`/company/services/${service.id}`)}
-                  className="rounded-xl border border-border bg-card overflow-hidden cursor-pointer group hover:shadow-md hover:border-primary/20 transition-all duration-300"
-                >
+                <div key={service.id} onClick={() => navigate(`/company/services/${service.id}`)} className="rounded-xl border border-border bg-card overflow-hidden cursor-pointer group hover:shadow-md hover:border-primary/20 transition-all duration-300">
                   <div className="relative h-36 overflow-hidden">
                     <img src={coverImg} alt={service.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
@@ -219,7 +196,6 @@ export default function CompanyDashboard() {
                       <p className="text-[10px] text-white/70 mt-0.5">{formatCOP(service.priceCOP)}{service.type === 'suscripción' ? '/mes' : ''}</p>
                     </div>
                   </div>
-
                   <div className="p-3 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="text-center">
@@ -232,9 +208,7 @@ export default function CompanyDashboard() {
                         <p className="text-[9px] text-muted-foreground">Ventas</p>
                       </div>
                     </div>
-                    <span className="text-[10px] text-primary font-medium flex items-center gap-0.5">
-                      Gestionar <ArrowRight className="w-3 h-3" />
-                    </span>
+                    <span className="text-[10px] text-primary font-medium flex items-center gap-0.5">Gestionar <ArrowRight className="w-3 h-3" /></span>
                   </div>
                 </div>
               );
@@ -242,17 +216,15 @@ export default function CompanyDashboard() {
           </div>
         </div>
 
-        {/* Recent sales with TransactionCards */}
+        {/* Recent sales */}
         <div>
           <div className="flex items-center justify-between mb-3">
             <span className="text-sm font-semibold text-foreground">Ventas recientes</span>
-            <Link to="/company/services" className="text-[10px] text-primary hover:underline flex items-center gap-0.5">
-              Ver en productos <ChevronRight className="w-3 h-3" />
+            <Link to="/company/payments" className="text-[10px] text-primary hover:underline flex items-center gap-0.5">
+              Ver todas <ChevronRight className="w-3 h-3" />
             </Link>
           </div>
-
           <StatusGuide />
-
           <div className="space-y-2.5 mt-3">
             {companySales.slice(0, 5).map(sale => {
               const service = services.find(s => s.id === sale.serviceId);
@@ -263,7 +235,6 @@ export default function CompanyDashboard() {
                   id={sale.id}
                   clientName={sale.clientName}
                   clientEmail={sale.clientEmail}
-                  clientPhone={sale.clientPhone}
                   serviceName={service?.name}
                   serviceCategory={service?.category}
                   vendorName={vendor?.name}
@@ -301,7 +272,7 @@ export default function CompanyDashboard() {
                 <p className="text-[11px] text-muted-foreground">
                   {plan === 'freemium'
                     ? 'Productos ilimitados, cupones, chat y 0% fee de plataforma'
-                    : 'Integración API, calendario de horarios, soporte dedicado'}
+                    : 'Integracion API, calendario de horarios, soporte dedicado'}
                 </p>
               </div>
               <Button size="sm" className="text-xs gap-1" onClick={() => setCurrentCompanyPlan(plan === 'freemium' ? 'premium' : 'enterprise')}>

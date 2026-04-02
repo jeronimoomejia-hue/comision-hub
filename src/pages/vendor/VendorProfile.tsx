@@ -1,25 +1,28 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import VendorTabLayout from "@/components/layout/VendorTabLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
-  User, CreditCard, Shield, Bell, LogOut, ChevronRight
+  User, CreditCard, Shield, Bell, LogOut, Settings, ChevronRight, HelpCircle
 } from "lucide-react";
 import { useDemo } from "@/contexts/DemoContext";
 import { formatCOP } from "@/data/mockData";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { Link } from "react-router-dom";
 
 export default function VendorProfile() {
+  const navigate = useNavigate();
   const { trainingProgress, services, sales, commissions, currentVendorId } = useDemo();
 
   const [vendorData, setVendorData] = useState({
-    name: "Juan Pérez",
+    name: "Juan Perez",
     email: "juan.perez@email.com",
     whatsapp: "+57 300 123 4567",
-    city: "Bogotá",
+    city: "Bogota",
     country: "Colombia",
     vendorId: currentVendorId,
     bank: "bancolombia",
@@ -27,7 +30,7 @@ export default function VendorProfile() {
     accountNumber: "****5678",
     documentType: "CC",
     documentNumber: "1234567890",
-    accountHolder: "Juan Pérez",
+    accountHolder: "Juan Perez",
     whatsappNotifications: true,
   });
 
@@ -65,7 +68,7 @@ export default function VendorProfile() {
   };
 
   const handleLogout = () => {
-    toast.info("Cerrando sesión...");
+    toast.info("Cerrando sesion...");
     setTimeout(() => { window.location.href = '/'; }, 1000);
   };
 
@@ -97,39 +100,39 @@ export default function VendorProfile() {
           ))}
         </div>
 
+        {/* Quick actions */}
+        <div className="grid grid-cols-2 gap-2">
+          <Link to="/vendor/support" className="flex items-center gap-2 p-3 rounded-xl border border-border bg-card hover:bg-muted/30 transition-colors">
+            <HelpCircle className="w-4 h-4 text-muted-foreground" />
+            <span className="text-xs font-medium text-foreground">Soporte</span>
+            <ChevronRight className="w-3 h-3 text-muted-foreground/30 ml-auto" />
+          </Link>
+          <button
+            onClick={() => toast.info("Ajustes de demo")}
+            className="flex items-center gap-2 p-3 rounded-xl border border-border bg-card hover:bg-muted/30 transition-colors text-left"
+          >
+            <Settings className="w-4 h-4 text-muted-foreground" />
+            <span className="text-xs font-medium text-foreground">Ajustes</span>
+            <ChevronRight className="w-3 h-3 text-muted-foreground/30 ml-auto" />
+          </button>
+        </div>
+
         {/* Personal info */}
-        <Card title="Información personal">
+        <Card title="Informacion personal">
           <Field label="Nombre completo">
-            <Input
-              value={vendorData.name}
-              onChange={(e) => setVendorData({ ...vendorData, name: e.target.value })}
-              className="h-9 text-sm rounded-xl bg-muted/20 border-border/40"
-            />
+            <Input value={vendorData.name} onChange={(e) => setVendorData({ ...vendorData, name: e.target.value })} className="h-9 text-sm rounded-xl bg-muted/20 border-border/40" />
           </Field>
           <Field label="Email">
-            <Input
-              type="email"
-              value={vendorData.email}
-              onChange={(e) => setVendorData({ ...vendorData, email: e.target.value })}
-              className="h-9 text-sm rounded-xl bg-muted/20 border-border/40"
-            />
+            <Input type="email" value={vendorData.email} onChange={(e) => setVendorData({ ...vendorData, email: e.target.value })} className="h-9 text-sm rounded-xl bg-muted/20 border-border/40" />
           </Field>
           <Field label="WhatsApp">
-            <Input
-              value={vendorData.whatsapp}
-              onChange={(e) => setVendorData({ ...vendorData, whatsapp: e.target.value })}
-              className="h-9 text-sm rounded-xl bg-muted/20 border-border/40"
-            />
+            <Input value={vendorData.whatsapp} onChange={(e) => setVendorData({ ...vendorData, whatsapp: e.target.value })} className="h-9 text-sm rounded-xl bg-muted/20 border-border/40" />
           </Field>
           <div className="grid grid-cols-2 gap-3">
             <Field label="Ciudad">
-              <Input
-                value={vendorData.city}
-                onChange={(e) => setVendorData({ ...vendorData, city: e.target.value })}
-                className="h-9 text-sm rounded-xl bg-muted/20 border-border/40"
-              />
+              <Input value={vendorData.city} onChange={(e) => setVendorData({ ...vendorData, city: e.target.value })} className="h-9 text-sm rounded-xl bg-muted/20 border-border/40" />
             </Field>
-            <Field label="País">
+            <Field label="Pais">
               <Input value={vendorData.country} disabled className="h-9 text-sm rounded-xl bg-muted/20 border-border/40" />
             </Field>
           </div>
@@ -143,19 +146,17 @@ export default function VendorProfile() {
         {/* Payment */}
         <Card title="Datos de pago">
           <p className="text-[11px] text-muted-foreground leading-relaxed -mt-1 mb-1">
-            Los pagos se realizan por transferencia automática cada semana.
+            Los pagos se realizan por transferencia automatica cada semana.
           </p>
           <div className="grid grid-cols-2 gap-3">
             <Field label="Banco">
               <Select value={vendorData.bank} onValueChange={(v) => setVendorData({ ...vendorData, bank: v })}>
-                <SelectTrigger className="h-9 text-sm rounded-xl bg-muted/20 border-border/40">
-                  <SelectValue />
-                </SelectTrigger>
+                <SelectTrigger className="h-9 text-sm rounded-xl bg-muted/20 border-border/40"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="bancolombia">Bancolombia</SelectItem>
                   <SelectItem value="davivienda">Davivienda</SelectItem>
                   <SelectItem value="bbva">BBVA</SelectItem>
-                  <SelectItem value="banco_bogota">Banco de Bogotá</SelectItem>
+                  <SelectItem value="banco_bogota">Banco de Bogota</SelectItem>
                   <SelectItem value="nequi">Nequi</SelectItem>
                   <SelectItem value="daviplata">Daviplata</SelectItem>
                 </SelectContent>
@@ -163,9 +164,7 @@ export default function VendorProfile() {
             </Field>
             <Field label="Tipo de cuenta">
               <Select value={vendorData.accountType} onValueChange={(v) => setVendorData({ ...vendorData, accountType: v })}>
-                <SelectTrigger className="h-9 text-sm rounded-xl bg-muted/20 border-border/40">
-                  <SelectValue />
-                </SelectTrigger>
+                <SelectTrigger className="h-9 text-sm rounded-xl bg-muted/20 border-border/40"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="ahorros">Ahorros</SelectItem>
                   <SelectItem value="corriente">Corriente</SelectItem>
@@ -173,26 +172,16 @@ export default function VendorProfile() {
               </Select>
             </Field>
           </div>
-          <Field label="Número de cuenta">
-            <Input
-              value={vendorData.accountNumber}
-              onChange={(e) => setVendorData({ ...vendorData, accountNumber: e.target.value })}
-              className="h-9 text-sm font-mono rounded-xl bg-muted/20 border-border/40"
-            />
+          <Field label="Numero de cuenta">
+            <Input value={vendorData.accountNumber} onChange={(e) => setVendorData({ ...vendorData, accountNumber: e.target.value })} className="h-9 text-sm font-mono rounded-xl bg-muted/20 border-border/40" />
           </Field>
           <Field label="Titular">
-            <Input
-              value={vendorData.accountHolder}
-              onChange={(e) => setVendorData({ ...vendorData, accountHolder: e.target.value })}
-              className="h-9 text-sm rounded-xl bg-muted/20 border-border/40"
-            />
+            <Input value={vendorData.accountHolder} onChange={(e) => setVendorData({ ...vendorData, accountHolder: e.target.value })} className="h-9 text-sm rounded-xl bg-muted/20 border-border/40" />
           </Field>
           <div className="grid grid-cols-2 gap-3">
             <Field label="Tipo documento">
               <Select value={vendorData.documentType} onValueChange={(v) => setVendorData({ ...vendorData, documentType: v })}>
-                <SelectTrigger className="h-9 text-sm rounded-xl bg-muted/20 border-border/40">
-                  <SelectValue />
-                </SelectTrigger>
+                <SelectTrigger className="h-9 text-sm rounded-xl bg-muted/20 border-border/40"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="CC">C.C.</SelectItem>
                   <SelectItem value="CE">C.E.</SelectItem>
@@ -200,12 +189,8 @@ export default function VendorProfile() {
                 </SelectContent>
               </Select>
             </Field>
-            <Field label="Número">
-              <Input
-                value={vendorData.documentNumber}
-                onChange={(e) => setVendorData({ ...vendorData, documentNumber: e.target.value })}
-                className="h-9 text-sm font-mono rounded-xl bg-muted/20 border-border/40"
-              />
+            <Field label="Numero">
+              <Input value={vendorData.documentNumber} onChange={(e) => setVendorData({ ...vendorData, documentNumber: e.target.value })} className="h-9 text-sm font-mono rounded-xl bg-muted/20 border-border/40" />
             </Field>
           </div>
           <div className="flex justify-end pt-1">
@@ -217,53 +202,25 @@ export default function VendorProfile() {
 
         {/* Preferences */}
         <Card title="Preferencias">
-          <Row
-            label="Notificaciones WhatsApp"
-            sub="Alertas de ventas y pagos"
-            right={
-              <Switch
-                checked={vendorData.whatsappNotifications}
-                onCheckedChange={(checked) => setVendorData({ ...vendorData, whatsappNotifications: checked })}
-              />
-            }
-          />
-          <Row
-            label="Zona horaria"
-            sub="Bogotá (UTC-5)"
-            right={<span className="text-[11px] text-muted-foreground">Colombia</span>}
-            last
-          />
+          <Row label="Notificaciones WhatsApp" sub="Alertas de ventas y pagos" right={<Switch checked={vendorData.whatsappNotifications} onCheckedChange={(checked) => setVendorData({ ...vendorData, whatsappNotifications: checked })} />} />
+          <Row label="Zona horaria" sub="Bogota (UTC-5)" right={<span className="text-[11px] text-muted-foreground">Colombia</span>} last />
         </Card>
 
         {/* Security */}
         <Card title="Seguridad">
-          <Row
-            label="Cambiar contraseña"
-            sub="Actualiza tu contraseña de acceso"
-            right={
-              <Button variant="outline" size="sm" className="rounded-full h-8 px-4 text-[11px] font-medium" onClick={() => toast.info("Funcionalidad de demo")}>
-                Cambiar
-              </Button>
-            }
-          />
-          <Row
-            label="Cerrar sesión"
-            sub="Salir de tu cuenta"
-            right={
-              <Button variant="ghost" size="sm" className="rounded-full h-8 px-4 text-[11px] font-medium text-destructive hover:text-destructive" onClick={handleLogout}>
-                <LogOut className="w-3.5 h-3.5 mr-1" />
-                Salir
-              </Button>
-            }
-            last
-          />
+          <Row label="Cambiar contrasena" sub="Actualiza tu contrasena de acceso" right={
+            <Button variant="outline" size="sm" className="rounded-full h-8 px-4 text-[11px] font-medium" onClick={() => toast.info("Funcionalidad de demo")}>Cambiar</Button>
+          } />
+          <Row label="Cerrar sesion" sub="Salir de tu cuenta" right={
+            <Button variant="ghost" size="sm" className="rounded-full h-8 px-4 text-[11px] font-medium text-destructive hover:text-destructive" onClick={handleLogout}>
+              <LogOut className="w-3.5 h-3.5 mr-1" /> Salir
+            </Button>
+          } last />
         </Card>
       </div>
     </VendorTabLayout>
   );
 }
-
-/* ── Helper components ── */
 
 function Card({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -271,9 +228,7 @@ function Card({ title, children }: { title: string; children: React.ReactNode })
       <div className="px-5 py-3.5 border-b border-border/30">
         <h2 className="text-[13px] font-semibold text-foreground">{title}</h2>
       </div>
-      <div className="p-5 space-y-3.5">
-        {children}
-      </div>
+      <div className="p-5 space-y-3.5">{children}</div>
     </div>
   );
 }
