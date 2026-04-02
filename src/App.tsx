@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { DemoProvider } from "@/contexts/DemoContext";
 import { AuthProvider } from "@/contexts/AuthContext";
+import DemoRoleToggle from "@/components/DemoRoleToggle";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
@@ -24,6 +25,8 @@ import VendorSupport from "./pages/vendor/VendorSupport";
 import VendorProfile from "./pages/vendor/VendorProfile";
 import VendorCompanyDetail from "./pages/vendor/VendorCompanyDetail";
 import VendorCRM from "./pages/vendor/VendorCRM";
+import VendorOnboarding from "./pages/vendor/VendorOnboarding";
+import VendorSubscriptions from "./pages/vendor/VendorSubscriptions";
 import CompanyDashboard from "./pages/company/CompanyDashboard";
 import CompanyServices from "./pages/company/CompanyServices";
 import CompanyServiceDetail from "./pages/company/CompanyServiceDetail";
@@ -35,8 +38,7 @@ import CompanySettings from "./pages/company/CompanySettings";
 import CompanyProfile from "./pages/company/CompanyProfile";
 import CompanyChat from "./pages/company/CompanyChat";
 import CompanyCoupons from "./pages/company/CompanyCoupons";
-import CompanyApi from "./pages/company/CompanyApi";
-import CompanyLeads from "./pages/company/CompanyLeads";
+import CompanyTrainings from "./pages/company/CompanyTrainings";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminVendors from "./pages/admin/AdminVendors";
@@ -47,7 +49,7 @@ import AdminTrainings from "./pages/admin/AdminTrainings";
 import AdminSales from "./pages/admin/AdminSales";
 import AdminPayments from "./pages/admin/AdminPayments";
 import AdminSettings from "./pages/admin/AdminSettings";
-import CompanyTrainings from "./pages/company/CompanyTrainings";
+import AdminSupport from "./pages/admin/AdminSupport";
 
 const queryClient = new QueryClient();
 
@@ -59,12 +61,14 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <DemoRoleToggle />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/vendedores" element={<VendorLanding />} />
             <Route path="/auth" element={<Auth />} />
             
             {/* Vendor Routes */}
+            <Route path="/vendor/onboarding" element={<VendorOnboarding />} />
             <Route path="/vendor/home" element={<VendorHome />} />
             <Route path="/vendor" element={<VendorDashboard />} />
             <Route path="/vendor/company/:companyId" element={<VendorCompanyDetail />} />
@@ -76,6 +80,7 @@ const App = () => (
             <Route path="/vendor/trainings/:trainingId" element={<VendorTrainingDetail />} />
             <Route path="/vendor/sales" element={<VendorSales />} />
             <Route path="/vendor/payments" element={<VendorPayments />} />
+            <Route path="/vendor/subscriptions" element={<VendorSubscriptions />} />
             <Route path="/vendor/refunds" element={<VendorRefunds />} />
             <Route path="/vendor/materials" element={<VendorMaterials />} />
             <Route path="/vendor/support" element={<VendorSupport />} />
@@ -87,7 +92,6 @@ const App = () => (
             <Route path="/company/services" element={<CompanyServices />} />
             <Route path="/company/services/new" element={<CompanyNewService />} />
             <Route path="/company/services/:serviceId" element={<CompanyServiceDetail />} />
-            <Route path="/company/gigs" element={<CompanyServices />} />
             <Route path="/company/sales" element={<CompanySales />} />
             <Route path="/company/vendors" element={<CompanyVendors />} />
             <Route path="/company/payments" element={<CompanyPayments />} />
@@ -95,8 +99,6 @@ const App = () => (
             <Route path="/company/profile" element={<CompanyProfile />} />
             <Route path="/company/chat" element={<CompanyChat />} />
             <Route path="/company/coupons" element={<CompanyCoupons />} />
-            <Route path="/company/leads" element={<CompanyLeads />} />
-            <Route path="/company/api" element={<CompanyApi />} />
             <Route path="/company/trainings" element={<CompanyTrainings />} />
             
             {/* Admin Routes */}
@@ -110,6 +112,7 @@ const App = () => (
             <Route path="/admin/sales" element={<AdminSales />} />
             <Route path="/admin/payments" element={<AdminPayments />} />
             <Route path="/admin/settings" element={<AdminSettings />} />
+            <Route path="/admin/support" element={<AdminSupport />} />
             
             <Route path="*" element={<NotFound />} />
           </Routes>
