@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   Search, Building2, Package, Lock,
-  ChevronRight, Dumbbell, Sparkles, Scissors, Star, TrendingUp, Flame
+  ChevronRight, Dumbbell, Sparkles, Scissors, Star, TrendingUp, Flame, Crown, Shield
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
