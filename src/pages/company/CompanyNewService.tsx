@@ -11,12 +11,14 @@ import {
   ArrowLeft, Package, Key, DollarSign, BookOpen,
   RefreshCw, Zap, Check, Upload,
   Lightbulb, FileText, Plus, Trash2, Link2, UserCheck, StickyNote,
-  Play, Video, FileUp, ChevronRight
+  Play, Video, FileUp, ChevronRight, Sparkles, Loader2, X
 } from "lucide-react";
 import { toast } from "sonner";
 import { formatCOP, CURRENT_COMPANY_ID, companies } from "@/data/mockData";
 import { useDemo } from "@/contexts/DemoContext";
+import { supabase } from "@/integrations/supabase/client";
 
+type Phase = 'choose' | 'wizard';
 type Step = 'basics' | 'pricing' | 'content' | 'training' | 'codes' | 'notes';
 type CodeType = 'codes' | 'links' | 'credentials';
 
@@ -24,48 +26,118 @@ export default function CompanyNewService() {
   const navigate = useNavigate();
   const { currentCompanyPlan, addService } = useDemo();
   const company = companies.find(c => c.id === CURRENT_COMPANY_ID);
+  
+  const [phase, setPhase] = useState<Phase>('choose');
   const [step, setStep] = useState<Step>('basics');
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  // AI inputs
+  const [aiText, setAiText] = useState('');
+  const [aiFileName, setAiFileName] = useState('');
+  const [aiFileContent, setAiFileContent] = useState('');
 
   const [form, setForm] = useState({
-    name: '',
-    description: '',
-    shortDescription: '',
-    category: 'seguros',
-    type: 'suscripción' as 'suscripción' | 'puntual',
-    priceCOP: 150000,
-    vendorCommissionPct: 20,
-    requiresTraining: true,
-    trainingType: 'video' as 'pdf' | 'video',
-    refundWindowDays: 14 as 7 | 14 | 30,
-    autoRefund: false,
-    // Codes
-    codeType: 'codes' as CodeType,
-    initialCodes: '',
+    name: '', description: '', shortDescription: '', category: 'seguros',
+    type: 'suscripción' as 'suscripción' | 'puntual', priceCOP: 150000,
+    vendorCommissionPct: 20, requiresTraining: true, trainingType: 'video' as 'pdf' | 'video',
+    refundWindowDays: 14 as 7 | 14 | 30, autoRefund: false,
+    codeType: 'codes' as CodeType, initialCodes: '',
     initialCredentials: [{ username: '', password: '' }],
-    // Content / gig details
-    pitchOneLine: '',
-    pitchThreeLines: '',
-    targetAudience: '',
-    problemSolved: '',
-    promisedResult: '',
-    features: ['', '', ''],
-    objections: [{ objection: '', response: '' }],
-    idealClient: '',
-    // Training
-    trainingVideoUrl: '',
-    trainingPdfName: '',
+    pitchOneLine: '', pitchThreeLines: '', targetAudience: '', problemSolved: '',
+    promisedResult: '', features: ['', '', ''],
+    objections: [{ objection: '', response: '' }], idealClient: '',
+    trainingVideoUrl: '', trainingPdfName: '',
     trainingChapters: [
       { title: 'Introducción al producto', type: 'video' as 'video' | 'quiz' | 'reading', duration: '5 min' },
       { title: 'Cómo venderlo', type: 'video' as 'video' | 'quiz' | 'reading', duration: '10 min' },
       { title: 'Evaluación', type: 'quiz' as 'video' | 'quiz' | 'reading', duration: '5 min' },
     ],
     trainingQuizQuestions: [{ question: '', options: ['', '', ''], correctIndex: 0 }],
-    // Notes
-    additionalNotes: '',
-    internalNotes: '',
+    additionalNotes: '', internalNotes: '',
   });
 
   const update = (key: string, value: any) => setForm(prev => ({ ...prev, [key]: value }));
+
+  // Handle file selection (read text from PDF/DOCX using FileReader)
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setAiFileName(file.name);
+    
+    // Read file as text for basic extraction
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const text = event.target?.result;
+      if (typeof text === 'string') {
+        setAiFileContent(text);
+      } else {
+        // For binary files, we'll send the filename as indicator
+        setAiFileContent(`[Documento: ${file.name}]`);
+      }
+    };
+    
+    if (file.type.includes('text') || file.name.endsWith('.txt') || file.name.endsWith('.csv')) {
+      reader.readAsText(file);
+    } else {
+      // For PDFs and other binary, read as text (basic extraction)
+      reader.readAsText(file);
+    }
+    toast.success(`${file.name} cargado`);
+  };
+
+  // Call AI to generate service data
+  const handleAIGenerate = async () => {
+    if (!aiText.trim() && !aiFileContent.trim()) {
+      toast.error("Ingresa texto o sube un documento");
+      return;
+    }
+    
+    setIsGenerating(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('generate-service', {
+        body: { text: aiText, pdfContent: aiFileContent }
+      });
+      
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      
+      const svc = data.service;
+      if (svc) {
+        setForm(prev => ({
+          ...prev,
+          name: svc.name || prev.name,
+          shortDescription: svc.shortDescription || prev.shortDescription,
+          description: svc.description || prev.description,
+          category: svc.category || prev.category,
+          type: svc.type || prev.type,
+          priceCOP: svc.priceCOP || prev.priceCOP,
+          vendorCommissionPct: svc.vendorCommissionPct || prev.vendorCommissionPct,
+          pitchOneLine: svc.pitchOneLine || prev.pitchOneLine,
+          pitchThreeLines: svc.pitchThreeLines || prev.pitchThreeLines,
+          targetAudience: svc.targetAudience || prev.targetAudience,
+          idealClient: svc.idealClient || prev.idealClient,
+          problemSolved: svc.problemSolved || prev.problemSolved,
+          promisedResult: svc.promisedResult || prev.promisedResult,
+          features: svc.features?.length ? svc.features : prev.features,
+          objections: svc.objections?.length ? svc.objections : prev.objections,
+          trainingChapters: svc.trainingChapters?.length 
+            ? svc.trainingChapters.map((ch: any) => ({ title: ch.title, type: ch.type || 'reading', duration: ch.duration || '5 min' }))
+            : prev.trainingChapters,
+          trainingQuizQuestions: svc.quizQuestions?.length
+            ? svc.quizQuestions.map((q: any) => ({ question: q.question, options: q.options || ['', '', ''], correctIndex: q.correctIndex || 0 }))
+            : prev.trainingQuizQuestions,
+        }));
+        toast.success("Producto generado con IA. Revisa y ajusta cada paso.");
+        setPhase('wizard');
+        setStep('basics');
+      }
+    } catch (err: any) {
+      console.error("AI generation error:", err);
+      toast.error(err.message || "Error al generar con IA");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   const steps: { id: Step; label: string; icon: React.ElementType }[] = [
     { id: 'basics', label: 'Producto', icon: Package },
@@ -78,15 +150,13 @@ export default function CompanyNewService() {
 
   const currentIdx = steps.findIndex(s => s.id === step);
   const isLast = currentIdx === steps.length - 1;
-
   const handleNext = () => {
     if (step === 'basics' && !form.name.trim()) { toast.error("Ingresa un nombre"); return; }
     if (!isLast) setStep(steps[currentIdx + 1].id);
   };
-
   const handleBack = () => {
     if (currentIdx > 0) setStep(steps[currentIdx - 1].id);
-    else navigate('/company/services');
+    else setPhase('choose');
   };
 
   const mensualistaPct = currentCompanyPlan === 'freemium' ? 15 : 8;
@@ -103,36 +173,129 @@ export default function CompanyNewService() {
     if (!form.name.trim()) { toast.error("Ingresa un nombre"); return; }
     const codeCount = getCodeCount();
     if (codeCount < 20 && currentCompanyPlan !== 'enterprise') {
-      toast.error("Debes ingresar mínimo 20 códigos/links/credenciales");
+      toast.error("Ingresa mínimo 20 códigos/links/credenciales");
       return;
     }
-
     let codeLines: string[] = [];
     if (form.codeType === 'credentials') {
       codeLines = form.initialCredentials.filter(c => c.username.trim()).map(c => `${c.username}|${c.password}`);
     } else {
       codeLines = form.initialCodes.split('\n').map(c => c.trim()).filter(Boolean);
     }
-
     addService({
-      companyId: CURRENT_COMPANY_ID,
-      name: form.name, description: form.description || form.shortDescription, category: form.category,
-      priceCOP: form.priceCOP, type: form.type, vendorCommissionPct: form.vendorCommissionPct,
-      mensualistaPct, status: 'activo',
+      companyId: CURRENT_COMPANY_ID, name: form.name, description: form.description || form.shortDescription,
+      category: form.category, priceCOP: form.priceCOP, type: form.type,
+      vendorCommissionPct: form.vendorCommissionPct, mensualistaPct, status: 'activo',
       refundPolicy: { autoRefund: form.autoRefund, refundWindowDays: form.refundWindowDays },
-      requiresTraining: form.requiresTraining, trainingType: form.trainingType,
-      materials: [],
+      requiresTraining: form.requiresTraining, trainingType: form.trainingType, materials: [],
       activationCodes: codeLines.map((code, i) => ({ id: `ac-new-${Date.now()}-${i}`, code, status: 'available' as const })),
     });
-    toast.success(`Producto creado con ${codeLines.length} ${form.codeType === 'codes' ? 'códigos' : form.codeType === 'links' ? 'links' : 'credenciales'}`);
+    toast.success(`Producto creado`);
     navigate('/company/services');
   };
 
+  // ═══ PHASE: CHOOSE ═══
+  if (phase === 'choose') {
+    return (
+      <DashboardLayout role="company" userName={company?.name}>
+        <div className="space-y-5 max-w-2xl mx-auto">
+          <button onClick={() => navigate('/company/services')} className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
+            <ArrowLeft className="w-3.5 h-3.5" /> Mis Productos
+          </button>
+
+          <div className="text-center space-y-1">
+            <h1 className="text-xl font-bold text-foreground">Nuevo producto</h1>
+            <p className="text-xs text-muted-foreground">Elige cómo quieres crear tu producto</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Manual */}
+            <button
+              onClick={() => { setPhase('wizard'); setStep('basics'); }}
+              className="text-left p-5 rounded-2xl border border-border bg-card hover:border-primary/30 hover:shadow-sm transition-all group"
+            >
+              <div className="w-10 h-10 rounded-xl bg-muted/50 flex items-center justify-center mb-3 group-hover:bg-primary/10 transition-colors">
+                <Package className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+              </div>
+              <p className="text-sm font-semibold text-foreground mb-1">Crear manualmente</p>
+              <p className="text-[11px] text-muted-foreground leading-relaxed">
+                Llena paso a paso toda la información de tu producto
+              </p>
+            </button>
+
+            {/* AI */}
+            <div className="p-5 rounded-2xl border border-primary/20 bg-primary/[0.02] space-y-4">
+              <div className="flex items-center gap-2">
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                  <Sparkles className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-foreground">Generar con IA</p>
+                  <p className="text-[10px] text-muted-foreground">Sube documentos o pega texto</p>
+                </div>
+              </div>
+
+              {/* Text input */}
+              <div className="space-y-1.5">
+                <Label className="text-[10px] text-muted-foreground">Describe tu producto</Label>
+                <Textarea
+                  className="text-xs min-h-[80px] bg-background"
+                  rows={3}
+                  placeholder="Pega aquí la información de tu producto, brochure, especificaciones..."
+                  value={aiText}
+                  onChange={e => setAiText(e.target.value)}
+                />
+              </div>
+
+              {/* File upload */}
+              <div className="space-y-1.5">
+                <Label className="text-[10px] text-muted-foreground">O sube un documento</Label>
+                {aiFileName ? (
+                  <div className="flex items-center gap-2 p-2 rounded-lg border border-border bg-background">
+                    <FileText className="w-4 h-4 text-primary flex-shrink-0" />
+                    <span className="text-xs text-foreground flex-1 truncate">{aiFileName}</span>
+                    <button onClick={() => { setAiFileName(''); setAiFileContent(''); }} className="text-muted-foreground hover:text-destructive">
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                ) : (
+                  <label className="flex items-center gap-2 p-3 rounded-xl border border-dashed border-border bg-background cursor-pointer hover:border-primary/30 transition-colors">
+                    <Upload className="w-4 h-4 text-muted-foreground" />
+                    <span className="text-xs text-muted-foreground">PDF, TXT, DOCX</span>
+                    <input
+                      type="file"
+                      className="hidden"
+                      accept=".pdf,.txt,.docx,.doc,.csv"
+                      onChange={handleFileSelect}
+                    />
+                  </label>
+                )}
+              </div>
+
+              <Button 
+                className="w-full h-9 text-xs"
+                onClick={handleAIGenerate} 
+                disabled={isGenerating || (!aiText.trim() && !aiFileContent.trim())}
+              >
+                {isGenerating ? (
+                  <><Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> Generando...</>
+                ) : (
+                  <><Sparkles className="w-3.5 h-3.5 mr-1.5" /> Generar producto</>
+                )}
+              </Button>
+            </div>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  // ═══ PHASE: WIZARD ═══
   return (
     <DashboardLayout role="company" userName={company?.name}>
       <div className="space-y-5">
-        <button onClick={() => navigate('/company/services')} className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
-          <ArrowLeft className="w-3.5 h-3.5" /> Mis Productos
+        <button onClick={() => setPhase('choose')} className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
+          <ArrowLeft className="w-3.5 h-3.5" /> Volver
         </button>
 
         <h1 className="text-xl font-bold text-foreground">Nuevo producto</h1>
@@ -193,7 +356,7 @@ export default function CompanyNewService() {
                     <SelectTrigger className="h-10 text-xs"><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="suscripción">
-                        <span className="flex items-center gap-1.5"><RefreshCw className="w-3 h-3" /> Suscripción mensual</span>
+                        <span className="flex items-center gap-1.5"><RefreshCw className="w-3 h-3" /> Suscripción</span>
                       </SelectItem>
                       <SelectItem value="puntual">
                         <span className="flex items-center gap-1.5"><Zap className="w-3 h-3" /> Pago único</span>
@@ -218,7 +381,6 @@ export default function CompanyNewService() {
                   <Input type="number" className="h-10 text-sm" min={5} max={50} value={form.vendorCommissionPct} onChange={e => update('vendorCommissionPct', Number(e.target.value))} />
                 </div>
               </div>
-
               <div className="rounded-xl border border-border bg-muted/30 p-4 space-y-2">
                 <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">Desglose por venta</p>
                 <div className="space-y-1.5 text-xs">
@@ -230,7 +392,6 @@ export default function CompanyNewService() {
                   <div className="flex justify-between"><span className="text-foreground font-medium">Tu neto</span><span className="font-bold text-primary">{formatCOP(netAmount)}</span></div>
                 </div>
               </div>
-
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
                   <Label className="text-xs font-medium">Ventana de devolución</Label>
@@ -254,39 +415,33 @@ export default function CompanyNewService() {
           {/* ═══ CONTENT ═══ */}
           {step === 'content' && (
             <>
-              <p className="text-xs text-muted-foreground">Este contenido ayuda a los vendedores a entender y vender tu producto.</p>
-
+              <p className="text-xs text-muted-foreground">Contenido que ayuda a los vendedores a vender tu producto.</p>
               <div className="space-y-1.5">
                 <Label className="text-xs font-medium">Pitch en una frase</Label>
-                <Input className="h-10 text-sm" placeholder="Ej: Protege tu familia con el mejor seguro del mercado" value={form.pitchOneLine} onChange={e => update('pitchOneLine', e.target.value)} />
+                <Input className="h-10 text-sm" placeholder="Ej: Protege tu familia con el mejor seguro" value={form.pitchOneLine} onChange={e => update('pitchOneLine', e.target.value)} />
               </div>
-
               <div className="space-y-1.5">
                 <Label className="text-xs font-medium">Guión de venta</Label>
-                <Textarea className="text-sm" rows={3} placeholder="Guión corto para que el vendedor use en su pitch..." value={form.pitchThreeLines} onChange={e => update('pitchThreeLines', e.target.value)} />
+                <Textarea className="text-sm" rows={3} placeholder="Guión corto para el vendedor..." value={form.pitchThreeLines} onChange={e => update('pitchThreeLines', e.target.value)} />
               </div>
-
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
                   <Label className="text-xs font-medium">Audiencia objetivo</Label>
-                  <Input className="h-10 text-sm" placeholder="Ej: Familias con hijos menores" value={form.targetAudience} onChange={e => update('targetAudience', e.target.value)} />
+                  <Input className="h-10 text-sm" placeholder="Ej: Familias con hijos" value={form.targetAudience} onChange={e => update('targetAudience', e.target.value)} />
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-xs font-medium">Cliente ideal</Label>
                   <Input className="h-10 text-sm" placeholder="Ej: Padres 30-45 años" value={form.idealClient} onChange={e => update('idealClient', e.target.value)} />
                 </div>
               </div>
-
               <div className="space-y-1.5">
                 <Label className="text-xs font-medium">Problema que resuelve</Label>
-                <Input className="h-10 text-sm" placeholder="Ej: Falta de protección financiera..." value={form.problemSolved} onChange={e => update('problemSolved', e.target.value)} />
+                <Input className="h-10 text-sm" placeholder="Ej: Falta de protección financiera" value={form.problemSolved} onChange={e => update('problemSolved', e.target.value)} />
               </div>
-
               <div className="space-y-1.5">
                 <Label className="text-xs font-medium">Resultado prometido</Label>
-                <Input className="h-10 text-sm" placeholder="Ej: Tranquilidad financiera total..." value={form.promisedResult} onChange={e => update('promisedResult', e.target.value)} />
+                <Input className="h-10 text-sm" placeholder="Ej: Tranquilidad financiera total" value={form.promisedResult} onChange={e => update('promisedResult', e.target.value)} />
               </div>
-
               <div className="space-y-1.5">
                 <Label className="text-xs font-medium">Qué incluye</Label>
                 {form.features.map((f, i) => (
@@ -303,7 +458,6 @@ export default function CompanyNewService() {
                   <Plus className="w-3 h-3 mr-1" /> Agregar
                 </Button>
               </div>
-
               <div className="space-y-1.5">
                 <Label className="text-xs font-medium">Objeciones y respuestas</Label>
                 {form.objections.map((obj, i) => (
@@ -333,35 +487,27 @@ export default function CompanyNewService() {
                 <Switch checked={form.requiresTraining} onCheckedChange={v => update('requiresTraining', v)} />
                 <div>
                   <Label className="text-xs font-medium">Requiere entrenamiento</Label>
-                  <p className="text-[10px] text-muted-foreground">Los vendedores deben completar la capacitación antes de vender</p>
+                  <p className="text-[10px] text-muted-foreground">Los vendedores completan la capacitación antes de vender</p>
                 </div>
               </div>
-
               {form.requiresTraining && (
                 <div className="space-y-4">
-                  {/* Training type */}
                   <div className="space-y-1.5">
                     <Label className="text-xs font-medium">Tipo de entrenamiento</Label>
                     <Select value={form.trainingType} onValueChange={v => update('trainingType', v)}>
                       <SelectTrigger className="h-10 text-xs"><SelectValue /></SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="video">
-                          <span className="flex items-center gap-1.5"><Video className="w-3 h-3" /> Video</span>
-                        </SelectItem>
-                        <SelectItem value="pdf">
-                          <span className="flex items-center gap-1.5"><FileText className="w-3 h-3" /> PDF / Documento</span>
-                        </SelectItem>
+                        <SelectItem value="video"><span className="flex items-center gap-1.5"><Video className="w-3 h-3" /> Video</span></SelectItem>
+                        <SelectItem value="pdf"><span className="flex items-center gap-1.5"><FileText className="w-3 h-3" /> PDF</span></SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
-                  {/* Upload content */}
                   {form.trainingType === 'video' ? (
                     <div className="space-y-3">
                       <div className="space-y-1.5">
                         <Label className="text-xs font-medium">URL del video</Label>
-                        <Input className="h-10 text-sm" placeholder="https://youtube.com/watch?v=... o URL de video" value={form.trainingVideoUrl} onChange={e => update('trainingVideoUrl', e.target.value)} />
-                        <p className="text-[10px] text-muted-foreground">YouTube, Vimeo, o cualquier URL de video</p>
+                        <Input className="h-10 text-sm" placeholder="https://youtube.com/watch?v=..." value={form.trainingVideoUrl} onChange={e => update('trainingVideoUrl', e.target.value)} />
                       </div>
                       <div className="rounded-xl border border-dashed border-border bg-muted/20 p-6 text-center cursor-pointer hover:bg-muted/30 transition-colors"
                         onClick={() => toast.success("Selector de archivo abierto (demo)")}>
@@ -388,10 +534,9 @@ export default function CompanyNewService() {
                     </div>
                   )}
 
-                  {/* Training chapters */}
+                  {/* Chapters */}
                   <div className="space-y-2">
-                    <Label className="text-xs font-medium">Capítulos del entrenamiento</Label>
-                    <p className="text-[10px] text-muted-foreground">El vendedor debe completar cada capítulo en orden para activar el producto</p>
+                    <Label className="text-xs font-medium">Capítulos</Label>
                     {form.trainingChapters.map((ch, i) => (
                       <div key={i} className="flex items-center gap-2 p-2.5 rounded-lg border border-border bg-muted/20">
                         <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
@@ -419,7 +564,7 @@ export default function CompanyNewService() {
                     </Button>
                   </div>
 
-                  {/* Quiz questions (if any chapter is quiz) */}
+                  {/* Quiz */}
                   {form.trainingChapters.some(ch => ch.type === 'quiz') && (
                     <div className="space-y-2 pt-2 border-t border-border">
                       <Label className="text-xs font-medium">Preguntas del quiz</Label>
@@ -453,11 +598,10 @@ export default function CompanyNewService() {
                     </div>
                   )}
 
-                  {/* Preview of what vendor will see */}
                   <div className="rounded-xl border border-primary/15 bg-primary/5 p-3 space-y-1.5">
-                    <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">Vista previa del vendedor</p>
-                    <p className="text-xs text-foreground">El vendedor verá {form.trainingChapters.length} capítulos que debe completar en orden.</p>
-                    <p className="text-[10px] text-muted-foreground">Duración total estimada: {form.trainingChapters.reduce((a, ch) => a + (parseInt(ch.duration) || 0), 0)} min</p>
+                    <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">Vista previa</p>
+                    <p className="text-xs text-foreground">{form.trainingChapters.length} capítulos</p>
+                    <p className="text-[10px] text-muted-foreground">Duración: {form.trainingChapters.reduce((a, ch) => a + (parseInt(ch.duration) || 0), 0)} min</p>
                   </div>
                 </div>
               )}
@@ -475,25 +619,17 @@ export default function CompanyNewService() {
                 </div>
               ) : (
                 <>
-                  {/* Code type selector */}
                   <div className="space-y-1.5">
                     <Label className="text-xs font-medium">Tipo de activación</Label>
-                    <p className="text-[10px] text-muted-foreground">Elige qué se le entrega al cliente tras la compra</p>
+                    <p className="text-[10px] text-muted-foreground">Qué se entrega al cliente tras la compra</p>
                     <div className="grid grid-cols-3 gap-2">
                       {([
-                        { type: 'codes' as CodeType, label: 'Códigos', desc: 'Códigos alfanuméricos', icon: Key },
+                        { type: 'codes' as CodeType, label: 'Códigos', desc: 'Alfanuméricos', icon: Key },
                         { type: 'links' as CodeType, label: 'Links', desc: 'URLs de acceso', icon: Link2 },
-                        { type: 'credentials' as CodeType, label: 'Credenciales', desc: 'Usuario y contraseña', icon: UserCheck },
+                        { type: 'credentials' as CodeType, label: 'Credenciales', desc: 'Usuario + contraseña', icon: UserCheck },
                       ]).map(opt => (
-                        <button
-                          key={opt.type}
-                          onClick={() => update('codeType', opt.type)}
-                          className={`p-3 rounded-xl border text-left transition-all ${
-                            form.codeType === opt.type
-                              ? 'border-primary bg-primary/5'
-                              : 'border-border bg-card hover:border-primary/30'
-                          }`}
-                        >
+                        <button key={opt.type} onClick={() => update('codeType', opt.type)}
+                          className={`p-3 rounded-xl border text-left transition-all ${form.codeType === opt.type ? 'border-primary bg-primary/5' : 'border-border bg-card hover:border-primary/30'}`}>
                           <opt.icon className={`w-4 h-4 mb-1.5 ${form.codeType === opt.type ? 'text-primary' : 'text-muted-foreground'}`} />
                           <p className="text-xs font-medium text-foreground">{opt.label}</p>
                           <p className="text-[9px] text-muted-foreground">{opt.desc}</p>
@@ -504,30 +640,28 @@ export default function CompanyNewService() {
 
                   <div className="flex items-center gap-2 p-3 rounded-lg border border-border bg-muted/30">
                     <Key className="w-4 h-4 text-primary flex-shrink-0" />
-                    <p className="text-xs text-muted-foreground">
-                      Ingresa mínimo <span className="font-semibold text-foreground">20</span>. Se entregan automáticamente al comprador.
-                    </p>
+                    <p className="text-xs text-muted-foreground">Mínimo <span className="font-semibold text-foreground">20</span>. Se entregan automáticamente.</p>
                   </div>
 
                   {form.codeType === 'codes' && (
                     <div className="space-y-1.5">
-                      <Label className="text-xs font-medium">Códigos de activación (uno por línea)</Label>
-                      <Textarea className="text-sm font-mono" rows={8} placeholder={"CODIGO-001\nCODIGO-002\nCODIGO-003\n..."} value={form.initialCodes} onChange={e => update('initialCodes', e.target.value)} />
-                      <p className="text-[10px] text-muted-foreground">{getCodeCount()}/20 códigos</p>
+                      <Label className="text-xs font-medium">Códigos (uno por línea)</Label>
+                      <Textarea className="text-sm font-mono" rows={8} placeholder={"CODIGO-001\nCODIGO-002\n..."} value={form.initialCodes} onChange={e => update('initialCodes', e.target.value)} />
+                      <p className="text-[10px] text-muted-foreground">{getCodeCount()}/20</p>
                     </div>
                   )}
 
                   {form.codeType === 'links' && (
                     <div className="space-y-1.5">
-                      <Label className="text-xs font-medium">Links de acceso (uno por línea)</Label>
-                      <Textarea className="text-sm font-mono" rows={8} placeholder={"https://app.ejemplo.com/activar/abc123\nhttps://app.ejemplo.com/activar/def456\n..."} value={form.initialCodes} onChange={e => update('initialCodes', e.target.value)} />
-                      <p className="text-[10px] text-muted-foreground">{getCodeCount()}/20 links</p>
+                      <Label className="text-xs font-medium">Links (uno por línea)</Label>
+                      <Textarea className="text-sm font-mono" rows={8} placeholder={"https://app.ejemplo.com/abc123\n..."} value={form.initialCodes} onChange={e => update('initialCodes', e.target.value)} />
+                      <p className="text-[10px] text-muted-foreground">{getCodeCount()}/20</p>
                     </div>
                   )}
 
                   {form.codeType === 'credentials' && (
                     <div className="space-y-2">
-                      <Label className="text-xs font-medium">Credenciales de acceso</Label>
+                      <Label className="text-xs font-medium">Credenciales</Label>
                       <div className="grid grid-cols-[1fr_1fr_auto] gap-2 items-center">
                         <p className="text-[10px] text-muted-foreground font-medium">Usuario</p>
                         <p className="text-[10px] text-muted-foreground font-medium">Contraseña</p>
@@ -545,9 +679,9 @@ export default function CompanyNewService() {
                         </div>
                       ))}
                       <Button variant="ghost" size="sm" className="text-[10px] h-7" onClick={() => update('initialCredentials', [...form.initialCredentials, { username: '', password: '' }])}>
-                        <Plus className="w-3 h-3 mr-1" /> Agregar credencial
+                        <Plus className="w-3 h-3 mr-1" /> Agregar
                       </Button>
-                      <p className="text-[10px] text-muted-foreground">{getCodeCount()}/20 credenciales</p>
+                      <p className="text-[10px] text-muted-foreground">{getCodeCount()}/20</p>
                     </div>
                   )}
                 </>
@@ -558,18 +692,15 @@ export default function CompanyNewService() {
           {/* ═══ NOTES ═══ */}
           {step === 'notes' && (
             <>
-              <p className="text-xs text-muted-foreground">Agrega notas adicionales sobre el producto.</p>
-
               <div className="space-y-1.5">
                 <Label className="text-xs font-medium">Notas para vendedores</Label>
-                <Textarea className="text-sm" rows={4} placeholder="Información adicional que los vendedores deben saber..." value={form.additionalNotes} onChange={e => update('additionalNotes', e.target.value)} />
-                <p className="text-[10px] text-muted-foreground">Visible para los vendedores en la información del producto</p>
+                <Textarea className="text-sm" rows={4} placeholder="Información adicional para los vendedores..." value={form.additionalNotes} onChange={e => update('additionalNotes', e.target.value)} />
+                <p className="text-[10px] text-muted-foreground">Visible para los vendedores</p>
               </div>
-
               <div className="space-y-1.5">
                 <Label className="text-xs font-medium">Notas internas</Label>
-                <Textarea className="text-sm" rows={3} placeholder="Notas privadas, solo visibles para tu equipo..." value={form.internalNotes} onChange={e => update('internalNotes', e.target.value)} />
-                <p className="text-[10px] text-muted-foreground">Solo visible para tu empresa, no se muestra a los vendedores</p>
+                <Textarea className="text-sm" rows={3} placeholder="Notas privadas..." value={form.internalNotes} onChange={e => update('internalNotes', e.target.value)} />
+                <p className="text-[10px] text-muted-foreground">Solo visible para tu empresa</p>
               </div>
             </>
           )}
@@ -579,7 +710,7 @@ export default function CompanyNewService() {
         <div className="flex items-center justify-between">
           <Button variant="outline" size="sm" className="text-xs" onClick={handleBack}>
             <ArrowLeft className="w-3.5 h-3.5 mr-1.5" />
-            {currentIdx === 0 ? 'Cancelar' : 'Anterior'}
+            {currentIdx === 0 ? 'Volver' : 'Anterior'}
           </Button>
           {isLast ? (
             <Button size="sm" className="text-xs" onClick={handleCreate}>
