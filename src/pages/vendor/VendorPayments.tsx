@@ -7,7 +7,7 @@ import {
   DollarSign, CheckCircle2, Clock, Search,
   ShieldAlert, CreditCard, Send, XCircle, RotateCcw, Package,
   ArrowLeft, Banknote, MessageCircle, ChevronDown, ChevronRight,
-  FileText, Building2, Copy
+  FileText, Building2, Copy, Download
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -52,19 +52,27 @@ export default function VendorPayments() {
   );
 
   const myPayments = useMemo(() =>
-    vendorPayments.filter(p => p.vendorId === currentVendorId)
+    vendorPayments.filter(p => p.vendorId === currentVendorId && p.status === 'enviado')
       .sort((a, b) => new Date(b.scheduledDate).getTime() - new Date(a.scheduledDate).getTime()),
     [vendorPayments, currentVendorId]
   );
 
-  // KPIs
+  // Time period helpers
+  const now = new Date();
+  const thisMonthKey = now.toISOString().slice(0, 7);
+  const thisMonthLabel = now.toLocaleDateString('es-CO', { month: 'long', year: 'numeric' });
+  const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  const lastMonthKey = lastMonth.toISOString().slice(0, 7);
+
+  // KPIs with time periods
   const pendingSales = mySales.filter(s => s.status === 'PENDING');
   const heldSales = mySales.filter(s => s.status === 'HELD');
   const completedSales = mySales.filter(s => s.status === 'COMPLETED');
   const refundedSales = mySales.filter(s => s.status === 'REFUNDED');
   const cancelledSales = mySales.filter(s => s.status === 'CANCELLED');
 
-  const totalCompleted = completedSales.reduce((acc, s) => acc + s.sellerCommissionAmount, 0);
+  const completedThisMonth = completedSales.filter(s => s.createdAt.startsWith(thisMonthKey));
+  const totalCompletedThisMonth = completedThisMonth.reduce((acc, s) => acc + s.sellerCommissionAmount, 0);
   const totalHeld = heldSales.reduce((acc, s) => acc + s.sellerCommissionAmount, 0);
   const totalPending = pendingSales.reduce((acc, s) => acc + s.sellerCommissionAmount, 0);
 
@@ -75,9 +83,10 @@ export default function VendorPayments() {
   );
   const monthlyRecurring = mySubscriptions.reduce((acc, s) => acc + s.monthlyCommissionCOP, 0);
 
-  // Payment KPIs
-  const totalPaid = myPayments.filter(p => p.status === 'enviado').reduce((acc, p) => acc + p.amountCOP, 0);
-  const totalScheduled = myPayments.filter(p => p.status === 'programado').reduce((acc, p) => acc + p.amountCOP, 0);
+  // Payment KPIs — only transferred
+  const totalPaid = myPayments.reduce((acc, p) => acc + p.amountCOP, 0);
+  const paidThisMonth = myPayments.filter(p => p.processedAt?.startsWith(thisMonthKey)).reduce((acc, p) => acc + p.amountCOP, 0);
+  const paidLastMonth = myPayments.filter(p => p.processedAt?.startsWith(lastMonthKey)).reduce((acc, p) => acc + p.amountCOP, 0);
 
   const filteredSales = mySales.filter(sale => {
     const service = allServices.find(s => s.id === sale.serviceId);
@@ -95,7 +104,6 @@ export default function VendorPayments() {
     const existingRefund = refundRequests.find(r => r.saleId === sale.id);
     if (existingRefund) return false;
     const saleDate = new Date(sale.createdAt);
-    const now = new Date();
     const diffDays = Math.floor((now.getTime() - saleDate.getTime()) / (1000 * 60 * 60 * 24));
     return diffDays <= service.refundPolicy.refundWindowDays;
   };
@@ -104,7 +112,6 @@ export default function VendorPayments() {
     const service = allServices.find(s => s.id === sale.serviceId);
     if (!service) return 0;
     const saleDate = new Date(sale.createdAt);
-    const now = new Date();
     const diffDays = Math.floor((now.getTime() - saleDate.getTime()) / (1000 * 60 * 60 * 24));
     return Math.max(0, service.refundPolicy.refundWindowDays - diffDays);
   };
@@ -140,9 +147,43 @@ export default function VendorPayments() {
     window.open(`https://wa.me/573001234567?text=${encodeURIComponent(message)}`, '_blank');
   };
 
-  // Find payment receipt for a sale
   const findPaymentForSale = (saleId: string) => {
     return myPayments.find(p => p.saleId === saleId && p.status === 'enviado');
+  };
+
+  const handleDownloadInvoice = (payment: VendorPayment) => {
+    const service = allServices.find(s => s.id === payment.serviceId);
+    const company = service ? companies.find(c => c.id === service.companyId) : null;
+    
+    const invoiceContent = `
+FACTURA DE PAGO - MENSUALISTA
+================================
+Referencia: ${payment.referenceId || payment.id}
+Fecha: ${payment.processedAt ? formatDate(payment.processedAt) : formatDate(payment.scheduledDate)}
+
+Vendedor: ${vendors.find(v => v.id === payment.vendorId)?.name || 'N/A'}
+Producto: ${service?.name || 'N/A'}
+Empresa: ${company?.name || 'N/A'}
+Cliente: ${payment.clientName || 'N/A'}
+
+DESGLOSE:
+Venta bruta: ${formatCOP(payment.grossAmount)}
+Tu comisión: +${formatCOP(payment.amountCOP)}
+Fee plataforma: -${formatCOP(payment.mensualistaFee)}
+Neto empresa: ${formatCOP(payment.providerNet)}
+
+Estado: TRANSFERIDO
+================================
+    `.trim();
+
+    const blob = new Blob([invoiceContent], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `factura-${payment.referenceId || payment.id}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success("Factura descargada");
   };
 
   const activeTabData = STATUS_TABS.find(t => t.key === activeTab);
@@ -157,7 +198,7 @@ export default function VendorPayments() {
               {viewMode === 'sales' ? 'Mis ventas' : 'Mis pagos'}
             </h1>
             <p className="text-xs text-muted-foreground mt-0.5">
-              {viewMode === 'sales' ? 'Historial y estado de tus ventas' : 'Transferencias a tu cuenta bancaria'}
+              {viewMode === 'sales' ? 'Historial y estado de tus ventas' : 'Transferencias completadas a tu cuenta'}
             </p>
           </div>
           <Button
@@ -184,38 +225,41 @@ export default function VendorPayments() {
               transition={{ duration: 0.2 }}
               className="space-y-5"
             >
-              {/* KPI Cards */}
+              {/* KPI Cards with time periods */}
               <div className="grid grid-cols-3 gap-3">
                 <div className="rounded-2xl border border-border bg-card p-4">
                   <div className="flex items-center gap-2 mb-2">
-                    <div className="w-7 h-7 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center">
+                    <div className="w-7 h-7 rounded-lg bg-emerald-50 flex items-center justify-center">
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                     </div>
                   </div>
-                  <p className="text-lg font-bold text-foreground">{formatCOP(totalCompleted)}</p>
-                  <p className="text-[10px] text-muted-foreground mt-0.5">Cobrado · {completedSales.length}</p>
+                  <p className="text-lg font-bold text-foreground">{formatCOP(totalCompletedThisMonth)}</p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5">Cobrado · {thisMonthLabel}</p>
+                  <p className="text-[9px] text-muted-foreground/60">{completedThisMonth.length} ventas</p>
                 </div>
                 <div className="rounded-2xl border border-border bg-card p-4">
                   <div className="flex items-center gap-2 mb-2">
-                    <div className="w-7 h-7 rounded-lg bg-amber-50 dark:bg-amber-500/10 flex items-center justify-center">
+                    <div className="w-7 h-7 rounded-lg bg-amber-50 flex items-center justify-center">
                       <Clock className="w-3.5 h-3.5 text-amber-600" />
                     </div>
                   </div>
                   <p className="text-lg font-bold text-foreground">{formatCOP(totalHeld)}</p>
-                  <p className="text-[10px] text-muted-foreground mt-0.5">En devolución · {heldSales.length}</p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5">En devolución</p>
+                  <p className="text-[9px] text-muted-foreground/60">{heldSales.length} ventas activas</p>
                 </div>
                 <div className="rounded-2xl border border-border bg-card p-4">
                   <div className="flex items-center gap-2 mb-2">
-                    <div className="w-7 h-7 rounded-lg bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center">
+                    <div className="w-7 h-7 rounded-lg bg-blue-50 flex items-center justify-center">
                       <Send className="w-3.5 h-3.5 text-blue-600" />
                     </div>
                   </div>
                   <p className="text-lg font-bold text-foreground">{formatCOP(totalPending)}</p>
-                  <p className="text-[10px] text-muted-foreground mt-0.5">Pendiente · {pendingSales.length}</p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5">Pendiente</p>
+                  <p className="text-[9px] text-muted-foreground/60">{pendingSales.length} por cobrar</p>
                 </div>
               </div>
 
-              {/* Active Subscriptions - Interactive */}
+              {/* Active Subscriptions */}
               {mySubscriptions.length > 0 && (
                 <div className="rounded-2xl border border-primary/15 bg-primary/[0.02] p-4 space-y-3">
                   <div className="flex items-center justify-between">
@@ -240,7 +284,6 @@ export default function VendorPayments() {
                       const company = service ? companies.find(c => c.id === service.companyId) : null;
                       const coverImg = service?.category ? categoryCovers[service.category] : null;
                       const isExpanded = expandedSubId === sub.id;
-                      // Find original sale for this subscription
                       const originalSale = mySales.find(s => s.id === sub.saleId);
 
                       return (
@@ -290,7 +333,7 @@ export default function VendorPayments() {
                                       <Button
                                         variant="outline"
                                         size="sm"
-                                        className="flex-1 h-7 text-[10px] rounded-full text-emerald-600 border-emerald-200 hover:bg-emerald-50 dark:border-emerald-500/20 dark:hover:bg-emerald-500/5"
+                                        className="flex-1 h-7 text-[10px] rounded-full text-emerald-600 border-emerald-200 hover:bg-emerald-50"
                                         onClick={() => window.open(`https://wa.me/57${originalSale.clientPhone?.replace(/\s/g, '')}`, '_blank')}
                                       >
                                         <MessageCircle className="w-3 h-3 mr-1" /> Contactar cliente
@@ -415,7 +458,7 @@ export default function VendorPayments() {
               )}
             </motion.div>
           ) : (
-            /* ═══ PAYMENTS VIEW ═══ */
+            /* ═══ PAYMENTS VIEW — Only transferred ═══ */
             <motion.div
               key="payments-view"
               initial={{ opacity: 0, x: 10 }}
@@ -424,31 +467,41 @@ export default function VendorPayments() {
               transition={{ duration: 0.2 }}
               className="space-y-5"
             >
-              {/* Payment KPIs */}
-              <div className="grid grid-cols-2 gap-3">
+              {/* Payment KPIs with time periods */}
+              <div className="grid grid-cols-3 gap-3">
                 <div className="rounded-2xl border border-border bg-card p-4">
-                  <div className="w-7 h-7 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center mb-2">
+                  <div className="w-7 h-7 rounded-lg bg-emerald-50 flex items-center justify-center mb-2">
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                   </div>
                   <p className="text-lg font-bold text-foreground">{formatCOP(totalPaid)}</p>
-                  <p className="text-[10px] text-muted-foreground mt-0.5">Total transferido</p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5">Total recibido</p>
+                  <p className="text-[9px] text-muted-foreground/60">{myPayments.length} transferencias</p>
                 </div>
                 <div className="rounded-2xl border border-border bg-card p-4">
-                  <div className="w-7 h-7 rounded-lg bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center mb-2">
-                    <Clock className="w-3.5 h-3.5 text-blue-600" />
+                  <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center mb-2">
+                    <DollarSign className="w-3.5 h-3.5 text-primary" />
                   </div>
-                  <p className="text-lg font-bold text-foreground">{formatCOP(totalScheduled)}</p>
-                  <p className="text-[10px] text-muted-foreground mt-0.5">Programado</p>
+                  <p className="text-lg font-bold text-foreground">{formatCOP(paidThisMonth)}</p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5">Este mes</p>
+                  <p className="text-[9px] text-muted-foreground/60">{thisMonthLabel}</p>
+                </div>
+                <div className="rounded-2xl border border-border bg-card p-4">
+                  <div className="w-7 h-7 rounded-lg bg-muted flex items-center justify-center mb-2">
+                    <Banknote className="w-3.5 h-3.5 text-muted-foreground" />
+                  </div>
+                  <p className="text-lg font-bold text-foreground">{formatCOP(paidLastMonth)}</p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5">Mes anterior</p>
+                  <p className="text-[9px] text-muted-foreground/60">{lastMonth.toLocaleDateString('es-CO', { month: 'long' })}</p>
                 </div>
               </div>
 
               <div className="rounded-2xl border border-border/50 bg-muted/20 p-3.5">
                 <p className="text-[11px] text-muted-foreground leading-relaxed">
-                  Las transferencias se hacen automáticamente a tu cuenta bancaria cuando se libera el dinero de cada venta. No necesitas solicitar retiros.
+                  Solo se muestran pagos ya transferidos a tu cuenta bancaria. Las transferencias son automáticas cuando se libera el dinero de cada venta.
                 </p>
               </div>
 
-              {/* Payment list */}
+              {/* Payment list — only transferred */}
               <div className="space-y-2">
                 {myPayments.map(payment => {
                   const service = allServices.find(s => s.id === payment.serviceId);
@@ -456,20 +509,12 @@ export default function VendorPayments() {
                   const coverImg = service?.category ? categoryCovers[service.category] : null;
                   const isExpanded = expandedPaymentId === payment.id;
 
-                  const statusColor = payment.status === 'enviado' ? 'text-emerald-600' 
-                    : payment.status === 'programado' ? 'text-blue-600' : 'text-red-500';
-                  const statusLabel = payment.status === 'enviado' ? 'Transferido'
-                    : payment.status === 'programado' ? 'Programado' : 'Falló';
-                  const statusBg = payment.status === 'enviado' ? 'bg-emerald-50 dark:bg-emerald-500/10'
-                    : payment.status === 'programado' ? 'bg-blue-50 dark:bg-blue-500/10' : 'bg-red-50 dark:bg-red-500/10';
-
                   return (
                     <div
                       key={payment.id}
                       className={cn(
                         "rounded-2xl border bg-card overflow-hidden transition-all cursor-pointer",
-                        isExpanded ? "border-border shadow-md" : "border-border/60 hover:border-border hover:shadow-sm",
-                        payment.status === 'falló' && "opacity-70"
+                        isExpanded ? "border-border shadow-md" : "border-border/60 hover:border-border hover:shadow-sm"
                       )}
                       onClick={() => setExpandedPaymentId(isExpanded ? null : payment.id)}
                     >
@@ -484,10 +529,8 @@ export default function VendorPayments() {
                               </div>
                             )}
                           </div>
-                          <div className={cn("absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full border-2 border-card flex items-center justify-center", statusBg)}>
-                            {payment.status === 'enviado' ? <CheckCircle2 className="w-2 h-2 text-emerald-600" /> :
-                             payment.status === 'programado' ? <Clock className="w-2 h-2 text-blue-600" /> :
-                             <XCircle className="w-2 h-2 text-red-500" />}
+                          <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full border-2 border-card flex items-center justify-center bg-emerald-50">
+                            <CheckCircle2 className="w-2 h-2 text-emerald-600" />
                           </div>
                         </div>
 
@@ -498,7 +541,7 @@ export default function VendorPayments() {
 
                         <div className="flex flex-col items-end gap-1 flex-shrink-0">
                           <p className="text-sm font-bold text-foreground">{formatCOP(payment.amountCOP)}</p>
-                          <span className={cn("text-[10px] font-medium", statusColor)}>{statusLabel}</span>
+                          <span className="text-[10px] font-medium text-emerald-600">Transferido</span>
                         </div>
 
                         <ChevronDown className={cn("w-4 h-4 text-muted-foreground/30 transition-transform", isExpanded && "rotate-180")} />
@@ -541,7 +584,7 @@ export default function VendorPayments() {
                               <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-[10px] text-muted-foreground">
                                 <div className="flex items-center gap-1.5">
                                   <CreditCard className="w-3 h-3" />
-                                  <span>{payment.status === 'enviado' ? `Transferido el ${formatDate(payment.processedAt!)}` : `Programado: ${formatDate(payment.scheduledDate)}`}</span>
+                                  <span>Transferido el {formatDate(payment.processedAt!)}</span>
                                 </div>
                                 {payment.referenceId && (
                                   <div className="flex items-center gap-1.5">
@@ -550,12 +593,6 @@ export default function VendorPayments() {
                                   </div>
                                 )}
                               </div>
-
-                              {payment.failureReason && (
-                                <div className="p-2.5 rounded-xl bg-red-50 dark:bg-red-500/5 border border-red-200 dark:border-red-500/10">
-                                  <p className="text-xs text-red-600">{payment.failureReason}</p>
-                                </div>
-                              )}
 
                               <div className="flex gap-2" onClick={e => e.stopPropagation()}>
                                 {payment.referenceId && (
@@ -568,6 +605,14 @@ export default function VendorPayments() {
                                     <Copy className="w-3 h-3 mr-1.5" /> Copiar referencia
                                   </Button>
                                 )}
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="flex-1 h-8 text-xs rounded-xl"
+                                  onClick={() => handleDownloadInvoice(payment)}
+                                >
+                                  <Download className="w-3 h-3 mr-1.5" /> Descargar factura
+                                </Button>
                               </div>
                             </div>
                           </motion.div>
@@ -702,14 +747,24 @@ export default function VendorPayments() {
                     </div>
                   </div>
                 </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full rounded-xl h-9 text-xs"
-                  onClick={() => { navigator.clipboard.writeText(payment.referenceId || payment.id); toast.success("Referencia copiada"); }}
-                >
-                  <Copy className="w-3 h-3 mr-1.5" /> Copiar referencia
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex-1 rounded-xl h-9 text-xs"
+                    onClick={() => { navigator.clipboard.writeText(payment.referenceId || payment.id); toast.success("Referencia copiada"); }}
+                  >
+                    <Copy className="w-3 h-3 mr-1.5" /> Copiar referencia
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex-1 rounded-xl h-9 text-xs"
+                    onClick={() => handleDownloadInvoice(payment)}
+                  >
+                    <Download className="w-3 h-3 mr-1.5" /> Factura
+                  </Button>
+                </div>
               </div>
             );
           })()}

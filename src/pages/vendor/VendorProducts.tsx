@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   Search, Building2, Package, Lock,
-  ChevronRight, Dumbbell, Sparkles, Scissors
+  ChevronRight, Dumbbell, Sparkles, Scissors, Star, TrendingUp, Flame
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -11,9 +11,9 @@ import VendorTabLayout from "@/components/layout/VendorTabLayout";
 import { useDemo } from "@/contexts/DemoContext";
 import {
   companies, services as allServices, vendorCompanyLinks,
-  CURRENT_VENDOR_ID, CompanyPlan
+  CURRENT_VENDOR_ID, CompanyPlan, formatCOP
 } from "@/data/mockData";
-import { industryCover } from "@/data/coverImages";
+import { industryCover, categoryCovers } from "@/data/coverImages";
 
 const planConfig: Record<CompanyPlan, { label: string }> = {
   freemium: { label: "Free" },
@@ -50,7 +50,7 @@ const categoryGroups: CategoryGroup[] = [
 ];
 
 export default function VendorProducts() {
-  const { currentVendorId } = useDemo();
+  const { currentVendorId, sales, trainingProgress } = useDemo();
   const vendorId = currentVendorId || CURRENT_VENDOR_ID;
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<string>("todos");
@@ -59,6 +59,24 @@ export default function VendorProducts() {
     new Set(vendorCompanyLinks.filter(l => l.vendorId === vendorId && l.status === 'active').map(l => l.companyId)),
     [vendorId]
   );
+
+  // Featured products: highest commission services
+  const featuredServices = useMemo(() => {
+    return allServices
+      .filter(s => s.status === 'activo')
+      .sort((a, b) => b.vendorCommissionPct - a.vendorCommissionPct)
+      .slice(0, 3);
+  }, []);
+
+  // New offers: most recently added services
+  const newOffers = useMemo(() => {
+    const oneMonthAgo = new Date();
+    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 2);
+    return allServices
+      .filter(s => s.status === 'activo')
+      .sort((a, b) => new Date(b.createdAt || '2026-03-01').getTime() - new Date(a.createdAt || '2026-01-01').getTime())
+      .slice(0, 4);
+  }, []);
 
   const filteredCompanies = useMemo(() => {
     let list = companies.filter(c => c.status === 'active');
@@ -99,6 +117,43 @@ export default function VendorProducts() {
     ...categoryGroups.map(g => ({ id: g.id, label: g.label.split(" &")[0].split(" ")[0] })),
   ];
 
+  const renderServiceMiniCard = (service: typeof allServices[0], badge?: { label: string; color: string }) => {
+    const company = companies.find(c => c.id === service.companyId);
+    const coverImg = categoryCovers[service.category];
+    const earningsPerSale = Math.round(service.priceCOP * service.vendorCommissionPct / 100);
+
+    return (
+      <Link
+        key={service.id}
+        to={`/vendor/company/${service.companyId}/service/${service.id}`}
+        className="rounded-2xl border border-border bg-card overflow-hidden group hover:shadow-md hover:border-primary/20 transition-all duration-300 active:scale-[0.98]"
+      >
+        <div className="relative aspect-[4/3] overflow-hidden">
+          <img src={coverImg} alt={service.category} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+          {badge && (
+            <div className="absolute top-2 right-2">
+              <span className={`inline-flex items-center gap-0.5 text-[8px] font-semibold px-1.5 py-0.5 rounded-full text-white ${badge.color}`}>
+                {badge.label === 'Destacado' ? <Star className="w-2 h-2" /> : <Flame className="w-2 h-2" />}
+                {badge.label}
+              </span>
+            </div>
+          )}
+          <div className="absolute bottom-2 right-2">
+            <p className="text-sm font-bold text-white drop-shadow-md">{formatCOP(earningsPerSale)}</p>
+          </div>
+        </div>
+        <div className="p-3 space-y-1">
+          <h3 className="font-semibold text-xs text-foreground leading-snug line-clamp-1 group-hover:text-primary transition-colors">{service.name}</h3>
+          <div className="flex items-center justify-between">
+            <p className="text-[10px] text-muted-foreground truncate">{company?.name}</p>
+            <span className="text-[9px] text-primary font-medium flex-shrink-0">{service.vendorCommissionPct}%</span>
+          </div>
+        </div>
+      </Link>
+    );
+  };
+
   return (
     <VendorTabLayout>
       <div className="space-y-6">
@@ -138,6 +193,34 @@ export default function VendorProducts() {
           ))}
         </div>
 
+        {/* Destacados */}
+        {activeCategory === 'todos' && !searchQuery && featuredServices.length > 0 && (
+          <div>
+            <div className="flex items-center gap-2 mb-3">
+              <Star className="w-3.5 h-3.5 text-amber-500" />
+              <p className="text-sm font-semibold text-foreground">Destacados</p>
+              <Badge variant="outline" className="text-[8px] border-amber-300/50 text-amber-600">Top comision</Badge>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {featuredServices.map(s => renderServiceMiniCard(s, { label: 'Destacado', color: 'bg-amber-500/90' }))}
+            </div>
+          </div>
+        )}
+
+        {/* Ofertas nuevas */}
+        {activeCategory === 'todos' && !searchQuery && newOffers.length > 0 && (
+          <div>
+            <div className="flex items-center gap-2 mb-3">
+              <Flame className="w-3.5 h-3.5 text-orange-500" />
+              <p className="text-sm font-semibold text-foreground">Ofertas nuevas</p>
+              <Badge variant="outline" className="text-[8px] border-orange-300/50 text-orange-600">Recientes</Badge>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {newOffers.map(s => renderServiceMiniCard(s, { label: 'Nuevo', color: 'bg-orange-500/90' }))}
+            </div>
+          </div>
+        )}
+
         {/* Company groups */}
         {groupedCompanies.length > 0 ? (
           <div className="space-y-8">
@@ -172,7 +255,6 @@ export default function VendorProducts() {
                             !isLinked ? "grayscale-[40%] hover:grayscale-0" : ""
                           }`}
                         >
-                          {/* Fixed-height image */}
                           <div className="relative h-36 overflow-hidden">
                             <img
                               src={cover}
@@ -207,7 +289,6 @@ export default function VendorProducts() {
                             </div>
                           </div>
 
-                          {/* Fixed-height info section */}
                           <div className="px-4 py-3 flex flex-col justify-between h-[88px]">
                             <p className="text-[11px] text-muted-foreground leading-snug line-clamp-2">
                               {company.description || company.industry}
