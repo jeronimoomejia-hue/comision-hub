@@ -232,7 +232,7 @@ export default function CompanyVendors() {
               return (
                 <div
                   key={vendor.id}
-                  onClick={() => setSelectedVendor(vendor)}
+                  onClick={() => { setModalTab("ventas"); setSelectedVendor(vendor); }}
                   className={`rounded-2xl border bg-card p-3 cursor-pointer hover:shadow-md hover:border-primary/20 transition-all group ${d.bestTierOrder === 3 ? 'border-purple-200/50' : d.bestTierOrder === 2 ? 'border-amber-200/50' : 'border-border'}`}
                 >
                   {/* Avatar + Tier badge */}
@@ -346,8 +346,8 @@ export default function CompanyVendors() {
                   ].map(t => (
                     <button
                       key={t.id}
-                      onClick={() => setTab(t.id)}
-                      className={`flex-1 flex items-center justify-center gap-1 py-2 text-[9px] font-medium transition-colors border-b-2 ${tab === t.id ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
+                      onClick={() => setModalTab(t.id)}
+                      className={`flex-1 flex items-center justify-center gap-1 py-2 text-[9px] font-medium transition-colors border-b-2 ${modalTab === t.id ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
                     >
                       <t.icon className="w-3 h-3" />
                       {t.label} ({t.count})
@@ -357,7 +357,7 @@ export default function CompanyVendors() {
 
                 {/* Tab Content */}
                 <div className="p-3 max-h-[280px] overflow-y-auto">
-                  {tab === 'ventas' && (
+                  {modalTab === 'ventas' && (
                     <div className="space-y-1.5">
                       {d.allSales.length > 0 ? d.allSales.map((sale: any) => (
                         <div key={sale.id} className="flex items-center gap-2 p-2 rounded-xl bg-muted/20 border border-border/50">
@@ -383,7 +383,7 @@ export default function CompanyVendors() {
                     </div>
                   )}
 
-                  {tab === 'servicios' && (
+                  {modalTab === 'servicios' && (
                     <div className="space-y-1.5">
                       {d.serviceBreakdown.length > 0 ? d.serviceBreakdown.map((svc: any, i: number) => (
                         <div key={i} className={`p-2.5 rounded-xl border ${svc.isPrivate ? 'border-amber-200/50 bg-amber-500/5' : 'border-border bg-muted/20'}`}>
@@ -410,7 +410,7 @@ export default function CompanyVendors() {
                     </div>
                   )}
 
-                  {tab === 'capacitacion' && (
+                  {modalTab === 'capacitacion' && (
                     <div className="space-y-1.5">
                       {d.trainingBreakdown.length > 0 ? d.trainingBreakdown.map((tr: any, i: number) => (
                         <div key={i} className="p-2.5 rounded-xl border border-border bg-muted/20">
