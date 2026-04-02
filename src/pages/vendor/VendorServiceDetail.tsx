@@ -112,7 +112,7 @@ export default function VendorServiceDetail() {
       grossAmount, sellerCommissionAmount, mensualistaFeeAmount, providerNetAmount,
       status: 'HELD', isSubscription: isRecurring, subscriptionActive: isRecurring,
       amountCOP: grossAmount, holdStartAt: new Date().toISOString(), holdEndAt: new Date(Date.now() + service.refundPolicy.refundWindowDays * 24 * 60 * 60 * 1000).toISOString(),
-      paymentProvider: 'MercadoPago', mpPaymentId: `MP-${Date.now()}`
+      paymentProvider: 'Stripe', mpPaymentId: `STR-${Date.now()}`
     });
     toast.success("Venta registrada", { description: `Comisión de ${formatCOP(sellerCommissionAmount)} en retención ${service.refundPolicy.refundWindowDays} días.` });
     setSaleForm({ clientName: "", clientEmail: "", clientPhone: "" });

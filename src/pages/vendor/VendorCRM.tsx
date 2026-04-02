@@ -176,7 +176,7 @@ export default function VendorCRM() {
           mensualistaFeeAmount: mFee, providerNetAmount: gross - comm - mFee,
           holdStartAt: new Date().toISOString().split('T')[0], holdEndAt: holdEnd.toISOString().split('T')[0],
           status: service.refundPolicy.refundWindowDays === 0 ? 'COMPLETED' : 'HELD',
-          paymentProvider: 'MercadoPago', mpPaymentId: `MP-QS-${Date.now()}`,
+          paymentProvider: 'Stripe', mpPaymentId: `STR-QS-${Date.now()}`,
           isSubscription: service.type === 'suscripción', subscriptionActive: service.type === 'suscripción', amountCOP: gross,
         });
         toast.success(`Venta registrada — Comisión: ${formatCOP(comm)}`);
