@@ -9,29 +9,19 @@ import DemoRoleToggle from "@/components/DemoRoleToggle";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
-import VendorLanding from "./pages/VendorLanding";
-import VendorHome from "./pages/vendor/VendorHome";
 import VendorDashboard from "./pages/vendor/VendorDashboard";
-import VendorServices from "./pages/vendor/VendorServices";
 import VendorProducts from "./pages/vendor/VendorProducts";
 import VendorServiceDetail from "./pages/vendor/VendorServiceDetail";
-import VendorTrainings from "./pages/vendor/VendorTrainings";
-import VendorTrainingDetail from "./pages/vendor/VendorTrainingDetail";
-import VendorSales from "./pages/vendor/VendorSales";
 import VendorPayments from "./pages/vendor/VendorPayments";
-import VendorRefunds from "./pages/vendor/VendorRefunds";
-import VendorMaterials from "./pages/vendor/VendorMaterials";
 import VendorSupport from "./pages/vendor/VendorSupport";
 import VendorProfile from "./pages/vendor/VendorProfile";
 import VendorCompanyDetail from "./pages/vendor/VendorCompanyDetail";
 import VendorCRM from "./pages/vendor/VendorCRM";
 import VendorOnboarding from "./pages/vendor/VendorOnboarding";
-import VendorSubscriptions from "./pages/vendor/VendorSubscriptions";
 import CompanyDashboard from "./pages/company/CompanyDashboard";
 import CompanyServices from "./pages/company/CompanyServices";
 import CompanyServiceDetail from "./pages/company/CompanyServiceDetail";
 import CompanyNewService from "./pages/company/CompanyNewService";
-import CompanySales from "./pages/company/CompanySales";
 import CompanyVendors from "./pages/company/CompanyVendors";
 import CompanyPayments from "./pages/company/CompanyPayments";
 import CompanySettings from "./pages/company/CompanySettings";
@@ -64,25 +54,16 @@ const App = () => (
           <DemoRoleToggle />
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/vendedores" element={<VendorLanding />} />
             <Route path="/auth" element={<Auth />} />
             
             {/* Vendor Routes */}
             <Route path="/vendor/onboarding" element={<VendorOnboarding />} />
-            <Route path="/vendor/home" element={<VendorHome />} />
             <Route path="/vendor" element={<VendorDashboard />} />
             <Route path="/vendor/company/:companyId" element={<VendorCompanyDetail />} />
             <Route path="/vendor/company/:companyId/service/:serviceId" element={<VendorServiceDetail />} />
             <Route path="/vendor/products" element={<VendorProducts />} />
-            <Route path="/vendor/services" element={<VendorServices />} />
             <Route path="/vendor/services/:serviceId" element={<VendorServiceDetail />} />
-            <Route path="/vendor/trainings" element={<VendorTrainings />} />
-            <Route path="/vendor/trainings/:trainingId" element={<VendorTrainingDetail />} />
-            <Route path="/vendor/sales" element={<VendorSales />} />
             <Route path="/vendor/payments" element={<VendorPayments />} />
-            <Route path="/vendor/subscriptions" element={<VendorSubscriptions />} />
-            <Route path="/vendor/refunds" element={<VendorRefunds />} />
-            <Route path="/vendor/materials" element={<VendorMaterials />} />
             <Route path="/vendor/support" element={<VendorSupport />} />
             <Route path="/vendor/crm" element={<VendorCRM />} />
             <Route path="/vendor/profile" element={<VendorProfile />} />
@@ -92,14 +73,13 @@ const App = () => (
             <Route path="/company/services" element={<CompanyServices />} />
             <Route path="/company/services/new" element={<CompanyNewService />} />
             <Route path="/company/services/:serviceId" element={<CompanyServiceDetail />} />
-            <Route path="/company/sales" element={<CompanySales />} />
-            <Route path="/company/vendors" element={<CompanyVendors />} />
             <Route path="/company/payments" element={<CompanyPayments />} />
+            <Route path="/company/vendors" element={<CompanyVendors />} />
+            <Route path="/company/coupons" element={<CompanyCoupons />} />
+            <Route path="/company/chat" element={<CompanyChat />} />
+            <Route path="/company/trainings" element={<CompanyTrainings />} />
             <Route path="/company/settings" element={<CompanySettings />} />
             <Route path="/company/profile" element={<CompanyProfile />} />
-            <Route path="/company/chat" element={<CompanyChat />} />
-            <Route path="/company/coupons" element={<CompanyCoupons />} />
-            <Route path="/company/trainings" element={<CompanyTrainings />} />
             
             {/* Admin Routes */}
             <Route path="/admin" element={<AdminDashboard />} />

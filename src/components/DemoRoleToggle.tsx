@@ -18,9 +18,9 @@ export default function DemoRoleToggle() {
   const location = useLocation();
   const [open, setOpen] = useState(false);
 
-  // Don't show on public pages
-  const isPublic = ["/", "/vendedores", "/auth"].includes(location.pathname) || location.pathname.startsWith("/vendor/onboarding");
-  if (isPublic) return null;
+  // Only hide on auth and onboarding
+  const isHidden = ["/auth"].includes(location.pathname) || location.pathname.startsWith("/vendor/onboarding");
+  if (isHidden) return null;
 
   const handleSelect = (key: string) => {
     if (key === "vendor") {

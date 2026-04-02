@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import {
   LayoutDashboard,
   Package,
-  BookOpen,
   ShoppingCart,
   DollarSign,
   HelpCircle,
@@ -20,10 +19,8 @@ import {
   Activity,
   UserCheck,
   MessageCircle,
-  Tag,
   Crown,
   Zap,
-  Wallet
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -61,12 +58,9 @@ const roleLabels = {
 function getVendorNav() {
   return [
     { icon: LayoutDashboard, label: "Inicio", href: "/vendor" },
-    { icon: Package, label: "Mis Servicios", href: "/vendor/products" },
-    { icon: BookOpen, label: "Entrenamientos", href: "/vendor/trainings" },
-    { icon: ShoppingCart, label: "Mis Ventas", href: "/vendor/sales" },
-    { icon: DollarSign, label: "Comisiones", href: "/vendor/payments" },
-    { icon: Wallet, label: "Mi Cartera", href: "/vendor/subscriptions" },
-    { icon: Users, label: "CRM", href: "/vendor/crm" },
+    { icon: Package, label: "Productos", href: "/vendor/products" },
+    { icon: ShoppingCart, label: "Ventas", href: "/vendor/payments" },
+    { icon: Users, label: "Clientes", href: "/vendor/crm" },
     { icon: HelpCircle, label: "Soporte", href: "/vendor/support" },
     { icon: User, label: "Mi Perfil", href: "/vendor/profile" },
   ];
@@ -75,10 +69,9 @@ function getVendorNav() {
 function getCompanyNav(plan: CompanyPlan) {
   const base = [
     { icon: LayoutDashboard, label: "Dashboard", href: "/company" },
-    { icon: Package, label: "Mis Servicios", href: "/company/services" },
+    { icon: Package, label: "Mis Productos", href: "/company/services" },
     { icon: ShoppingCart, label: "Ventas", href: "/company/payments" },
     { icon: Users, label: "Mi Red", href: "/company/vendors" },
-    { icon: Tag, label: "Cupones", href: "/company/coupons" },
   ];
 
   if (plan !== 'freemium') {
@@ -86,8 +79,7 @@ function getCompanyNav(plan: CompanyPlan) {
   }
 
   base.push(
-    { icon: BookOpen, label: "Entrenamientos", href: "/company/trainings" },
-    { icon: Settings, label: "Configuración", href: "/company/settings" },
+    { icon: Settings, label: "Configuracion", href: "/company/settings" },
   );
 
   return base;
@@ -99,12 +91,11 @@ const adminNav = [
   { icon: UserCheck, label: "Vendedores", href: "/admin/vendors" },
   { icon: Activity, label: "Transacciones", href: "/admin/transactions" },
   { icon: Package, label: "Productos", href: "/admin/services" },
-  { icon: BookOpen, label: "Entrenamientos", href: "/admin/trainings" },
   { icon: ShoppingCart, label: "Ventas", href: "/admin/sales" },
   { icon: DollarSign, label: "Comisiones", href: "/admin/payments" },
   { icon: MessageCircle, label: "Soporte", href: "/admin/support" },
   { icon: Users, label: "Usuarios", href: "/admin/users" },
-  { icon: Settings, label: "Configuración", href: "/admin/settings" },
+  { icon: Settings, label: "Configuracion", href: "/admin/settings" },
 ];
 
 export default function DashboardLayout({ children, role, userName = "Usuario" }: DashboardLayoutProps) {
@@ -123,7 +114,6 @@ export default function DashboardLayout({ children, role, userName = "Usuario" }
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
         <div 
           className="fixed inset-0 bg-foreground/10 backdrop-blur-sm z-40 lg:hidden"
@@ -131,14 +121,12 @@ export default function DashboardLayout({ children, role, userName = "Usuario" }
         />
       )}
       
-      {/* Sidebar */}
       <aside className={`
         fixed top-0 left-0 z-50 h-full w-64 bg-background border-r border-border transform transition-transform duration-300 ease-in-out
         lg:translate-x-0
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
         <div className="flex flex-col h-full">
-          {/* Logo / Company branding */}
           <div className="flex items-center justify-between h-16 px-4 border-b border-border">
             <Link to="/" className="flex items-center gap-2">
               {role === 'vendor' && company ? (
@@ -163,7 +151,6 @@ export default function DashboardLayout({ children, role, userName = "Usuario" }
             </button>
           </div>
           
-          {/* Role + Plan Badge */}
           <div className="px-4 py-3 border-b border-border">
             <div className="flex items-center gap-2">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium bg-primary text-primary-foreground">
@@ -181,11 +168,9 @@ export default function DashboardLayout({ children, role, userName = "Usuario" }
             </div>
           </div>
           
-          {/* Navigation */}
           <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
             {items.map((item) => {
               const isActive = location.pathname === item.href;
-              
               return (
                 <Link
                   key={item.href}
@@ -206,7 +191,6 @@ export default function DashboardLayout({ children, role, userName = "Usuario" }
             })}
           </nav>
           
-          {/* User Section */}
           <div className="p-4 border-t border-border">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -228,12 +212,12 @@ export default function DashboardLayout({ children, role, userName = "Usuario" }
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   <Settings className="w-4 h-4 mr-2" />
-                  Configuración
+                  Configuracion
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem className="text-destructive">
                   <LogOut className="w-4 h-4 mr-2" />
-                  Cerrar sesión
+                  Cerrar sesion
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -241,9 +225,7 @@ export default function DashboardLayout({ children, role, userName = "Usuario" }
         </div>
       </aside>
       
-      {/* Main Content */}
       <div className="lg:pl-64">
-        {/* Top Bar */}
         <header className="sticky top-0 z-30 h-16 bg-background/92 backdrop-blur-xl border-b border-border">
           <div className="flex items-center justify-between h-full px-4 sm:px-6 lg:px-8">
             <div className="flex items-center gap-4">
@@ -268,7 +250,6 @@ export default function DashboardLayout({ children, role, userName = "Usuario" }
           </div>
         </header>
         
-        {/* Page Content */}
         <main className="p-4 sm:p-6 lg:p-8">
           <motion.div
             initial={{ opacity: 0, y: 10 }}
