@@ -77,15 +77,24 @@ export default function CompanyPayments() {
             {view === 'ventas' ? 'Ventas' : 'Pagos recibidos'}
           </h1>
           <div className="flex-1" />
-          {view === 'ventas' ? (
-            <Button variant="outline" size="sm" className="text-xs gap-1.5 rounded-full h-8" onClick={() => setView('pagos')}>
-              <CreditCardIcon className="w-3.5 h-3.5" /> Ver pagos
-            </Button>
-          ) : (
-            <Button variant="outline" size="sm" className="text-xs gap-1.5 rounded-full h-8" onClick={() => setView('ventas')}>
-              <ArrowLeft className="w-3.5 h-3.5" /> Volver a ventas
-            </Button>
-          )}
+          <div className="flex gap-2">
+            {view === 'ventas' && (
+              <Link to="/company/services">
+                <Button variant="ghost" size="sm" className="text-xs gap-1.5 rounded-full h-8 text-muted-foreground">
+                  <ShoppingCart className="w-3.5 h-3.5" /> Ver ventas por servicio
+                </Button>
+              </Link>
+            )}
+            {view === 'ventas' ? (
+              <Button variant="outline" size="sm" className="text-xs gap-1.5 rounded-full h-8" onClick={() => setView('pagos')}>
+                <CreditCardIcon className="w-3.5 h-3.5" /> Ver pagos
+              </Button>
+            ) : (
+              <Button variant="outline" size="sm" className="text-xs gap-1.5 rounded-full h-8" onClick={() => setView('ventas')}>
+                <ArrowLeft className="w-3.5 h-3.5" /> Volver a ventas
+              </Button>
+            )}
+          </div>
         </div>
 
         {view === 'ventas' && (

@@ -43,10 +43,12 @@ interface DemoContextType {
   vendorCommissionAssignments: VendorCommissionAssignment[];
   pinnedServices: string[];
   demoMode: boolean;
+  isTutorialMode: boolean;
   currentVendorId: string;
   currentCompanyId: string;
   currentRole: 'vendor' | 'company' | 'admin';
   currentCompanyPlan: CompanyPlan;
+  setIsTutorialMode: (v: boolean) => void;
   setCurrentRole: (role: 'vendor' | 'company' | 'admin') => void;
   setCurrentCompanyPlan: (plan: CompanyPlan) => void;
   setCurrentVendorId: (id: string) => void;
@@ -93,6 +95,7 @@ export function DemoProvider({ children }: { children: ReactNode }) {
   const [currentVendorId, setCurrentVendorId] = useState('vendor-001');
   const [currentCompanyId, setCurrentCompanyId] = useState('company-009');
   const [currentCompanyPlan, setCurrentCompanyPlan] = useState<CompanyPlan>('premium');
+  const [isTutorialMode, setIsTutorialMode] = useState(false);
   
   const [pinnedServices, setPinnedServices] = useState<string[]>(() => {
     return initialTrainings
@@ -357,6 +360,8 @@ export function DemoProvider({ children }: { children: ReactNode }) {
       vendorCommissionAssignments: vcaState,
       pinnedServices,
       demoMode,
+      isTutorialMode,
+      setIsTutorialMode,
       currentVendorId,
       currentCompanyId,
       currentRole,
@@ -401,7 +406,8 @@ export function useDemo() {
       trainingProgress: [], services: [], companies: [], subscriptions: [],
       refundRequests: [], serviceRequests: [], commissionTiers: [],
       vendorCommissionAssignments: [], pinnedServices: [],
-      demoMode: true, currentVendorId: 'vendor-001', currentCompanyId: 'company-009',
+      demoMode: true, isTutorialMode: false, setIsTutorialMode: () => {},
+      currentVendorId: 'vendor-001', currentCompanyId: 'company-009',
       currentRole: 'vendor' as const, currentCompanyPlan: 'premium' as const,
       setCurrentRole: () => {}, setCurrentCompanyPlan: () => {},
       setCurrentVendorId: () => {}, setCurrentCompanyId: () => {},
