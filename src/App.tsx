@@ -24,6 +24,7 @@ import CompanyServices from "./pages/company/CompanyServices";
 import CompanyServiceDetail from "./pages/company/CompanyServiceDetail";
 import CompanyNewService from "./pages/company/CompanyNewService";
 import CompanyVendors from "./pages/company/CompanyVendors";
+import CompanyVendorDetail from "./pages/company/CompanyVendorDetail";
 import CompanyPayments from "./pages/company/CompanyPayments";
 import CompanySettings from "./pages/company/CompanySettings";
 import CompanyProfile from "./pages/company/CompanyProfile";
