@@ -12,6 +12,7 @@ import Auth from "./pages/Auth";
 import VendorDashboard from "./pages/vendor/VendorDashboard";
 import VendorProducts from "./pages/vendor/VendorProducts";
 import VendorServiceDetail from "./pages/vendor/VendorServiceDetail";
+import VendorTraining from "./pages/vendor/VendorTraining";
 import VendorPayments from "./pages/vendor/VendorPayments";
 import VendorSupport from "./pages/vendor/VendorSupport";
 import VendorProfile from "./pages/vendor/VendorProfile";
@@ -23,6 +24,7 @@ import CompanyServices from "./pages/company/CompanyServices";
 import CompanyServiceDetail from "./pages/company/CompanyServiceDetail";
 import CompanyNewService from "./pages/company/CompanyNewService";
 import CompanyVendors from "./pages/company/CompanyVendors";
+import CompanyVendorDetail from "./pages/company/CompanyVendorDetail";
 import CompanyPayments from "./pages/company/CompanyPayments";
 import CompanySettings from "./pages/company/CompanySettings";
 import CompanyProfile from "./pages/company/CompanyProfile";
@@ -61,6 +63,7 @@ const App = () => (
             <Route path="/vendor/company/:companyId/service/:serviceId" element={<VendorServiceDetail />} />
             <Route path="/vendor/products" element={<VendorProducts />} />
             <Route path="/vendor/services/:serviceId" element={<VendorServiceDetail />} />
+            <Route path="/vendor/trainings/:serviceId" element={<VendorTraining />} />
             <Route path="/vendor/payments" element={<VendorPayments />} />
             <Route path="/vendor/support" element={<VendorSupport />} />
             <Route path="/vendor/crm" element={<VendorCRM />} />
@@ -73,6 +76,7 @@ const App = () => (
             <Route path="/company/services/:serviceId" element={<CompanyServiceDetail />} />
             <Route path="/company/payments" element={<CompanyPayments />} />
             <Route path="/company/vendors" element={<CompanyVendors />} />
+            <Route path="/company/vendors/:vendorId" element={<CompanyVendorDetail />} />
             <Route path="/company/chat" element={<CompanyChat />} />
             <Route path="/company/settings" element={<CompanySettings />} />
             <Route path="/company/profile" element={<CompanyProfile />} />
