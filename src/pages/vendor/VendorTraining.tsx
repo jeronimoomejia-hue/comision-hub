@@ -114,7 +114,7 @@ export default function VendorTraining() {
     if (correct >= passingScore) {
       // Mark training as complete
       if (serviceId) {
-        updateTrainingProgress(vendorId, serviceId, 'declared_completed');
+        completeTraining(vendorId, serviceId);
       }
       toast.success("Aprobaste el quiz. Producto desbloqueado para venta.");
     } else {
