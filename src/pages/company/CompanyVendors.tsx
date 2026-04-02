@@ -232,7 +232,7 @@ export default function CompanyVendors() {
               return (
                 <div
                   key={vendor.id}
-                  onClick={() => { setModalTab("ventas"); setSelectedVendor(vendor); }}
+                  onClick={() => navigate(`/company/vendors/${vendor.id}`)}
                   className={`rounded-2xl border bg-card p-3 cursor-pointer hover:shadow-md hover:border-primary/20 transition-all group ${d.bestTierOrder === 3 ? 'border-purple-200/50' : d.bestTierOrder === 2 ? 'border-amber-200/50' : 'border-border'}`}
                 >
                   {/* Avatar + Tier badge */}
