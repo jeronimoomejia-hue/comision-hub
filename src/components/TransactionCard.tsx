@@ -342,7 +342,7 @@ export default function TransactionCard({
 
               {/* Actions */}
               <div className="flex gap-2 pt-0.5 flex-wrap" onClick={e => e.stopPropagation()}>
-                {clientPhone && (
+                {clientPhone && role === 'vendor' && (
                   <Button
                     variant="outline"
                     size="sm"
