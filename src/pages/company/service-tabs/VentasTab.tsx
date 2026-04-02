@@ -40,6 +40,7 @@ export default function VentasTab({ service, serviceSales, commissions, refundRe
           {filtered.map((sale: any) => {
             const vendor = vendors.find(v => v.id === sale.vendorId);
             const existingRefund = refundRequests.find((r: any) => r.saleId === sale.id);
+            const saleTier = sale.commissionTierId ? allTiers.find(t => t.id === sale.commissionTierId) : null;
             return (
               <TransactionCard key={sale.id} id={sale.id}
                 clientName={sale.clientName} clientEmail={sale.clientEmail} clientPhone={sale.clientPhone}
@@ -51,6 +52,7 @@ export default function VentasTab({ service, serviceSales, commissions, refundRe
                 holdEndDate={sale.holdEndAt} releasedDate={sale.releasedAt}
                 activationCode={sale.activationCode} isSubscription={sale.isSubscription}
                 paymentId={sale.mpPaymentId} refundStatus={existingRefund?.status}
+                tierName={saleTier?.name} tierOrder={saleTier?.tierOrder}
                 onSupport={() => toast.success("Soporte contactado")} role="company"
               />
             );
