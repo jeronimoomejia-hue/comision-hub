@@ -64,8 +64,7 @@ const comparisonData: ComparisonGroup[] = [
     category: "Productos",
     rows: [
       { feature: "Límite de productos", freemium: "5", premium: "Ilimitados", enterprise: "Ilimitados" },
-      { feature: "Códigos de activación manuales", freemium: true, premium: true, enterprise: true },
-      { feature: "Códigos automáticos (API)", freemium: false, premium: false, enterprise: true },
+      { feature: "Códigos de activación", freemium: true, premium: true, enterprise: true },
     ],
   },
   {
@@ -79,15 +78,15 @@ const comparisonData: ComparisonGroup[] = [
   {
     category: "Integraciones",
     rows: [
-      { feature: "Venta de leads", freemium: true, premium: true, enterprise: true },
-      { feature: "Integraciones API", freemium: false, premium: false, enterprise: true },
+      { feature: "Calendario de horarios", freemium: false, premium: false, enterprise: true },
+      { feature: "Integración API", freemium: false, premium: false, enterprise: true },
     ],
   },
   {
     category: "Comisiones",
     rows: [
-      { feature: "Fee Mensualista", freemium: "15%", premium: "0%", enterprise: "0%" },
-      { feature: "Costos de pasarela", freemium: "3% + $1.000", premium: "3% + $1.000", enterprise: "3% + $1.000" },
+      { feature: "Fee Mensualista", freemium: "12%", premium: "0%", enterprise: "0%" },
+      { feature: "Costos de pasarela", freemium: "3%", premium: "3%", enterprise: "3%" },
     ],
   },
 ];
