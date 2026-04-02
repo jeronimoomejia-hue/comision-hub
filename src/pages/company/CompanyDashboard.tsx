@@ -74,28 +74,11 @@ export default function CompanyDashboard() {
   return (
     <DashboardLayout role="company" userName={company?.name}>
       <div className="space-y-6">
-        {/* Plan switcher (demo) */}
-        <div className="rounded-xl border border-dashed border-primary/30 bg-primary/5 p-3">
-          <p className="text-[10px] uppercase tracking-widest text-primary font-semibold mb-2">Demo: Cambiar plan</p>
-          <div className="flex gap-2">
-            {allPlans.map(p => {
-              const cfg = planConfig[p];
-              return (
-                <button
-                  key={p}
-                  onClick={() => setCurrentCompanyPlan(p)}
-                  className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all ${
-                    plan === p
-                      ? 'bg-foreground text-background'
-                      : 'bg-card border border-border text-muted-foreground hover:border-primary/40'
-                  }`}
-                >
-                  <cfg.icon className="w-3.5 h-3.5" />
-                  {cfg.label}
-                </button>
-              );
-            })}
-          </div>
+        {/* Plan badge */}
+        <div className="flex items-center gap-2">
+          <Badge variant="outline" className="text-[10px] gap-1">
+            <pc.icon className="w-3 h-3" /> Plan {pc.label}
+          </Badge>
         </div>
 
         {/* KPIs row */}
