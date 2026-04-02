@@ -50,10 +50,9 @@ const tierColor = (order: number) => {
 
 export default function CompanyVendors() {
   const { trainingProgress } = useDemo();
-  const [selectedVendor, setSelectedVendor] = useState<any>(null);
+  const navigate = useNavigate();
   const [showInvite, setShowInvite] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [modalTab, setModalTab] = useState<'ventas' | 'servicios' | 'capacitacion'>('ventas');
   const [filter, setFilter] = useState<'todos' | 'activos' | 'capacitandose' | 'inactivos'>('todos');
 
   const company = companies.find(c => c.id === CURRENT_COMPANY_ID);
