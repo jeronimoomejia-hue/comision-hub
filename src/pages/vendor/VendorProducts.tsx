@@ -120,7 +120,9 @@ export default function VendorProducts() {
   const renderServiceMiniCard = (service: typeof allServices[0], badge?: { label: string; color: string }) => {
     const company = companies.find(c => c.id === service.companyId);
     const coverImg = categoryCovers[service.category];
-    const earningsPerSale = Math.round(service.priceCOP * service.vendorCommissionPct / 100);
+    const vendorTier = getVendorTier(vendorId, service.id);
+    const effectivePct = vendorTier?.commissionPct ?? service.vendorCommissionPct;
+    const earningsPerSale = Math.round(service.priceCOP * effectivePct / 100);
 
     return (
       <Link
@@ -131,14 +133,22 @@ export default function VendorProducts() {
         <div className="relative aspect-[4/3] overflow-hidden">
           <img src={coverImg} alt={service.category} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-          {badge && (
-            <div className="absolute top-2 right-2">
+          <div className="absolute top-2 right-2 flex gap-1">
+            {badge && (
               <span className={`inline-flex items-center gap-0.5 text-[8px] font-semibold px-1.5 py-0.5 rounded-full text-white ${badge.color}`}>
                 {badge.label === 'Destacado' ? <Star className="w-2 h-2" /> : <Flame className="w-2 h-2" />}
                 {badge.label}
               </span>
-            </div>
-          )}
+            )}
+            {vendorTier && vendorTier.tierOrder >= 2 && (
+              <span className={`inline-flex items-center gap-0.5 text-[8px] font-semibold px-1.5 py-0.5 rounded-full text-white ${
+                vendorTier.tierOrder === 3 ? 'bg-primary/90' : 'bg-amber-500/90'
+              }`}>
+                {vendorTier.tierOrder === 3 ? <Crown className="w-2 h-2" /> : <Star className="w-2 h-2" />}
+                {vendorTier.name}
+              </span>
+            )}
+          </div>
           <div className="absolute bottom-2 right-2">
             <p className="text-sm font-bold text-white drop-shadow-md">{formatCOP(earningsPerSale)}</p>
           </div>
@@ -147,7 +157,7 @@ export default function VendorProducts() {
           <h3 className="font-semibold text-xs text-foreground leading-snug line-clamp-1 group-hover:text-primary transition-colors">{service.name}</h3>
           <div className="flex items-center justify-between">
             <p className="text-[10px] text-muted-foreground truncate">{company?.name}</p>
-            <span className="text-[9px] text-primary font-medium flex-shrink-0">{service.vendorCommissionPct}%</span>
+            <span className="text-[9px] text-primary font-medium flex-shrink-0">{effectivePct}%</span>
           </div>
         </div>
       </Link>
