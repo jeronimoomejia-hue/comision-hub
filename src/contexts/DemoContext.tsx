@@ -43,10 +43,12 @@ interface DemoContextType {
   vendorCommissionAssignments: VendorCommissionAssignment[];
   pinnedServices: string[];
   demoMode: boolean;
+  isTutorialMode: boolean;
   currentVendorId: string;
   currentCompanyId: string;
   currentRole: 'vendor' | 'company' | 'admin';
   currentCompanyPlan: CompanyPlan;
+  setIsTutorialMode: (v: boolean) => void;
   setCurrentRole: (role: 'vendor' | 'company' | 'admin') => void;
   setCurrentCompanyPlan: (plan: CompanyPlan) => void;
   setCurrentVendorId: (id: string) => void;
