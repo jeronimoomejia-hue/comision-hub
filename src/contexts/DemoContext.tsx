@@ -394,7 +394,25 @@ export function DemoProvider({ children }: { children: ReactNode }) {
 export function useDemo() {
   const context = useContext(DemoContext);
   if (context === undefined) {
-    throw new Error('useDemo must be used within a DemoProvider');
+    // Return a safe fallback during error recovery renders
+    console.warn('useDemo called outside DemoProvider — returning fallback');
+    return {
+      sales: [], commissions: [], vendorPayments: [], companyPayments: [],
+      trainingProgress: [], services: [], companies: [], subscriptions: [],
+      refundRequests: [], serviceRequests: [], commissionTiers: [],
+      vendorCommissionAssignments: [], pinnedServices: [],
+      demoMode: true, currentVendorId: 'vendor-001', currentCompanyId: 'company-009',
+      currentRole: 'vendor' as const, currentCompanyPlan: 'premium' as const,
+      setCurrentRole: () => {}, setCurrentCompanyPlan: () => {},
+      setCurrentVendorId: () => {}, setCurrentCompanyId: () => {},
+      addSale: () => {}, updateSaleStatus: () => {}, updateCommissionStatus: () => {},
+      updateTrainingProgress: () => {}, startTraining: () => {}, completeTraining: () => {},
+      togglePinService: () => {}, addService: () => {}, updateService: () => {},
+      addActivationCodes: () => {}, addRefundRequest: () => {}, updateRefundRequest: () => {},
+      addServiceRequest: () => {}, updateServiceRequest: () => {},
+      addCommissionTier: () => {}, updateCommissionTier: () => {}, removeCommissionTier: () => {},
+      assignVendorTier: () => {}, getVendorTier: () => null, resetDemoData: () => {},
+    } as DemoContextType;
   }
   return context;
 }
