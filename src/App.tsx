@@ -12,6 +12,7 @@ import Auth from "./pages/Auth";
 import VendorDashboard from "./pages/vendor/VendorDashboard";
 import VendorProducts from "./pages/vendor/VendorProducts";
 import VendorServiceDetail from "./pages/vendor/VendorServiceDetail";
+import VendorTraining from "./pages/vendor/VendorTraining";
 import VendorPayments from "./pages/vendor/VendorPayments";
 import VendorSupport from "./pages/vendor/VendorSupport";
 import VendorProfile from "./pages/vendor/VendorProfile";
