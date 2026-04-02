@@ -116,13 +116,6 @@ export const PricingSection = () => {
       maximumFractionDigits: 0,
     }).format(plan.priceCOP);
   };
-    return new Intl.NumberFormat("es-CO", {
-      style: "currency",
-      currency: "COP",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(plan.priceCOP);
-  };
 
   return (
     <section id="planes" className="py-24 px-4 sm:px-6 lg:px-8 bg-background relative overflow-hidden">
