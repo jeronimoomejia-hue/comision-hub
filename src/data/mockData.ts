@@ -1209,18 +1209,32 @@ export function calculateAdminKPIs() {
 // COMMISSION TIERS MOCK DATA
 // =============================================================================
 
+// Commission tiers for services from companies vendor-001 is linked to
 export const commissionTiers: CommissionTier[] = [
-  { id: 'tier-001', serviceId: 'service-001', name: 'Básico', commissionPct: 10, isPublic: true, tierOrder: 1, createdAt: '2025-03-01' },
-  { id: 'tier-002', serviceId: 'service-001', name: 'Premium', commissionPct: 15, isPublic: false, tierOrder: 2, createdAt: '2025-03-01' },
-  { id: 'tier-003', serviceId: 'service-001', name: 'Elite', commissionPct: 20, isPublic: false, tierOrder: 3, createdAt: '2025-03-01' },
-  { id: 'tier-004', serviceId: 'service-002', name: 'Estándar', commissionPct: 12, isPublic: true, tierOrder: 1, createdAt: '2025-03-05' },
-  { id: 'tier-005', serviceId: 'service-002', name: 'Avanzado', commissionPct: 18, isPublic: false, tierOrder: 2, createdAt: '2025-03-05' },
-  { id: 'tier-006', serviceId: 'service-003', name: 'Básico', commissionPct: 8, isPublic: true, tierOrder: 1, createdAt: '2025-03-10' },
+  // IronHaus - Plan Full Gym (service-025) — 3 tiers
+  { id: 'tier-001', serviceId: 'service-025', name: 'Básico', commissionPct: 10, isPublic: true, tierOrder: 1, createdAt: '2025-02-01' },
+  { id: 'tier-002', serviceId: 'service-025', name: 'Premium', commissionPct: 15, isPublic: false, tierOrder: 2, createdAt: '2025-02-01' },
+  { id: 'tier-003', serviceId: 'service-025', name: 'Elite', commissionPct: 20, isPublic: false, tierOrder: 3, createdAt: '2025-02-01' },
+  // IronHaus - Plan Premium + Entrenador (service-026) — 2 tiers
+  { id: 'tier-004', serviceId: 'service-026', name: 'Estándar', commissionPct: 12, isPublic: true, tierOrder: 1, createdAt: '2025-02-01' },
+  { id: 'tier-005', serviceId: 'service-026', name: 'Avanzado', commissionPct: 18, isPublic: false, tierOrder: 2, createdAt: '2025-02-01' },
+  // Prana Studio - Membresía Ilimitada (service-028) — 2 tiers
+  { id: 'tier-006', serviceId: 'service-028', name: 'Básico', commissionPct: 12, isPublic: true, tierOrder: 1, createdAt: '2025-02-10' },
+  { id: 'tier-007', serviceId: 'service-028', name: 'Premium', commissionPct: 18, isPublic: false, tierOrder: 2, createdAt: '2025-02-10' },
+  // Salón Élite - Corte + Color (service-033) — 1 tier (public only)
+  { id: 'tier-008', serviceId: 'service-033', name: 'Estándar', commissionPct: 18, isPublic: true, tierOrder: 1, createdAt: '2025-02-15' },
 ];
 
 export const vendorCommissionAssignments: VendorCommissionAssignment[] = [
-  { id: 'vca-001', vendorId: 'vendor-001', serviceId: 'service-001', tierId: 'tier-002', assignedAt: '2025-03-15' },
-  { id: 'vca-002', vendorId: 'vendor-002', serviceId: 'service-001', tierId: 'tier-001', assignedAt: '2025-03-10' },
-  { id: 'vca-003', vendorId: 'vendor-003', serviceId: 'service-001', tierId: 'tier-003', assignedAt: '2025-03-12' },
-  { id: 'vca-004', vendorId: 'vendor-001', serviceId: 'service-002', tierId: 'tier-005', assignedAt: '2025-03-20' },
+  // vendor-001 is PREMIUM on IronHaus Full Gym (private/higher commission = oferta privada)
+  { id: 'vca-001', vendorId: 'vendor-001', serviceId: 'service-025', tierId: 'tier-002', assignedAt: '2025-03-15' },
+  // vendor-001 is Avanzado on IronHaus Premium+Entrenador (private)
+  { id: 'vca-002', vendorId: 'vendor-001', serviceId: 'service-026', tierId: 'tier-005', assignedAt: '2025-03-15' },
+  // vendor-001 is Básico (public) on Prana
+  { id: 'vca-003', vendorId: 'vendor-001', serviceId: 'service-028', tierId: 'tier-006', assignedAt: '2025-03-20' },
+  // Other vendors on public tiers
+  { id: 'vca-004', vendorId: 'vendor-002', serviceId: 'service-025', tierId: 'tier-001', assignedAt: '2025-03-10' },
+  { id: 'vca-005', vendorId: 'vendor-003', serviceId: 'service-025', tierId: 'tier-001', assignedAt: '2025-03-12' },
+  { id: 'vca-006', vendorId: 'vendor-004', serviceId: 'service-025', tierId: 'tier-003', assignedAt: '2025-03-14' },
+  { id: 'vca-007', vendorId: 'vendor-005', serviceId: 'service-025', tierId: 'tier-001', assignedAt: '2025-03-18' },
 ];
