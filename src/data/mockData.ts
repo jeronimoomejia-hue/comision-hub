@@ -1003,10 +1003,12 @@ export const companyPayouts: CompanyPayout[] = companyPayments.map(p => ({
 // =============================================================================
 
 export const refundRequests: RefundRequest[] = [
-  // Vendor-001 has no refunds (new user)
-  { id: 'refund-002', saleId: 'sale-068', vendorId: 'vendor-002', companyId: 'company-002', serviceId: 'service-003', reason: 'No le gustó el producto', createdAt: '2025-01-05', status: 'aprobado', decisionBy: 'empresa', decidedAt: '2025-01-06' },
-  { id: 'refund-003', saleId: 'sale-069', vendorId: 'vendor-003', companyId: 'company-003', serviceId: 'service-005', reason: 'Problema técnico', createdAt: '2025-01-03', status: 'automático', decisionBy: 'sistema', decidedAt: '2025-01-03' },
-  { id: 'refund-004', saleId: 'sale-070', vendorId: 'vendor-004', companyId: 'company-004', serviceId: 'service-007', reason: 'Cliente duplicó compra', createdAt: '2025-01-08', status: 'aprobado', decisionBy: 'empresa', decidedAt: '2025-01-09' }
+  // Vendor-001 has 1 refund (the Prana Retiro sale)
+  { id: 'refund-001', saleId: 'sale-v1-8', vendorId: 'vendor-001', companyId: 'company-010', serviceId: 'service-029', reason: 'El cliente no pudo asistir al retiro por motivos de salud', createdAt: '2025-03-05', status: 'aprobado', decisionBy: 'empresa', decidedAt: '2025-03-06' },
+  // Other vendors
+  { id: 'refund-002', saleId: 'sale-v2d-006', vendorId: 'vendor-002', companyId: 'company-009', serviceId: 'service-025', reason: 'Cliente cambió de gimnasio', createdAt: '2025-01-05', status: 'aprobado', decisionBy: 'empresa', decidedAt: '2025-01-06' },
+  { id: 'refund-003', saleId: 'sale-v3d-004', vendorId: 'vendor-003', companyId: 'company-009', serviceId: 'service-026', reason: 'Problema con horarios del entrenador', createdAt: '2025-01-03', status: 'aprobado', decisionBy: 'empresa', decidedAt: '2025-01-04' },
+  { id: 'refund-004', saleId: 'sale-v4d-003', vendorId: 'vendor-004', companyId: 'company-009', serviceId: 'service-025', reason: 'Cliente duplicó compra', createdAt: '2025-01-08', status: 'aprobado', decisionBy: 'empresa', decidedAt: '2025-01-09' }
 ];
 
 // =============================================================================
@@ -1014,15 +1016,21 @@ export const refundRequests: RefundRequest[] = [
 // =============================================================================
 
 export const trainingProgress: TrainingProgress[] = [
-  // Vendor-001 is a new user — no training progress yet
-  // Otros vendedores
-  { id: 'tp-008', vendorId: 'vendor-002', serviceId: 'service-003', status: 'declared_completed', lastAccessedAt: '2024-11-20', completedAt: '2024-11-20' },
-  { id: 'tp-009', vendorId: 'vendor-002', serviceId: 'service-005', status: 'in_progress', lastAccessedAt: '2025-01-12' },
-  { id: 'tp-010', vendorId: 'vendor-003', serviceId: 'service-007', status: 'declared_completed', lastAccessedAt: '2024-12-15', completedAt: '2024-12-15' },
-  { id: 'tp-011', vendorId: 'vendor-003', serviceId: 'service-009', status: 'in_progress', lastAccessedAt: '2025-01-16' },
-  { id: 'tp-012', vendorId: 'vendor-004', serviceId: 'service-011', status: 'declared_completed', lastAccessedAt: '2024-11-25', completedAt: '2024-11-25' },
-  { id: 'tp-013', vendorId: 'vendor-005', serviceId: 'service-013', status: 'declared_completed', lastAccessedAt: '2024-12-20', completedAt: '2024-12-20' },
-  { id: 'tp-014', vendorId: 'vendor-006', serviceId: 'service-015', status: 'in_progress', lastAccessedAt: '2025-01-14' }
+// Vendor-001 — completed training on services they sell
+  { id: 'tp-001', vendorId: 'vendor-001', serviceId: 'service-025', status: 'declared_completed', lastAccessedAt: '2025-03-22', completedAt: '2025-03-22' },
+  { id: 'tp-002', vendorId: 'vendor-001', serviceId: 'service-026', status: 'declared_completed', lastAccessedAt: '2025-03-23', completedAt: '2025-03-23' },
+  { id: 'tp-003', vendorId: 'vendor-001', serviceId: 'service-028', status: 'declared_completed', lastAccessedAt: '2025-03-24', completedAt: '2025-03-24' },
+  { id: 'tp-004', vendorId: 'vendor-001', serviceId: 'service-033', status: 'declared_completed', lastAccessedAt: '2025-03-25', completedAt: '2025-03-25' },
+  { id: 'tp-005', vendorId: 'vendor-001', serviceId: 'service-034', status: 'in_progress', lastAccessedAt: '2025-03-28' },
+  { id: 'tp-006', vendorId: 'vendor-001', serviceId: 'service-029', status: 'declared_completed', lastAccessedAt: '2025-03-26', completedAt: '2025-03-26' },
+  // Other vendors
+  { id: 'tp-008', vendorId: 'vendor-002', serviceId: 'service-025', status: 'declared_completed', lastAccessedAt: '2025-01-20', completedAt: '2025-01-20' },
+  { id: 'tp-009', vendorId: 'vendor-002', serviceId: 'service-026', status: 'in_progress', lastAccessedAt: '2025-01-12' },
+  { id: 'tp-010', vendorId: 'vendor-003', serviceId: 'service-025', status: 'declared_completed', lastAccessedAt: '2025-01-15', completedAt: '2025-01-15' },
+  { id: 'tp-011', vendorId: 'vendor-003', serviceId: 'service-009', status: 'declared_completed', lastAccessedAt: '2025-01-16', completedAt: '2025-01-16' },
+  { id: 'tp-012', vendorId: 'vendor-004', serviceId: 'service-007', status: 'declared_completed', lastAccessedAt: '2025-01-25', completedAt: '2025-01-25' },
+  { id: 'tp-013', vendorId: 'vendor-005', serviceId: 'service-009', status: 'declared_completed', lastAccessedAt: '2025-01-20', completedAt: '2025-01-20' },
+  { id: 'tp-014', vendorId: 'vendor-004', serviceId: 'service-025', status: 'in_progress', lastAccessedAt: '2025-01-14' }
 ];
 
 // =============================================================================
@@ -1094,14 +1102,14 @@ export const weeklyGMV = Array.from({ length: 12 }, (_, i) => {
 });
 
 export const salesByCategory = [
+  { category: 'Gimnasio', sales: 65 },
+  { category: 'Yoga & Bienestar', sales: 38 },
   { category: 'IA Seguros', sales: 42 },
-  { category: 'IA Legal', sales: 35 },
-  { category: 'IA Marketing', sales: 48 },
-  { category: 'IA Ventas', sales: 55 },
-  { category: 'IA Atención', sales: 62 },
-  { category: 'IA Contabilidad', sales: 28 },
-  { category: 'IA RRHH', sales: 24 },
-  { category: 'IA Ciberseguridad', sales: 18 }
+  { category: 'IA Ventas', sales: 35 },
+  { category: 'IA Atención', sales: 48 },
+  { category: 'Spa & Wellness', sales: 22 },
+  { category: 'Peluquería', sales: 30 },
+  { category: 'Cancha de Playa', sales: 15 }
 ];
 
 export const salesStatusDistribution = [
@@ -1201,18 +1209,32 @@ export function calculateAdminKPIs() {
 // COMMISSION TIERS MOCK DATA
 // =============================================================================
 
+// Commission tiers for services from companies vendor-001 is linked to
 export const commissionTiers: CommissionTier[] = [
-  { id: 'tier-001', serviceId: 'service-001', name: 'Básico', commissionPct: 10, isPublic: true, tierOrder: 1, createdAt: '2025-03-01' },
-  { id: 'tier-002', serviceId: 'service-001', name: 'Premium', commissionPct: 15, isPublic: false, tierOrder: 2, createdAt: '2025-03-01' },
-  { id: 'tier-003', serviceId: 'service-001', name: 'Elite', commissionPct: 20, isPublic: false, tierOrder: 3, createdAt: '2025-03-01' },
-  { id: 'tier-004', serviceId: 'service-002', name: 'Estándar', commissionPct: 12, isPublic: true, tierOrder: 1, createdAt: '2025-03-05' },
-  { id: 'tier-005', serviceId: 'service-002', name: 'Avanzado', commissionPct: 18, isPublic: false, tierOrder: 2, createdAt: '2025-03-05' },
-  { id: 'tier-006', serviceId: 'service-003', name: 'Básico', commissionPct: 8, isPublic: true, tierOrder: 1, createdAt: '2025-03-10' },
+  // IronHaus - Plan Full Gym (service-025) — 3 tiers
+  { id: 'tier-001', serviceId: 'service-025', name: 'Básico', commissionPct: 10, isPublic: true, tierOrder: 1, createdAt: '2025-02-01' },
+  { id: 'tier-002', serviceId: 'service-025', name: 'Premium', commissionPct: 15, isPublic: false, tierOrder: 2, createdAt: '2025-02-01' },
+  { id: 'tier-003', serviceId: 'service-025', name: 'Elite', commissionPct: 20, isPublic: false, tierOrder: 3, createdAt: '2025-02-01' },
+  // IronHaus - Plan Premium + Entrenador (service-026) — 2 tiers
+  { id: 'tier-004', serviceId: 'service-026', name: 'Estándar', commissionPct: 12, isPublic: true, tierOrder: 1, createdAt: '2025-02-01' },
+  { id: 'tier-005', serviceId: 'service-026', name: 'Avanzado', commissionPct: 18, isPublic: false, tierOrder: 2, createdAt: '2025-02-01' },
+  // Prana Studio - Membresía Ilimitada (service-028) — 2 tiers
+  { id: 'tier-006', serviceId: 'service-028', name: 'Básico', commissionPct: 12, isPublic: true, tierOrder: 1, createdAt: '2025-02-10' },
+  { id: 'tier-007', serviceId: 'service-028', name: 'Premium', commissionPct: 18, isPublic: false, tierOrder: 2, createdAt: '2025-02-10' },
+  // Salón Élite - Corte + Color (service-033) — 1 tier (public only)
+  { id: 'tier-008', serviceId: 'service-033', name: 'Estándar', commissionPct: 18, isPublic: true, tierOrder: 1, createdAt: '2025-02-15' },
 ];
 
 export const vendorCommissionAssignments: VendorCommissionAssignment[] = [
-  { id: 'vca-001', vendorId: 'vendor-001', serviceId: 'service-001', tierId: 'tier-002', assignedAt: '2025-03-15' },
-  { id: 'vca-002', vendorId: 'vendor-002', serviceId: 'service-001', tierId: 'tier-001', assignedAt: '2025-03-10' },
-  { id: 'vca-003', vendorId: 'vendor-003', serviceId: 'service-001', tierId: 'tier-003', assignedAt: '2025-03-12' },
-  { id: 'vca-004', vendorId: 'vendor-001', serviceId: 'service-002', tierId: 'tier-005', assignedAt: '2025-03-20' },
+  // vendor-001 is PREMIUM on IronHaus Full Gym (private/higher commission = oferta privada)
+  { id: 'vca-001', vendorId: 'vendor-001', serviceId: 'service-025', tierId: 'tier-002', assignedAt: '2025-03-15' },
+  // vendor-001 is Avanzado on IronHaus Premium+Entrenador (private)
+  { id: 'vca-002', vendorId: 'vendor-001', serviceId: 'service-026', tierId: 'tier-005', assignedAt: '2025-03-15' },
+  // vendor-001 is Básico (public) on Prana
+  { id: 'vca-003', vendorId: 'vendor-001', serviceId: 'service-028', tierId: 'tier-006', assignedAt: '2025-03-20' },
+  // Other vendors on public tiers
+  { id: 'vca-004', vendorId: 'vendor-002', serviceId: 'service-025', tierId: 'tier-001', assignedAt: '2025-03-10' },
+  { id: 'vca-005', vendorId: 'vendor-003', serviceId: 'service-025', tierId: 'tier-001', assignedAt: '2025-03-12' },
+  { id: 'vca-006', vendorId: 'vendor-004', serviceId: 'service-025', tierId: 'tier-003', assignedAt: '2025-03-14' },
+  { id: 'vca-007', vendorId: 'vendor-005', serviceId: 'service-025', tierId: 'tier-001', assignedAt: '2025-03-18' },
 ];
