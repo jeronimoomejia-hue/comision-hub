@@ -1,9 +1,10 @@
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Plus, Copy, Users, Search,
   Star, BookOpen, CheckCircle2, Clock,
-  Crown, Shield, Lock, X,
+  Crown, Shield, Lock,
   TrendingUp, Package, GraduationCap
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
