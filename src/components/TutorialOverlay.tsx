@@ -17,9 +17,21 @@ interface TutorialOverlayProps {
 }
 
 export default function TutorialOverlay({ pageId, steps, onComplete }: TutorialOverlayProps) {
+  const { isTutorialMode } = useDemo();
   const storageKey = `tutorial_completed_${pageId}`;
-  const [dismissed, setDismissed] = useState(() => localStorage.getItem(storageKey) === "true");
+  const [dismissed, setDismissed] = useState(() => {
+    if (isTutorialMode) return false;
+    return localStorage.getItem(storageKey) === "true";
+  });
   const [current, setCurrent] = useState(0);
+
+  // Reset when tutorial mode activates
+  useEffect(() => {
+    if (isTutorialMode) {
+      setDismissed(false);
+      setCurrent(0);
+    }
+  }, [isTutorialMode]);
 
   if (dismissed || steps.length === 0) return null;
 
