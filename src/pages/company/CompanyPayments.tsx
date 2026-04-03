@@ -1,4 +1,6 @@
 import DashboardLayout from "@/components/layout/DashboardLayout";
+import TutorialOverlay from "@/components/TutorialOverlay";
+import { companyPaymentsTutorial } from "@/data/tutorialData";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Search, DollarSign, CheckCircle, Clock, TrendingUp, RotateCcw, ShoppingCart, ChevronRight, ArrowLeft, Download, BarChart3, ChevronDown } from "lucide-react";
