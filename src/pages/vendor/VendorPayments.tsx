@@ -1,4 +1,6 @@
 import { useState, useMemo } from "react";
+import TutorialOverlay from "@/components/TutorialOverlay";
+import { vendorPaymentsTutorial } from "@/data/tutorialData";
 import { motion, AnimatePresence } from "framer-motion";
 import VendorTabLayout from "@/components/layout/VendorTabLayout";
 import TransactionCard from "@/components/TransactionCard";
@@ -190,7 +192,8 @@ Estado: TRANSFERIDO
 
   return (
     <VendorTabLayout>
-      <div className="space-y-5">
+       <div className="space-y-5">
+        <TutorialOverlay pageId="vendor-payments" steps={vendorPaymentsTutorial} />
         {/* Header with view toggle */}
         <div className="flex items-center justify-between">
           <div>

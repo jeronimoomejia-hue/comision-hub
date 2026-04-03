@@ -1,4 +1,6 @@
 import DashboardLayout from "@/components/layout/DashboardLayout";
+import TutorialOverlay from "@/components/TutorialOverlay";
+import { companyDashboardTutorial } from "@/data/tutorialData";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -67,7 +69,8 @@ export default function CompanyDashboard() {
 
   return (
     <DashboardLayout role="company" userName={company?.name}>
-      <div className="space-y-6">
+       <div className="space-y-6">
+        <TutorialOverlay pageId="company-dashboard" steps={companyDashboardTutorial} />
         {/* Plan badge */}
         <div className="flex items-center gap-2">
           <Badge variant="outline" className="text-[10px] gap-1">

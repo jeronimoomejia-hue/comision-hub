@@ -1,4 +1,6 @@
 import DashboardLayout from "@/components/layout/DashboardLayout";
+import TutorialOverlay from "@/components/TutorialOverlay";
+import { companyPaymentsTutorial } from "@/data/tutorialData";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Search, DollarSign, CheckCircle, Clock, TrendingUp, RotateCcw, ShoppingCart, ChevronRight, ArrowLeft, Download, BarChart3, ChevronDown } from "lucide-react";
@@ -70,7 +72,8 @@ export default function CompanyPayments() {
 
   return (
     <DashboardLayout role="company" userName={company?.name}>
-      <div className="space-y-5">
+       <div className="space-y-5">
+        <TutorialOverlay pageId="company-payments" steps={companyPaymentsTutorial} />
         {/* View toggle */}
         <div className="flex items-center gap-3">
           <h1 className="text-xl font-bold text-foreground">

@@ -1,4 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
+import TutorialOverlay from "@/components/TutorialOverlay";
+import { vendorDashboardTutorial } from "@/data/tutorialData";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -162,7 +164,8 @@ export default function VendorDashboard() {
 
   return (
     <VendorTabLayout>
-      <div className="space-y-6">
+       <div className="space-y-6">
+        <TutorialOverlay pageId="vendor-dashboard" steps={vendorDashboardTutorial} />
         {/* Greeting — more spacing */}
         <div className="pt-2">
           <p className="text-xs text-muted-foreground">{greetingTime}</p>

@@ -1,4 +1,6 @@
 import DashboardLayout from "@/components/layout/DashboardLayout";
+import TutorialOverlay from "@/components/TutorialOverlay";
+import { companyVendorsTutorial } from "@/data/tutorialData";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -136,7 +138,8 @@ export default function CompanyVendors() {
 
   return (
     <DashboardLayout role="company" userName={company?.name}>
-      <div className="space-y-4">
+       <div className="space-y-4">
+        <TutorialOverlay pageId="company-vendors" steps={companyVendorsTutorial} />
         <div className="flex items-end justify-between">
           <div>
             <h1 className="text-base font-bold text-foreground">Mi Red</h1>

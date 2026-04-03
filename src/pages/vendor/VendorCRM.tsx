@@ -1,4 +1,6 @@
 import { useState } from "react";
+import TutorialOverlay from "@/components/TutorialOverlay";
+import { vendorCRMTutorial } from "@/data/tutorialData";
 import { motion, AnimatePresence } from "framer-motion";
 import VendorTabLayout from "@/components/layout/VendorTabLayout";
 import { Plus, MessageCircle, GripVertical, StickyNote, Zap, Calendar, X, ChevronDown, Users, Phone, Mail } from "lucide-react";
@@ -147,7 +149,8 @@ export default function VendorCRM() {
 
   return (
     <VendorTabLayout>
-      <div className="max-w-5xl mx-auto space-y-5">
+       <div className="max-w-5xl mx-auto space-y-5">
+        <TutorialOverlay pageId="vendor-crm" steps={vendorCRMTutorial} />
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
