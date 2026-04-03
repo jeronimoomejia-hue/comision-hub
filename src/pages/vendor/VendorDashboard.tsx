@@ -1,4 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
+import TutorialOverlay from "@/components/TutorialOverlay";
+import { vendorDashboardTutorial } from "@/data/tutorialData";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
