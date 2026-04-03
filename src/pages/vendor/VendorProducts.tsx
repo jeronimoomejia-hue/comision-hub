@@ -168,7 +168,8 @@ export default function VendorProducts() {
 
   return (
     <VendorTabLayout>
-      <div className="space-y-6">
+       <div className="space-y-6">
+        <TutorialOverlay pageId="vendor-products" steps={vendorProductsTutorial} />
         {/* Header */}
         <div>
           <h1 className="text-xl font-semibold text-foreground">Productos</h1>

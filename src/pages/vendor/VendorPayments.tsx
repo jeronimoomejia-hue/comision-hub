@@ -192,7 +192,8 @@ Estado: TRANSFERIDO
 
   return (
     <VendorTabLayout>
-      <div className="space-y-5">
+       <div className="space-y-5">
+        <TutorialOverlay pageId="vendor-payments" steps={vendorPaymentsTutorial} />
         {/* Header with view toggle */}
         <div className="flex items-center justify-between">
           <div>

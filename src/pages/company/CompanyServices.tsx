@@ -74,7 +74,8 @@ export default function CompanyServices() {
 
   return (
     <DashboardLayout role="company" userName={company?.name}>
-      <div className="space-y-6">
+       <div className="space-y-6">
+        <TutorialOverlay pageId="company-services" steps={companyServicesTutorial} />
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
           <div>
