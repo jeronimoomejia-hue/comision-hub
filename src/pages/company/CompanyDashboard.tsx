@@ -1,4 +1,6 @@
 import DashboardLayout from "@/components/layout/DashboardLayout";
+import TutorialOverlay from "@/components/TutorialOverlay";
+import { companyDashboardTutorial } from "@/data/tutorialData";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {

@@ -70,7 +70,8 @@ export default function CompanyPayments() {
 
   return (
     <DashboardLayout role="company" userName={company?.name}>
-      <div className="space-y-5">
+       <div className="space-y-5">
+        <TutorialOverlay pageId="company-payments" steps={companyPaymentsTutorial} />
         {/* View toggle */}
         <div className="flex items-center gap-3">
           <h1 className="text-xl font-bold text-foreground">

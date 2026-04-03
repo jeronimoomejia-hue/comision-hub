@@ -1,4 +1,6 @@
 import { useState, useMemo } from "react";
+import TutorialOverlay from "@/components/TutorialOverlay";
+import { vendorPaymentsTutorial } from "@/data/tutorialData";
 import { motion, AnimatePresence } from "framer-motion";
 import VendorTabLayout from "@/components/layout/VendorTabLayout";
 import TransactionCard from "@/components/TransactionCard";

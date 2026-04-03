@@ -1,4 +1,6 @@
 import { useState } from "react";
+import TutorialOverlay from "@/components/TutorialOverlay";
+import { vendorCRMTutorial } from "@/data/tutorialData";
 import { motion, AnimatePresence } from "framer-motion";
 import VendorTabLayout from "@/components/layout/VendorTabLayout";
 import { Plus, MessageCircle, GripVertical, StickyNote, Zap, Calendar, X, ChevronDown, Users, Phone, Mail } from "lucide-react";

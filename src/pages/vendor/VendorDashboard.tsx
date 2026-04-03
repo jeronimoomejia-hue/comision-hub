@@ -164,7 +164,8 @@ export default function VendorDashboard() {
 
   return (
     <VendorTabLayout>
-      <div className="space-y-6">
+       <div className="space-y-6">
+        <TutorialOverlay pageId="vendor-dashboard" steps={vendorDashboardTutorial} />
         {/* Greeting — more spacing */}
         <div className="pt-2">
           <p className="text-xs text-muted-foreground">{greetingTime}</p>

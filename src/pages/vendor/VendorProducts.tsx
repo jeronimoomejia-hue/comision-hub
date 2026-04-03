@@ -1,4 +1,6 @@
 import { useState, useMemo } from "react";
+import TutorialOverlay from "@/components/TutorialOverlay";
+import { vendorProductsTutorial } from "@/data/tutorialData";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {

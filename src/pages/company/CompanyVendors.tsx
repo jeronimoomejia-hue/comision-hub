@@ -1,4 +1,6 @@
 import DashboardLayout from "@/components/layout/DashboardLayout";
+import TutorialOverlay from "@/components/TutorialOverlay";
+import { companyVendorsTutorial } from "@/data/tutorialData";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
